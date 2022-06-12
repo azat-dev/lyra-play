@@ -1,0 +1,624 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74928567A1C0010FA1E /* AppDelegate.swift */; };
+		AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */; };
+		AA8BF74E28567A1C0010FA1E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74D28567A1C0010FA1E /* ViewController.swift */; };
+		AA8BF75128567A1C0010FA1E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA8BF74F28567A1C0010FA1E /* Main.storyboard */; };
+		AA8BF75428567A1C0010FA1E /* LyraPlay.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF75228567A1C0010FA1E /* LyraPlay.xcdatamodeld */; };
+		AA8BF75628567A1F0010FA1E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA8BF75528567A1F0010FA1E /* Assets.xcassets */; };
+		AA8BF75928567A1F0010FA1E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA8BF75728567A1F0010FA1E /* LaunchScreen.storyboard */; };
+		AA8BF76428567A1F0010FA1E /* LyraPlayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF76328567A1F0010FA1E /* LyraPlayTests.swift */; };
+		AA8BF76E28567A1F0010FA1E /* LyraPlayUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF76D28567A1F0010FA1E /* LyraPlayUITests.swift */; };
+		AA8BF77028567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF76F28567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AA8BF76028567A1F0010FA1E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA8BF73E28567A1C0010FA1E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA8BF74528567A1C0010FA1E;
+			remoteInfo = LyraPlay;
+		};
+		AA8BF76A28567A1F0010FA1E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA8BF73E28567A1C0010FA1E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA8BF74528567A1C0010FA1E;
+			remoteInfo = LyraPlay;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		AA8BF74628567A1C0010FA1E /* LyraPlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LyraPlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA8BF74928567A1C0010FA1E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		AA8BF74D28567A1C0010FA1E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		AA8BF75028567A1C0010FA1E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		AA8BF75328567A1C0010FA1E /* LyraPlay.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LyraPlay.xcdatamodel; sourceTree = "<group>"; };
+		AA8BF75528567A1F0010FA1E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AA8BF75828567A1F0010FA1E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		AA8BF75A28567A1F0010FA1E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AA8BF75F28567A1F0010FA1E /* LyraPlayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LyraPlayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA8BF76328567A1F0010FA1E /* LyraPlayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyraPlayTests.swift; sourceTree = "<group>"; };
+		AA8BF76928567A1F0010FA1E /* LyraPlayUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LyraPlayUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA8BF76D28567A1F0010FA1E /* LyraPlayUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyraPlayUITests.swift; sourceTree = "<group>"; };
+		AA8BF76F28567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyraPlayUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AA8BF74328567A1C0010FA1E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA8BF75C28567A1F0010FA1E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA8BF76628567A1F0010FA1E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AA8BF73D28567A1C0010FA1E = {
+			isa = PBXGroup;
+			children = (
+				AA8BF74828567A1C0010FA1E /* LyraPlay */,
+				AA8BF76228567A1F0010FA1E /* LyraPlayTests */,
+				AA8BF76C28567A1F0010FA1E /* LyraPlayUITests */,
+				AA8BF74728567A1C0010FA1E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AA8BF74728567A1C0010FA1E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AA8BF74628567A1C0010FA1E /* LyraPlay.app */,
+				AA8BF75F28567A1F0010FA1E /* LyraPlayTests.xctest */,
+				AA8BF76928567A1F0010FA1E /* LyraPlayUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AA8BF74828567A1C0010FA1E /* LyraPlay */ = {
+			isa = PBXGroup;
+			children = (
+				AA8BF74928567A1C0010FA1E /* AppDelegate.swift */,
+				AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */,
+				AA8BF74D28567A1C0010FA1E /* ViewController.swift */,
+				AA8BF74F28567A1C0010FA1E /* Main.storyboard */,
+				AA8BF75528567A1F0010FA1E /* Assets.xcassets */,
+				AA8BF75728567A1F0010FA1E /* LaunchScreen.storyboard */,
+				AA8BF75A28567A1F0010FA1E /* Info.plist */,
+				AA8BF75228567A1C0010FA1E /* LyraPlay.xcdatamodeld */,
+			);
+			path = LyraPlay;
+			sourceTree = "<group>";
+		};
+		AA8BF76228567A1F0010FA1E /* LyraPlayTests */ = {
+			isa = PBXGroup;
+			children = (
+				AA8BF76328567A1F0010FA1E /* LyraPlayTests.swift */,
+			);
+			path = LyraPlayTests;
+			sourceTree = "<group>";
+		};
+		AA8BF76C28567A1F0010FA1E /* LyraPlayUITests */ = {
+			isa = PBXGroup;
+			children = (
+				AA8BF76D28567A1F0010FA1E /* LyraPlayUITests.swift */,
+				AA8BF76F28567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift */,
+			);
+			path = LyraPlayUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AA8BF74528567A1C0010FA1E /* LyraPlay */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA8BF77328567A1F0010FA1E /* Build configuration list for PBXNativeTarget "LyraPlay" */;
+			buildPhases = (
+				AA8BF74228567A1C0010FA1E /* Sources */,
+				AA8BF74328567A1C0010FA1E /* Frameworks */,
+				AA8BF74428567A1C0010FA1E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LyraPlay;
+			productName = LyraPlay;
+			productReference = AA8BF74628567A1C0010FA1E /* LyraPlay.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AA8BF75E28567A1F0010FA1E /* LyraPlayTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA8BF77628567A1F0010FA1E /* Build configuration list for PBXNativeTarget "LyraPlayTests" */;
+			buildPhases = (
+				AA8BF75B28567A1F0010FA1E /* Sources */,
+				AA8BF75C28567A1F0010FA1E /* Frameworks */,
+				AA8BF75D28567A1F0010FA1E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AA8BF76128567A1F0010FA1E /* PBXTargetDependency */,
+			);
+			name = LyraPlayTests;
+			productName = LyraPlayTests;
+			productReference = AA8BF75F28567A1F0010FA1E /* LyraPlayTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		AA8BF76828567A1F0010FA1E /* LyraPlayUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA8BF77928567A1F0010FA1E /* Build configuration list for PBXNativeTarget "LyraPlayUITests" */;
+			buildPhases = (
+				AA8BF76528567A1F0010FA1E /* Sources */,
+				AA8BF76628567A1F0010FA1E /* Frameworks */,
+				AA8BF76728567A1F0010FA1E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AA8BF76B28567A1F0010FA1E /* PBXTargetDependency */,
+			);
+			name = LyraPlayUITests;
+			productName = LyraPlayUITests;
+			productReference = AA8BF76928567A1F0010FA1E /* LyraPlayUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AA8BF73E28567A1C0010FA1E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1340;
+				LastUpgradeCheck = 1340;
+				TargetAttributes = {
+					AA8BF74528567A1C0010FA1E = {
+						CreatedOnToolsVersion = 13.4;
+					};
+					AA8BF75E28567A1F0010FA1E = {
+						CreatedOnToolsVersion = 13.4;
+						TestTargetID = AA8BF74528567A1C0010FA1E;
+					};
+					AA8BF76828567A1F0010FA1E = {
+						CreatedOnToolsVersion = 13.4;
+						TestTargetID = AA8BF74528567A1C0010FA1E;
+					};
+				};
+			};
+			buildConfigurationList = AA8BF74128567A1C0010FA1E /* Build configuration list for PBXProject "LyraPlay" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AA8BF73D28567A1C0010FA1E;
+			productRefGroup = AA8BF74728567A1C0010FA1E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AA8BF74528567A1C0010FA1E /* LyraPlay */,
+				AA8BF75E28567A1F0010FA1E /* LyraPlayTests */,
+				AA8BF76828567A1F0010FA1E /* LyraPlayUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AA8BF74428567A1C0010FA1E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA8BF75928567A1F0010FA1E /* LaunchScreen.storyboard in Resources */,
+				AA8BF75628567A1F0010FA1E /* Assets.xcassets in Resources */,
+				AA8BF75128567A1C0010FA1E /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA8BF75D28567A1F0010FA1E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA8BF76728567A1F0010FA1E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AA8BF74228567A1C0010FA1E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA8BF74E28567A1C0010FA1E /* ViewController.swift in Sources */,
+				AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */,
+				AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */,
+				AA8BF75428567A1C0010FA1E /* LyraPlay.xcdatamodeld in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA8BF75B28567A1F0010FA1E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA8BF76428567A1F0010FA1E /* LyraPlayTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA8BF76528567A1F0010FA1E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA8BF77028567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift in Sources */,
+				AA8BF76E28567A1F0010FA1E /* LyraPlayUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AA8BF76128567A1F0010FA1E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA8BF74528567A1C0010FA1E /* LyraPlay */;
+			targetProxy = AA8BF76028567A1F0010FA1E /* PBXContainerItemProxy */;
+		};
+		AA8BF76B28567A1F0010FA1E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA8BF74528567A1C0010FA1E /* LyraPlay */;
+			targetProxy = AA8BF76A28567A1F0010FA1E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		AA8BF74F28567A1C0010FA1E /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AA8BF75028567A1C0010FA1E /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		AA8BF75728567A1F0010FA1E /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AA8BF75828567A1F0010FA1E /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		AA8BF77128567A1F0010FA1E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AA8BF77228567A1F0010FA1E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AA8BF77428567A1F0010FA1E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8JWF52JVK7;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LyraPlay/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = come.azatkaiumov.LyraPlay;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA8BF77528567A1F0010FA1E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8JWF52JVK7;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LyraPlay/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = come.azatkaiumov.LyraPlay;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		AA8BF77728567A1F0010FA1E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8JWF52JVK7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = come.azatkaiumov.LyraPlayTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LyraPlay.app/LyraPlay";
+			};
+			name = Debug;
+		};
+		AA8BF77828567A1F0010FA1E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8JWF52JVK7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = come.azatkaiumov.LyraPlayTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LyraPlay.app/LyraPlay";
+			};
+			name = Release;
+		};
+		AA8BF77A28567A1F0010FA1E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8JWF52JVK7;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = come.azatkaiumov.LyraPlayUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = LyraPlay;
+			};
+			name = Debug;
+		};
+		AA8BF77B28567A1F0010FA1E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8JWF52JVK7;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = come.azatkaiumov.LyraPlayUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = LyraPlay;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AA8BF74128567A1C0010FA1E /* Build configuration list for PBXProject "LyraPlay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA8BF77128567A1F0010FA1E /* Debug */,
+				AA8BF77228567A1F0010FA1E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA8BF77328567A1F0010FA1E /* Build configuration list for PBXNativeTarget "LyraPlay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA8BF77428567A1F0010FA1E /* Debug */,
+				AA8BF77528567A1F0010FA1E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA8BF77628567A1F0010FA1E /* Build configuration list for PBXNativeTarget "LyraPlayTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA8BF77728567A1F0010FA1E /* Debug */,
+				AA8BF77828567A1F0010FA1E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA8BF77928567A1F0010FA1E /* Build configuration list for PBXNativeTarget "LyraPlayUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA8BF77A28567A1F0010FA1E /* Debug */,
+				AA8BF77B28567A1F0010FA1E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		AA8BF75228567A1C0010FA1E /* LyraPlay.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				AA8BF75328567A1C0010FA1E /* LyraPlay.xcdatamodel */,
+			);
+			currentVersion = AA8BF75328567A1C0010FA1E /* LyraPlay.xcdatamodel */;
+			path = LyraPlay.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = AA8BF73E28567A1C0010FA1E /* Project object */;
+}
