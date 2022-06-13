@@ -10,13 +10,13 @@
 		AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74928567A1C0010FA1E /* AppDelegate.swift */; };
 		AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */; };
 		AA8BF74E28567A1C0010FA1E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74D28567A1C0010FA1E /* ViewController.swift */; };
-		AA8BF75128567A1C0010FA1E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA8BF74F28567A1C0010FA1E /* Main.storyboard */; };
 		AA8BF75428567A1C0010FA1E /* LyraPlay.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF75228567A1C0010FA1E /* LyraPlay.xcdatamodeld */; };
 		AA8BF75628567A1F0010FA1E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA8BF75528567A1F0010FA1E /* Assets.xcassets */; };
 		AA8BF75928567A1F0010FA1E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA8BF75728567A1F0010FA1E /* LaunchScreen.storyboard */; };
 		AA8BF76428567A1F0010FA1E /* LyraPlayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF76328567A1F0010FA1E /* LyraPlayTests.swift */; };
 		AA8BF76E28567A1F0010FA1E /* LyraPlayUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF76D28567A1F0010FA1E /* LyraPlayUITests.swift */; };
 		AA8BF77028567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF76F28567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift */; };
+		AA8BF78228567C410010FA1E /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF78128567C410010FA1E /* AppCoordinator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,7 +41,6 @@
 		AA8BF74928567A1C0010FA1E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		AA8BF74D28567A1C0010FA1E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		AA8BF75028567A1C0010FA1E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		AA8BF75328567A1C0010FA1E /* LyraPlay.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LyraPlay.xcdatamodel; sourceTree = "<group>"; };
 		AA8BF75528567A1F0010FA1E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AA8BF75828567A1F0010FA1E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -51,6 +50,7 @@
 		AA8BF76928567A1F0010FA1E /* LyraPlayUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LyraPlayUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA8BF76D28567A1F0010FA1E /* LyraPlayUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyraPlayUITests.swift; sourceTree = "<group>"; };
 		AA8BF76F28567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyraPlayUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		AA8BF78128567C410010FA1E /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,8 +152,9 @@
 		AA8BF77F28567AA10010FA1E /* Application */ = {
 			isa = PBXGroup;
 			children = (
-				AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */,
 				AA8BF74928567A1C0010FA1E /* AppDelegate.swift */,
+				AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */,
+				AA8BF78128567C410010FA1E /* AppCoordinator.swift */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -164,7 +165,6 @@
 				AA8BF75528567A1F0010FA1E /* Assets.xcassets */,
 				AA8BF75A28567A1F0010FA1E /* Info.plist */,
 				AA8BF75728567A1F0010FA1E /* LaunchScreen.storyboard */,
-				AA8BF74F28567A1C0010FA1E /* Main.storyboard */,
 				AA8BF75228567A1C0010FA1E /* LyraPlay.xcdatamodeld */,
 			);
 			path = SupportFiles;
@@ -276,7 +276,6 @@
 			files = (
 				AA8BF75928567A1F0010FA1E /* LaunchScreen.storyboard in Resources */,
 				AA8BF75628567A1F0010FA1E /* Assets.xcassets in Resources */,
-				AA8BF75128567A1C0010FA1E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +302,7 @@
 			files = (
 				AA8BF74E28567A1C0010FA1E /* ViewController.swift in Sources */,
 				AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */,
+				AA8BF78228567C410010FA1E /* AppCoordinator.swift in Sources */,
 				AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */,
 				AA8BF75428567A1C0010FA1E /* LyraPlay.xcdatamodeld in Sources */,
 			);
@@ -341,14 +341,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		AA8BF74F28567A1C0010FA1E /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AA8BF75028567A1C0010FA1E /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		AA8BF75728567A1F0010FA1E /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -410,6 +402,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -464,6 +457,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -486,7 +480,7 @@
 				INFOPLIST_FILE = LyraPlay/SupportFiles/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -514,7 +508,7 @@
 				INFOPLIST_FILE = LyraPlay/SupportFiles/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
