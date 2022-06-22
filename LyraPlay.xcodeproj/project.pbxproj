@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		AA1ACC1828624D4D000EEDD5 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1ACC1728624D4D000EEDD5 /* Song.swift */; };
 		AA1ACC222862FE7E000EEDD5 /* DefaultTagsParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1ACC212862FE7E000EEDD5 /* DefaultTagsParserTests.swift */; };
+		AA1ACC2C286317A2000EEDD5 /* TagsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1ACC2B286317A2000EEDD5 /* TagsParser.swift */; };
+		AA1ACC2F28631907000EEDD5 /* ID3TagEditor in Frameworks */ = {isa = PBXBuildFile; productRef = AA1ACC2E28631907000EEDD5 /* ID3TagEditor */; };
+		AA1ACC31286329B8000EEDD5 /* test_music_with_tags.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = AA1ACC30286329B8000EEDD5 /* test_music_with_tags.mp3 */; };
 		AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74928567A1C0010FA1E /* AppDelegate.swift */; };
 		AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */; };
 		AA8BF74E28567A1C0010FA1E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74D28567A1C0010FA1E /* ViewController.swift */; };
@@ -41,6 +44,8 @@
 /* Begin PBXFileReference section */
 		AA1ACC1728624D4D000EEDD5 /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 		AA1ACC212862FE7E000EEDD5 /* DefaultTagsParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTagsParserTests.swift; sourceTree = "<group>"; };
+		AA1ACC2B286317A2000EEDD5 /* TagsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsParser.swift; sourceTree = "<group>"; };
+		AA1ACC30286329B8000EEDD5 /* test_music_with_tags.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = test_music_with_tags.mp3; sourceTree = "<group>"; };
 		AA8BF74628567A1C0010FA1E /* LyraPlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LyraPlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA8BF74928567A1C0010FA1E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -62,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA1ACC2F28631907000EEDD5 /* ID3TagEditor in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,9 +99,26 @@
 		AA1ACC202862FE65000EEDD5 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				AA1ACC212862FE7E000EEDD5 /* DefaultTagsParserTests.swift */,
+				AA1ACC2528630F9E000EEDD5 /* DefaultTagsParser */,
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		AA1ACC2528630F9E000EEDD5 /* DefaultTagsParser */ = {
+			isa = PBXGroup;
+			children = (
+				AA1ACC2628630FCD000EEDD5 /* Assets */,
+				AA1ACC212862FE7E000EEDD5 /* DefaultTagsParserTests.swift */,
+			);
+			path = DefaultTagsParser;
+			sourceTree = "<group>";
+		};
+		AA1ACC2628630FCD000EEDD5 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				AA1ACC30286329B8000EEDD5 /* test_music_with_tags.mp3 */,
+			);
+			path = Assets;
 			sourceTree = "<group>";
 		};
 		AA8BF73D28567A1C0010FA1E = {
@@ -167,6 +190,7 @@
 		AA8BF77E28567A8F0010FA1E /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				AA1ACC2B286317A2000EEDD5 /* TagsParser.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -208,6 +232,9 @@
 			dependencies = (
 			);
 			name = LyraPlay;
+			packageProductDependencies = (
+				AA1ACC2E28631907000EEDD5 /* ID3TagEditor */,
+			);
 			productName = LyraPlay;
 			productReference = AA8BF74628567A1C0010FA1E /* LyraPlay.app */;
 			productType = "com.apple.product-type.application";
@@ -280,6 +307,9 @@
 				Base,
 			);
 			mainGroup = AA8BF73D28567A1C0010FA1E;
+			packageReferences = (
+				AA1ACC2D28631907000EEDD5 /* XCRemoteSwiftPackageReference "ID3TagEditor" */,
+			);
 			productRefGroup = AA8BF74728567A1C0010FA1E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -305,6 +335,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA1ACC31286329B8000EEDD5 /* test_music_with_tags.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -323,6 +354,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA1ACC1828624D4D000EEDD5 /* Song.swift in Sources */,
+				AA1ACC2C286317A2000EEDD5 /* TagsParser.swift in Sources */,
 				AA8BF74E28567A1C0010FA1E /* ViewController.swift in Sources */,
 				AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */,
 				AA8BF78228567C410010FA1E /* AppCoordinator.swift in Sources */,
@@ -556,6 +588,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8JWF52JVK7;
+				ENABLE_ON_DEMAND_RESOURCES = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
@@ -576,6 +609,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8JWF52JVK7;
+				ENABLE_ON_DEMAND_RESOURCES = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
@@ -664,6 +698,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AA1ACC2D28631907000EEDD5 /* XCRemoteSwiftPackageReference "ID3TagEditor" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/chicio/ID3TagEditor";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AA1ACC2E28631907000EEDD5 /* ID3TagEditor */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA1ACC2D28631907000EEDD5 /* XCRemoteSwiftPackageReference "ID3TagEditor" */;
+			productName = ID3TagEditor;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		AA8BF75228567A1C0010FA1E /* LyraPlay.xcdatamodeld */ = {
