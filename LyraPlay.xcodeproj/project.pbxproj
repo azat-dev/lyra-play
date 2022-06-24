@@ -18,6 +18,7 @@
 		AA8BF76E28567A1F0010FA1E /* LyraPlayUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF76D28567A1F0010FA1E /* LyraPlayUITests.swift */; };
 		AA8BF77028567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF76F28567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift */; };
 		AA8BF78228567C410010FA1E /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF78128567C410010FA1E /* AppCoordinator.swift */; };
+		AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEAFD2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		AA8BF76D28567A1F0010FA1E /* LyraPlayUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyraPlayUITests.swift; sourceTree = "<group>"; };
 		AA8BF76F28567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyraPlayUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		AA8BF78128567C410010FA1E /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		AA9BEAFD2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportAudioFileUseCaseTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				AA8BF76328567A1F0010FA1E /* LyraPlayTests.swift */,
+				AA9BEAFA2865BF4A0028DF8E /* Domain */,
 			);
 			path = LyraPlayTests;
 			sourceTree = "<group>";
@@ -140,6 +143,7 @@
 		AA8BF77C28567A420010FA1E /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				AA9BEAF92865BF310028DF8E /* UseCases */,
 				AA1ACC1628624D25000EEDD5 /* Models */,
 			);
 			path = Domain;
@@ -179,6 +183,29 @@
 				AA8BF75228567A1C0010FA1E /* LyraPlay.xcdatamodeld */,
 			);
 			path = SupportFiles;
+			sourceTree = "<group>";
+		};
+		AA9BEAF92865BF310028DF8E /* UseCases */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UseCases;
+			sourceTree = "<group>";
+		};
+		AA9BEAFA2865BF4A0028DF8E /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				AA9BEAFB2865BF550028DF8E /* UseCases */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		AA9BEAFB2865BF550028DF8E /* UseCases */ = {
+			isa = PBXGroup;
+			children = (
+				AA9BEAFD2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift */,
+			);
+			path = UseCases;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -325,6 +352,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA8BF76428567A1F0010FA1E /* LyraPlayTests.swift in Sources */,
+				AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
