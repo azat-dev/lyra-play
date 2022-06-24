@@ -25,6 +25,7 @@
 		AA9BEB002865D4540028DF8E /* ImportAudioFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEAFF2865D4540028DF8E /* ImportAudioFileUseCase.swift */; };
 		AA9BEB022865D5BB0028DF8E /* AudioFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB012865D5BB0028DF8E /* AudioFileInfo.swift */; };
 		AA9BEB062865D78C0028DF8E /* AudioFilesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB052865D78C0028DF8E /* AudioFilesRepository.swift */; };
+		AA9BEB0B28661DCE0028DF8E /* LocalAudioFilesRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB0A28661DCE0028DF8E /* LocalAudioFilesRepositoryTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,7 @@
 		AA9BEAFF2865D4540028DF8E /* ImportAudioFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportAudioFileUseCase.swift; sourceTree = "<group>"; };
 		AA9BEB012865D5BB0028DF8E /* AudioFileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileInfo.swift; sourceTree = "<group>"; };
 		AA9BEB052865D78C0028DF8E /* AudioFilesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesRepository.swift; sourceTree = "<group>"; };
+		AA9BEB0A28661DCE0028DF8E /* LocalAudioFilesRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAudioFilesRepositoryTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 		AA1ACC202862FE65000EEDD5 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				AA9BEB0928661DA70028DF8E /* Repositories */,
 				AA1ACC2528630F9E000EEDD5 /* DefaultTagsParser */,
 			);
 			path = Data;
@@ -281,6 +284,14 @@
 			path = Repositories;
 			sourceTree = "<group>";
 		};
+		AA9BEB0928661DA70028DF8E /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				AA9BEB0A28661DCE0028DF8E /* LocalAudioFilesRepositoryTests.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -436,6 +447,7 @@
 			files = (
 				AA8BF76428567A1F0010FA1E /* LyraPlayTests.swift in Sources */,
 				AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */,
+				AA9BEB0B28661DCE0028DF8E /* LocalAudioFilesRepositoryTests.swift in Sources */,
 				AA1ACC222862FE7E000EEDD5 /* DefaultTagsParserTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
