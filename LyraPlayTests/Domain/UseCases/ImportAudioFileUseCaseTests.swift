@@ -16,12 +16,12 @@ class ImportAudioFileUseCaseTests: XCTestCase {
 //    private var audioFilesRepository: AudioFilesRepository!
     private var tagsParser: TagsParser!
 //
-//    override func setUpWithError() throws {
-//
-//        let tagsParser = TagsParserMock()
+    override func setUpWithError() throws {
+
+        let tagsParser = TagsParserMock()
 //        let audiofilesRepository = AudioFilesRepositoryMock()
 //        importAudioFileUseCase = DefaultImportAudioFileUseCase(audioFilesRepository)
-//    }
+    }
 //
 //    private func getTestFiles(names: [String]) -> [Data] {
 //        return []
@@ -61,4 +61,22 @@ class ImportAudioFileUseCaseTests: XCTestCase {
 //        let expectedAudioFiles = []
 //        XCTAssertEqual(importedAudioFiles.map { $0.name }.sorted(), expectedAudioFiles.sorted())
 //    }
+}
+
+// MARK: - Mocks
+
+fileprivate class TagsParserMock: TagsParser {
+    
+    
+    func parse(data: Data) async -> Result<AudioFileTags, Error> {
+        let tags = AudioFileTags(
+            title: "Title",
+            genre: "Genre",
+            coverImage: "ImageData".data(using: .utf8),
+            artist: "Artist",
+            lyrics: "Lyrics"
+        )
+        
+        return .success(tags)
+    }
 }
