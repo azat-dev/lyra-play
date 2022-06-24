@@ -8,6 +8,9 @@
 import Foundation
 
 struct AudioFileInfo {
+    
     var id: UUID?
     var name: String
+    var artist: String?
+    var genre: String?
 }

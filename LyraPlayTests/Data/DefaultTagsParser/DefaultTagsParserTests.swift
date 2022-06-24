@@ -37,6 +37,11 @@ class DefatulTagsParserTests: XCTestCase {
             
         case .success(let tags):
             
+            guard let tags = tags else {
+                XCTAssertFalse(true, "No tags")
+                return
+            }
+            
             XCTAssertEqual(tags.artist ?? "", "Test Artist")
             XCTAssertEqual(tags.title ?? "", "Test Title")
             XCTAssertEqual(tags.genre ?? "", "Test Genre")

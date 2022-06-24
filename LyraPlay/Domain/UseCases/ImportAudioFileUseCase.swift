@@ -11,12 +11,47 @@ import Foundation
 
 enum ImportAudioFileUseCaseError: Error {
     case wrongFormat
-    case internalError(Error)
+    case internalError(Error?)
 }
 
 protocol ImportAudioFileUseCase {
     
-    func importFile(data: Data) async -> Result<AudioFileInfo, ImportAudioFileUseCaseError>
+    func importFile(originalFileName: String, fileData: Data) async -> Result<AudioFileInfo, ImportAudioFileUseCaseError>
 }
 
 // MARK: - Implementations
+
+final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
+    
+    private var audioFilesRepository: AudioFilesRepository
+    private var tagsParser: TagsParser
+    
+    init(audioFilesRepository: AudioFilesRepository, tagsParser: TagsParser) {
+        
+        self.audioFilesRepository = audioFilesRepository
+        self.tagsParser = tagsParser
+    }
+    
+    func importFile(originalFileName: String, fileData: Data) async -> Result<AudioFileInfo, ImportAudioFileUseCaseError> {
+        
+        let parseResult = await tagsParser.parse(data: fileData)
+        
+        guard case .success(let tags) = parseResult else {
+            return .failure(.wrongFormat)
+        }
+        
+        let audioFile = AudioFileInfo(
+            name: tags?.title ?? originalFileName,
+            artist: tags?.artist,
+            genre: tags?.genre
+        )
+        
+        let resultPutFile = await audioFilesRepository.putFile(info: audioFile, data: fileData)
+        
+        guard case .success(let savedFileInfo) = resultPutFile else {
+            return .failure(.internalError(nil))
+        }
+        
+        return .success(savedFileInfo)
+    }
+}

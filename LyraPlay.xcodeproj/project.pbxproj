@@ -113,7 +113,6 @@
 		AA1ACC2528630F9E000EEDD5 /* DefaultTagsParser */ = {
 			isa = PBXGroup;
 			children = (
-				AA1ACC2628630FCD000EEDD5 /* Assets */,
 				AA1ACC212862FE7E000EEDD5 /* DefaultTagsParserTests.swift */,
 			);
 			path = DefaultTagsParser;
@@ -162,6 +161,7 @@
 		AA8BF76228567A1F0010FA1E /* LyraPlayTests */ = {
 			isa = PBXGroup;
 			children = (
+				AA1ACC2628630FCD000EEDD5 /* Assets */,
 				AA1ACC202862FE65000EEDD5 /* Data */,
 				AA8BF76328567A1F0010FA1E /* LyraPlayTests.swift */,
 				AA9BEAFA2865BF4A0028DF8E /* Domain */,
