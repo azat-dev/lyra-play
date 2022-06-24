@@ -13,13 +13,13 @@ import XCTest
 class ImportAudioFileUseCaseTests: XCTestCase {
 
     private var importAudioFileUseCase: ImportAudioFileUseCase!
-//    private var audioFilesRepository: AudioFilesRepository!
+    private var audioFilesRepository: AudioFilesRepository!
     private var tagsParser: TagsParser!
 //
     override func setUpWithError() throws {
 
         let tagsParser = TagsParserMock()
-//        let audiofilesRepository = AudioFilesRepositoryMock()
+        let audiofilesRepository = AudioFilesRepositoryMock()
 //        importAudioFileUseCase = DefaultImportAudioFileUseCase(audioFilesRepository)
     }
 //
@@ -78,5 +78,52 @@ fileprivate class TagsParserMock: TagsParser {
         )
         
         return .success(tags)
+    }
+}
+
+fileprivate class AudioFilesRepositoryMock: AudioFilesRepository {
+    
+    private var files = [AudioFileInfo]()
+    
+    func listFiles() async -> Result<[AudioFileInfo], AudioFilesRepositoryError> {
+        return .success(files)
+    }
+    
+    func getInfo(fileId: UUID) async -> Result<AudioFileInfo, AudioFilesRepositoryError> {
+        let file = files.first { $0.id == fileId }
+        guard let file = file else {
+            return .failure(.fileNotFound)
+        }
+
+        return .success(file)
+    }
+    
+    func putFile(info fileInfo: AudioFileInfo, data: Data) async -> Result<AudioFileInfo, AudioFilesRepositoryError> {
+        
+        guard fileInfo.id != nil else {
+            
+            let fileIndex = files.firstIndex(where: { $0.id == fileInfo.id })
+            guard let fileIndex = fileIndex else {
+                return .failure(.fileNotFound)
+            }
+            
+            files[fileIndex] = fileInfo
+            return .success(fileInfo)
+        }
+        
+        var newFileInfo = fileInfo
+        
+        if newFileInfo.id == nil {
+            newFileInfo.id = UUID()
+        }
+        
+        files.append(newFileInfo)
+        return .success(newFileInfo)
+    }
+    
+    func delete(fileId: UUID) async -> Result<Void, AudioFilesRepositoryError> {
+        files = files.filter { $0.id != fileId }
+        
+        return .success()
     }
 }

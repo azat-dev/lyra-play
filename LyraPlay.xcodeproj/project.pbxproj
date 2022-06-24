@@ -24,6 +24,7 @@
 		AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEAFD2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift */; };
 		AA9BEB002865D4540028DF8E /* ImportAudioFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEAFF2865D4540028DF8E /* ImportAudioFileUseCase.swift */; };
 		AA9BEB022865D5BB0028DF8E /* AudioFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB012865D5BB0028DF8E /* AudioFileInfo.swift */; };
+		AA9BEB062865D78C0028DF8E /* AudioFilesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB052865D78C0028DF8E /* AudioFilesRepository.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 		AA9BEAFD2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportAudioFileUseCaseTests.swift; sourceTree = "<group>"; };
 		AA9BEAFF2865D4540028DF8E /* ImportAudioFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportAudioFileUseCase.swift; sourceTree = "<group>"; };
 		AA9BEB012865D5BB0028DF8E /* AudioFileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileInfo.swift; sourceTree = "<group>"; };
+		AA9BEB052865D78C0028DF8E /* AudioFilesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesRepository.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +181,7 @@
 		AA8BF77C28567A420010FA1E /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				AA9BEB032865D76C0028DF8E /* Interfaces */,
 				AA9BEAF92865BF310028DF8E /* UseCases */,
 				AA1ACC1628624D25000EEDD5 /* Models */,
 			);
@@ -196,7 +199,8 @@
 		AA8BF77E28567A8F0010FA1E /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				AA1ACC2B286317A2000EEDD5 /* TagsParser.swift */,
+				AA9BEB082865DBE20028DF8E /* Repositories */,
+				AA9BEB072865DBCD0028DF8E /* Utils */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -244,6 +248,37 @@
 				AA9BEAFD2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift */,
 			);
 			path = UseCases;
+			sourceTree = "<group>";
+		};
+		AA9BEB032865D76C0028DF8E /* Interfaces */ = {
+			isa = PBXGroup;
+			children = (
+				AA9BEB042865D7740028DF8E /* Repositories */,
+			);
+			path = Interfaces;
+			sourceTree = "<group>";
+		};
+		AA9BEB042865D7740028DF8E /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				AA9BEB052865D78C0028DF8E /* AudioFilesRepository.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		AA9BEB072865DBCD0028DF8E /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				AA1ACC2B286317A2000EEDD5 /* TagsParser.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		AA9BEB082865DBE20028DF8E /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Repositories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -383,6 +418,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA9BEB062865D78C0028DF8E /* AudioFilesRepository.swift in Sources */,
 				AA1ACC2C286317A2000EEDD5 /* TagsParser.swift in Sources */,
 				AA8BF74E28567A1C0010FA1E /* ViewController.swift in Sources */,
 				AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */,
