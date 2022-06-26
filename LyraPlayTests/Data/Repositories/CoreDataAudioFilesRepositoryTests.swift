@@ -7,19 +7,27 @@
 
 import XCTest
 @testable import LyraPlay
+import CoreData
 
 
 extension AudioFileInfo: Equatable {
     
     public static func==(lhs: AudioFileInfo, rhs: AudioFileInfo) -> Bool {
-        return lhs.id == rhs.id && lhs.genre == rhs.genre && lhs.artist == rhs.artist && lhs.name == rhs.name
+        return lhs.id == rhs.id &&
+            lhs.genre == rhs.genre &&
+            lhs.artist == rhs.artist &&
+            lhs.name == rhs.name &&
+            lhs.updatedAt == rhs.updatedAt &&
+            lhs.createdAt == rhs.createdAt
     }
 }
 
 extension AudioFileInfo: Comparable {
     
     public static func < (lhs: AudioFileInfo, rhs: AudioFileInfo) -> Bool {
-        if (lhs.id?.uuidString ?? "") < (rhs.id?.uuidString ?? "") || lhs.name < rhs.name {
+        
+        if (lhs.id?.uuidString ?? "") < (rhs.id?.uuidString ?? "") ||
+            lhs.name < rhs.name {
             return true
         }
         
@@ -27,12 +35,16 @@ extension AudioFileInfo: Comparable {
     }
 }
 
-class LocalAudioFilesRepositoryTests: XCTestCase {
+class CoreDataAudioFilesRepositoryTests: XCTestCase {
     
     var repository: AudioFilesRepository!
     
     override func setUpWithError() throws {
-        repository = LocalAudioFilesRepository()
+        let storeBundle = Bundle(for: CoreDataAudioFilesRepositoryTests.self)
+        let storeURL = URL(fileURLWithPath: "/dev/null")
+        
+        let coreDataStore = try! CoreDataStore(storeURL: storeURL)
+        repository = CoreDataAudioFilesRepository(coreDataStore: coreDataStore)
     }
 
     private func putAndCheckFile(fileInfo: AudioFileInfo, data fileData: Data) async -> AudioFileInfo?  {
@@ -53,7 +65,8 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
         
         var expectedFileInfo = fileInfo
         expectedFileInfo.id = savedFileInfo.id
-        
+        expectedFileInfo.updatedAt = savedFileInfo.updatedAt
+        expectedFileInfo.createdAt = savedFileInfo.createdAt
         
         XCTAssertEqual(savedFileInfo, expectedFileInfo)
         return savedFileInfo
@@ -63,6 +76,8 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
         
         let fileInfo = AudioFileInfo(
             id: nil,
+            createdAt: .now,
+            updatedAt: nil,
             name: "Name1",
             artist: "Artist1",
             genre: "Genre1"
@@ -76,6 +91,8 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
 
         let fileInfo1 = AudioFileInfo(
             id: nil,
+            createdAt: .now,
+            updatedAt: nil,
             name: "Name1",
             artist: "Artist1",
             genre: "Genre1"
@@ -86,6 +103,8 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
         
         let fileInfo2 = AudioFileInfo(
             id: nil,
+            createdAt: .now,
+            updatedAt: nil,
             name: "Name2",
             artist: "Artist2",
             genre: "Genre2"
@@ -102,6 +121,8 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
         
         let fileInfo1 = AudioFileInfo(
             id: nil,
+            createdAt: .now,
+            updatedAt: nil,
             name: "Name1",
             artist: "Artist1",
             genre: "Genre1"
@@ -110,8 +131,10 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
         let fileData1 = "data1".data(using: .utf8)!
         let savedFile1 = await putAndCheckFile(fileInfo: fileInfo1, data: fileData1)
         
-        let fileInfo2 = AudioFileInfo(
-            id: savedFile1?.id,
+        var fileInfo2 = AudioFileInfo(
+            id: savedFile1!.id,
+            createdAt: savedFile1!.createdAt,
+            updatedAt: savedFile1?.updatedAt,
             name: "Name2",
             artist: "Artist2",
             genre: "Genre2"
@@ -121,13 +144,19 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
         let savedFile2 = await putAndCheckFile(fileInfo: fileInfo2, data: fileData2)
 
         XCTAssertEqual(savedFile1?.id, savedFile2?.id)
-        XCTAssertNotEqual(savedFile2, fileInfo2)
+        XCTAssertEqual(savedFile1?.createdAt, savedFile2?.createdAt)
+        XCTAssertNotEqual(savedFile2?.updatedAt!, fileInfo2.updatedAt!)
+        
+        fileInfo2.updatedAt = savedFile2?.updatedAt
+        XCTAssertEqual(savedFile2, fileInfo2)
     }
     
     func testUpdateNotExistingRecordEmptyList() async {
 
         let fileInfo1 = AudioFileInfo(
             id: UUID(),
+            createdAt: .now,
+            updatedAt: nil,
             name: "Name1",
             artist: "Artist1",
             genre: "Genre1"
@@ -143,6 +172,8 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
         
         let fileInfo1 = AudioFileInfo(
             id: nil,
+            createdAt: .now,
+            updatedAt: nil,
             name: "Name1",
             artist: "Artist1",
             genre: "Genre1"
@@ -153,16 +184,24 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
         
         let fileInfo2 = AudioFileInfo(
             id: UUID(),
+            createdAt: .now,
+            updatedAt: nil,
             name: "Name2",
             artist: "Artist2",
             genre: "Genre2"
         )
         
         let fileData2 = "data2".data(using: .utf8)!
-        let savedFile2 = await putAndCheckFile(fileInfo: fileInfo2, data: fileData2)
-
-        XCTAssertNotEqual(savedFile1?.id, savedFile2?.id)
-        XCTAssertNotEqual(savedFile2, fileInfo2)
+        
+        let putResult = await repository.putFile(info: fileInfo2, data: fileData2)
+        
+        guard case .failure(let error) = putResult else {
+            XCTAssertFalse(true, "Put must fail")
+            return
+        }
+        
+        
+        XCTAssertEqual(error, .fileNotFound)
     }
     
     func testGetRecordEmptyList() async {
@@ -182,6 +221,8 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
         
         let fileInfo1 = AudioFileInfo(
             id: nil,
+            createdAt: .now,
+            updatedAt: nil,
             name: "Name1",
             artist: "Artist1",
             genre: "Genre1"
@@ -192,6 +233,8 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
         
         let fileInfo2 = AudioFileInfo(
             id: nil,
+            createdAt: .now,
+            updatedAt: nil,
             name: "Name2",
             artist: "Artist2",
             genre: "Genre2"
@@ -225,8 +268,10 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
     
     func test_list_files_not_empty_list() async {
         
-        let fileInfo1 = AudioFileInfo(
+        var fileInfo1 = AudioFileInfo(
             id: nil,
+            createdAt: .now,
+            updatedAt: nil,
             name: "Name1",
             artist: "Artist1",
             genre: "Genre1"
@@ -235,8 +280,10 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
         let fileData1 = "data1".data(using: .utf8)!
         let savedFile1 = await putAndCheckFile(fileInfo: fileInfo1, data: fileData1)
         
-        let fileInfo2 = AudioFileInfo(
+        var fileInfo2 = AudioFileInfo(
             id: nil,
+            createdAt: .now,
+            updatedAt: nil,
             name: "Name2",
             artist: "Artist2",
             genre: "Genre2"
@@ -255,9 +302,9 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
         fileInfo1.id = savedFile1?.id
         fileInfo2.id = savedFile2?.id
         
-        let expectedFiles = [
-            fileInfo1,
-            fileInfo2
+        var expectedFiles = [
+            savedFile1!,
+            savedFile2!
         ]
         
         XCTAssertEqual(files.sorted(), expectedFiles.sorted())
@@ -280,6 +327,8 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
         
         let fileInfo1 = AudioFileInfo(
             id: nil,
+            createdAt: .now,
+            updatedAt: nil,
             name: "Name1",
             artist: "Artist1",
             genre: "Genre1"
@@ -295,4 +344,22 @@ class LocalAudioFilesRepositoryTests: XCTestCase {
             return
         }
     }
+    
+//    private func makeSut(file: StaticString = #file, line: UInt = #line) -> CoredatFeedStore {
+//        let storeBundle = Bundle(for: CoreDataStorage.self)
+//
+//        // The null device discards all data written to it,
+//        // but reports that the write operation succeded
+//
+//        // The writes are ignored but CoreData still works with the
+//        // in-memory object graph
+//
+//        // Aternatively, we can create a CoreData stack with
+//        // an in-memory persistent store configuration for the tests
+//        let storeURL = URL(fileURLWithPath: "/dev/null")
+//
+//        let sut = try! CoredataFeedStore(storeURL: storeURL, bundle: storeBundle)
+//        trackForMemoryLeaks(sut, file: file, line: line)
+//        return sut
+//    }
 }

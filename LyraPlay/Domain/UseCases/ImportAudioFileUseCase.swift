@@ -41,6 +41,9 @@ final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
         }
         
         let audioFile = AudioFileInfo(
+            id: nil,
+            createdAt: .now,
+            updatedAt: nil,
             name: tags?.title ?? originalFileName,
             artist: tags?.artist,
             genre: tags?.genre
