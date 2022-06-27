@@ -10,7 +10,7 @@ import ID3TagEditor
 
 // MARK: - Interfaces
 
-struct AudioFileTags {
+public struct AudioFileTags {
     var title: String?
     var genre: String?
     var coverImage: Data?
@@ -18,17 +18,17 @@ struct AudioFileTags {
     var lyrics: String?
 }
 
-protocol TagsParser {
+public protocol TagsParser {
     func parse(data: Data) async -> Result<AudioFileTags?, Error>
 }
 
 // MARK: - Implementations
 
-final class DefaultTagsParser: TagsParser {
+public final class DefaultTagsParser: TagsParser {
     
-    init() {}
+    public init() {}
     
-    func parse(data: Data) async -> Result<AudioFileTags?, Error> {
+    public func parse(data: Data) async -> Result<AudioFileTags?, Error> {
         
         let id3TagEditor = ID3TagEditor()
         

@@ -33,6 +33,7 @@
 		AA9BEB0B28661DCE0028DF8E /* CoreDataAudioFilesRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB0A28661DCE0028DF8E /* CoreDataAudioFilesRepositoryTests.swift */; };
 		AACEA31228699F5500111565 /* BrowseAudioFilesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA31128699F5500111565 /* BrowseAudioFilesUseCaseTests.swift */; };
 		AACEA3152869A32A00111565 /* AudioFilesRepositoryMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA3142869A32A00111565 /* AudioFilesRepositoryMock.swift */; };
+		AACEA3172869A5C800111565 /* BrowseAudioFilesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA3162869A5C800111565 /* BrowseAudioFilesUseCase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +83,7 @@
 		AA9BEB0A28661DCE0028DF8E /* CoreDataAudioFilesRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataAudioFilesRepositoryTests.swift; sourceTree = "<group>"; };
 		AACEA31128699F5500111565 /* BrowseAudioFilesUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseAudioFilesUseCaseTests.swift; sourceTree = "<group>"; };
 		AACEA3142869A32A00111565 /* AudioFilesRepositoryMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesRepositoryMock.swift; sourceTree = "<group>"; };
+		AACEA3162869A5C800111565 /* BrowseAudioFilesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseAudioFilesUseCase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -276,6 +278,7 @@
 			isa = PBXGroup;
 			children = (
 				AA9BEAFF2865D4540028DF8E /* ImportAudioFileUseCase.swift */,
+				AACEA3162869A5C800111565 /* BrowseAudioFilesUseCase.swift */,
 			);
 			path = UseCases;
 			sourceTree = "<group>";
@@ -486,6 +489,7 @@
 				AA1ACC2C286317A2000EEDD5 /* TagsParser.swift in Sources */,
 				AA8BF74E28567A1C0010FA1E /* ViewController.swift in Sources */,
 				AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */,
+				AACEA3172869A5C800111565 /* BrowseAudioFilesUseCase.swift in Sources */,
 				AA598D1F2868D435001F3DE1 /* ManagedAudioFile+Mapping.swift in Sources */,
 				AA2BE88B2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift in Sources */,
 				AA8BF78228567C410010FA1E /* AppCoordinator.swift in Sources */,

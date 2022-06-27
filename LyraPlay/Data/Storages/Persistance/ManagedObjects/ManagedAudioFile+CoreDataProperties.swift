@@ -20,7 +20,7 @@ extension ManagedAudioFile {
     @NSManaged public var name: String
     @NSManaged public var artist: String?
     @NSManaged public var genre: String?
-    @NSManaged public var createdAt: Date
+    @NSManaged public var createdAt: Date?
     @NSManaged public var updatedAt: Date?
 
 }

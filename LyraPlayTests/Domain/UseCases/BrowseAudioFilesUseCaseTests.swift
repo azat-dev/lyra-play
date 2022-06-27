@@ -15,11 +15,8 @@ class BrowseAudioFilesUseCaseTests: XCTestCase {
     
     override func setUp() async throws {
         
-        let audioFilesRepository = AudioFilesRepositoryMock()
-        
-        useCase = DefaultBrowseAudioFilesUseCase(
-            audioFilesRepository
-        )
+        filesRepository = AudioFilesRepositoryMock()
+        useCase = DefaultBrowseAudioFilesUseCase(audioFilesRepository: filesRepository)
     }
     
     private func getTestFile(index: Int) -> (info: AudioFileInfo, data: Data) {
@@ -29,7 +26,7 @@ class BrowseAudioFilesUseCaseTests: XCTestCase {
         )
     }
     
-    private func testListFiles() async throws {
+    func testListFiles() async throws {
         
         let numberOfTestFiles = 5
         let testFiles = (0..<numberOfTestFiles).map { self.getTestFile(index: $0) }
@@ -45,7 +42,7 @@ class BrowseAudioFilesUseCaseTests: XCTestCase {
         XCTAssertEqual(receivedFiles.map { $0.name }, expectedFileNames)
     }
     
-    private func testGetFileInfo() async {
+    func testGetFileInfo() async {
         
         let numberOfTestFiles = 5
         let testFiles = (0..<numberOfTestFiles).map { self.getTestFile(index: $0) }
@@ -54,10 +51,16 @@ class BrowseAudioFilesUseCaseTests: XCTestCase {
             let result = await filesRepository.putFile(info: file.info, data: file.data)
             let savedFile = try! result.get()
             
-            let result = await useCase.getFileInfo(for: savedFile.id!)
-            let receivedFile = try! result.get()
+            let infoResult = await useCase.getFileInfo(fileId: savedFile.id!)
+            let receivedFile = try! infoResult.get()
             
             XCTAssertEqual(receivedFile, savedFile)
         }
+    }
+    
+    func testGetFileInfoNotExisting() async throws {
+        
+        let infoResult = await useCase.getFileInfo(fileId: UUID())
+        XCTAssertEqual(infoResult, .failure(.fileNotFound))
     }
 }
