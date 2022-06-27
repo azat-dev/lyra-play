@@ -9,30 +9,30 @@ import Foundation
 
 // MARK: - Interfaces
 
-enum ImportAudioFileUseCaseError: Error {
+public enum ImportAudioFileUseCaseError: Error {
     case wrongFormat
     case internalError(Error?)
 }
 
-protocol ImportAudioFileUseCase {
+public protocol ImportAudioFileUseCase {
     
     func importFile(originalFileName: String, fileData: Data) async -> Result<AudioFileInfo, ImportAudioFileUseCaseError>
 }
 
 // MARK: - Implementations
 
-final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
+public final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
     
     private var audioFilesRepository: AudioFilesRepository
     private var tagsParser: TagsParser
     
-    init(audioFilesRepository: AudioFilesRepository, tagsParser: TagsParser) {
+    public init(audioFilesRepository: AudioFilesRepository, tagsParser: TagsParser) {
         
         self.audioFilesRepository = audioFilesRepository
         self.tagsParser = tagsParser
     }
     
-    func importFile(originalFileName: String, fileData: Data) async -> Result<AudioFileInfo, ImportAudioFileUseCaseError> {
+    public func importFile(originalFileName: String, fileData: Data) async -> Result<AudioFileInfo, ImportAudioFileUseCaseError> {
         
         let parseResult = await tagsParser.parse(data: fileData)
         

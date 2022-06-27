@@ -9,12 +9,12 @@ import Foundation
 
 // MARK: - Interfaces
 
-enum AudioFilesRepositoryError: Error {
+public enum AudioFilesRepositoryError: Error {
     case fileNotFound
     case internalError
 }
 
-protocol AudioFilesRepository {
+public protocol AudioFilesRepository {
     
     func listFiles() async -> Result<[AudioFileInfo], AudioFilesRepositoryError>
     func getInfo(fileId: UUID) async -> Result<AudioFileInfo, AudioFilesRepositoryError>

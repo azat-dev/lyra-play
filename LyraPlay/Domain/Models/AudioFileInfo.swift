@@ -7,12 +7,37 @@
 
 import Foundation
 
-struct AudioFileInfo {
+public struct AudioFileInfo {
     
-    var id: UUID?
-    var createdAt: Date
-    var updatedAt: Date?
-    var name: String
-    var artist: String?
-    var genre: String?
+    public var id: UUID?
+    public var createdAt: Date?
+    public var updatedAt: Date?
+    public var name: String
+    public var artist: String?
+    public var genre: String?
+    
+    init(id: UUID?, createdAt: Date?, updatedAt: Date?, name: String, artist: String?, genre: String?) {
+        
+        self.id = id
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+        self.name = name
+        self.artist = artist
+        self.genre = genre
+    }
+}
+
+public extension AudioFileInfo {
+    
+    static func create(name: String) -> AudioFileInfo {
+        
+        return AudioFileInfo(
+            id: nil,
+            createdAt: nil,
+            updatedAt: nil,
+            name: "",
+            artist: nil,
+            genre: nil
+        )
+    }
 }
