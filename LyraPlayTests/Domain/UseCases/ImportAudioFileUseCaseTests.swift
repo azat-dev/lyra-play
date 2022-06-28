@@ -122,7 +122,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
 
         XCTAssertEqual(resultGenres, expectedGenres)
         
-        let resultImagesNames = importedAudioFilesSorted.map { $0!.coverImage }
+        let resultImagesNames = importedAudioFilesSorted.map { $0!.coverImage! }
         var resultImages: [Data] = []
         
         for imageName in resultImagesNames {
@@ -137,7 +137,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         XCTAssertEqual(resultImages, expectedImages)
         
         let expectedImagesExtensions = testTags.map { $0.coverImage!.fileExtension }
-        let resultExtensions = importedAudioFiles.map { $0!.coverImage.components(".").last }
+        let resultExtensions = importedAudioFiles.map { $0.coverImage!.components(separatedBy: ".").last! }
         
         XCTAssertEqual(resultExtensions, expectedImagesExtensions)
     }

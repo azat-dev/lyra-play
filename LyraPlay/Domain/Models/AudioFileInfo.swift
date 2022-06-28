@@ -15,8 +15,17 @@ public struct AudioFileInfo {
     public var name: String
     public var artist: String?
     public var genre: String?
+    public var coverImage: String?
     
-    init(id: UUID?, createdAt: Date?, updatedAt: Date?, name: String, artist: String?, genre: String?) {
+    init(
+        id: UUID?,
+        createdAt: Date?,
+        updatedAt: Date?,
+        name: String,
+        artist: String? = nil,
+        genre: String? = nil,
+        coverImage: String? = nil
+    ) {
         
         self.id = id
         self.createdAt = createdAt
@@ -24,6 +33,7 @@ public struct AudioFileInfo {
         self.name = name
         self.artist = artist
         self.genre = genre
+        self.coverImage = coverImage
     }
 }
 
@@ -35,9 +45,7 @@ public extension AudioFileInfo {
             id: nil,
             createdAt: nil,
             updatedAt: nil,
-            name: name,
-            artist: nil,
-            genre: nil
+            name: name
         )
     }
 }

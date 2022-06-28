@@ -38,11 +38,27 @@ final class DefaultAppCoordinator: AppCoordinator {
         return DefaultBrowseAudioFilesUseCase(audioFilesRepository: audioFilesRepository)
     } ()
     
+    private lazy var imagesRepository: FilesRepository = {
+        
+        let url = try! FileManager.default.url(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: false
+        )
+        
+        
+        let imagesDirectory = url.appendingPathComponent("audiofiles_images", isDirectory: true)
+        
+        return try! LocalFilesRepository(baseDirectory: imagesDirectory)
+    } ()
+    
     
     private lazy var importFileUseCase: ImportAudioFileUseCase = {
         
         return DefaultImportAudioFileUseCase(
             audioFilesRepository: audioFilesRepository,
+            imagesRepository: imagesRepository,
             tagsParser: DefaultTagsParser()
         )
     } ()

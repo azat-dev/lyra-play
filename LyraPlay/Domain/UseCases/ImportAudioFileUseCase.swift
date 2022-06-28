@@ -24,11 +24,17 @@ public protocol ImportAudioFileUseCase {
 public final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
     
     private var audioFilesRepository: AudioFilesRepository
+    private var imagesRepository: FilesRepository
     private var tagsParser: TagsParser
     
-    public init(audioFilesRepository: AudioFilesRepository, tagsParser: TagsParser) {
+    public init(
+        audioFilesRepository: AudioFilesRepository,
+        imagesRepository: FilesRepository,
+        tagsParser: TagsParser
+    ) {
         
         self.audioFilesRepository = audioFilesRepository
+        self.imagesRepository = imagesRepository
         self.tagsParser = tagsParser
     }
     
@@ -40,13 +46,27 @@ public final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
             return .failure(.wrongFormat)
         }
         
+        var savedCoverImageName: String?
+        
+        if let coverImage = tags?.coverImage {
+            
+            let imageId = UUID().uuidString
+            let imageName = "\(imageId).\(coverImage.fileExtension)"
+            
+            let saveImageResult = await imagesRepository.putFile(name: imageName, data: coverImage.data)
+            if case .success = saveImageResult {
+                savedCoverImageName = imageName
+            }
+        }
+        
         let audioFile = AudioFileInfo(
             id: nil,
             createdAt: .now,
             updatedAt: nil,
             name: tags?.title ?? originalFileName,
             artist: tags?.artist,
-            genre: tags?.genre
+            genre: tags?.genre,
+            coverImage: savedCoverImageName
         )
         
         let resultPutFile = await audioFilesRepository.putFile(info: audioFile, data: fileData)

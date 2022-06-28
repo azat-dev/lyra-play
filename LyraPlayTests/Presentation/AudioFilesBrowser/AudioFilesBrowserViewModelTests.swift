@@ -11,7 +11,7 @@ import XCTest
 
 class AudioFilesBrowserViewModelTests: XCTestCase {
 
-    private var filesRepository: AudioFilesRepository!
+    private var audioFilesRepository: AudioFilesRepository!
     private var useCase: BrowseAudioFilesUseCase!
     private var viewModel: AudioFilesBrowserViewModel!
     private var tagsParserCallback: TagsParserCallback?
@@ -20,14 +20,17 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
     override func setUp() async throws {
         
         filesDelegate = nil
-        filesRepository = AudioFilesRepositoryMock()
-        useCase = DefaultBrowseAudioFilesUseCase(audioFilesRepository: filesRepository)
+        audioFilesRepository = AudioFilesRepositoryMock()
+        useCase = DefaultBrowseAudioFilesUseCase(audioFilesRepository: audioFilesRepository)
         
         tagsParserCallback = nil
         let tagsParser = TagsParserMock(callback: { [weak self] data in self?.tagsParserCallback?(data) })
         
+        let imagesRepository = FilesRepositoryMock()
+        
         let importFileUseCase = DefaultImportAudioFileUseCase(
-            audioFilesRepository: filesRepository,
+            audioFilesRepository: audioFilesRepository,
+            imagesRepository: imagesRepository,
             tagsParser: tagsParser
         )
         
@@ -53,7 +56,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         let testFiles = (0..<numberOfTestFiles).map { self.getTestFile(index: $0) }
         
         for file in testFiles {
-            let _ = await filesRepository.putFile(info: file.info, data: file.data)
+            let _ = await audioFilesRepository.putFile(info: file.info, data: file.data)
         }
         
         let expectation = XCTestExpectation()
