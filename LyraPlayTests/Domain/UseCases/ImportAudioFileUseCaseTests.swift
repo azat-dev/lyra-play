@@ -69,7 +69,10 @@ class ImportAudioFileUseCaseTests: XCTestCase {
             return AudioFileTags(
                 title: "Title \(index)",
                 genre: "Genre \(index)",
-                coverImage: "Cover \(index)".data(using: .utf8),
+                coverImage: TagsImageData(
+                    data: "Cover \(index)".data(using: .utf8)!,
+                    fileExtension: "png"
+                ),
                 artist: "Artist \(index)",
                 lyrics: "Lyrics \(index)"
             )

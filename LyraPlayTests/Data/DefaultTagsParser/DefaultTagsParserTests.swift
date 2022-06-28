@@ -40,8 +40,8 @@ class DefatulTagsParserTests: XCTestCase {
         XCTAssertEqual(tags.artist ?? "", "Test Artist")
         XCTAssertEqual(tags.title ?? "", "Test Title")
         XCTAssertEqual(tags.genre ?? "", "Test Genre")
-        XCTAssertNotNil(tags.coverImage)
-        XCTAssertNotNil(tags.coverImageExtension, "png")
+        XCTAssertNotNil(tags.coverImage?.data)
+        XCTAssertNotNil(tags.coverImage?.fileExtension, "png")
         XCTAssertNotNil(tags.lyrics)
         XCTAssertTrue(tags.lyrics?.contains("length: 0:19") ?? false)
     }

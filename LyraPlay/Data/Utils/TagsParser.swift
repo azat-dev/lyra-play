@@ -10,18 +10,29 @@ import ID3TagEditor
 
 // MARK: - Interfaces
 
+public struct TagsImageData {
+
+    public var data: Data
+    public var fileExtension: String
+    
+    public init(data: Data, fileExtension: String) {
+        self.data = data
+        self.fileExtension = fileExtension
+    }
+}
+
 public struct AudioFileTags {
     
     public var title: String?
     public var genre: String?
-    public var coverImage: Data?
+    public var coverImage: TagsImageData?
     public var artist: String?
     public var lyrics: String?
     
     public init(
         title: String? = nil,
         genre: String? = nil,
-        coverImage: Data? = nil,
+        coverImage: TagsImageData? = nil,
         artist: String? = nil,
         lyrics: String? = nil
     ) {
@@ -62,12 +73,32 @@ public final class DefaultTagsParser: TagsParser {
 
         
         let tagsContentReader = ID3TagContentReader(id3Tag: tags)
-        let coverData = tagsContentReader.attachedPictures().first(where: { $0.type == .frontCover })
+        let coverData = tagsContentReader.attachedPictures().first(where: { $0.type == .frontCover }) ?? tagsContentReader.attachedPictures().first
+
+        var imageData: TagsImageData?
+        
+        
+        if let coverData = coverData {
+            
+            var coverImageExtension: String
+            
+            switch coverData.format {
+            case .jpeg:
+                coverImageExtension = "jpeg"
+            case .png:
+                coverImageExtension = "png"
+            }
+            
+            imageData = TagsImageData(
+                data: coverData.picture,
+                fileExtension: coverImageExtension
+            )
+        }
         
         let resultTags = AudioFileTags(
             title: tagsContentReader.title(),
             genre: tagsContentReader.genre()?.description,
-            coverImage: coverData?.picture,
+            coverImage: imageData,
             artist: tagsContentReader.artist(),
             lyrics: tagsContentReader.unsynchronizedLyrics().first?.content
         )
