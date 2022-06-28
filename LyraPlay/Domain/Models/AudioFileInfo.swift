@@ -35,7 +35,7 @@ public extension AudioFileInfo {
             id: nil,
             createdAt: nil,
             updatedAt: nil,
-            name: "",
+            name: name,
             artist: nil,
             genre: nil
         )

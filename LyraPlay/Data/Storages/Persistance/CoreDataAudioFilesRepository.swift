@@ -112,6 +112,7 @@ final class CoreDataAudioFilesRepository: AudioFilesRepository {
                 
                 let newFile = ManagedAudioFile.create(context, from: file)
                 newFile.fillFields(from: file)
+                newFile.createdAt = .now
                 updatedFile = newFile
             }
             

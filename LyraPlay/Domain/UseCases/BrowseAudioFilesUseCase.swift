@@ -33,6 +33,25 @@ public final class DefaultBrowseAudioFilesUseCase: BrowseAudioFilesUseCase {
         self.audioFilesRepository = audioFilesRepository
     }
     
+    private func addTestFiles() async {
+        
+        let filesResult = await audioFilesRepository.listFiles()
+        
+        guard case .success(let files) = filesResult else {
+            return
+        }
+        
+        guard files.count == 0 else {
+            return
+        }
+        
+        let numberOfFiles = 10
+        
+        for index in 0..<numberOfFiles {
+            await audioFilesRepository.putFile(info: AudioFileInfo.create(name: "test\(index)"), data: "test\(index)".data(using: .utf8)!)
+        }
+    }
+    
     private func mapRepositoryError(_ error: AudioFilesRepositoryError) -> BrowseAudioFilesUseCaseError {
         
         switch error {
@@ -44,6 +63,8 @@ public final class DefaultBrowseAudioFilesUseCase: BrowseAudioFilesUseCase {
     }
     
     public func listFiles() async -> Result<[AudioFileInfo], BrowseAudioFilesUseCaseError> {
+        
+        await addTestFiles()
         
         let result = await audioFilesRepository.listFiles()
 

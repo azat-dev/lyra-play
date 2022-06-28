@@ -3,7 +3,7 @@
     <entity name="ManagedAudioFile" representedClassName="ManagedAudioFile" syncable="YES">
         <attribute name="artist" optional="YES" attributeType="String"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="genre" attributeType="String"/>
+        <attribute name="genre" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>

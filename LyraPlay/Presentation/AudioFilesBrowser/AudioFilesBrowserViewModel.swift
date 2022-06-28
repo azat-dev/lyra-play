@@ -9,40 +9,50 @@ import Foundation
 
 // MARK: - Interfaces
 
-public struct FileBrowserItem {
+public protocol AudioFilesBrowserCoordinator: AnyObject {
     
-    public var id: UUID
-    public var title: String
-    public var description: String
+    func chooseFiles(completion: @escaping (_ urls: [URL]?) -> Void) 
+}
+
+public protocol AudioFilesBrowserUpdateDelegate: AnyObject {
+    
+    func filesDidUpdate(updatedFiles: [AudioFilesBrowserCellViewModel])
 }
 
 public protocol AudioFilesBrowserViewModelOutput {
     
     var isLoading: Observable<Bool> { get }
-    var files: Observable<[FileBrowserItem]> { get }
+    var filesDelegate: AudioFilesBrowserUpdateDelegate? { get set }
 }
 
 public protocol AudioFilesBrowserViewModelInput {
     
     func load() async
+    func addNewItem()
 }
 
-public protocol AudioFilesBrowserViewModel: AudioFilesBrowserViewModelInput, AudioFilesBrowserViewModelOutput {
+public protocol AudioFilesBrowserViewModel: AnyObject, AudioFilesBrowserViewModelInput, AudioFilesBrowserViewModelOutput {
 }
 
 // MARK: - Implementations
 
 public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel {
 
-    private let browseUseCase: BrowseAudioFilesUseCase
-    public var files: Observable<[FileBrowserItem]>
-    public var isLoading: Observable<Bool>
+    private let coordinator: AudioFilesBrowserCoordinator
     
-    public init(browseUseCase: BrowseAudioFilesUseCase) {
+    private let browseUseCase: BrowseAudioFilesUseCase
+    public var isLoading: Observable<Bool>
+    public weak var filesDelegate: AudioFilesBrowserUpdateDelegate?
+    
+    public init(browseUseCase: BrowseAudioFilesUseCase, coordinator: AudioFilesBrowserCoordinator) {
         
         self.browseUseCase = browseUseCase
+        self.coordinator = coordinator
         self.isLoading = Observable(true)
-        self.files = Observable([])
+    }
+    
+    private func onOpen(_ cellId: UUID) {
+        
     }
     
     public func load() async {
@@ -55,14 +65,28 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
             return
         }
         
-        self.files.value = loadedFiles.map { loadedFile in
-            return FileBrowserItem(
-                id: loadedFile.id!,
-                title: loadedFile.name,
-                description: loadedFile.artist ?? ""
+        let files = loadedFiles.map { file in
+            return AudioFilesBrowserCellViewModel(
+                id: file.id!,
+                title: file.name,
+                description: file.artist ?? "",
+                onOpen: self.onOpen
             )
         }
         
+        filesDelegate?.filesDidUpdate(updatedFiles: files)
         self.isLoading.value = false
+    }
+    
+    public func addNewItem() {
+        
+        coordinator.chooseFiles { urls in
+            
+            guard let urls = urls else {
+                return
+            }
+
+            print(urls)
+        }
     }
 }

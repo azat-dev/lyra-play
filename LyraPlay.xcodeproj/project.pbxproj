@@ -39,6 +39,10 @@
 		AACEA3202869AC5B00111565 /* AudioFilesBrowserViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA31F2869AC5B00111565 /* AudioFilesBrowserViewModelTests.swift */; };
 		AACEA3232869B14000111565 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA3222869B14000111565 /* Observable.swift */; };
 		AACEA3262869B17E00111565 /* ObservableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA3252869B17E00111565 /* ObservableTests.swift */; };
+		AACEA3282869E9C500111565 /* AudioFilesBrowserViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA3272869E9C500111565 /* AudioFilesBrowserViewControllerFactory.swift */; };
+		AACEA32B2869ED5800111565 /* AudioFilesBrowserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA32A2869ED5800111565 /* AudioFilesBrowserCell.swift */; };
+		AACEA32D2869EDE400111565 /* AudioFilesBrowserCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA32C2869EDE400111565 /* AudioFilesBrowserCellViewModel.swift */; };
+		AACEA32F286A418600111565 /* FilePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA32E286A418600111565 /* FilePickerViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,6 +98,10 @@
 		AACEA31F2869AC5B00111565 /* AudioFilesBrowserViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserViewModelTests.swift; sourceTree = "<group>"; };
 		AACEA3222869B14000111565 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		AACEA3252869B17E00111565 /* ObservableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableTests.swift; sourceTree = "<group>"; };
+		AACEA3272869E9C500111565 /* AudioFilesBrowserViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserViewControllerFactory.swift; sourceTree = "<group>"; };
+		AACEA32A2869ED5800111565 /* AudioFilesBrowserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserCell.swift; sourceTree = "<group>"; };
+		AACEA32C2869EDE400111565 /* AudioFilesBrowserCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserCellViewModel.swift; sourceTree = "<group>"; };
+		AACEA32E286A418600111565 /* FilePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePickerViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -250,6 +258,7 @@
 		AA8BF77D28567A580010FA1E /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				AACEA330286A41CF00111565 /* Common */,
 				AACEA3212869B0FC00111565 /* Utils */,
 				AA8BF74D28567A1C0010FA1E /* ViewController.swift */,
 				AACEA3182869ABB900111565 /* AudioFilesBrowser */,
@@ -366,6 +375,8 @@
 			children = (
 				AACEA3192869ABD700111565 /* AudioFilesBrowserViewController.swift */,
 				AACEA31B2869ABEB00111565 /* AudioFilesBrowserViewModel.swift */,
+				AACEA3272869E9C500111565 /* AudioFilesBrowserViewControllerFactory.swift */,
+				AACEA3292869ED3F00111565 /* AudioFilesBrowserCell */,
 			);
 			path = AudioFilesBrowser;
 			sourceTree = "<group>";
@@ -401,6 +412,23 @@
 				AACEA3252869B17E00111565 /* ObservableTests.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		AACEA3292869ED3F00111565 /* AudioFilesBrowserCell */ = {
+			isa = PBXGroup;
+			children = (
+				AACEA32A2869ED5800111565 /* AudioFilesBrowserCell.swift */,
+				AACEA32C2869EDE400111565 /* AudioFilesBrowserCellViewModel.swift */,
+			);
+			path = AudioFilesBrowserCell;
+			sourceTree = "<group>";
+		};
+		AACEA330286A41CF00111565 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				AACEA32E286A418600111565 /* FilePickerViewController.swift */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -543,18 +571,22 @@
 				AA9BEB062865D78C0028DF8E /* AudioFilesRepository.swift in Sources */,
 				AA1ACC2C286317A2000EEDD5 /* TagsParser.swift in Sources */,
 				AA8BF74E28567A1C0010FA1E /* ViewController.swift in Sources */,
+				AACEA32B2869ED5800111565 /* AudioFilesBrowserCell.swift in Sources */,
 				AACEA31C2869ABEB00111565 /* AudioFilesBrowserViewModel.swift in Sources */,
 				AACEA3232869B14000111565 /* Observable.swift in Sources */,
 				AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */,
+				AACEA32D2869EDE400111565 /* AudioFilesBrowserCellViewModel.swift in Sources */,
 				AACEA3172869A5C800111565 /* BrowseAudioFilesUseCase.swift in Sources */,
 				AA598D1F2868D435001F3DE1 /* ManagedAudioFile+Mapping.swift in Sources */,
 				AA2BE88B2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift in Sources */,
 				AA8BF78228567C410010FA1E /* AppCoordinator.swift in Sources */,
 				AACEA31A2869ABD700111565 /* AudioFilesBrowserViewController.swift in Sources */,
 				AA9BEB022865D5BB0028DF8E /* AudioFileInfo.swift in Sources */,
+				AACEA3282869E9C500111565 /* AudioFilesBrowserViewControllerFactory.swift in Sources */,
 				AA2BE88D2866EF35005C1AAD /* CoreDataStore.swift in Sources */,
 				AA9BEB002865D4540028DF8E /* ImportAudioFileUseCase.swift in Sources */,
 				AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */,
+				AACEA32F286A418600111565 /* FilePickerViewController.swift in Sources */,
 				AA598D1C2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift in Sources */,
 				AA598D1B2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift in Sources */,
 				AA8BF75428567A1C0010FA1E /* LyraPlay.xcdatamodeld in Sources */,
