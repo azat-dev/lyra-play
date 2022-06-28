@@ -39,15 +39,21 @@ public protocol AudioFilesBrowserViewModel: AnyObject, AudioFilesBrowserViewMode
 public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel {
 
     private let coordinator: AudioFilesBrowserCoordinator
-    
     private let browseUseCase: BrowseAudioFilesUseCase
+    private let importFileUseCase: ImportAudioFileUseCase
+    
     public var isLoading: Observable<Bool>
     public weak var filesDelegate: AudioFilesBrowserUpdateDelegate?
     
-    public init(browseUseCase: BrowseAudioFilesUseCase, coordinator: AudioFilesBrowserCoordinator) {
+    public init(
+        coordinator: AudioFilesBrowserCoordinator,
+        browseUseCase: BrowseAudioFilesUseCase,
+        importFileUseCase: ImportAudioFileUseCase
+    ) {
         
-        self.browseUseCase = browseUseCase
         self.coordinator = coordinator
+        self.browseUseCase = browseUseCase
+        self.importFileUseCase = importFileUseCase
         self.isLoading = Observable(true)
     }
     
@@ -78,15 +84,36 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
         self.isLoading.value = false
     }
     
+    private func importFiles(urls: [URL]) async {
+        
+        for url in urls {
+            
+            guard let data = try? Data(contentsOf: url) else {
+                continue
+            }
+            
+            let result = await importFileUseCase.importFile(
+                originalFileName: url.lastPathComponent,
+                fileData: data
+            )
+        }
+        
+        await load()
+    }
+    
     public func addNewItem() {
         
-        coordinator.chooseFiles { urls in
+        coordinator.chooseFiles { [weak self] urls in
             
-            guard let urls = urls else {
+            guard let urls = urls, let self = self else {
                 return
             }
+            
+            let importFiles = self.importFiles
 
-            print(urls)
+            Task {
+                await importFiles(urls)
+            }
         }
     }
 }

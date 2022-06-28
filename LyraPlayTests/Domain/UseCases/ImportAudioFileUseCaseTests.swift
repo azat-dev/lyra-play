@@ -131,22 +131,3 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         XCTAssertEqual(resultGenres, expectedGenres)
     }
 }
-
-// MARK: - Mocks
-
-typealias TagsParserCallback = (_ data: Data) -> AudioFileTags?
-
-fileprivate final class TagsParserMock: TagsParser {
-    
-    private var callback: TagsParserCallback
-    
-    init(callback: @escaping TagsParserCallback) {
-        self.callback = callback
-    }
-    
-    func parse(data: Data) async -> Result<AudioFileTags?, Error> {
-        
-        let tags = callback(data)
-        return .success(tags)
-    }
-}

@@ -10,19 +10,26 @@ import Foundation
 final class AudioFilesBrowserViewControllerFactory {
     
     private var browseFilesUseCase: BrowseAudioFilesUseCase
+    private var importFileUseCase: ImportAudioFileUseCase
     private var coordinator: AudioFilesBrowserCoordinator
     
-    init(browseFilesUseCase: BrowseAudioFilesUseCase, coordinator: AudioFilesBrowserCoordinator) {
+    init(
+        browseFilesUseCase: BrowseAudioFilesUseCase,
+        importFileUseCase: ImportAudioFileUseCase,
+        coordinator: AudioFilesBrowserCoordinator
+    ) {
         
         self.browseFilesUseCase = browseFilesUseCase
+        self.importFileUseCase = importFileUseCase
         self.coordinator = coordinator
     }
     
     func build() -> AudioFilesBrowserViewController {
         
         let viewModel = DefaultAudioFilesBrowserViewModel(
+            coordinator: coordinator,
             browseUseCase: browseFilesUseCase,
-            coordinator: coordinator
+            importFileUseCase: importFileUseCase
         )
         return AudioFilesBrowserViewController(viewModel: viewModel)
     }

@@ -14,12 +14,30 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
     private var filesRepository: AudioFilesRepository!
     private var useCase: BrowseAudioFilesUseCase!
     private var viewModel: AudioFilesBrowserViewModel!
+    private var tagsParserCallback: TagsParserCallback?
+    private var filesDelegate: AudioFilesBrowserUpdateDelegate? = nil
     
     override func setUp() async throws {
         
+        filesDelegate = nil
         filesRepository = AudioFilesRepositoryMock()
         useCase = DefaultBrowseAudioFilesUseCase(audioFilesRepository: filesRepository)
-        viewModel = DefaultAudioFilesBrowserViewModel(browseUseCase: useCase)
+        
+        tagsParserCallback = nil
+        let tagsParser = TagsParserMock(callback: { [weak self] data in self?.tagsParserCallback?(data) })
+        
+        let importFileUseCase = DefaultImportAudioFileUseCase(
+            audioFilesRepository: filesRepository,
+            tagsParser: tagsParser
+        )
+        
+        let coordinator = AudioFilesBrowserCoordinatorMock()
+        
+        viewModel = DefaultAudioFilesBrowserViewModel(
+            coordinator: coordinator,
+            browseUseCase: useCase,
+            importFileUseCase: importFileUseCase
+        )
     }
     
     private func getTestFile(index: Int) -> (info: AudioFileInfo, data: Data) {
@@ -40,12 +58,26 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         
         let expectation = XCTestExpectation()
         
-        viewModel.files.observe(on: self) { [weak self] files in
+        tagsParserCallback = { data in
             
-            if self?.viewModel.isLoading.value ?? false {
-                return
+            let index = testFiles.firstIndex { $0.data == data }
+                                              
+            guard let index = index else {
+                fatalError()
             }
-     
+                                              
+            return AudioFileTags(
+                title: "Title \(index)",
+                genre: "Genre \(index)",
+                coverImage: "Cover \(index)".data(using: .utf8),
+                artist: "Artist \(index)",
+                lyrics: "Lyrics \(index)"
+            )
+            
+        }
+        
+        filesDelegate = FilesDelegateMock(onUpdateFiles: { files in
+            
             let expectedTitles = testFiles.map { $0.info.name }
             let expectedDescriptions  = testFiles.map { $0.info.artist ?? "" }
             
@@ -53,11 +85,36 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
             XCTAssertEqual(files.map { $0.description }, expectedDescriptions)
             
             expectation.fulfill()
-        }
+        })
         
+        viewModel.filesDelegate = filesDelegate
 
         await viewModel.load()
         wait(for: [expectation], timeout: 3, enforceOrder: true)
     }
 }
 
+// MARK: - Mocks
+
+fileprivate class AudioFilesBrowserCoordinatorMock: AudioFilesBrowserCoordinator {
+    
+    func chooseFiles(completion: @escaping ([URL]?) -> Void) {
+        completion(nil)
+    }
+}
+
+fileprivate class FilesDelegateMock: AudioFilesBrowserUpdateDelegate {
+    
+    typealias FilesUpdateCallback = (_ updatedFiles: [AudioFilesBrowserCellViewModel]) -> Void
+    private var onUpdateFiles: FilesUpdateCallback
+    
+    init(onUpdateFiles: @escaping FilesUpdateCallback) {
+        
+        self.onUpdateFiles = onUpdateFiles
+    }
+    
+    func filesDidUpdate(updatedFiles: [AudioFilesBrowserCellViewModel]) {
+        
+        onUpdateFiles(updatedFiles)
+    }
+}

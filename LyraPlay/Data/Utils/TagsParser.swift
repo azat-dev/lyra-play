@@ -11,11 +11,27 @@ import ID3TagEditor
 // MARK: - Interfaces
 
 public struct AudioFileTags {
-    var title: String?
-    var genre: String?
-    var coverImage: Data?
-    var artist: String?
-    var lyrics: String?
+    
+    public var title: String?
+    public var genre: String?
+    public var coverImage: Data?
+    public var artist: String?
+    public var lyrics: String?
+    
+    public init(
+        title: String? = nil,
+        genre: String? = nil,
+        coverImage: Data? = nil,
+        artist: String? = nil,
+        lyrics: String? = nil
+    ) {
+        
+        self.title = title
+        self.genre = genre
+        self.coverImage = coverImage
+        self.artist = artist
+        self.lyrics = lyrics
+    }
 }
 
 public protocol TagsParser {

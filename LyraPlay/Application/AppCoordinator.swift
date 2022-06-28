@@ -38,6 +38,15 @@ final class DefaultAppCoordinator: AppCoordinator {
         return DefaultBrowseAudioFilesUseCase(audioFilesRepository: audioFilesRepository)
     } ()
     
+    
+    private lazy var importFileUseCase: ImportAudioFileUseCase = {
+        
+        return DefaultImportAudioFileUseCase(
+            audioFilesRepository: audioFilesRepository,
+            tagsParser: DefaultTagsParser()
+        )
+    } ()
+    
     init(navigationController: UINavigationController) {
         
         self.navigationController = navigationController
@@ -47,6 +56,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         
         let factory = AudioFilesBrowserViewControllerFactory(
             browseFilesUseCase: browseFilesUseCase,
+            importFileUseCase: importFileUseCase,
             coordinator: self
         )
         return factory.build()
