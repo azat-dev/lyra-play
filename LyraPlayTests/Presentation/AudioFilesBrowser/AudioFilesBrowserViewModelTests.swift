@@ -61,6 +61,9 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         
         let numberOfTestFiles = 5
         let testFiles = (0..<numberOfTestFiles).map { self.getTestFile(index: $0) }
+        let testImages = (0..<numberOfTestFiles).map { index in
+            return "Cover \(index)".data(using: .utf8)!
+        }
         
         for file in testFiles {
             let _ = await audioFilesRepository.putFile(info: file.info, data: file.data)
@@ -80,7 +83,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
                 title: "Title \(index)",
                 genre: "Genre \(index)",
                 coverImage: TagsImageData(
-                    data: "Cover \(index)".data(using: .utf8)!,
+                    data: testImages[index],
                     fileExtension:"png"
                 ),
                 artist: "Artist \(index)",
@@ -91,10 +94,11 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         filesDelegate = FilesDelegateMock(onUpdateFiles: { files in
             
             let expectedTitles = testFiles.map { $0.info.name }
-            let expectedDescriptions  = testFiles.map { $0.info.artist ?? "" }
+            let expectedDescriptions = testFiles.map { $0.info.artist ?? "" }
             
             XCTAssertEqual(files.map { $0.title }, expectedTitles)
             XCTAssertEqual(files.map { $0.description }, expectedDescriptions)
+            XCTAssertEqual(files.map { $0.image }, testImages)
             
             expectation.fulfill()
         })
