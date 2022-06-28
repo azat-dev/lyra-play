@@ -73,7 +73,6 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
                 artist: "Artist \(index)",
                 lyrics: "Lyrics \(index)"
             )
-            
         }
         
         filesDelegate = FilesDelegateMock(onUpdateFiles: { files in

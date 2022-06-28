@@ -22,11 +22,10 @@ func AssertResultSucceded<Success, Error>(
     case .success(let successResult):
         return successResult
         
-    case .failure(let error):
-        XCTAssertNil(error, message(), file: file, line: line)
+    case .failure(let _):
+        XCTAssertNil(result, message(), file: file, line: line)
+        fatalError()
     }
-    
-    fatalError()
 }
 
 @discardableResult

@@ -88,7 +88,6 @@ class ImportAudioFileUseCaseTests: XCTestCase {
 
             AssertResultSucceded(result, "Can't import a file: \(originalName)")
         }
-        
 
         let resultListFiles = await audioFilesRepository.listFiles()
         let importedAudioFiles = AssertResultSucceded(resultListFiles)
