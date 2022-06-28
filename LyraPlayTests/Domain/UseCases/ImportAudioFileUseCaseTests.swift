@@ -45,20 +45,11 @@ class ImportAudioFileUseCaseTests: XCTestCase {
             
             let originalName = testFilesOriginalNames[index]
             let result = await importAudioFileUseCase.importFile(originalFileName: originalName, fileData: testFile)
-            
-            if case .failure(let error) = result {
-                print(error)
-                XCTAssertFalse(true, "Can't import a file: \(originalName) \(error)")
-                return
-            }
+            AssertResultSucceded(result, "Can't import a file: \(originalName)")
         }
 
         let resultListFiles = await audioFilesRepository.listFiles()
-        
-        guard case .success(let importedAudioFiles) = resultListFiles else {
-            XCTAssertFalse(true, "Can't get lis of files")
-            return
-        }
+        let importedAudioFiles = AssertResultSucceded(resultListFiles)
 
         XCTAssertEqual(importedAudioFiles.count, testFiles.count)
         XCTAssertEqual(importedAudioFiles.map { $0.name }.sorted(), testFilesOriginalNames.sorted())
@@ -94,21 +85,13 @@ class ImportAudioFileUseCaseTests: XCTestCase {
             
             let originalName = testFilesOriginalNames[index]
             let result = await importAudioFileUseCase.importFile(originalFileName: originalName, fileData: testFile)
-            
-            if case .failure(let error) = result {
-                print(error)
-                XCTAssertFalse(true, "Can't import a file: \(originalName) \(error)")
-                return
-            }
+
+            AssertResultSucceded(result, "Can't import a file: \(originalName)")
         }
         
 
         let resultListFiles = await audioFilesRepository.listFiles()
-        
-        guard case .success(let importedAudioFiles) = resultListFiles else {
-            XCTAssertFalse(true, "Can't get list of files")
-            return
-        }
+        let importedAudioFiles = AssertResultSucceded(resultListFiles)
 
         XCTAssertEqual(importedAudioFiles.count, testFiles.count)
         

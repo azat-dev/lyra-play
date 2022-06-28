@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import XCTest
 
 @discardableResult
 func AssertResultSucceded<Success, Error>(

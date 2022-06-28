@@ -30,24 +30,18 @@ class DefatulTagsParserTests: XCTestCase {
         XCTAssertNotNil(testFileWithId3)
         
         let result = await tagsParser.parse(data: testFileWithId3)
-
-        switch result {
-        case .failure:
-            XCTAssertFalse(true, "Can't parse id3 tags")
-            
-        case .success(let tags):
-            
-            guard let tags = tags else {
-                XCTAssertFalse(true, "No tags")
-                return
-            }
-            
-            XCTAssertEqual(tags.artist ?? "", "Test Artist")
-            XCTAssertEqual(tags.title ?? "", "Test Title")
-            XCTAssertEqual(tags.genre ?? "", "Test Genre")
-            XCTAssertNotNil(tags.coverImage)
-            XCTAssertNotNil(tags.lyrics)
-            XCTAssertTrue(tags.lyrics?.contains("length: 0:19") ?? false)
+        let tags = AssertResultSucceded(result)
+        
+        guard let tags = tags else {
+            XCTAssertNotNil(tags)
+            return
         }
+        
+        XCTAssertEqual(tags.artist ?? "", "Test Artist")
+        XCTAssertEqual(tags.title ?? "", "Test Title")
+        XCTAssertEqual(tags.genre ?? "", "Test Genre")
+        XCTAssertNotNil(tags.coverImage)
+        XCTAssertNotNil(tags.lyrics)
+        XCTAssertTrue(tags.lyrics?.contains("length: 0:19") ?? false)
     }
 }

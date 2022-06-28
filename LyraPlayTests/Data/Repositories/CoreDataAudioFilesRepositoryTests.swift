@@ -40,27 +40,18 @@ class CoreDataAudioFilesRepositoryTests: XCTestCase {
     var repository: AudioFilesRepository!
     
     override func setUpWithError() throws {
-        let storeBundle = Bundle(for: CoreDataAudioFilesRepositoryTests.self)
+
         let storeURL = URL(fileURLWithPath: "/dev/null")
-        
         let coreDataStore = try! CoreDataStore(storeURL: storeURL)
         repository = CoreDataAudioFilesRepository(coreDataStore: coreDataStore)
     }
 
+    @discardableResult
     private func putAndCheckFile(fileInfo: AudioFileInfo, data fileData: Data) async -> AudioFileInfo?  {
         
         let putResult = await repository.putFile(info: fileInfo, data: fileData)
-        
-        if case .failure(let error) = putResult {
-            XCTAssertFalse(true, "Can't put the file: \(error)")
-            return nil
-        }
-        
-        guard case .success(let savedFileInfo) = putResult else {
-            XCTAssertFalse(true, "Can't put the file")
-            return nil
-        }
-        
+
+        let savedFileInfo = AssertResultSucceded(putResult)
         XCTAssertNotNil(savedFileInfo.id)
         
         var expectedFileInfo = fileInfo
@@ -194,25 +185,17 @@ class CoreDataAudioFilesRepositoryTests: XCTestCase {
         let fileData2 = "data2".data(using: .utf8)!
         
         let putResult = await repository.putFile(info: fileInfo2, data: fileData2)
-        
-        guard case .failure(let error) = putResult else {
-            XCTAssertFalse(true, "Put must fail")
-            return
-        }
-        
-        
-        XCTAssertEqual(error, .fileNotFound)
+        let putError = AssertResultFailed(putResult)
+    
+        XCTAssertEqual(putError, .fileNotFound)
     }
     
     func testGetRecordEmptyList() async {
         
         let fileId = UUID()
         let result = await repository.getInfo(fileId: fileId)
+        let error = AssertResultFailed(result)
         
-        guard case .failure(let error) = result else {
-            XCTAssertFalse(true, "File exists")
-            return
-        }
         
         XCTAssertEqual(error, .fileNotFound)
     }
@@ -241,27 +224,19 @@ class CoreDataAudioFilesRepositoryTests: XCTestCase {
         )
         
         let fileData2 = "data1".data(using: .utf8)!
-        let savedFile2 = await putAndCheckFile(fileInfo: fileInfo2, data: fileData2)
+        await putAndCheckFile(fileInfo: fileInfo2, data: fileData2)
         
         let fileId = savedFile1!.id!
         let result = await repository.getInfo(fileId: fileId)
         
-        guard case .success(let receivedFileInfo1) = result else {
-            XCTAssertFalse(true, "File does not exist")
-            return
-        }
-        
+        let receivedFileInfo1 = AssertResultSucceded(result, "File does' not exists")
         XCTAssertEqual(savedFile1, receivedFileInfo1)
     }
     
     func testListFilesEmptyList() async {
         
         let result = await repository.listFiles()
-        
-        guard case .success(let files) = result else {
-            XCTAssertFalse(true, "List files error")
-            return
-        }
+        let files = AssertResultSucceded(result)
         
         XCTAssertTrue(files.isEmpty)
     }
@@ -293,16 +268,12 @@ class CoreDataAudioFilesRepositoryTests: XCTestCase {
         let savedFile2 = await putAndCheckFile(fileInfo: fileInfo2, data: fileData2)
         
         let result = await repository.listFiles()
-        
-        guard case .success(let files) = result else {
-            XCTAssertFalse(true, "List files error")
-            return
-        }
+        let files = AssertResultSucceded(result)
         
         fileInfo1.id = savedFile1?.id
         fileInfo2.id = savedFile2?.id
         
-        var expectedFiles = [
+        let expectedFiles = [
             savedFile1!,
             savedFile2!
         ]
@@ -315,11 +286,7 @@ class CoreDataAudioFilesRepositoryTests: XCTestCase {
         let fileId = UUID()
         let result = await repository.delete(fileId: fileId)
         
-        guard case .failure(let error) = result else {
-            XCTAssertFalse(true, "File exists")
-            return
-        }
-        
+        let error = AssertResultFailed(result)
         XCTAssertEqual(error, .fileNotFound)
     }
     
@@ -338,10 +305,6 @@ class CoreDataAudioFilesRepositoryTests: XCTestCase {
         let savedFile1 = await putAndCheckFile(fileInfo: fileInfo1, data: fileData1)
         
         let result = await repository.delete(fileId: savedFile1!.id!)
-        
-        guard case .success(_) = result else {
-            XCTAssertFalse(true, "File does not exist")
-            return
-        }
+        AssertResultSucceded(result)
     }    
 }
