@@ -21,5 +21,5 @@ public protocol FilesRepository {
     
     func getFile(name: String) async -> Result<Data, FilesRepositoryError>
     
-    func deleteFile(name: String) async -> Result<Data, FilesRepositoryError>
+    func deleteFile(name: String) async -> Result<Void, FilesRepositoryError>
 }

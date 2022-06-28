@@ -180,12 +180,20 @@
 		AA2BE8892866EE35005C1AAD /* Persistance */ = {
 			isa = PBXGroup;
 			children = (
+				AA35E583286AA5950086DB28 /* CoreData */,
+			);
+			path = Persistance;
+			sourceTree = "<group>";
+		};
+		AA35E583286AA5950086DB28 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
 				AA598D1D2868D403001F3DE1 /* ManagedObjects */,
 				AA8BF75228567A1C0010FA1E /* LyraPlay.xcdatamodeld */,
 				AA2BE88C2866EF35005C1AAD /* CoreDataStore.swift */,
 				AA2BE88A2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift */,
 			);
-			path = Persistance;
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 		AA598D1D2868D403001F3DE1 /* ManagedObjects */ = {
