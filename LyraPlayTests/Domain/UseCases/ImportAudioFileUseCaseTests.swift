@@ -34,7 +34,6 @@ class ImportAudioFileUseCaseTests: XCTestCase {
             tagsParser: tagsParser
         )
     }
-
     
     func test_importing_without_id3_tags() async throws {
         
@@ -64,8 +63,6 @@ class ImportAudioFileUseCaseTests: XCTestCase {
 
     func test_importing_with_id3_tags() async throws {
 
-        let bundle = Bundle(for: type(of: self ))
-        
         let testFilesOriginalNames = [
             "test1.mp3",
             "test2.mp3",
