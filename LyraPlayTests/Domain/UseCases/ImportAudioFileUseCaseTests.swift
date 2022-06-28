@@ -12,25 +12,32 @@ import XCTest
 
 class ImportAudioFileUseCaseTests: XCTestCase {
 
-    private func makeImportAudioFileUseCase(tagsParserCallback: @escaping TagsParserCallback) -> (useCase: ImportAudioFileUseCase, repository: AudioFilesRepository) {
+    private var tagsParserCallback: TagsParserCallback?
+    private var imagesRepository: FilesRepository!
+    private var audioFilesRepository: AudioFilesRepository!
+    private var importAudioFileUseCase: ImportAudioFileUseCase!
+    
+    override func setUp() {
+
+        tagsParserCallback = nil
         
-        let tagsParser = TagsParserMock(callback: tagsParserCallback)
-        let audioFilesRepository = AudioFilesRepositoryMock()
+        let tagsParser = TagsParserMock { [weak self] data in
+            self?.tagsParserCallback?(data)
+        }
         
-        let importAudioFileUseCase = DefaultImportAudioFileUseCase(
+        audioFilesRepository = AudioFilesRepositoryMock()
+        imagesRepository = FilesRepositoryMock()
+        
+        importAudioFileUseCase = DefaultImportAudioFileUseCase(
             audioFilesRepository: audioFilesRepository,
+            imagesRepository: imagesRepository,
             tagsParser: tagsParser
         )
-
-        return (useCase: importAudioFileUseCase, repository: audioFilesRepository)
     }
 
+    
     func test_importing_without_id3_tags() async throws {
         
-        let (importAudioFileUseCase, audioFilesRepository) = makeImportAudioFileUseCase(tagsParserCallback: { _ in
-            return nil
-        })
-
         let testFilesOriginalNames: [String] = [
             "test1.mp3",
             "test2.mp3"
@@ -57,6 +64,8 @@ class ImportAudioFileUseCaseTests: XCTestCase {
 
     func test_importing_with_id3_tags() async throws {
 
+        let bundle = Bundle(for: type(of: self ))
+        
         let testFilesOriginalNames = [
             "test1.mp3",
             "test2.mp3",
@@ -70,20 +79,19 @@ class ImportAudioFileUseCaseTests: XCTestCase {
                 title: "Title \(index)",
                 genre: "Genre \(index)",
                 coverImage: TagsImageData(
-                    data: "Cover \(index)".data(using: .utf8)!,
-                    fileExtension: "png"
+                    data: "Genre \(index)".data(using: .utf8)!,
+                    fileExtension: index % 2 == 0 ? "png" : "jpeg"
                 ),
                 artist: "Artist \(index)",
                 lyrics: "Lyrics \(index)"
             )
         }
         
-        
-        let (importAudioFileUseCase, audioFilesRepository) = makeImportAudioFileUseCase(tagsParserCallback: { data in
+        tagsParserCallback = { data in
             let index = testFiles.firstIndex(of: data)!
             return testTags[index]
-        })
-
+        }
+        
         for (index, testFile) in testFiles.enumerated() {
             
             let originalName = testFilesOriginalNames[index]
@@ -103,7 +111,6 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         let expectedNames = testTags.map { $0.title! }
 
         XCTAssertEqual(resultNames, expectedNames)
-
         
         let resultArtists = importedAudioFilesSorted.map { $0!.artist! }
         let expectedArtists = testTags.map { $0.artist! }
@@ -114,5 +121,24 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         let expectedGenres = testTags.map { $0.genre! }
 
         XCTAssertEqual(resultGenres, expectedGenres)
+        
+        let resultImagesNames = importedAudioFilesSorted.map { $0!.coverImage }
+        var resultImages: [Data] = []
+        
+        for imageName in resultImagesNames {
+            
+            let result = await imagesRepository.getFile(name: imageName)
+            let data = AssertResultSucceded(result)
+            
+            resultImages.append(data)
+        }
+        
+        let expectedImages = testTags.map { $0.coverImage!.data }
+        XCTAssertEqual(resultImages, expectedImages)
+        
+        let expectedImagesExtensions = testTags.map { $0.coverImage!.fileExtension }
+        let resultExtensions = importedAudioFiles.map { $0!.coverImage.components(".").last }
+        
+        XCTAssertEqual(resultExtensions, expectedImagesExtensions)
     }
 }
