@@ -11,13 +11,13 @@ import Foundation
 
 public enum FilesRepositoryError: Error {
     
-    case internalError
     case fileNotFound
+    case internalError(Error)
 }
 
 public protocol FilesRepository {
     
-    func putFile(name: String, data: Data) async -> Result<URL, FilesRepositoryError>
+    func putFile(name: String, data: Data) async -> Result<Void, FilesRepositoryError>
     
     func getFile(name: String) async -> Result<Data, FilesRepositoryError>
     

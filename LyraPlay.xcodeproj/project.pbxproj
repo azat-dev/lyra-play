@@ -16,6 +16,9 @@
 		AA35E57E286A993B0086DB28 /* TagsParserMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA35E57D286A993B0086DB28 /* TagsParserMock.swift */; };
 		AA35E580286AA07F0086DB28 /* LocalFilesRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA35E57F286AA07F0086DB28 /* LocalFilesRepositoryTests.swift */; };
 		AA35E582286AA3D90086DB28 /* FilesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA35E581286AA3D90086DB28 /* FilesRepository.swift */; };
+		AA35E585286AA5E10086DB28 /* LocalFilesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA35E584286AA5E10086DB28 /* LocalFilesRepository.swift */; };
+		AA415084286B0987004549F4 /* AssertResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA415083286B0987004549F4 /* AssertResult.swift */; };
+		AA415086286B09B8004549F4 /* FilesRepositoryError+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA415085286B09B8004549F4 /* FilesRepositoryError+Equatable.swift */; };
 		AA598D1B2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA598D192868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift */; };
 		AA598D1C2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA598D1A2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift */; };
 		AA598D1F2868D435001F3DE1 /* ManagedAudioFile+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA598D1E2868D435001F3DE1 /* ManagedAudioFile+Mapping.swift */; };
@@ -74,6 +77,9 @@
 		AA35E57D286A993B0086DB28 /* TagsParserMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsParserMock.swift; sourceTree = "<group>"; };
 		AA35E57F286AA07F0086DB28 /* LocalFilesRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFilesRepositoryTests.swift; sourceTree = "<group>"; };
 		AA35E581286AA3D90086DB28 /* FilesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesRepository.swift; sourceTree = "<group>"; };
+		AA35E584286AA5E10086DB28 /* LocalFilesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFilesRepository.swift; sourceTree = "<group>"; };
+		AA415083286B0987004549F4 /* AssertResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssertResult.swift; sourceTree = "<group>"; };
+		AA415085286B09B8004549F4 /* FilesRepositoryError+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FilesRepositoryError+Equatable.swift"; sourceTree = "<group>"; };
 		AA598D192868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedAudioFile+CoreDataClass.swift"; sourceTree = "<group>"; };
 		AA598D1A2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedAudioFile+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		AA598D1E2868D435001F3DE1 /* ManagedAudioFile+Mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedAudioFile+Mapping.swift"; sourceTree = "<group>"; };
@@ -181,6 +187,7 @@
 			isa = PBXGroup;
 			children = (
 				AA35E583286AA5950086DB28 /* CoreData */,
+				AA35E584286AA5E10086DB28 /* LocalFilesRepository.swift */,
 			);
 			path = Persistance;
 			sourceTree = "<group>";
@@ -194,6 +201,14 @@
 				AA2BE88A2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift */,
 			);
 			path = CoreData;
+			sourceTree = "<group>";
+		};
+		AA415082286B0979004549F4 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				AA415083286B0987004549F4 /* AssertResult.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		AA598D1D2868D403001F3DE1 /* ManagedObjects */ = {
@@ -241,6 +256,7 @@
 		AA8BF76228567A1F0010FA1E /* LyraPlayTests */ = {
 			isa = PBXGroup;
 			children = (
+				AA415082286B0979004549F4 /* Utils */,
 				AA8BF76328567A1F0010FA1E /* LyraPlayTests.swift */,
 				AA1ACC2628630FCD000EEDD5 /* Assets */,
 				AA1ACC202862FE65000EEDD5 /* Data */,
@@ -374,6 +390,7 @@
 			children = (
 				AA9BEB0A28661DCE0028DF8E /* CoreDataAudioFilesRepositoryTests.swift */,
 				AA35E57F286AA07F0086DB28 /* LocalFilesRepositoryTests.swift */,
+				AA415085286B09B8004549F4 /* FilesRepositoryError+Equatable.swift */,
 			);
 			path = Repositories;
 			sourceTree = "<group>";
@@ -588,6 +605,7 @@
 				AA9BEB062865D78C0028DF8E /* AudioFilesRepository.swift in Sources */,
 				AA1ACC2C286317A2000EEDD5 /* TagsParser.swift in Sources */,
 				AA8BF74E28567A1C0010FA1E /* ViewController.swift in Sources */,
+				AA35E585286AA5E10086DB28 /* LocalFilesRepository.swift in Sources */,
 				AACEA32B2869ED5800111565 /* AudioFilesBrowserCell.swift in Sources */,
 				AACEA31C2869ABEB00111565 /* AudioFilesBrowserViewModel.swift in Sources */,
 				AACEA3232869B14000111565 /* Observable.swift in Sources */,
@@ -618,6 +636,8 @@
 				AA35E580286AA07F0086DB28 /* LocalFilesRepositoryTests.swift in Sources */,
 				AACEA3262869B17E00111565 /* ObservableTests.swift in Sources */,
 				AA8BF76428567A1F0010FA1E /* LyraPlayTests.swift in Sources */,
+				AA415086286B09B8004549F4 /* FilesRepositoryError+Equatable.swift in Sources */,
+				AA415084286B0987004549F4 /* AssertResult.swift in Sources */,
 				AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */,
 				AACEA3152869A32A00111565 /* AudioFilesRepositoryMock.swift in Sources */,
 				AACEA3202869AC5B00111565 /* AudioFilesBrowserViewModelTests.swift in Sources */,
