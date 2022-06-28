@@ -98,7 +98,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
             
             XCTAssertEqual(files.map { $0.title }, expectedTitles)
             XCTAssertEqual(files.map { $0.description }, expectedDescriptions)
-            XCTAssertEqual(files.map { $0.image }, testImages)
+            XCTAssertEqual(files.map { $0.image }, testImages.map { UIImage(data: $0)! })
             
             expectation.fulfill()
         })

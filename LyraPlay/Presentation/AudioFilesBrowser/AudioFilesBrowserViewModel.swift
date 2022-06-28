@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 // MARK: - Interfaces
 
@@ -44,6 +45,7 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
     
     public var isLoading: Observable<Bool>
     public weak var filesDelegate: AudioFilesBrowserUpdateDelegate?
+    private var stubItemImage = UIImage(systemName: "music.note")!
     
     public init(
         coordinator: AudioFilesBrowserCoordinator,
@@ -61,6 +63,23 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
         
     }
     
+    private func loadImages(names: [String]) async -> [String: UIImage] {
+        
+        var images = [String: UIImage]()
+        
+        for imageName in names {
+            
+            let result = await browseUseCase.fetchImage(name: imageName)
+            guard case .success(let imageData) = result else {
+                continue
+            }
+            
+            images[imageName] = UIImage(data: imageData)
+        }
+        
+        return images
+    }
+    
     public func load() async {
         
         isLoading.value = true
@@ -71,11 +90,15 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
             return
         }
         
+        let images = await loadImages(names: loadedFiles.compactMap { $0.coverImage })
+        
         let files = loadedFiles.map { file in
+            
             return AudioFilesBrowserCellViewModel(
                 id: file.id!,
                 title: file.name,
                 description: file.artist ?? "",
+                image: images[file.coverImage ?? ""] ?? stubItemImage,
                 onOpen: self.onOpen
             )
         }

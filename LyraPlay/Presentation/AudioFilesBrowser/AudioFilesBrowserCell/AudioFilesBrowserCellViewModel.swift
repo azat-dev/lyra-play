@@ -16,14 +16,23 @@ public struct AudioFilesBrowserCellViewModel: Hashable {
     public var id: UUID
     public var title: String
     public var description: String
+    public var image: UIImage
+    
     private var onOpen: (_ id: UUID) -> Void
     
-    public init(id: UUID, title: String, description: String, onOpen: @escaping (_ id: UUID) -> Void) {
+    public init(
+        id: UUID,
+        title: String,
+        description: String,
+        image: UIImage,
+        onOpen: @escaping (_ id: UUID) -> Void
+    ) {
         
         self.id = id
         self.title = title
         self.description = description
         self.onOpen = onOpen
+        self.image = image
     }
     
     public func open() {

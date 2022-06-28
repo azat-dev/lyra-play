@@ -12,6 +12,7 @@ public final class AudioFilesBrowserCell: UITableViewCell {
     
     public static var reuseIdentifier = "AudioFilesBrowserCell"
 
+    private var textGroup = UIStackView()
     private var titleLabel = UILabel()
     private var descritionLabel = UILabel()
     private var coverImageView = UIImageView()
@@ -19,15 +20,19 @@ public final class AudioFilesBrowserCell: UITableViewCell {
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupViews()
-        layout()
+        setup()
     }
     
     public required init?(coder: NSCoder) {
         
         super.init(coder: coder)
+        setup()
+    }
+    
+    private func setup() {
         setupViews()
         layout()
+        style()
     }
 }
 
@@ -39,49 +44,50 @@ extension AudioFilesBrowserCell {
         
         titleLabel.text = viewModel.title
         descritionLabel.text = viewModel.description
+        coverImageView.image = viewModel.image
     }
 }
 
-// MARK: - Setup
+// MARK: - Setup views
 
 extension AudioFilesBrowserCell {
 
     private func setupViews() {
         
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(descritionLabel)
+        textGroup.axis = .vertical
+        
+        textGroup.addArrangedSubview(titleLabel)
+        textGroup.addArrangedSubview(descritionLabel)
+        
+        contentView.addSubview(textGroup)
         contentView.addSubview(coverImageView)
+    }
+}
+
+// MARK: - Style
+
+extension AudioFilesBrowserCell {
+
+    private func style() {
+        
+        Styles.apply(coverImageView: coverImageView)
+        Styles.apply(titleLabel: titleLabel)
+        Styles.apply(descriptionLabel: descritionLabel)
     }
 }
 
 // MARK: - Layout
 
 extension AudioFilesBrowserCell {
-
+    
     private func layout() {
         
-        let imageSize: CGFloat = 30
-        
-        coverImageView.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        descritionLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            
-            coverImageView.heightAnchor.constraint(equalToConstant: imageSize),
-            coverImageView.widthAnchor.constraint(equalToConstant: imageSize),
-            
-            coverImageView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
-            coverImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            titleLabel.leftAnchor.constraint(equalTo: coverImageView.rightAnchor, constant: 10),
-            titleLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -10),
-            
-            descritionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
-            descritionLabel.topAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            descritionLabel.leftAnchor.constraint(equalTo: coverImageView.rightAnchor, constant: 10),
-            descritionLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -10),
-        ])
+        Layout.apply(
+            contentView: contentView,
+            coverImageView: coverImageView,
+            textGroup: textGroup,
+            titleLabel: titleLabel,
+            descriptionLabel: descritionLabel
+        )
     }
 }
