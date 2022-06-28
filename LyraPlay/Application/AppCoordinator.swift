@@ -35,7 +35,10 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var browseFilesUseCase: BrowseAudioFilesUseCase = {
         
-        return DefaultBrowseAudioFilesUseCase(audioFilesRepository: audioFilesRepository)
+        return DefaultBrowseAudioFilesUseCase(
+            audioFilesRepository: audioFilesRepository,
+            imagesRepository: imagesRepository
+        )
     } ()
     
     private lazy var imagesRepository: FilesRepository = {

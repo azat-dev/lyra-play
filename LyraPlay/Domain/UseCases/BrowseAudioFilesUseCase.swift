@@ -20,6 +20,8 @@ public protocol BrowseAudioFilesUseCase {
     func listFiles() async -> Result<[AudioFileInfo], BrowseAudioFilesUseCaseError>
     
     func getFileInfo(fileId: UUID) async -> Result<AudioFileInfo, BrowseAudioFilesUseCaseError>
+    
+    func fetchImage(name: String) async -> Result<Data, BrowseAudioFilesUseCaseError>
 }
 
 // MARK: - Implementations
@@ -27,10 +29,13 @@ public protocol BrowseAudioFilesUseCase {
 public final class DefaultBrowseAudioFilesUseCase: BrowseAudioFilesUseCase {
     
     private let audioFilesRepository: AudioFilesRepository
+    private let imagesRepository: FilesRepository
+
     
-    public init(audioFilesRepository: AudioFilesRepository) {
+    public init(audioFilesRepository: AudioFilesRepository, imagesRepository: FilesRepository) {
         
         self.audioFilesRepository = audioFilesRepository
+        self.imagesRepository = imagesRepository
     }
     
     private func addTestFiles() async {
@@ -87,6 +92,24 @@ public final class DefaultBrowseAudioFilesUseCase: BrowseAudioFilesUseCase {
             
         case .failure(let error):
             return .failure(mapRepositoryError(error))
+        }
+    }
+    
+    public func fetchImage(name: String) async -> Result<Data, BrowseAudioFilesUseCaseError> {
+        
+        let result = await imagesRepository.getFile(name: name)
+        
+        switch result {
+
+        case .failure(let error):
+            guard case .fileNotFound = error else {
+                return .failure(.internalError)
+            }
+            
+            return .failure(.fileNotFound)
+            
+        case .success(let imageData):
+            return .success(imageData)
         }
     }
 }

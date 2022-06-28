@@ -12,6 +12,8 @@ import XCTest
 class AudioFilesBrowserViewModelTests: XCTestCase {
 
     private var audioFilesRepository: AudioFilesRepository!
+    private var imagesRepository: FilesRepository!
+    
     private var useCase: BrowseAudioFilesUseCase!
     private var viewModel: AudioFilesBrowserViewModel!
     private var tagsParserCallback: TagsParserCallback?
@@ -21,7 +23,12 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         
         filesDelegate = nil
         audioFilesRepository = AudioFilesRepositoryMock()
-        useCase = DefaultBrowseAudioFilesUseCase(audioFilesRepository: audioFilesRepository)
+        imagesRepository = FilesRepositoryMock()
+        
+        useCase = DefaultBrowseAudioFilesUseCase(
+            audioFilesRepository: audioFilesRepository,
+            imagesRepository: imagesRepository
+        )
         
         tagsParserCallback = nil
         let tagsParser = TagsParserMock(callback: { [weak self] data in self?.tagsParserCallback?(data) })

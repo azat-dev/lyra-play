@@ -78,20 +78,20 @@ class BrowseAudioFilesUseCaseTests: XCTestCase {
         let testImage1 = "image1".data(using: .utf8)!
         let testImage2 = "image2".data(using: .utf8)!
         
-        let put1 = await imagesRepository.putFile(name: "file1.png", data: testImage1)
+        let put1 = await imagesRepository.putFile(name: testImageName1, data: testImage1)
         AssertResultSucceded(put1)
         
-        let put2 = await imagesRepository.putFile(name: "file2.png", data: testImage2)
+        let put2 = await imagesRepository.putFile(name: testImageName2, data: testImage2)
         AssertResultSucceded(put2)
         
         let resultImage1 = await useCase.fetchImage(name: testImageName1)
         let imageData1 = AssertResultSucceded(resultImage1)
         
-        XCTAssertEqual(imageData1, testImageData1)
+        XCTAssertEqual(imageData1, testImage1)
         
         let resultImage2 = await useCase.fetchImage(name: testImageName2)
         let imageData2 = AssertResultSucceded(resultImage2)
         
-        XCTAssertEqual(imageData2, testImageData2)
+        XCTAssertEqual(imageData2, testImage2)
     }
 }
