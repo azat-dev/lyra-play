@@ -14,7 +14,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
 
     private var tagsParserCallback: TagsParserCallback?
     private var imagesRepository: FilesRepository!
-    private var audioDataRepository: FilesRepository!
+    private var audioFilesRepository: FilesRepository!
     private var audioLibraryRepository: AudioLibraryRepository!
     private var importAudioFileUseCase: ImportAudioFileUseCase!
     
@@ -28,13 +28,13 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         
         audioLibraryRepository = AudioFilesRepositoryMock()
         imagesRepository = FilesRepositoryMock()
-        audioDataRepository = FilesRepositoryMock()
+        audioFilesRepository = FilesRepositoryMock()
         
         importAudioFileUseCase = DefaultImportAudioFileUseCase(
             audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository,
             tagsParser: tagsParser,
-            audioDataRepository: audioDataRepository
+            audioFilesRepository: audioFilesRepository
         )
     }
     
@@ -162,7 +162,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         )
         
         let fileInfo = AssertResultSucceded(resultImport)
-        let resultFileData = await audioDataRepository.getFile(name: fileInfo.fileName)
+        let resultFileData = await audioFilesRepository.getFile(name: fileInfo.fileName)
         let fileData = AssertResultSucceded(resultFileData)
         
         XCTAssertEqual(fileData, data)
