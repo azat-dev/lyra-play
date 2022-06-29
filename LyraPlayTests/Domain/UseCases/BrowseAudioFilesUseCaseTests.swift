@@ -1,5 +1,5 @@
 //
-//  BrowseAudioFilesUseCaseTests.swift
+//  BrowseAudioLibraryUseCaseTests.swift
 //  LyraPlayTests
 //
 //  Created by Azat Kaiumov on 27.06.22.
@@ -8,19 +8,19 @@
 import XCTest
 import LyraPlay
 
-class BrowseAudioFilesUseCaseTests: XCTestCase {
+class BrowseAudioLibraryUseCaseTests: XCTestCase {
 
-    private var useCase: BrowseAudioFilesUseCase!
-    private var audioFilesRepository: AudioFilesRepository!
+    private var useCase: BrowseAudioLibraryUseCase!
+    private var audioLibraryRepository: AudioLibraryRepository!
     private var imagesRepository: FilesRepository!
 
     override func setUp() async throws {
         
-        audioFilesRepository = AudioFilesRepositoryMock()
+        audioLibraryRepository = AudioFilesRepositoryMock()
         imagesRepository = FilesRepositoryMock()
         
-        useCase = DefaultBrowseAudioFilesUseCase(
-            audioFilesRepository: audioFilesRepository,
+        useCase = DefaultBrowseAudioLibraryUseCase(
+            audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository
         )
     }
@@ -38,7 +38,7 @@ class BrowseAudioFilesUseCaseTests: XCTestCase {
         let testFiles = (0..<numberOfTestFiles).map { self.getTestFile(index: $0) }
         
         for file in testFiles {
-            let _ = await audioFilesRepository.putFile(info: file.info, data: file.data)
+            let _ = await audioLibraryRepository.putFile(info: file.info, data: file.data)
         }
         
         let result = await useCase.listFiles()
@@ -54,7 +54,7 @@ class BrowseAudioFilesUseCaseTests: XCTestCase {
         let testFiles = (0..<numberOfTestFiles).map { self.getTestFile(index: $0) }
         
         for file in testFiles {
-            let result = await audioFilesRepository.putFile(info: file.info, data: file.data)
+            let result = await audioLibraryRepository.putFile(info: file.info, data: file.data)
             let savedFile = try! result.get()
             
             let infoResult = await useCase.getFileInfo(fileId: savedFile.id!)

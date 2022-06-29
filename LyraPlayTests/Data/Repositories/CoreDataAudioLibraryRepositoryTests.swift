@@ -35,15 +35,15 @@ extension AudioFileInfo: Comparable {
     }
 }
 
-class CoreDataAudioFilesRepositoryTests: XCTestCase {
+class CoreDataAudioLibraryRepositoryTests: XCTestCase {
     
-    var repository: AudioFilesRepository!
+    var repository: AudioLibraryRepository!
     
     override func setUpWithError() throws {
 
         let storeURL = URL(fileURLWithPath: "/dev/null")
         let coreDataStore = try! CoreDataStore(storeURL: storeURL)
-        repository = CoreDataAudioFilesRepository(coreDataStore: coreDataStore)
+        repository = CoreDataAudioLibraryRepository(coreDataStore: coreDataStore)
     }
 
     @discardableResult

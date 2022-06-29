@@ -8,7 +8,7 @@
 import Foundation
 import LyraPlay
 
-class AudioFilesRepositoryMock: AudioFilesRepository {
+class AudioFilesRepositoryMock: AudioLibraryRepository {
     
     private var files = [AudioFileInfo]()
     

@@ -49,10 +49,10 @@
 		AA9BEB002865D4540028DF8E /* ImportAudioFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEAFF2865D4540028DF8E /* ImportAudioFileUseCase.swift */; };
 		AA9BEB022865D5BB0028DF8E /* AudioFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB012865D5BB0028DF8E /* AudioFileInfo.swift */; };
 		AA9BEB062865D78C0028DF8E /* AudioFilesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB052865D78C0028DF8E /* AudioFilesRepository.swift */; };
-		AA9BEB0B28661DCE0028DF8E /* CoreDataAudioFilesRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB0A28661DCE0028DF8E /* CoreDataAudioFilesRepositoryTests.swift */; };
+		AA9BEB0B28661DCE0028DF8E /* CoreDataAudioLibraryRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB0A28661DCE0028DF8E /* CoreDataAudioLibraryRepositoryTests.swift */; };
 		AACEA31228699F5500111565 /* BrowseAudioFilesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA31128699F5500111565 /* BrowseAudioFilesUseCaseTests.swift */; };
 		AACEA3152869A32A00111565 /* AudioFilesRepositoryMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA3142869A32A00111565 /* AudioFilesRepositoryMock.swift */; };
-		AACEA3172869A5C800111565 /* BrowseAudioFilesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA3162869A5C800111565 /* BrowseAudioFilesUseCase.swift */; };
+		AACEA3172869A5C800111565 /* BrowseAudioLibraryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA3162869A5C800111565 /* BrowseAudioLibraryUseCase.swift */; };
 		AACEA31A2869ABD700111565 /* AudioFilesBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA3192869ABD700111565 /* AudioFilesBrowserViewController.swift */; };
 		AACEA31C2869ABEB00111565 /* AudioFilesBrowserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA31B2869ABEB00111565 /* AudioFilesBrowserViewModel.swift */; };
 		AACEA3202869AC5B00111565 /* AudioFilesBrowserViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA31F2869AC5B00111565 /* AudioFilesBrowserViewModelTests.swift */; };
@@ -127,10 +127,10 @@
 		AA9BEAFF2865D4540028DF8E /* ImportAudioFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportAudioFileUseCase.swift; sourceTree = "<group>"; };
 		AA9BEB012865D5BB0028DF8E /* AudioFileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileInfo.swift; sourceTree = "<group>"; };
 		AA9BEB052865D78C0028DF8E /* AudioFilesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesRepository.swift; sourceTree = "<group>"; };
-		AA9BEB0A28661DCE0028DF8E /* CoreDataAudioFilesRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataAudioFilesRepositoryTests.swift; sourceTree = "<group>"; };
+		AA9BEB0A28661DCE0028DF8E /* CoreDataAudioLibraryRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataAudioLibraryRepositoryTests.swift; sourceTree = "<group>"; };
 		AACEA31128699F5500111565 /* BrowseAudioFilesUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseAudioFilesUseCaseTests.swift; sourceTree = "<group>"; };
 		AACEA3142869A32A00111565 /* AudioFilesRepositoryMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesRepositoryMock.swift; sourceTree = "<group>"; };
-		AACEA3162869A5C800111565 /* BrowseAudioFilesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseAudioFilesUseCase.swift; sourceTree = "<group>"; };
+		AACEA3162869A5C800111565 /* BrowseAudioLibraryUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseAudioLibraryUseCase.swift; sourceTree = "<group>"; };
 		AACEA3192869ABD700111565 /* AudioFilesBrowserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserViewController.swift; sourceTree = "<group>"; };
 		AACEA31B2869ABEB00111565 /* AudioFilesBrowserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserViewModel.swift; sourceTree = "<group>"; };
 		AACEA31F2869AC5B00111565 /* AudioFilesBrowserViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserViewModelTests.swift; sourceTree = "<group>"; };
@@ -385,7 +385,7 @@
 			isa = PBXGroup;
 			children = (
 				AA9BEAFF2865D4540028DF8E /* ImportAudioFileUseCase.swift */,
-				AACEA3162869A5C800111565 /* BrowseAudioFilesUseCase.swift */,
+				AACEA3162869A5C800111565 /* BrowseAudioLibraryUseCase.swift */,
 				AA3BAB18286C6883005EE01E /* AudioPlayerUseCase.swift */,
 			);
 			path = UseCases;
@@ -448,7 +448,7 @@
 		AA9BEB0928661DA70028DF8E /* Repositories */ = {
 			isa = PBXGroup;
 			children = (
-				AA9BEB0A28661DCE0028DF8E /* CoreDataAudioFilesRepositoryTests.swift */,
+				AA9BEB0A28661DCE0028DF8E /* CoreDataAudioLibraryRepositoryTests.swift */,
 				AA35E57F286AA07F0086DB28 /* LocalFilesRepositoryTests.swift */,
 				AA415085286B09B8004549F4 /* FilesRepositoryError+Equatable.swift */,
 			);
@@ -680,7 +680,7 @@
 				AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */,
 				AA3BAB1B286C7225005EE01E /* PlayerState.swift in Sources */,
 				AACEA32D2869EDE400111565 /* AudioFilesBrowserCellViewModel.swift in Sources */,
-				AACEA3172869A5C800111565 /* BrowseAudioFilesUseCase.swift in Sources */,
+				AACEA3172869A5C800111565 /* BrowseAudioLibraryUseCase.swift in Sources */,
 				AA598D1F2868D435001F3DE1 /* ManagedAudioFile+Mapping.swift in Sources */,
 				AA35E582286AA3D90086DB28 /* FilesRepository.swift in Sources */,
 				AA2BE88B2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift in Sources */,
@@ -715,7 +715,7 @@
 				AACEA3152869A32A00111565 /* AudioFilesRepositoryMock.swift in Sources */,
 				AA3BAB17286B67B5005EE01E /* AudioPlayerUseCaseTests.swift in Sources */,
 				AACEA3202869AC5B00111565 /* AudioFilesBrowserViewModelTests.swift in Sources */,
-				AA9BEB0B28661DCE0028DF8E /* CoreDataAudioFilesRepositoryTests.swift in Sources */,
+				AA9BEB0B28661DCE0028DF8E /* CoreDataAudioLibraryRepositoryTests.swift in Sources */,
 				AA1ACC222862FE7E000EEDD5 /* DefaultTagsParserTests.swift in Sources */,
 				AA41508A286B2ECA004549F4 /* FilesRepositoryMock.swift in Sources */,
 				AACEA31228699F5500111565 /* BrowseAudioFilesUseCaseTests.swift in Sources */,

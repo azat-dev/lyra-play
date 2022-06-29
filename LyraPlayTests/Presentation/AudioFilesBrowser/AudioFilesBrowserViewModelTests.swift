@@ -11,10 +11,10 @@ import XCTest
 
 class AudioFilesBrowserViewModelTests: XCTestCase {
 
-    private var audioFilesRepository: AudioFilesRepository!
+    private var audioLibraryRepository: AudioLibraryRepository!
     private var imagesRepository: FilesRepository!
     
-    private var useCase: BrowseAudioFilesUseCase!
+    private var useCase: BrowseAudioLibraryUseCase!
     private var viewModel: AudioFilesBrowserViewModel!
     private var tagsParserCallback: TagsParserCallback?
     private var filesDelegate: AudioFilesBrowserUpdateDelegate? = nil
@@ -22,11 +22,11 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
     override func setUp() async throws {
         
         filesDelegate = nil
-        audioFilesRepository = AudioFilesRepositoryMock()
+        audioLibraryRepository = AudioFilesRepositoryMock()
         imagesRepository = FilesRepositoryMock()
         
-        useCase = DefaultBrowseAudioFilesUseCase(
-            audioFilesRepository: audioFilesRepository,
+        useCase = DefaultBrowseAudioLibraryUseCase(
+            audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository
         )
         
@@ -36,7 +36,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         let imagesRepository = FilesRepositoryMock()
         
         let importFileUseCase = DefaultImportAudioFileUseCase(
-            audioFilesRepository: audioFilesRepository,
+            audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository,
             tagsParser: tagsParser
         )
@@ -66,7 +66,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         }
         
         for file in testFiles {
-            let _ = await audioFilesRepository.putFile(info: file.info, data: file.data)
+            let _ = await audioLibraryRepository.putFile(info: file.info, data: file.data)
         }
         
         let expectation = XCTestExpectation()

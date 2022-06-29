@@ -23,17 +23,17 @@ public protocol ImportAudioFileUseCase {
 
 public final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
     
-    private var audioFilesRepository: AudioFilesRepository
+    private var audioLibraryRepository: AudioLibraryRepository
     private var imagesRepository: FilesRepository
     private var tagsParser: TagsParser
     
     public init(
-        audioFilesRepository: AudioFilesRepository,
+        audioLibraryRepository: AudioLibraryRepository,
         imagesRepository: FilesRepository,
         tagsParser: TagsParser
     ) {
         
-        self.audioFilesRepository = audioFilesRepository
+        self.audioLibraryRepository = audioLibraryRepository
         self.imagesRepository = imagesRepository
         self.tagsParser = tagsParser
     }
@@ -69,7 +69,7 @@ public final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
             coverImage: savedCoverImageName
         )
         
-        let resultPutFile = await audioFilesRepository.putFile(info: audioFile, data: fileData)
+        let resultPutFile = await audioLibraryRepository.putFile(info: audioFile, data: fileData)
         
         guard case .success(let savedFileInfo) = resultPutFile else {
             return .failure(.internalError(nil))

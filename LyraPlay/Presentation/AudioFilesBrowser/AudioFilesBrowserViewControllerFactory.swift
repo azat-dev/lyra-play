@@ -9,14 +9,14 @@ import Foundation
 
 final class AudioFilesBrowserViewControllerFactory {
     
-    private let browseFilesUseCase: BrowseAudioFilesUseCase
+    private let browseFilesUseCase: BrowseAudioLibraryUseCase
     private let importFileUseCase: ImportAudioFileUseCase
     private let coordinator: AudioFilesBrowserCoordinator
     private let audioPlayerUseCase: AudioPlayerUseCase
     
     init(
         coordinator: AudioFilesBrowserCoordinator,
-        browseFilesUseCase: BrowseAudioFilesUseCase,
+        browseFilesUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase,
         audioPlayerUseCase: AudioPlayerUseCase
     ) {

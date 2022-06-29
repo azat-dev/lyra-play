@@ -1,5 +1,5 @@
 //
-//  BrowseAudioFilesUseCase.swift
+//  BrowseAudioLibraryUseCase.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 27.06.22.
@@ -9,38 +9,38 @@ import Foundation
 
 // MARK: - Interfaces
 
-public enum BrowseAudioFilesUseCaseError: Error {
+public enum BrowseAudioLibraryUseCaseError: Error {
     
     case fileNotFound
     case internalError
 }
 
-public protocol BrowseAudioFilesUseCase {
+public protocol BrowseAudioLibraryUseCase {
     
-    func listFiles() async -> Result<[AudioFileInfo], BrowseAudioFilesUseCaseError>
+    func listFiles() async -> Result<[AudioFileInfo], BrowseAudioLibraryUseCaseError>
     
-    func getFileInfo(fileId: UUID) async -> Result<AudioFileInfo, BrowseAudioFilesUseCaseError>
+    func getFileInfo(fileId: UUID) async -> Result<AudioFileInfo, BrowseAudioLibraryUseCaseError>
     
-    func fetchImage(name: String) async -> Result<Data, BrowseAudioFilesUseCaseError>
+    func fetchImage(name: String) async -> Result<Data, BrowseAudioLibraryUseCaseError>
 }
 
 // MARK: - Implementations
 
-public final class DefaultBrowseAudioFilesUseCase: BrowseAudioFilesUseCase {
+public final class DefaultBrowseAudioLibraryUseCase: BrowseAudioLibraryUseCase {
     
-    private let audioFilesRepository: AudioFilesRepository
+    private let audioLibraryRepository: AudioLibraryRepository
     private let imagesRepository: FilesRepository
 
     
-    public init(audioFilesRepository: AudioFilesRepository, imagesRepository: FilesRepository) {
+    public init(audioLibraryRepository: AudioLibraryRepository, imagesRepository: FilesRepository) {
         
-        self.audioFilesRepository = audioFilesRepository
+        self.audioLibraryRepository = audioLibraryRepository
         self.imagesRepository = imagesRepository
     }
     
     private func addTestFiles() async {
         
-        let filesResult = await audioFilesRepository.listFiles()
+        let filesResult = await audioLibraryRepository.listFiles()
         
         guard case .success(let files) = filesResult else {
             return
@@ -53,11 +53,11 @@ public final class DefaultBrowseAudioFilesUseCase: BrowseAudioFilesUseCase {
         let numberOfFiles = 10
         
         for index in 0..<numberOfFiles {
-            await audioFilesRepository.putFile(info: AudioFileInfo.create(name: "test\(index)"), data: "test\(index)".data(using: .utf8)!)
+            await audioLibraryRepository.putFile(info: AudioFileInfo.create(name: "test\(index)"), data: "test\(index)".data(using: .utf8)!)
         }
     }
     
-    private func mapRepositoryError(_ error: AudioFilesRepositoryError) -> BrowseAudioFilesUseCaseError {
+    private func mapRepositoryError(_ error: AudioFilesRepositoryError) -> BrowseAudioLibraryUseCaseError {
         
         switch error {
         case .fileNotFound:
@@ -67,11 +67,11 @@ public final class DefaultBrowseAudioFilesUseCase: BrowseAudioFilesUseCase {
         }
     }
     
-    public func listFiles() async -> Result<[AudioFileInfo], BrowseAudioFilesUseCaseError> {
+    public func listFiles() async -> Result<[AudioFileInfo], BrowseAudioLibraryUseCaseError> {
         
         await addTestFiles()
         
-        let result = await audioFilesRepository.listFiles()
+        let result = await audioLibraryRepository.listFiles()
 
         switch result {
         case .success(let files):
@@ -82,9 +82,9 @@ public final class DefaultBrowseAudioFilesUseCase: BrowseAudioFilesUseCase {
         }
     }
     
-    public func getFileInfo(fileId: UUID) async -> Result<AudioFileInfo, BrowseAudioFilesUseCaseError> {
+    public func getFileInfo(fileId: UUID) async -> Result<AudioFileInfo, BrowseAudioLibraryUseCaseError> {
         
-        let result = await audioFilesRepository.getInfo(fileId: fileId)
+        let result = await audioLibraryRepository.getInfo(fileId: fileId)
 
         switch result {
         case .success(let file):
@@ -95,7 +95,7 @@ public final class DefaultBrowseAudioFilesUseCase: BrowseAudioFilesUseCase {
         }
     }
     
-    public func fetchImage(name: String) async -> Result<Data, BrowseAudioFilesUseCaseError> {
+    public func fetchImage(name: String) async -> Result<Data, BrowseAudioLibraryUseCaseError> {
         
         let result = await imagesRepository.getFile(name: name)
         

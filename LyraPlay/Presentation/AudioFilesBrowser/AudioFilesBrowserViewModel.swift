@@ -40,7 +40,7 @@ public protocol AudioFilesBrowserViewModel: AnyObject, AudioFilesBrowserViewMode
 public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel {
 
     private let coordinator: AudioFilesBrowserCoordinator
-    private let browseUseCase: BrowseAudioFilesUseCase
+    private let browseUseCase: BrowseAudioLibraryUseCase
     private let importFileUseCase: ImportAudioFileUseCase
     private let audioPlayerUseCase: AudioPlayerUseCase
     
@@ -50,7 +50,7 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
     
     public init(
         coordinator: AudioFilesBrowserCoordinator,
-        browseUseCase: BrowseAudioFilesUseCase,
+        browseUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase,
         audioPlayerUseCase: AudioPlayerUseCase
     ) {

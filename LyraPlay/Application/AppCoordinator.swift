@@ -44,21 +44,21 @@ final class DefaultAppCoordinator: AppCoordinator {
     private lazy var audioPlayerUseCase: AudioPlayerUseCase = {
         
         return DefaultAudioPlayerUseCase(
-            audioFilesRepository: audioFilesRepository,
+            audioLibraryRepository: audioLibraryRepository,
             playerStateRepository: playerStateRepository,
             audioPlayerService: audioPlayerService
         )
     } ()
     
-    private lazy var audioFilesRepository: AudioFilesRepository = {
+    private lazy var audioLibraryRepository: AudioLibraryRepository = {
         
-        return CoreDataAudioFilesRepository(coreDataStore: coreDataStore)
+        return CoreDataAudioLibraryRepository(coreDataStore: coreDataStore)
     } ()
     
-    private lazy var browseFilesUseCase: BrowseAudioFilesUseCase = {
+    private lazy var browseFilesUseCase: BrowseAudioLibraryUseCase = {
         
-        return DefaultBrowseAudioFilesUseCase(
-            audioFilesRepository: audioFilesRepository,
+        return DefaultBrowseAudioLibraryUseCase(
+            audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository
         )
     } ()
@@ -82,7 +82,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     private lazy var importFileUseCase: ImportAudioFileUseCase = {
         
         return DefaultImportAudioFileUseCase(
-            audioFilesRepository: audioFilesRepository,
+            audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository,
             tagsParser: DefaultTagsParser()
         )

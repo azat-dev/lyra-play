@@ -10,7 +10,7 @@ import CoreData
 
 // MARK: - Implementations
 
-final class CoreDataAudioFilesRepository: AudioFilesRepository {
+final class CoreDataAudioLibraryRepository: AudioLibraryRepository {
     
     private let coreDataStore: CoreDataStore
     

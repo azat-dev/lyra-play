@@ -13,7 +13,7 @@ import LyraPlay
 class AudioPlayerUseCaseTests: XCTestCase {
 
     private var useCase: AudioPlayerUseCase!
-    private var audioFilesRepository: AudioFilesRepository!
+    private var audioLibraryRepository: AudioLibraryRepository!
     private var playerStateRepository: PlayerStateRepository!
     
 //    private var progressDelegate: AudioPlayerProgressDelegate?
@@ -22,10 +22,10 @@ class AudioPlayerUseCaseTests: XCTestCase {
         
         let keyValueStore = UserDefaultsKeyValueStore(storeName: "test")
         playerStateRepository = DefaultPlayerStateRepository(keyValueStore: keyValueStore, key: "player-state")
-        audioFilesRepository = AudioFilesRepositoryMock()
+        audioLibraryRepository = AudioFilesRepositoryMock()
         
         useCase = DefaultAudioPlayerUseCase(
-            audioFilesRepository: audioFilesRepository,
+            audioLibraryRepository: audioLibraryRepository,
             playerStateRepository: playerStateRepository
         )
     }
@@ -42,7 +42,7 @@ class AudioPlayerUseCaseTests: XCTestCase {
         
         for index in 0..<numberOfTracks {
             
-            let result = await audioFilesRepository.putFile(
+            let result = await audioLibraryRepository.putFile(
                 info: AudioFileInfo.create(name: "Track \(index)"),
                 data: testTrackData
             )
@@ -54,7 +54,7 @@ class AudioPlayerUseCaseTests: XCTestCase {
 
         await setUpTestTracks()
         
-        let resultFiles = await audioFilesRepository.listFiles()
+        let resultFiles = await audioLibraryRepository.listFiles()
         let files = AssertResultSucceded(resultFiles)
         
         let testFileId = try! XCTUnwrap(files.first?.id)
@@ -80,7 +80,7 @@ class AudioPlayerUseCaseTests: XCTestCase {
 
         await setUpTestTracks()
         
-        let resultFiles = await audioFilesRepository.listFiles()
+        let resultFiles = await audioLibraryRepository.listFiles()
         let files = AssertResultSucceded(resultFiles)
         
         let testFileId = try! XCTUnwrap(files.first?.id)
@@ -96,7 +96,7 @@ class AudioPlayerUseCaseTests: XCTestCase {
 
         await setUpTestTracks()
         
-        let resultFiles = await audioFilesRepository.listFiles()
+        let resultFiles = await audioLibraryRepository.listFiles()
         let files = AssertResultSucceded(resultFiles)
         
         let testFileId = try! XCTUnwrap(files.first?.id)
@@ -105,7 +105,7 @@ class AudioPlayerUseCaseTests: XCTestCase {
         AssertResultSucceded(setTrackResult)
 
         for file in files {
-            await audioFilesRepository.delete(fileId: file.id!)
+            await audioLibraryRepository.delete(fileId: file.id!)
         }
         
         let resultPlay = await useCase.play()
@@ -116,7 +116,7 @@ class AudioPlayerUseCaseTests: XCTestCase {
         
         await setUpTestTracks()
         
-        let resultFiles = await audioFilesRepository.listFiles()
+        let resultFiles = await audioLibraryRepository.listFiles()
         let files = AssertResultSucceded(resultFiles)
         
         let testFileId = try! XCTUnwrap(files.first?.id)
@@ -166,7 +166,7 @@ class AudioPlayerUseCaseTests: XCTestCase {
 //
 //        await setUpTestTracks()
 //
-//        let filesResult = audioFilesRepository.listFiles()
+//        let filesResult = audioLibraryRepository.listFiles()
 //        let files = AssertResultSucceded(filesResult)
 //
 //        let firstFile = XCTUnwrap(files.first)

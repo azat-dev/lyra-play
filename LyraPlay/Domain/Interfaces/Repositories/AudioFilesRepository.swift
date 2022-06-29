@@ -1,5 +1,5 @@
 //
-//  AudioFilesRepository.swift
+//  AudioLibraryRepository.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 24.06.22.
@@ -14,7 +14,7 @@ public enum AudioFilesRepositoryError: Error {
     case internalError
 }
 
-public protocol AudioFilesRepository {
+public protocol AudioLibraryRepository {
     
     func listFiles() async -> Result<[AudioFileInfo], AudioFilesRepositoryError>
     func getInfo(fileId: UUID) async -> Result<AudioFileInfo, AudioFilesRepositoryError>
