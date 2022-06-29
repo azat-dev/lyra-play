@@ -171,7 +171,7 @@ class CoreDataAudioFilesRepositoryTests: XCTestCase {
         )
         
         let fileData1 = "data1".data(using: .utf8)!
-        let savedFile1 = await putAndCheckFile(fileInfo: fileInfo1, data: fileData1)
+        await putAndCheckFile(fileInfo: fileInfo1, data: fileData1)
         
         let fileInfo2 = AudioFileInfo(
             id: UUID(),

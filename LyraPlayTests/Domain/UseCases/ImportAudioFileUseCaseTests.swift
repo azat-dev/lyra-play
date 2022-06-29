@@ -14,6 +14,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
 
     private var tagsParserCallback: TagsParserCallback?
     private var imagesRepository: FilesRepository!
+    private var audioDataRepository: FilesRepository!
     private var audioFilesRepository: AudioFilesRepository!
     private var importAudioFileUseCase: ImportAudioFileUseCase!
     
@@ -27,15 +28,17 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         
         audioFilesRepository = AudioFilesRepositoryMock()
         imagesRepository = FilesRepositoryMock()
+        audioDataRepository = FilesRepositoryMock()
         
         importAudioFileUseCase = DefaultImportAudioFileUseCase(
             audioFilesRepository: audioFilesRepository,
             imagesRepository: imagesRepository,
-            tagsParser: tagsParser
+            tagsParser: tagsParser,
+            audioDataRepository: audioDataRepository
         )
     }
     
-    func test_importing_without_id3_tags() async throws {
+    func testImportingWithoutId3Tags() async throws {
         
         let testFilesOriginalNames: [String] = [
             "test1.mp3",
@@ -61,7 +64,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         XCTAssertEqual(importedAudioFiles.map { $0.name }.sorted(), testFilesOriginalNames.sorted())
     }
 
-    func test_importing_with_id3_tags() async throws {
+    func testImportingWithId3Tags() async throws {
 
         let testFilesOriginalNames = [
             "test1.mp3",
@@ -137,5 +140,31 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         let resultExtensions = importedAudioFiles.map { $0.coverImage!.components(separatedBy: ".").last! }
         
         XCTAssertEqual(resultExtensions, expectedImagesExtensions)
+    }
+    
+    func testFetchingData() async {
+        
+        tagsParserCallback = { data in
+            return AudioFileTags(
+                title: "Test",
+                genre: nil,
+                coverImage: nil,
+                artist: nil,
+                lyrics: nil
+            )
+        }
+        
+        let data = "test".data(using: .utf8)!
+        
+        let resultImport = await importAudioFileUseCase.importFile(
+            originalFileName: "Test1",
+            fileData: data
+        )
+        
+        let fileInfo = AssertResultSucceded(resultImport)
+        let resultFileData = await audioDataRepository.getFile(name: fileInfo.fileName)
+        let fileData = AssertResultSucceded(resultFileData)
+        
+        XCTAssertEqual(fileData, data)
     }
 }
