@@ -17,6 +17,7 @@
 		AA35E580286AA07F0086DB28 /* LocalFilesRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA35E57F286AA07F0086DB28 /* LocalFilesRepositoryTests.swift */; };
 		AA35E582286AA3D90086DB28 /* FilesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA35E581286AA3D90086DB28 /* FilesRepository.swift */; };
 		AA35E585286AA5E10086DB28 /* LocalFilesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA35E584286AA5E10086DB28 /* LocalFilesRepository.swift */; };
+		AA3BAB17286B67B5005EE01E /* AudioPlayerUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB16286B67B5005EE01E /* AudioPlayerUseCaseTests.swift */; };
 		AA415084286B0987004549F4 /* AssertResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA415083286B0987004549F4 /* AssertResult.swift */; };
 		AA415086286B09B8004549F4 /* FilesRepositoryError+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA415085286B09B8004549F4 /* FilesRepositoryError+Equatable.swift */; };
 		AA415088286B2BA4004549F4 /* test_cover_image.png in Resources */ = {isa = PBXBuildFile; fileRef = AA415087286B2BA4004549F4 /* test_cover_image.png */; };
@@ -82,6 +83,7 @@
 		AA35E57F286AA07F0086DB28 /* LocalFilesRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFilesRepositoryTests.swift; sourceTree = "<group>"; };
 		AA35E581286AA3D90086DB28 /* FilesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesRepository.swift; sourceTree = "<group>"; };
 		AA35E584286AA5E10086DB28 /* LocalFilesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFilesRepository.swift; sourceTree = "<group>"; };
+		AA3BAB16286B67B5005EE01E /* AudioPlayerUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerUseCaseTests.swift; sourceTree = "<group>"; };
 		AA415083286B0987004549F4 /* AssertResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssertResult.swift; sourceTree = "<group>"; };
 		AA415085286B09B8004549F4 /* FilesRepositoryError+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FilesRepositoryError+Equatable.swift"; sourceTree = "<group>"; };
 		AA415087286B2BA4004549F4 /* test_cover_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test_cover_image.png; sourceTree = "<group>"; };
@@ -358,6 +360,7 @@
 				AACEA3132869A31900111565 /* Mocks */,
 				AA9BEAFD2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift */,
 				AACEA31128699F5500111565 /* BrowseAudioFilesUseCaseTests.swift */,
+				AA3BAB16286B67B5005EE01E /* AudioPlayerUseCaseTests.swift */,
 			);
 			path = UseCases;
 			sourceTree = "<group>";
@@ -655,6 +658,7 @@
 				AA415084286B0987004549F4 /* AssertResult.swift in Sources */,
 				AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */,
 				AACEA3152869A32A00111565 /* AudioFilesRepositoryMock.swift in Sources */,
+				AA3BAB17286B67B5005EE01E /* AudioPlayerUseCaseTests.swift in Sources */,
 				AACEA3202869AC5B00111565 /* AudioFilesBrowserViewModelTests.swift in Sources */,
 				AA9BEB0B28661DCE0028DF8E /* CoreDataAudioFilesRepositoryTests.swift in Sources */,
 				AA1ACC222862FE7E000EEDD5 /* DefaultTagsParserTests.swift in Sources */,
