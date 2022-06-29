@@ -14,7 +14,7 @@ class AudioPlayerUseCaseTests: XCTestCase {
 
     private var useCase: AudioPlayerUseCaseTests!
     private var audioFilesRepository: AudioFilesRepository!
-    private var playerStateRepository: playerStateRepository!
+    private var playerStateRepository: PlayerStateRepository!
     
 //    private var progressDelegate: AudioPlayerProgressDelegate?
 
