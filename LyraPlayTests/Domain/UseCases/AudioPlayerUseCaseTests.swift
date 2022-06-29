@@ -75,20 +75,62 @@ class AudioPlayerUseCaseTests: XCTestCase {
         let setTrackResult = await useCase.setTrack(fileId: testFileId)
         AssertResultFailed(setTrackResult)
     }
-//
-//    func testPlay() {
-//
-//        let testFileId = ""
-//
-//        let setTrackResult = await useCase.setTrack(fileId: testFileId)
-//        AssertResultSucceded(setTrackResult)
-//
-//        let resultPlay = await useCase.play()
-//        AssertResultSucceded(result)
-//    }
-//
-//    func testPause() {
-//    }
+
+    func testPlay() async {
+
+        await setUpTestTracks()
+        
+        let resultFiles = await audioFilesRepository.listFiles()
+        let files = AssertResultSucceded(resultFiles)
+        
+        let testFileId = try! XCTUnwrap(files.first?.id)
+        
+        let setTrackResult = await useCase.setTrack(fileId: testFileId)
+        AssertResultSucceded(setTrackResult)
+
+        let resultPlay = await useCase.play()
+        AssertResultSucceded(resultPlay)
+    }
+    
+    func testPlayRemovedTrack() async {
+
+        await setUpTestTracks()
+        
+        let resultFiles = await audioFilesRepository.listFiles()
+        let files = AssertResultSucceded(resultFiles)
+        
+        let testFileId = try! XCTUnwrap(files.first?.id)
+        
+        let setTrackResult = await useCase.setTrack(fileId: testFileId)
+        AssertResultSucceded(setTrackResult)
+
+        for file in files {
+            await audioFilesRepository.delete(fileId: file.id)
+        }
+        
+        let resultPlay = await useCase.play()
+        AssertResultFailed(resultPlay)
+    }
+
+    func testPause() {
+        
+        await setUpTestTracks()
+        
+        let resultFiles = await audioFilesRepository.listFiles()
+        let files = AssertResultSucceded(resultFiles)
+        
+        let testFileId = try! XCTUnwrap(files.first?.id)
+        
+        let setTrackResult = await useCase.setTrack(fileId: testFileId)
+        AssertResultSucceded(setTrackResult)
+
+        let resultPlay = await useCase.play()
+        AssertResultSucceded(resultPlay)
+        
+        sleep(10)
+        let resultPause = await useCase.pause()
+        AssertResultSucceded(resultPause)
+    }
 //
 //    func testVolumeUp() {
 //
