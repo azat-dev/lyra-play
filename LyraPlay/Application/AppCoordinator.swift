@@ -45,6 +45,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         
         return DefaultAudioPlayerUseCase(
             audioLibraryRepository: audioLibraryRepository,
+            audioFilesRepository: audioFilesRepository,
             playerStateRepository: playerStateRepository,
             audioPlayerService: audioPlayerService
         )

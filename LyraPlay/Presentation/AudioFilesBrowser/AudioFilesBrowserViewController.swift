@@ -74,6 +74,8 @@ extension AudioFilesBrowserViewController {
         
         setupNavigatioBar()
         
+        self.tableView.delegate = self
+        
         self.tableView.register(
             AudioFilesBrowserCell.self,
             forCellReuseIdentifier: AudioFilesBrowserCell.reuseIdentifier

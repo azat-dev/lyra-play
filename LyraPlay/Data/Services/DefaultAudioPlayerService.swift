@@ -37,6 +37,7 @@ public final class DefaultAudioPlayerService: AudioPlayerService {
         do {
 
             player = try AVAudioPlayer(data: track)
+            player?.play()
         } catch {
 
             print("*** Unable to set up the audio player: \(error.localizedDescription) ***")
