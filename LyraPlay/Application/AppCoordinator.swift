@@ -28,6 +28,28 @@ final class DefaultAppCoordinator: AppCoordinator {
         return try! CoreDataStore(storeURL: url)
     } ()
     
+    private lazy var playerStateRepository: PlayerStateRepository = {
+        
+        return DefaultPlayerStateRepository(
+            keyValueStore: UserDefaultsKeyValueStore(storeName: "playerState"),
+            key: "currentState"
+        )
+    } ()
+    
+    private lazy var audioPlayerService: AudioPlayerService = {
+        
+        return DefaultAudioPlayerService()
+    } ()
+    
+    private lazy var audioPlayerUseCase: AudioPlayerUseCase = {
+        
+        return DefaultAudioPlayerUseCase(
+            audioFilesRepository: audioFilesRepository,
+            playerStateRepository: playerStateRepository,
+            audioPlayerService: audioPlayerService
+        )
+    } ()
+    
     private lazy var audioFilesRepository: AudioFilesRepository = {
         
         return CoreDataAudioFilesRepository(coreDataStore: coreDataStore)
@@ -74,9 +96,10 @@ final class DefaultAppCoordinator: AppCoordinator {
     func makeAudioFilesBrowserVC() -> AudioFilesBrowserViewController {
         
         let factory = AudioFilesBrowserViewControllerFactory(
+            coordinator: self,
             browseFilesUseCase: browseFilesUseCase,
             importFileUseCase: importFileUseCase,
-            coordinator: self
+            audioPlayerUseCase: audioPlayerUseCase
         )
         return factory.build()
     }

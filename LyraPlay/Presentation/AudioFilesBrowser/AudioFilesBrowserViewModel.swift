@@ -42,6 +42,7 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
     private let coordinator: AudioFilesBrowserCoordinator
     private let browseUseCase: BrowseAudioFilesUseCase
     private let importFileUseCase: ImportAudioFileUseCase
+    private let audioPlayerUseCase: AudioPlayerUseCase
     
     public var isLoading: Observable<Bool>
     public weak var filesDelegate: AudioFilesBrowserUpdateDelegate?
@@ -50,17 +51,27 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
     public init(
         coordinator: AudioFilesBrowserCoordinator,
         browseUseCase: BrowseAudioFilesUseCase,
-        importFileUseCase: ImportAudioFileUseCase
+        importFileUseCase: ImportAudioFileUseCase,
+        audioPlayerUseCase: AudioPlayerUseCase
     ) {
         
         self.coordinator = coordinator
         self.browseUseCase = browseUseCase
         self.importFileUseCase = importFileUseCase
+        self.audioPlayerUseCase = audioPlayerUseCase
         self.isLoading = Observable(true)
     }
     
     private func onOpen(_ cellId: UUID) {
         
+    }
+    
+    private func onPlay(_ trackId: UUID) {
+        
+        Task {
+            await audioPlayerUseCase.setTrack(fileId: trackId)
+            await audioPlayerUseCase.play()
+        }
     }
     
     private func loadImages(names: [String]) async -> [String: UIImage] {
@@ -99,7 +110,8 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
                 title: file.name,
                 description: file.artist ?? "",
                 image: images[file.coverImage ?? ""] ?? stubItemImage,
-                onOpen: self.onOpen
+                onOpen: self.onOpen,
+                onPlay: self.onPlay
             )
         }
         

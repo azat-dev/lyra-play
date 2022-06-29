@@ -105,14 +105,14 @@ class AudioPlayerUseCaseTests: XCTestCase {
         AssertResultSucceded(setTrackResult)
 
         for file in files {
-            await audioFilesRepository.delete(fileId: file.id)
+            await audioFilesRepository.delete(fileId: file.id!)
         }
         
         let resultPlay = await useCase.play()
         AssertResultFailed(resultPlay)
     }
 
-    func testPause() {
+    func testPause() async {
         
         await setUpTestTracks()
         

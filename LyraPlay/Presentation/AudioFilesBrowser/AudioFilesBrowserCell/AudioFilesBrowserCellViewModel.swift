@@ -11,7 +11,7 @@ import UIKit
 
 // MARK: - Implementations
 
-public struct AudioFilesBrowserCellViewModel: Hashable {
+public struct AudioFilesBrowserCellViewModel {
     
     public var id: UUID
     public var title: String
@@ -19,13 +19,15 @@ public struct AudioFilesBrowserCellViewModel: Hashable {
     public var image: UIImage
     
     private var onOpen: (_ id: UUID) -> Void
+    private var onPlay: (_ id: UUID) -> Void
     
     public init(
         id: UUID,
         title: String,
         description: String,
         image: UIImage,
-        onOpen: @escaping (_ id: UUID) -> Void
+        onOpen: @escaping (_ id: UUID) -> Void,
+        onPlay: @escaping (_ id: UUID) -> Void
     ) {
         
         self.id = id
@@ -33,11 +35,21 @@ public struct AudioFilesBrowserCellViewModel: Hashable {
         self.description = description
         self.onOpen = onOpen
         self.image = image
+        self.onPlay = onPlay
     }
     
     public func open() {
         self.onOpen(id)
     }
+    
+    public func play() {
+        self.onPlay(id)
+    }
+}
+
+// MARK: - Hashable
+
+extension AudioFilesBrowserCellViewModel: Hashable {
     
     public static func == (lhs: AudioFilesBrowserCellViewModel, rhs: AudioFilesBrowserCellViewModel) -> Bool {
         return lhs.id == rhs.id

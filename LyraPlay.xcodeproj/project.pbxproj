@@ -24,6 +24,8 @@
 		AA3BAB1F286C73A3005EE01E /* DefaultPlayerStateRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB1E286C73A3005EE01E /* DefaultPlayerStateRepository.swift */; };
 		AA3BAB22286C7D32005EE01E /* KeyValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB21286C7D32005EE01E /* KeyValueStore.swift */; };
 		AA3BAB25286C7EE2005EE01E /* UserDefaultsKeyValueStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB24286C7EE2005EE01E /* UserDefaultsKeyValueStoreTests.swift */; };
+		AA3BAB28286CC646005EE01E /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB27286CC646005EE01E /* AudioPlayerService.swift */; };
+		AA3BAB2E286CC79F005EE01E /* DefaultAudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB2D286CC79F005EE01E /* DefaultAudioPlayerService.swift */; };
 		AA415084286B0987004549F4 /* AssertResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA415083286B0987004549F4 /* AssertResult.swift */; };
 		AA415086286B09B8004549F4 /* FilesRepositoryError+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA415085286B09B8004549F4 /* FilesRepositoryError+Equatable.swift */; };
 		AA415088286B2BA4004549F4 /* test_cover_image.png in Resources */ = {isa = PBXBuildFile; fileRef = AA415087286B2BA4004549F4 /* test_cover_image.png */; };
@@ -96,6 +98,8 @@
 		AA3BAB1E286C73A3005EE01E /* DefaultPlayerStateRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultPlayerStateRepository.swift; sourceTree = "<group>"; };
 		AA3BAB21286C7D32005EE01E /* KeyValueStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyValueStore.swift; sourceTree = "<group>"; };
 		AA3BAB24286C7EE2005EE01E /* UserDefaultsKeyValueStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeyValueStoreTests.swift; sourceTree = "<group>"; };
+		AA3BAB27286CC646005EE01E /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
+		AA3BAB2D286CC79F005EE01E /* DefaultAudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultAudioPlayerService.swift; sourceTree = "<group>"; };
 		AA415083286B0987004549F4 /* AssertResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssertResult.swift; sourceTree = "<group>"; };
 		AA415085286B09B8004549F4 /* FilesRepositoryError+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FilesRepositoryError+Equatable.swift"; sourceTree = "<group>"; };
 		AA415087286B2BA4004549F4 /* test_cover_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test_cover_image.png; sourceTree = "<group>"; };
@@ -237,6 +241,22 @@
 			path = Stores;
 			sourceTree = "<group>";
 		};
+		AA3BAB26286CC623005EE01E /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				AA3BAB27286CC646005EE01E /* AudioPlayerService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		AA3BAB2C286CC76E005EE01E /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				AA3BAB2D286CC79F005EE01E /* DefaultAudioPlayerService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		AA415082286B0979004549F4 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -333,6 +353,7 @@
 		AA8BF77E28567A8F0010FA1E /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				AA3BAB2C286CC76E005EE01E /* Services */,
 				AA2BE8882866EE2B005C1AAD /* Storages */,
 				AA9BEB082865DBE20028DF8E /* Repositories */,
 				AA9BEB072865DBCD0028DF8E /* Utils */,
@@ -392,6 +413,7 @@
 		AA9BEB032865D76C0028DF8E /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
+				AA3BAB26286CC623005EE01E /* Services */,
 				AA9BEB042865D7740028DF8E /* Repositories */,
 			);
 			path = Interfaces;
@@ -647,6 +669,7 @@
 				AA3BAB1F286C73A3005EE01E /* DefaultPlayerStateRepository.swift in Sources */,
 				AA9BEB062865D78C0028DF8E /* AudioFilesRepository.swift in Sources */,
 				AA3BAB19286C6883005EE01E /* AudioPlayerUseCase.swift in Sources */,
+				AA3BAB28286CC646005EE01E /* AudioPlayerService.swift in Sources */,
 				AA1ACC2C286317A2000EEDD5 /* TagsParser.swift in Sources */,
 				AA8BF74E28567A1C0010FA1E /* ViewController.swift in Sources */,
 				AA35E585286AA5E10086DB28 /* LocalFilesRepository.swift in Sources */,
@@ -671,6 +694,7 @@
 				AA9BEB002865D4540028DF8E /* ImportAudioFileUseCase.swift in Sources */,
 				AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */,
 				AA41508E286B647D004549F4 /* AudioFilesBrowserCellLayout.swift in Sources */,
+				AA3BAB2E286CC79F005EE01E /* DefaultAudioPlayerService.swift in Sources */,
 				AACEA32F286A418600111565 /* FilePickerViewController.swift in Sources */,
 				AA598D1C2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift in Sources */,
 				AA598D1B2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift in Sources */,

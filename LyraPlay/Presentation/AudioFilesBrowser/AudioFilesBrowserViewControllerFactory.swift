@@ -9,19 +9,22 @@ import Foundation
 
 final class AudioFilesBrowserViewControllerFactory {
     
-    private var browseFilesUseCase: BrowseAudioFilesUseCase
-    private var importFileUseCase: ImportAudioFileUseCase
-    private var coordinator: AudioFilesBrowserCoordinator
+    private let browseFilesUseCase: BrowseAudioFilesUseCase
+    private let importFileUseCase: ImportAudioFileUseCase
+    private let coordinator: AudioFilesBrowserCoordinator
+    private let audioPlayerUseCase: AudioPlayerUseCase
     
     init(
+        coordinator: AudioFilesBrowserCoordinator,
         browseFilesUseCase: BrowseAudioFilesUseCase,
         importFileUseCase: ImportAudioFileUseCase,
-        coordinator: AudioFilesBrowserCoordinator
+        audioPlayerUseCase: AudioPlayerUseCase
     ) {
         
         self.browseFilesUseCase = browseFilesUseCase
         self.importFileUseCase = importFileUseCase
         self.coordinator = coordinator
+        self.audioPlayerUseCase = audioPlayerUseCase
     }
     
     func build() -> AudioFilesBrowserViewController {
@@ -29,7 +32,8 @@ final class AudioFilesBrowserViewControllerFactory {
         let viewModel = DefaultAudioFilesBrowserViewModel(
             coordinator: coordinator,
             browseUseCase: browseFilesUseCase,
-            importFileUseCase: importFileUseCase
+            importFileUseCase: importFileUseCase,
+            audioPlayerUseCase: audioPlayerUseCase
         )
         return AudioFilesBrowserViewController(viewModel: viewModel)
     }

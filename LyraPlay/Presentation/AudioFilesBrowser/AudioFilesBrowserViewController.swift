@@ -144,3 +144,15 @@ extension AudioFilesBrowserViewController: AudioFilesBrowserUpdateDelegate {
         }
     }
 }
+
+extension AudioFilesBrowserViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        guard let cellViewModel = tableDataSource.itemIdentifier(for: indexPath) else {
+            return
+        }
+        
+        cellViewModel.play()
+    }
+}
