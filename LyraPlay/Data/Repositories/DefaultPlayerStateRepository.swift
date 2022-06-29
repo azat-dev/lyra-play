@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PlayerStateDTO: Codable {
+private struct PlayerStateDTO: Codable {
 
     var trackId: String
     var time: Int
@@ -35,18 +35,18 @@ private extension PlayerState {
     }
 }
 
-final class DefaultPlayerStateRepository: PlayerStateRepository {
+public final class DefaultPlayerStateRepository: PlayerStateRepository {
 
     private let keyValueStore: KeyValueStore
     private let key: String
     
-    init(keyValueStore: KeyValueStore, key: String) {
+    public init(keyValueStore: KeyValueStore, key: String) {
         
         self.keyValueStore = keyValueStore
         self.key = key
     }
     
-    func get() async -> Result<PlayerState?, PlayerStateRepositoryError> {
+    public func get() async -> Result<PlayerState?, PlayerStateRepositoryError> {
         
         let result = await keyValueStore.get(key: key, as: PlayerStateDTO.self)
         
@@ -60,7 +60,7 @@ final class DefaultPlayerStateRepository: PlayerStateRepository {
         }
     }
     
-    func put(state: PlayerState) async -> Result<Void, PlayerStateRepositoryError> {
+    public func put(state: PlayerState) async -> Result<Void, PlayerStateRepositoryError> {
 
         let dto = PlayerStateDTO(from: state)
         
