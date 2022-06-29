@@ -17,6 +17,13 @@ struct PlayerStateDTO: Codable {
         self.trackId = domain.trackId.uuidString
         self.time = domain.time
     }
+    
+    func toDomain() -> PlayerState {
+        return PlayerState(
+            trackId: UUID(uuidString: trackId)!,
+            time: time
+        )
+    }
 }
 
 private extension PlayerState {
@@ -29,25 +36,46 @@ private extension PlayerState {
 }
 
 final class DefaultPlayerStateRepository: PlayerStateRepository {
+
+    private let keyValueStore: KeyValueStore
+    private let key: String
     
-    private static let KEY = "last-player-state"
-    
-    func get() async -> Result<PlayerState?, AudioPlayerUseCaseError> {
+    init(keyValueStore: KeyValueStore, key: String) {
         
-        guard let encodedDTO = UserDefaults.string(forKey: KEY) else {
-            return .success(nil)
-        }
-        
+        self.keyValueStore = keyValueStore
+        self.key = key
     }
     
-    func put(state: PlayerState) async -> Result<Void, AudioPlayerUseCaseError> {
+    func get() async -> Result<PlayerState?, PlayerStateRepositoryError> {
         
+        let result = await keyValueStore.get(key: key, as: PlayerStateDTO.self)
+        
+        switch result {
+            
+        case .failure(let error):
+            return .failure(.internalError(error))
+            
+        case .success(let value):
+            return .success(value?.toDomain())
+        }
+    }
+    
+    func put(state: PlayerState) async -> Result<Void, PlayerStateRepositoryError> {
+
         let dto = PlayerStateDTO(from: state)
-        let encoder = JSONEncoder()
         
-        let encodedDTO = try! encoder.encode(dto)
+        let result = await keyValueStore.put(
+            key: key,
+            value: dto
+        )
         
-        UserDefaults.set(encodedDTO, forKey: KEY)
-        return .success(())
+        switch result {
+            
+        case .failure(let error):
+            return .failure(.internalError(error))
+            
+        case .success:
+            return .success(())
+        }
     }
 }

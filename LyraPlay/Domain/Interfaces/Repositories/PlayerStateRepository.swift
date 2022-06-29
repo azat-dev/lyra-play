@@ -7,8 +7,13 @@
 
 import Foundation
 
+public enum PlayerStateRepositoryError: Error {
+    case internalError(Error?)
+}
+
 public protocol PlayerStateRepository {
     
-    func put(state: PlayerState) async -> Result<Void, AudioPlayerUseCaseError>
-    func get() async -> Result<PlayerState, AudioPlayerUseCaseError>
+    func put(state: PlayerState) async -> Result<Void, PlayerStateRepositoryError>
+    
+    func get() async -> Result<PlayerState?, PlayerStateRepositoryError>
 }
