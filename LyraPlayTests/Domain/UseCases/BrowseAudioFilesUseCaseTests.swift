@@ -27,7 +27,7 @@ class BrowseAudioLibraryUseCaseTests: XCTestCase {
     
     private func getTestFile(index: Int) -> (info: AudioFileInfo, data: Data) {
         return (
-            info: AudioFileInfo.create(name: "Test \(index)"),
+            info: AudioFileInfo.create(name: "Test \(index)", audioFile: "test.mp3"),
             data: "Test \(index)".data(using: .utf8)!
         )
     }

@@ -107,6 +107,7 @@ final class CoreDataAudioLibraryRepository: AudioLibraryRepository {
             
                 existingFile.fillFields(from: file)
                 updatedFile = existingFile
+                updatedFile.updatedAt = .now
             
             } else {
                 
@@ -116,7 +117,6 @@ final class CoreDataAudioLibraryRepository: AudioLibraryRepository {
                 updatedFile = newFile
             }
             
-            updatedFile.updatedAt = .now
             
             try! context.save()
             let domainItem: AudioFileInfo = updatedFile.toDomain()

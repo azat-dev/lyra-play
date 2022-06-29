@@ -67,24 +67,31 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         
         let fileInfo = AudioFileInfo(
             id: nil,
-            createdAt: .now,
+            createdAt: nil,
             updatedAt: nil,
             name: "Name1",
+            audioFile: "test1.mp3",
             artist: "Artist1",
             genre: "Genre1"
         )
         let fileData = "data".data(using: .utf8)!
         
-        await putAndCheckFile(fileInfo: fileInfo, data: fileData)
+        let savedFile = await putAndCheckFile(fileInfo: fileInfo, data: fileData)
+        
+        XCTAssertNotNil(savedFile)
+        XCTAssertNotNil(savedFile?.createdAt)
+        XCTAssertNil(savedFile?.updatedAt)
+        
     }
     
     func testCreateNewRecordNotEmptyList() async {
 
         let fileInfo1 = AudioFileInfo(
             id: nil,
-            createdAt: .now,
+            createdAt: nil,
             updatedAt: nil,
             name: "Name1",
+            audioFile: "test1.mp3",
             artist: "Artist1",
             genre: "Genre1"
         )
@@ -97,6 +104,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name2",
+            audioFile: "test2.mp3",
             artist: "Artist2",
             genre: "Genre2"
         )
@@ -112,9 +120,10 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         
         let fileInfo1 = AudioFileInfo(
             id: nil,
-            createdAt: .now,
+            createdAt: nil,
             updatedAt: nil,
             name: "Name1",
+            audioFile: "test1.mp3",
             artist: "Artist1",
             genre: "Genre1"
         )
@@ -127,6 +136,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: savedFile1!.createdAt,
             updatedAt: savedFile1?.updatedAt,
             name: "Name2",
+            audioFile: "test2.mp3",
             artist: "Artist2",
             genre: "Genre2"
         )
@@ -136,7 +146,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
 
         XCTAssertEqual(savedFile1?.id, savedFile2?.id)
         XCTAssertEqual(savedFile1?.createdAt, savedFile2?.createdAt)
-        XCTAssertNotEqual(savedFile2?.updatedAt!, fileInfo2.updatedAt!)
+        XCTAssertNotEqual(savedFile2?.updatedAt, fileInfo2.updatedAt)
         
         fileInfo2.updatedAt = savedFile2?.updatedAt
         XCTAssertEqual(savedFile2, fileInfo2)
@@ -146,9 +156,10 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
 
         let fileInfo1 = AudioFileInfo(
             id: UUID(),
-            createdAt: .now,
+            createdAt: nil,
             updatedAt: nil,
             name: "Name1",
+            audioFile: "test.mp3",
             artist: "Artist1",
             genre: "Genre1"
         )
@@ -166,6 +177,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name1",
+            audioFile: "test1.mp3",
             artist: "Artist1",
             genre: "Genre1"
         )
@@ -178,6 +190,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name2",
+            audioFile: "test2.mp3",
             artist: "Artist2",
             genre: "Genre2"
         )
@@ -207,6 +220,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name1",
+            audioFile: "test1.mp3",
             artist: "Artist1",
             genre: "Genre1"
         )
@@ -219,6 +233,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name2",
+            audioFile: "test2.mp3",
             artist: "Artist2",
             genre: "Genre2"
         )
@@ -248,6 +263,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name1",
+            audioFile: "test1.mp3",
             artist: "Artist1",
             genre: "Genre1"
         )
@@ -260,6 +276,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name2",
+            audioFile: "test2.mp3",
             artist: "Artist2",
             genre: "Genre2"
         )
@@ -297,6 +314,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name1",
+            audioFile: "test.mp3",
             artist: "Artist1",
             genre: "Genre1"
         )

@@ -23,6 +23,7 @@ extension ManagedAudioFile {
     @NSManaged public var createdAt: Date?
     @NSManaged public var updatedAt: Date?
     @NSManaged public var coverImage: String?
+    @NSManaged public var audioFile: String
 
 }
 

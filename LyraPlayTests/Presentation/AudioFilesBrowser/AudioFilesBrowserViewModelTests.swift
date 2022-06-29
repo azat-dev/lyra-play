@@ -33,10 +33,12 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         tagsParserCallback = nil
         let tagsParser = TagsParserMock(callback: { [weak self] data in self?.tagsParserCallback?(data) })
         
+        let audioFilesRepository = FilesRepositoryMock()
         let imagesRepository = FilesRepositoryMock()
         
         let importFileUseCase = DefaultImportAudioFileUseCase(
             audioLibraryRepository: audioLibraryRepository,
+            audioFilesRepository: audioFilesRepository,
             imagesRepository: imagesRepository,
             tagsParser: tagsParser
         )
@@ -46,13 +48,14 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         viewModel = DefaultAudioFilesBrowserViewModel(
             coordinator: coordinator,
             browseUseCase: useCase,
-            importFileUseCase: importFileUseCase
+            importFileUseCase: importFileUseCase,
+            audioPlayerUseCase: AudioPlayerUseCaseMock()
         )
     }
     
     private func getTestFile(index: Int) -> (info: AudioFileInfo, data: Data) {
         return (
-            info: AudioFileInfo.create(name: "Test \(index)"),
+            info: AudioFileInfo.create(name: "Test \(index)", audioFile: "test.mp3"),
             data: "Test \(index)".data(using: .utf8)!
         )
     }
@@ -98,7 +101,6 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
             
             XCTAssertEqual(files.map { $0.title }, expectedTitles)
             XCTAssertEqual(files.map { $0.description }, expectedDescriptions)
-            XCTAssertEqual(files.map { $0.image }, testImages.map { UIImage(data: $0)! })
             
             expectation.fulfill()
         })
@@ -132,5 +134,24 @@ fileprivate class FilesDelegateMock: AudioFilesBrowserUpdateDelegate {
     func filesDidUpdate(updatedFiles: [AudioFilesBrowserCellViewModel]) {
         
         onUpdateFiles(updatedFiles)
+    }
+}
+
+fileprivate class AudioPlayerUseCaseMock: AudioPlayerUseCase {
+    
+    func setTrack(fileId: UUID) async -> Result<Void, AudioPlayerUseCaseError> {
+        fatalError()
+    }
+    
+    func getCurrentTrackId() async -> Result<UUID?, AudioPlayerUseCaseError> {
+        fatalError()
+    }
+    
+    func play() async -> Result<Void, AudioPlayerUseCaseError> {
+        fatalError()
+    }
+    
+    func pause() async -> Result<Void, AudioPlayerUseCaseError> {
+        fatalError()
     }
 }

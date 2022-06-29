@@ -32,9 +32,9 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         
         importAudioFileUseCase = DefaultImportAudioFileUseCase(
             audioLibraryRepository: audioLibraryRepository,
+            audioFilesRepository: audioFilesRepository,
             imagesRepository: imagesRepository,
-            tagsParser: tagsParser,
-            audioFilesRepository: audioFilesRepository
+            tagsParser: tagsParser
         )
     }
     
@@ -162,7 +162,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         )
         
         let fileInfo = AssertResultSucceded(resultImport)
-        let resultFileData = await audioFilesRepository.getFile(name: fileInfo.fileName)
+        let resultFileData = await audioFilesRepository.getFile(name: fileInfo.audioFile)
         let fileData = AssertResultSucceded(resultFileData)
         
         XCTAssertEqual(fileData, data)

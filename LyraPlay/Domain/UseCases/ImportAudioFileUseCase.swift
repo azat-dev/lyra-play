@@ -25,10 +25,12 @@ public final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
     
     private var audioLibraryRepository: AudioLibraryRepository
     private var imagesRepository: FilesRepository
+    private var audioFilesRepository: FilesRepository
     private var tagsParser: TagsParser
     
     public init(
         audioLibraryRepository: AudioLibraryRepository,
+        audioFilesRepository: FilesRepository,
         imagesRepository: FilesRepository,
         tagsParser: TagsParser
     ) {
@@ -36,6 +38,7 @@ public final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
         self.audioLibraryRepository = audioLibraryRepository
         self.imagesRepository = imagesRepository
         self.tagsParser = tagsParser
+        self.audioFilesRepository = audioFilesRepository
     }
     
     public func importFile(originalFileName: String, fileData: Data) async -> Result<AudioFileInfo, ImportAudioFileUseCaseError> {
@@ -59,11 +62,21 @@ public final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
             }
         }
         
+        let audioFileId = UUID().uuidString
+        let fileExtension = URL(fileURLWithPath: originalFileName).pathExtension
+        let audioFileName = "\(audioFileId).\(fileExtension)"
+        
+        let saveDataResult = await audioFilesRepository.putFile(name: audioFileName, data: fileData)
+        if case .failure(let error) = saveDataResult {
+            return .failure(.internalError(error))
+        }
+        
         let audioFile = AudioFileInfo(
             id: nil,
             createdAt: .now,
             updatedAt: nil,
             name: tags?.title ?? originalFileName,
+            audioFile: audioFileName,
             artist: tags?.artist,
             genre: tags?.genre,
             coverImage: savedCoverImageName

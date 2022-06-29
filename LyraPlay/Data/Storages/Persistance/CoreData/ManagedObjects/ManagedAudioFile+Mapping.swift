@@ -16,6 +16,7 @@ extension ManagedAudioFile {
             createdAt: createdAt,
             updatedAt: updatedAt,
             name: name,
+            audioFile: audioFile,
             artist: artist,
             genre: genre,
             coverImage: coverImage
@@ -30,6 +31,7 @@ extension ManagedAudioFile {
         self.createdAt = source.createdAt
         self.updatedAt = source.updatedAt
         self.coverImage = source.coverImage
+        self.audioFile = source.audioFile
     }
     
     static func create(_ context: NSManagedObjectContext, from domain: AudioFileInfo) -> ManagedAudioFile {

@@ -2,6 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="ManagedAudioFile" representedClassName="ManagedAudioFile" syncable="YES">
         <attribute name="artist" optional="YES" attributeType="String"/>
+        <attribute name="audioFile" attributeType="String"/>
         <attribute name="coverImage" optional="YES" attributeType="String"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="genre" optional="YES" attributeType="String"/>
@@ -15,6 +16,6 @@
         </uniquenessConstraints>
     </entity>
     <elements>
-        <element name="ManagedAudioFile" positionX="-63" positionY="-18" width="128" height="134"/>
+        <element name="ManagedAudioFile" positionX="-63" positionY="-18" width="128" height="149"/>
     </elements>
 </model>
