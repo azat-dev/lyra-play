@@ -26,10 +26,8 @@ class DefatulTagsParserTests: XCTestCase {
         
         let url = bundle.url(forResource: "test_music_with_tags", withExtension: "mp3")!
         
-        let testFileWithId3 = try! Data(contentsOf: url)
-        XCTAssertNotNil(testFileWithId3)
         
-        let result = await tagsParser.parse(data: testFileWithId3)
+        let result = await tagsParser.parse(url: url)
         let tags = AssertResultSucceded(result)
         
         guard let tags = tags else {
