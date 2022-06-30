@@ -123,6 +123,8 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
         
         for url in urls {
             
+            url.startAccessingSecurityScopedResource()
+            
             guard let data = try? Data(contentsOf: url) else {
                 continue
             }
