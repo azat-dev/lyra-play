@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import UniformTypeIdentifiers
 
-class FilePickerViewController: UIDocumentPickerViewController, UIDocumentPickerDelegate {
+final class FilePickerViewController: UIDocumentPickerViewController, UIDocumentPickerDelegate {
 
     public typealias CancelCallback = () -> Void
     public typealias SelectCallback = (_ urls: [URL]) -> Void

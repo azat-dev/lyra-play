@@ -1,5 +1,5 @@
 //
-//  AudioFilesBrowserCellLayout.swift
+//  AudioFilesBrowserCell+Layout.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 28.06.22.

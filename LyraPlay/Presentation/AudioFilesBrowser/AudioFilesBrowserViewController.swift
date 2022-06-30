@@ -106,8 +106,7 @@ extension AudioFilesBrowserViewController {
     
     private func style() {
         
-        self.navigationItem.title = "Library"
-        self.navigationItem.largeTitleDisplayMode = .always
+        Styles.apply(navigationItem: navigationItem)
     }
 }
 
@@ -118,15 +117,10 @@ extension AudioFilesBrowserViewController {
     
     private func layout() {
         
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            
-            tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
+        Layout.apply(
+            view: view,
+            tableView: tableView
+        )
     }
 }
 
