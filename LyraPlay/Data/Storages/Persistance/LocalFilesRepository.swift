@@ -22,7 +22,7 @@ public final class LocalFilesRepository: FilesRepository {
         }
     }
     
-    private func getFileUrl(name: String) -> URL {
+    public func getFileUrl(name: String) -> URL {
         return baseDirectory.appendingPathComponent(name, isDirectory: false)
     }
     

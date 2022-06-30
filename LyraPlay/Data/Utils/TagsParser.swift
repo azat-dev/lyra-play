@@ -46,7 +46,7 @@ public struct AudioFileTags {
 }
 
 public protocol TagsParser {
-    func parse(data: Data) async -> Result<AudioFileTags?, Error>
+    func parse(url: URL) async -> Result<AudioFileTags?, Error>
 }
 
 // MARK: - Implementations
@@ -55,13 +55,15 @@ public final class DefaultTagsParser: TagsParser {
     
     public init() {}
     
-    public func parse(data: Data) async -> Result<AudioFileTags?, Error> {
+    public func parse(url: URL) async -> Result<AudioFileTags?, Error> {
         
         let id3TagEditor = ID3TagEditor()
         
         var tags: ID3Tag? = nil
         
         do {
+            
+            let data = try Data(contentsOf: url)
             tags = try id3TagEditor.read(mp3: data)
         } catch {
             return .failure(NSError(domain: "Can't read tags", code: 0))

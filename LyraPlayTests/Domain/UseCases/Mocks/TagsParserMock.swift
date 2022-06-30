@@ -8,7 +8,7 @@
 import Foundation
 import LyraPlay
 
-typealias TagsParserCallback = (_ data: Data) -> AudioFileTags?
+typealias TagsParserCallback = (_ url: URL) -> AudioFileTags?
 
 final class TagsParserMock: TagsParser {
     
@@ -18,9 +18,9 @@ final class TagsParserMock: TagsParser {
         self.callback = callback
     }
     
-    func parse(data: Data) async -> Result<AudioFileTags?, Error> {
+    func parse(url: URL) async -> Result<AudioFileTags?, Error> {
         
-        let tags = callback(data)
+        let tags = callback(url)
         return .success(tags)
     }
 }

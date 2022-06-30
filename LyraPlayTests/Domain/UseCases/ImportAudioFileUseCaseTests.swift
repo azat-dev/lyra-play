@@ -22,8 +22,8 @@ class ImportAudioFileUseCaseTests: XCTestCase {
 
         tagsParserCallback = nil
         
-        let tagsParser = TagsParserMock { [weak self] data in
-            self?.tagsParserCallback?(data)
+        let tagsParser = TagsParserMock { [weak self] url in
+            self?.tagsParserCallback?(url)
         }
         
         audioLibraryRepository = AudioFilesRepositoryMock()
@@ -60,86 +60,69 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         let resultListFiles = await audioLibraryRepository.listFiles()
         let importedAudioFiles = AssertResultSucceded(resultListFiles)
 
+        var importedData = [String: Data]()
+        
+        for libraryItem in importedAudioFiles {
+            
+            let result = await audioFilesRepository.getFile(name: libraryItem.audioFile)
+            let data = AssertResultSucceded(result)
+            importedData[libraryItem.audioFile] = data
+        }
+        
         XCTAssertEqual(importedAudioFiles.count, testFiles.count)
         XCTAssertEqual(importedAudioFiles.map { $0.name }.sorted(), testFilesOriginalNames.sorted())
+            
+        let checkDataResults = importedAudioFiles.map { libraryItem -> Bool in
+            
+            let data = importedData[libraryItem.audioFile]
+            return testFiles.contains(data!)
+        }
+        
+        XCTAssertEqual(checkDataResults, testFiles.map { _ in true })
     }
 
     func testImportingWithId3Tags() async throws {
+        
+        let originalName = "test1.mp3"
+        let testFile = "data".data(using: .utf8)!
 
-        let testFilesOriginalNames = [
-            "test1.mp3",
-            "test2.mp3",
-        ]
+        let testTags = AudioFileTags(
+            title: "Title",
+            genre: "Genre",
+            coverImage: TagsImageData(
+                data: "Data".data(using: .utf8)!,
+                fileExtension: "png"
+            ),
+            artist: "Artist",
+            lyrics: "Lyrics"
+        )
         
-        let testFiles = testFilesOriginalNames.map { $0.data(using: .utf8)! }
-        
-        let testTags = (0..<testFiles.count).map { index in
-            
-            return AudioFileTags(
-                title: "Title \(index)",
-                genre: "Genre \(index)",
-                coverImage: TagsImageData(
-                    data: "Genre \(index)".data(using: .utf8)!,
-                    fileExtension: index % 2 == 0 ? "png" : "jpeg"
-                ),
-                artist: "Artist \(index)",
-                lyrics: "Lyrics \(index)"
-            )
-        }
-        
-        tagsParserCallback = { data in
-            let index = testFiles.firstIndex(of: data)!
-            return testTags[index]
-        }
-        
-        for (index, testFile) in testFiles.enumerated() {
-            
-            let originalName = testFilesOriginalNames[index]
-            let result = await importAudioFileUseCase.importFile(originalFileName: originalName, fileData: testFile)
+        tagsParserCallback = { url in
 
-            AssertResultSucceded(result, "Can't import a file: \(originalName)")
+            return testTags
         }
+
+        let result = await importAudioFileUseCase.importFile(originalFileName: originalName, fileData: testFile)
+        AssertResultSucceded(result, "Can't import a file: \(originalName)")
 
         let resultListFiles = await audioLibraryRepository.listFiles()
         let importedAudioFiles = AssertResultSucceded(resultListFiles)
+        
+        XCTAssertEqual(importedAudioFiles.count, 1)
 
-        XCTAssertEqual(importedAudioFiles.count, testFiles.count)
+        let imortedFile = try! XCTUnwrap(importedAudioFiles.first)
         
-        let importedAudioFilesSorted = testTags.map { tag in importedAudioFiles.first(where: { $0.name == tag.title }) }
+        XCTAssertEqual(imortedFile.name, testTags.title)
+        XCTAssertEqual(imortedFile.genre, testTags.genre)
+        XCTAssertEqual(imortedFile.artist, testTags.artist)
 
-        let resultNames = importedAudioFilesSorted.map { $0!.name }
-        let expectedNames = testTags.map { $0.title! }
-
-        XCTAssertEqual(resultNames, expectedNames)
+        let resutlAudioData = await audioFilesRepository.getFile(name: imortedFile.audioFile)
+        let audioData = AssertResultSucceded(resutlAudioData)
+        XCTAssertEqual(audioData, testFile)
         
-        let resultArtists = importedAudioFilesSorted.map { $0!.artist! }
-        let expectedArtists = testTags.map { $0.artist! }
-
-        XCTAssertEqual(resultArtists, expectedArtists)
-        
-        let resultGenres = importedAudioFilesSorted.map { $0!.genre! }
-        let expectedGenres = testTags.map { $0.genre! }
-
-        XCTAssertEqual(resultGenres, expectedGenres)
-        
-        let resultImagesNames = importedAudioFilesSorted.map { $0!.coverImage! }
-        var resultImages: [Data] = []
-        
-        for imageName in resultImagesNames {
-            
-            let result = await imagesRepository.getFile(name: imageName)
-            let data = AssertResultSucceded(result)
-            
-            resultImages.append(data)
-        }
-        
-        let expectedImages = testTags.map { $0.coverImage!.data }
-        XCTAssertEqual(resultImages, expectedImages)
-        
-        let expectedImagesExtensions = testTags.map { $0.coverImage!.fileExtension }
-        let resultExtensions = importedAudioFiles.map { $0.coverImage!.components(separatedBy: ".").last! }
-        
-        XCTAssertEqual(resultExtensions, expectedImagesExtensions)
+        let resultCoverImageData = await imagesRepository.getFile(name: imortedFile.coverImage!)
+        let imageData = AssertResultSucceded(resultCoverImageData)
+        XCTAssertEqual(imageData, testTags.coverImage?.data)
     }
     
     func testFetchingData() async {

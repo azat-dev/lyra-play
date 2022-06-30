@@ -74,9 +74,9 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         
         let expectation = XCTestExpectation()
         
-        tagsParserCallback = { data in
+        tagsParserCallback = { url in
             
-            let index = testFiles.firstIndex { $0.data == data }
+            let index = testFiles.firstIndex { $0.info.audioFile == url.absoluteString }
                                               
             guard let index = index else {
                 fatalError()

@@ -41,9 +41,25 @@ public final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
         self.audioFilesRepository = audioFilesRepository
     }
     
+    private func generateAudioFileName(originalName: String) -> String {
+        
+        let audioFileId = UUID().uuidString
+        let fileExtension = URL(fileURLWithPath: originalName).pathExtension
+        return "\(audioFileId).\(fileExtension)"
+    }
+    
     public func importFile(originalFileName: String, fileData: Data) async -> Result<AudioFileInfo, ImportAudioFileUseCaseError> {
         
-        let parseResult = await tagsParser.parse(data: fileData)
+        let audioFileName = generateAudioFileName(originalName: originalFileName)
+        
+        let saveDataResult = await audioFilesRepository.putFile(name: audioFileName, data: fileData)
+        if case .failure(let error) = saveDataResult {
+            return .failure(.internalError(error))
+        }
+        
+        let fileUrl = audioFilesRepository.getFileUrl(name: audioFileName)
+        
+        let parseResult = await tagsParser.parse(url: fileUrl)
         
         guard case .success(let tags) = parseResult else {
             return .failure(.wrongFormat)
@@ -60,15 +76,6 @@ public final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
             if case .success = saveImageResult {
                 savedCoverImageName = imageName
             }
-        }
-        
-        let audioFileId = UUID().uuidString
-        let fileExtension = URL(fileURLWithPath: originalFileName).pathExtension
-        let audioFileName = "\(audioFileId).\(fileExtension)"
-        
-        let saveDataResult = await audioFilesRepository.putFile(name: audioFileName, data: fileData)
-        if case .failure(let error) = saveDataResult {
-            return .failure(.internalError(error))
         }
         
         let audioFile = AudioFileInfo(

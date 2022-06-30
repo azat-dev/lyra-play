@@ -18,6 +18,10 @@ class FilesRepositoryMock: FilesRepository {
         return .success(())
     }
     
+    func getFileUrl(name: String) -> URL {
+        return URL(string: name)!
+    }
+    
     func getFile(name: String) async -> Result<Data, FilesRepositoryError> {
         
         guard let file = files[name] else {
