@@ -12,7 +12,9 @@ import UIKit
 
 public protocol AudioFilesBrowserCoordinator: AnyObject {
     
-    func chooseFiles(completion: @escaping (_ urls: [URL]?) -> Void) 
+    func chooseFiles(completion: @escaping (_ urls: [URL]?) -> Void)
+    
+    func openAudioPlayer(trackId: UUID)
 }
 
 public protocol AudioFilesBrowserUpdateDelegate: AnyObject {
@@ -68,10 +70,11 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
     
     private func onPlay(_ trackId: UUID) {
         
-        Task {
-            await audioPlayerUseCase.setTrack(fileId: trackId)
-            await audioPlayerUseCase.play()
-        }
+        coordinator.openAudioPlayer(trackId: trackId)
+//        Task {
+//            await audioPlayerUseCase.setTrack(fileId: trackId)
+//            await audioPlayerUseCase.play()
+//        }
     }
     
     private func loadImages(names: [String]) async -> [String: UIImage] {

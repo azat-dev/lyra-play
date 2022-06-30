@@ -32,12 +32,16 @@
 		AA41508A286B2ECA004549F4 /* FilesRepositoryMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA415089286B2ECA004549F4 /* FilesRepositoryMock.swift */; };
 		AA41508C286B603B004549F4 /* AudioFilesBrowserCellStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA41508B286B603B004549F4 /* AudioFilesBrowserCellStyles.swift */; };
 		AA41508E286B647D004549F4 /* AudioFilesBrowserCellLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA41508D286B647D004549F4 /* AudioFilesBrowserCellLayout.swift */; };
+		AA4F96FD286E325A0087F45A /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F96FC286E325A0087F45A /* PlayerViewController.swift */; };
+		AA4F96FF286E32710087F45A /* PlayerViewController+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F96FE286E32710087F45A /* PlayerViewController+Layout.swift */; };
+		AA4F9701286E327D0087F45A /* PlayerViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F9700286E327D0087F45A /* PlayerViewController+Styles.swift */; };
+		AA4F9703286E32870087F45A /* PlayerViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F9702286E32870087F45A /* PlayerViewControllerFactory.swift */; };
+		AA4F9705286E32C10087F45A /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F9704286E32C10087F45A /* PlayerViewModel.swift */; };
 		AA598D1B2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA598D192868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift */; };
 		AA598D1C2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA598D1A2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift */; };
 		AA598D1F2868D435001F3DE1 /* ManagedAudioFile+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA598D1E2868D435001F3DE1 /* ManagedAudioFile+Mapping.swift */; };
 		AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74928567A1C0010FA1E /* AppDelegate.swift */; };
 		AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */; };
-		AA8BF74E28567A1C0010FA1E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74D28567A1C0010FA1E /* ViewController.swift */; };
 		AA8BF75428567A1C0010FA1E /* LyraPlay.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF75228567A1C0010FA1E /* LyraPlay.xcdatamodeld */; };
 		AA8BF75628567A1F0010FA1E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA8BF75528567A1F0010FA1E /* Assets.xcassets */; };
 		AA8BF75928567A1F0010FA1E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA8BF75728567A1F0010FA1E /* LaunchScreen.storyboard */; };
@@ -106,13 +110,17 @@
 		AA415089286B2ECA004549F4 /* FilesRepositoryMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesRepositoryMock.swift; sourceTree = "<group>"; };
 		AA41508B286B603B004549F4 /* AudioFilesBrowserCellStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserCellStyles.swift; sourceTree = "<group>"; };
 		AA41508D286B647D004549F4 /* AudioFilesBrowserCellLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserCellLayout.swift; sourceTree = "<group>"; };
+		AA4F96FC286E325A0087F45A /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
+		AA4F96FE286E32710087F45A /* PlayerViewController+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PlayerViewController+Layout.swift"; sourceTree = "<group>"; };
+		AA4F9700286E327D0087F45A /* PlayerViewController+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PlayerViewController+Styles.swift"; sourceTree = "<group>"; };
+		AA4F9702286E32870087F45A /* PlayerViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewControllerFactory.swift; sourceTree = "<group>"; };
+		AA4F9704286E32C10087F45A /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
 		AA598D192868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedAudioFile+CoreDataClass.swift"; sourceTree = "<group>"; };
 		AA598D1A2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedAudioFile+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		AA598D1E2868D435001F3DE1 /* ManagedAudioFile+Mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedAudioFile+Mapping.swift"; sourceTree = "<group>"; };
 		AA8BF74628567A1C0010FA1E /* LyraPlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LyraPlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA8BF74928567A1C0010FA1E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		AA8BF74D28567A1C0010FA1E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		AA8BF75328567A1C0010FA1E /* LyraPlay.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LyraPlay.xcdatamodel; sourceTree = "<group>"; };
 		AA8BF75528567A1F0010FA1E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AA8BF75828567A1F0010FA1E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -265,6 +273,18 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		AA4F96FB286E322C0087F45A /* PlayerViewController */ = {
+			isa = PBXGroup;
+			children = (
+				AA4F96FC286E325A0087F45A /* PlayerViewController.swift */,
+				AA4F9704286E32C10087F45A /* PlayerViewModel.swift */,
+				AA4F96FE286E32710087F45A /* PlayerViewController+Layout.swift */,
+				AA4F9700286E327D0087F45A /* PlayerViewController+Styles.swift */,
+				AA4F9702286E32870087F45A /* PlayerViewControllerFactory.swift */,
+			);
+			path = PlayerViewController;
+			sourceTree = "<group>";
+		};
 		AA598D1D2868D403001F3DE1 /* ManagedObjects */ = {
 			isa = PBXGroup;
 			children = (
@@ -342,10 +362,10 @@
 		AA8BF77D28567A580010FA1E /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				AACEA3182869ABB900111565 /* AudioFilesBrowser */,
+				AA4F96FB286E322C0087F45A /* PlayerViewController */,
 				AACEA330286A41CF00111565 /* Common */,
 				AACEA3212869B0FC00111565 /* Utils */,
-				AA8BF74D28567A1C0010FA1E /* ViewController.swift */,
-				AACEA3182869ABB900111565 /* AudioFilesBrowser */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -671,7 +691,6 @@
 				AA3BAB19286C6883005EE01E /* AudioPlayerUseCase.swift in Sources */,
 				AA3BAB28286CC646005EE01E /* AudioPlayerService.swift in Sources */,
 				AA1ACC2C286317A2000EEDD5 /* TagsParser.swift in Sources */,
-				AA8BF74E28567A1C0010FA1E /* ViewController.swift in Sources */,
 				AA35E585286AA5E10086DB28 /* LocalFilesRepository.swift in Sources */,
 				AACEA32B2869ED5800111565 /* AudioFilesBrowserCell.swift in Sources */,
 				AACEA31C2869ABEB00111565 /* AudioFilesBrowserViewModel.swift in Sources */,
@@ -682,20 +701,25 @@
 				AACEA32D2869EDE400111565 /* AudioFilesBrowserCellViewModel.swift in Sources */,
 				AACEA3172869A5C800111565 /* BrowseAudioLibraryUseCase.swift in Sources */,
 				AA598D1F2868D435001F3DE1 /* ManagedAudioFile+Mapping.swift in Sources */,
+				AA4F9705286E32C10087F45A /* PlayerViewModel.swift in Sources */,
 				AA35E582286AA3D90086DB28 /* FilesRepository.swift in Sources */,
 				AA2BE88B2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift in Sources */,
 				AA8BF78228567C410010FA1E /* AppCoordinator.swift in Sources */,
 				AA3BAB1D286C728B005EE01E /* PlayerStateRepository.swift in Sources */,
 				AA3BAB22286C7D32005EE01E /* KeyValueStore.swift in Sources */,
+				AA4F96FD286E325A0087F45A /* PlayerViewController.swift in Sources */,
 				AACEA31A2869ABD700111565 /* AudioFilesBrowserViewController.swift in Sources */,
+				AA4F9701286E327D0087F45A /* PlayerViewController+Styles.swift in Sources */,
 				AA9BEB022865D5BB0028DF8E /* AudioFileInfo.swift in Sources */,
 				AACEA3282869E9C500111565 /* AudioFilesBrowserViewControllerFactory.swift in Sources */,
 				AA2BE88D2866EF35005C1AAD /* CoreDataStore.swift in Sources */,
 				AA9BEB002865D4540028DF8E /* ImportAudioFileUseCase.swift in Sources */,
 				AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */,
+				AA4F9703286E32870087F45A /* PlayerViewControllerFactory.swift in Sources */,
 				AA41508E286B647D004549F4 /* AudioFilesBrowserCellLayout.swift in Sources */,
 				AA3BAB2E286CC79F005EE01E /* DefaultAudioPlayerService.swift in Sources */,
 				AACEA32F286A418600111565 /* FilePickerViewController.swift in Sources */,
+				AA4F96FF286E32710087F45A /* PlayerViewController+Layout.swift in Sources */,
 				AA598D1C2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift in Sources */,
 				AA598D1B2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift in Sources */,
 				AA8BF75428567A1C0010FA1E /* LyraPlay.xcdatamodeld in Sources */,

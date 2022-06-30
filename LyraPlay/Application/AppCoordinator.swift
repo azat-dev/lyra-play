@@ -143,6 +143,19 @@ final class DefaultAppCoordinator: AppCoordinator {
         self.navigationController.topViewController?.present(vc, animated: true)
     }
     
+    func openAudioPlayer(trackId: UUID) {
+        
+        let factory = PlayerViewControllerFactory(
+            audioPlayerUseCase: audioPlayerUseCase
+        )
+
+        let vc = factory.build()
+        
+        let topViewController = self.navigationController.topViewController
+        topViewController?.modalPresentationStyle = .pageSheet
+        topViewController?.present(vc, animated: true)
+    }
+    
     func start() {
         
         let vc = makeAudioFilesBrowserVC()
