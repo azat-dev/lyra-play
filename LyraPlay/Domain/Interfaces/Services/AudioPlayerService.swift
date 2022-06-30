@@ -7,9 +7,16 @@
 
 import Foundation
 
+public struct MediaInfo {
+    
+    public var title: String
+    public var artist: String
+    public var coverImage: Data
+}
+
 public protocol AudioPlayerService {
     
-    func play(trackId: String, track: Data) async -> Result<Void, Error>
+    func play(trackId: String, info: MediaInfo, track: Data) async -> Result<Void, Error>
     
     func pause() async -> Result<Void, Error>
     

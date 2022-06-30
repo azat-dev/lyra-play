@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 // MARK: - Interfaces
 
@@ -33,18 +34,21 @@ public final class DefaultAudioPlayerUseCase: AudioPlayerUseCase {
     
     private let audioLibraryRepository: AudioLibraryRepository
     private let audioFilesRepository: FilesRepository
+    private let imagesRepository: FilesRepository
     private let playerStateRepository: PlayerStateRepository
     private let audioPlayerService: AudioPlayerService
     
     public init(
         audioLibraryRepository: AudioLibraryRepository,
         audioFilesRepository: FilesRepository,
+        imagesRepository: FilesRepository,
         playerStateRepository: PlayerStateRepository,
         audioPlayerService: AudioPlayerService
     ) {
         
         self.audioLibraryRepository = audioLibraryRepository
         self.audioFilesRepository = audioFilesRepository
+        self.imagesRepository = imagesRepository
         self.playerStateRepository = playerStateRepository
         self.audioPlayerService = audioPlayerService
     }
@@ -96,9 +100,26 @@ public final class DefaultAudioPlayerUseCase: AudioPlayerUseCase {
             let fileInfo = try fileInfoResult.get()
             
             let fileDataResult = await audioFilesRepository.getFile(name: fileInfo.audioFile)
+            
+            var imageData = UIImage(systemName: "lock")!.pngData()!
+            
+            if let coverImage = fileInfo.coverImage {
+                
+                let imageDataResult = await imagesRepository.getFile(name: coverImage)
+                if case .success(let data) = imageDataResult {
+                    imageData = data
+                }
+            }
+            
             let fileData = try fileDataResult.get()
             
-            await audioPlayerService.play(trackId: trackId.uuidString, track: fileData)
+            let mediaInfo = MediaInfo(
+                title: fileInfo.name,
+                artist: fileInfo.artist ?? "",
+                coverImage: imageData
+            )
+            
+            await audioPlayerService.play(trackId: trackId.uuidString, info: mediaInfo, track: fileData)
             return .success(())
             
         } catch {
