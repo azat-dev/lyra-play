@@ -7,6 +7,8 @@
 
 import Foundation
 import ID3TagEditor
+import AVFoundation
+import UIKit
 
 // MARK: - Interfaces
 
@@ -57,54 +59,30 @@ public final class DefaultTagsParser: TagsParser {
     
     public func parse(url: URL) async -> Result<AudioFileTags?, Error> {
         
-        let id3TagEditor = ID3TagEditor()
+        let asset = AVAsset(url: url)
         
-        var tags: ID3Tag? = nil
+        let titleMeta = asset.metadata.first { $0.commonKey == .commonKeyTitle }
+        let artworkMeta = asset.metadata.first { $0.commonKey == .commonKeyArtwork }
+        let artistMeta = asset.metadata.first { $0.commonKey == .commonKeyArtist }
+        let genreMeta = asset.metadata.first { $0.commonKey == .commonKeyType }
         
-        do {
-            
-            let data = try Data(contentsOf: url)
-            tags = try id3TagEditor.read(mp3: data)
-        } catch {
-            return .failure(NSError(domain: "Can't read tags", code: 0))
-        }
+        var coverImage: TagsImageData?
         
-        guard let tags = tags else {
-            return .success(nil)
-        }
-
-        
-        let tagsContentReader = ID3TagContentReader(id3Tag: tags)
-        let coverData = tagsContentReader.attachedPictures().first(where: { $0.type == .frontCover }) ?? tagsContentReader.attachedPictures().first
-
-        var imageData: TagsImageData?
-        
-        
-        if let coverData = coverData {
-            
-            var coverImageExtension: String
-            
-            switch coverData.format {
-            case .jpeg:
-                coverImageExtension = "jpeg"
-            case .png:
-                coverImageExtension = "png"
-            }
-            
-            imageData = TagsImageData(
-                data: coverData.picture,
-                fileExtension: coverImageExtension
+        if let artworkMeta = artworkMeta {
+            coverImage = TagsImageData(
+                data: UIImage(data: artworkMeta.dataValue!)!.pngData()!,
+                fileExtension: "png"
             )
         }
         
-        let resultTags = AudioFileTags(
-            title: tagsContentReader.title(),
-            genre: tagsContentReader.genre()?.description,
-            coverImage: imageData,
-            artist: tagsContentReader.artist(),
-            lyrics: tagsContentReader.unsynchronizedLyrics().first?.content
+        let tags = AudioFileTags(
+            title: titleMeta?.stringValue,
+            genre: genreMeta?.stringValue,
+            coverImage: coverImage,
+            artist: artistMeta?.stringValue,
+            lyrics: asset.lyrics
         )
         
-        return .success(resultTags)
+        return .success(tags)
     }
 }
