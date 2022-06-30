@@ -5,6 +5,7 @@
         <attribute name="audioFile" attributeType="String"/>
         <attribute name="coverImage" optional="YES" attributeType="String"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="duration" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="genre" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" attributeType="String"/>
@@ -16,6 +17,6 @@
         </uniquenessConstraints>
     </entity>
     <elements>
-        <element name="ManagedAudioFile" positionX="-63" positionY="-18" width="128" height="149"/>
+        <element name="ManagedAudioFile" positionX="-63" positionY="-18" width="128" height="164"/>
     </elements>
 </model>

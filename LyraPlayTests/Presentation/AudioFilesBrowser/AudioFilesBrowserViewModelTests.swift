@@ -31,7 +31,14 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         )
         
         tagsParserCallback = nil
-        let tagsParser = TagsParserMock(callback: { [weak self] data in self?.tagsParserCallback?(data) })
+        let tagsParser = TagsParserMock(callback: { [weak self] data in
+            
+            guard let tagsParserCallback = self?.tagsParserCallback else {
+                fatalError()
+            }
+            
+            return tagsParserCallback(data)
+        })
         
         let audioFilesRepository = FilesRepositoryMock()
         let imagesRepository = FilesRepositoryMock()
@@ -55,7 +62,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
     
     private func getTestFile(index: Int) -> (info: AudioFileInfo, data: Data) {
         return (
-            info: AudioFileInfo.create(name: "Test \(index)", audioFile: "test.mp3"),
+            info: AudioFileInfo.create(name: "Test \(index)", duration: 19, audioFile: "test.mp3"),
             data: "Test \(index)".data(using: .utf8)!
         )
     }
@@ -90,6 +97,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
                     fileExtension:"png"
                 ),
                 artist: "Artist \(index)",
+                duration: 10,
                 lyrics: "Lyrics \(index)"
             )
         }

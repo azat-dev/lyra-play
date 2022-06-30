@@ -67,7 +67,7 @@ public final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
         
         var savedCoverImageName: String?
         
-        if let coverImage = tags?.coverImage {
+        if let coverImage = tags.coverImage {
             
             let imageId = UUID().uuidString
             let imageName = "\(imageId).\(coverImage.fileExtension)"
@@ -82,10 +82,11 @@ public final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
             id: nil,
             createdAt: .now,
             updatedAt: nil,
-            name: tags?.title ?? originalFileName,
+            name: tags.title ?? originalFileName,
+            duration: tags.duration,
             audioFile: audioFileName,
-            artist: tags?.artist,
-            genre: tags?.genre,
+            artist: tags.artist,
+            genre: tags.genre,
             coverImage: savedCoverImageName
         )
         

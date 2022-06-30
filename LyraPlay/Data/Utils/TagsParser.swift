@@ -29,6 +29,7 @@ public struct AudioFileTags {
     public var genre: String?
     public var coverImage: TagsImageData?
     public var artist: String?
+    public var duration: Double
     public var lyrics: String?
     
     public init(
@@ -36,6 +37,7 @@ public struct AudioFileTags {
         genre: String? = nil,
         coverImage: TagsImageData? = nil,
         artist: String? = nil,
+        duration: Double,
         lyrics: String? = nil
     ) {
         
@@ -44,11 +46,12 @@ public struct AudioFileTags {
         self.coverImage = coverImage
         self.artist = artist
         self.lyrics = lyrics
+        self.duration = duration
     }
 }
 
 public protocol TagsParser {
-    func parse(url: URL) async -> Result<AudioFileTags?, Error>
+    func parse(url: URL) async -> Result<AudioFileTags, Error>
 }
 
 // MARK: - Implementations
@@ -57,7 +60,7 @@ public final class DefaultTagsParser: TagsParser {
     
     public init() {}
     
-    public func parse(url: URL) async -> Result<AudioFileTags?, Error> {
+    public func parse(url: URL) async -> Result<AudioFileTags, Error> {
         
         let asset = AVAsset(url: url)
         
@@ -80,6 +83,7 @@ public final class DefaultTagsParser: TagsParser {
             genre: genreMeta?.stringValue,
             coverImage: coverImage,
             artist: artistMeta?.stringValue,
+            duration: CMTimeGetSeconds(asset.duration),
             lyrics: asset.lyrics
         )
         

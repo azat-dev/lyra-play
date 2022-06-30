@@ -29,11 +29,6 @@ class DefatulTagsParserTests: XCTestCase {
         let result = await tagsParser.parse(url: url)
         let tags = AssertResultSucceded(result)
         
-        guard let tags = tags else {
-            XCTAssertNotNil(tags)
-            return
-        }
-        
         XCTAssertEqual(tags.artist ?? "", "Test Artist")
         XCTAssertEqual(tags.title ?? "", "Test Title")
         XCTAssertEqual(tags.genre ?? "", "Test Genre")
@@ -41,5 +36,6 @@ class DefatulTagsParserTests: XCTestCase {
         XCTAssertNotNil(tags.coverImage?.fileExtension, "png")
         XCTAssertNotNil(tags.lyrics)
         XCTAssertTrue(tags.lyrics?.contains("length: 0:19") ?? false)
+        XCTAssertEqual(tags.duration, 19.0, accuracy: 1.0)
     }
 }

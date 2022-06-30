@@ -70,6 +70,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: nil,
             updatedAt: nil,
             name: "Name1",
+            duration: 10,
             audioFile: "test1.mp3",
             artist: "Artist1",
             genre: "Genre1"
@@ -91,6 +92,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: nil,
             updatedAt: nil,
             name: "Name1",
+            duration: 10,
             audioFile: "test1.mp3",
             artist: "Artist1",
             genre: "Genre1"
@@ -104,6 +106,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name2",
+            duration: 10,
             audioFile: "test2.mp3",
             artist: "Artist2",
             genre: "Genre2"
@@ -123,6 +126,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: nil,
             updatedAt: nil,
             name: "Name1",
+            duration: 10,
             audioFile: "test1.mp3",
             artist: "Artist1",
             genre: "Genre1"
@@ -136,6 +140,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: savedFile1!.createdAt,
             updatedAt: savedFile1?.updatedAt,
             name: "Name2",
+            duration: 10,
             audioFile: "test2.mp3",
             artist: "Artist2",
             genre: "Genre2"
@@ -159,6 +164,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: nil,
             updatedAt: nil,
             name: "Name1",
+            duration: 10,
             audioFile: "test.mp3",
             artist: "Artist1",
             genre: "Genre1"
@@ -177,6 +183,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name1",
+            duration: 10,
             audioFile: "test1.mp3",
             artist: "Artist1",
             genre: "Genre1"
@@ -190,6 +197,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name2",
+            duration: 10,
             audioFile: "test2.mp3",
             artist: "Artist2",
             genre: "Genre2"
@@ -220,6 +228,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name1",
+            duration: 10,
             audioFile: "test1.mp3",
             artist: "Artist1",
             genre: "Genre1"
@@ -233,6 +242,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name2",
+            duration: 10,
             audioFile: "test2.mp3",
             artist: "Artist2",
             genre: "Genre2"
@@ -263,6 +273,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name1",
+            duration: 10,
             audioFile: "test1.mp3",
             artist: "Artist1",
             genre: "Genre1"
@@ -276,6 +287,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name2",
+            duration: 10,
             audioFile: "test2.mp3",
             artist: "Artist2",
             genre: "Genre2"
@@ -314,6 +326,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             createdAt: .now,
             updatedAt: nil,
             name: "Name1",
+            duration: 10,
             audioFile: "test.mp3",
             artist: "Artist1",
             genre: "Genre1"

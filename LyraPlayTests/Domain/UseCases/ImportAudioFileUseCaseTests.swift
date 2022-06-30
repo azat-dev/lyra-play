@@ -23,7 +23,11 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         tagsParserCallback = nil
         
         let tagsParser = TagsParserMock { [weak self] url in
-            self?.tagsParserCallback?(url)
+            guard let tagsParserCallback = self?.tagsParserCallback else {
+                fatalError()
+            }
+            
+            return tagsParserCallback(url)
         }
         
         audioLibraryRepository = AudioFilesRepositoryMock()
@@ -49,6 +53,10 @@ class ImportAudioFileUseCaseTests: XCTestCase {
             "test1".data(using: .utf8)!,
             "test2".data(using: .utf8)!,
         ]
+        
+        tagsParserCallback = { url in
+            return AudioFileTags(duration: 10)
+        }
 
         for (index, testFile) in testFiles.enumerated() {
             
@@ -94,6 +102,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
                 fileExtension: "png"
             ),
             artist: "Artist",
+            duration: 10,
             lyrics: "Lyrics"
         )
         
@@ -115,6 +124,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         XCTAssertEqual(imortedFile.name, testTags.title)
         XCTAssertEqual(imortedFile.genre, testTags.genre)
         XCTAssertEqual(imortedFile.artist, testTags.artist)
+        XCTAssertEqual(imortedFile.duration, testTags.duration)
 
         let resutlAudioData = await audioFilesRepository.getFile(name: imortedFile.audioFile)
         let audioData = AssertResultSucceded(resutlAudioData)
@@ -133,6 +143,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
                 genre: nil,
                 coverImage: nil,
                 artist: nil,
+                duration: 10,
                 lyrics: nil
             )
         }

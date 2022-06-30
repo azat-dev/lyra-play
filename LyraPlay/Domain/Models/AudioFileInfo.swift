@@ -14,6 +14,7 @@ public struct AudioFileInfo {
     public var updatedAt: Date?
     public var name: String
     public var artist: String?
+    public var duration: Double
     public var genre: String?
     public var coverImage: String?
     public var audioFile: String
@@ -23,6 +24,7 @@ public struct AudioFileInfo {
         createdAt: Date?,
         updatedAt: Date?,
         name: String,
+        duration: Double,
         audioFile: String,
         artist: String? = nil,
         genre: String? = nil,
@@ -37,18 +39,20 @@ public struct AudioFileInfo {
         self.genre = genre
         self.coverImage = coverImage
         self.audioFile = audioFile
+        self.duration = duration
     }
 }
 
 public extension AudioFileInfo {
     
-    static func create(name: String, audioFile: String) -> AudioFileInfo {
+    static func create(name: String, duration: Double, audioFile: String) -> AudioFileInfo {
         
         return AudioFileInfo(
             id: nil,
             createdAt: nil,
             updatedAt: nil,
             name: name,
+            duration: duration,
             audioFile: audioFile
         )
     }

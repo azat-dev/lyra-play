@@ -16,6 +16,7 @@ extension ManagedAudioFile {
             createdAt: createdAt,
             updatedAt: updatedAt,
             name: name,
+            duration: duration,
             audioFile: audioFile,
             artist: artist,
             genre: genre,

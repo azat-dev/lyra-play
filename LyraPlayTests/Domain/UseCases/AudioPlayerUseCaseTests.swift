@@ -47,7 +47,7 @@ class AudioPlayerUseCaseTests: XCTestCase {
         for index in 0..<numberOfTracks {
             
             let result = await audioLibraryRepository.putFile(
-                info: AudioFileInfo.create(name: "Track \(index)", audioFile: "test.mp3"),
+                info: AudioFileInfo.create(name: "Track \(index)", duration: 10, audioFile: "test.mp3"),
                 data: testTrackData
             )
             AssertResultSucceded(result)
