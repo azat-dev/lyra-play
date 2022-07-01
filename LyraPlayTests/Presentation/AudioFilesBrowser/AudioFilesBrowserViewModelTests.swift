@@ -127,6 +127,9 @@ fileprivate class AudioFilesBrowserCoordinatorMock: AudioFilesBrowserCoordinator
     func chooseFiles(completion: @escaping ([URL]?) -> Void) {
         completion(nil)
     }
+    
+    func openAudioPlayer(trackId: UUID) {
+    }
 }
 
 fileprivate class FilesDelegateMock: AudioFilesBrowserUpdateDelegate {
