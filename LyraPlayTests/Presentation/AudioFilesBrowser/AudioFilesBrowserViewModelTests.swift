@@ -127,6 +127,9 @@ fileprivate class AudioFilesBrowserCoordinatorMock: AudioFilesBrowserCoordinator
     func chooseFiles(completion: @escaping ([URL]?) -> Void) {
         completion(nil)
     }
+    
+    func openAudioPlayer(trackId: UUID) {
+    }
 }
 
 fileprivate class FilesDelegateMock: AudioFilesBrowserUpdateDelegate {
@@ -142,24 +145,5 @@ fileprivate class FilesDelegateMock: AudioFilesBrowserUpdateDelegate {
     func filesDidUpdate(updatedFiles: [AudioFilesBrowserCellViewModel]) {
         
         onUpdateFiles(updatedFiles)
-    }
-}
-
-fileprivate class AudioPlayerUseCaseMock: AudioPlayerUseCase {
-    
-    func setTrack(fileId: UUID) async -> Result<Void, AudioPlayerUseCaseError> {
-        fatalError()
-    }
-    
-    func getCurrentTrackId() async -> Result<UUID?, AudioPlayerUseCaseError> {
-        fatalError()
-    }
-    
-    func play() async -> Result<Void, AudioPlayerUseCaseError> {
-        fatalError()
-    }
-    
-    func pause() async -> Result<Void, AudioPlayerUseCaseError> {
-        fatalError()
     }
 }

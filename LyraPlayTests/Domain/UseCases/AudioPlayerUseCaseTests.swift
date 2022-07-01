@@ -16,6 +16,7 @@ class AudioPlayerUseCaseTests: XCTestCase {
     private var audioLibraryRepository: AudioLibraryRepository!
     private var playerStateRepository: PlayerStateRepository!
     private var audioFilesRepository: FilesRepository!
+    private var imagesRepository: FilesRepositoryMock!
     
 //    private var progressDelegate: AudioPlayerProgressDelegate?
 
@@ -25,10 +26,12 @@ class AudioPlayerUseCaseTests: XCTestCase {
         playerStateRepository = DefaultPlayerStateRepository(keyValueStore: keyValueStore, key: "player-state")
         audioLibraryRepository = AudioFilesRepositoryMock()
         audioFilesRepository = FilesRepositoryMock()
+        imagesRepository = FilesRepositoryMock()
         
         useCase = DefaultAudioPlayerUseCase(
             audioLibraryRepository: audioLibraryRepository,
             audioFilesRepository: audioFilesRepository,
+            imagesRepository: imagesRepository,
             playerStateRepository: playerStateRepository,
             audioPlayerService: DefaultAudioPlayerService()
         )

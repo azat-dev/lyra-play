@@ -14,8 +14,11 @@ public struct MediaInfo {
     public var coverImage: Data
 }
 
-public protocol AudioPlayerService {
-    
+public protocol AudioPlayerServiceOutput {
+}
+
+public protocol AudioPlayerServiceInput {
+
     func play(trackId: String, info: MediaInfo, track: Data) async -> Result<Void, Error>
     
     func pause() async -> Result<Void, Error>
@@ -25,4 +28,8 @@ public protocol AudioPlayerService {
     func seek(time: Int) async -> Result<Void, Error>
     
     func setVolume(value: Double) async -> Result<Void, Error>
+}
+
+public protocol AudioPlayerService: AudioPlayerServiceInput, AudioPlayerServiceOutput {
+    
 }
