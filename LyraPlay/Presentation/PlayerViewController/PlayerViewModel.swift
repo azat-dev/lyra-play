@@ -10,28 +10,28 @@ import UIKit
 
 // MARK: - Interfaces
 
-public enum CurrentPlayerState {
+public struct TrackInfo {
     
-    case paused
-    case running
-    case stopped
+    var title: String
+    var artist: String
+    var image: UIImage
+    var duration: String
 }
 
 public protocol PlayerViewModelOutput {
     
+    var trackInfo: Observable<TrackInfo?> { get }
+    var isPlaying: Observable<Bool> { get }
+    var progress: Observable<Float> { get }
     var currentTime: Observable<Float> { get }
-    var state: Observable<CurrentPlayerState> { get }
     var volume: Observable<Float> { get }
-    var image: Observable<UIImage?> { get }
 }
 
 public protocol PlayerViewModelInput {
-    
-    func play()
-    
-    func pause()
-    
-    func setVolume()
+
+    func load() async
+    func togglePlay() async
+    func setVolume() async
 }
 
 public protocol PlayerViewModel: PlayerViewModelOutput, PlayerViewModelInput {
@@ -41,33 +41,47 @@ public protocol PlayerViewModel: PlayerViewModelOutput, PlayerViewModelInput {
 // MARK: - Implementations
 
 public final class DefaultPlayerViewModel: PlayerViewModel {
-    
+
     private let audioPlayerUseCase: AudioPlayerUseCase
     
+    public var trackInfo: Observable<TrackInfo?>
+    public var isPlaying: Observable<Bool>
+    public var progress: Observable<Float>
     public var currentTime: Observable<Float>
-    public var state: Observable<CurrentPlayerState>
     public var volume: Observable<Float>
-    public var image: Observable<UIImage?>
     
     public init(audioPlayerUseCase: AudioPlayerUseCase) {
         
         self.audioPlayerUseCase = audioPlayerUseCase
         
+        trackInfo = Observable(nil)
         currentTime = Observable(0)
-        state = Observable(.stopped)
         volume = Observable(0)
-        image = Observable(nil)
+        isPlaying = Observable(false)
+        progress = Observable(0)
+        
+        audioPlayerUseCase.isPlaying.observe(on: self) { [weak self] isPlaying in
+            self?.isPlaying.value = isPlaying
+        }
     }
     
-    public func play() {
+    public func togglePlay() async {
+        
+        if audioPlayerUseCase.isPlaying.value {
+            let _ = await audioPlayerUseCase.pause()
+        } else {
+            let _ = await audioPlayerUseCase.play()
+        }
+    }
+    
+    public func setVolume() async {
         fatalError()
     }
     
-    public func pause() {
-        fatalError()
-    }
-    
-    public func setVolume() {
-        fatalError()
+    public func load() async {
+        
+        trackInfo.value = nil
+        
+//        audioPlayerUseCase.setTrack(fileId: UUID)
     }
 }

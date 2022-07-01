@@ -22,11 +22,8 @@ class PlayerViewModelTests: XCTestCase {
     }
     
 
-    func testLoadTrack() {
+    func testLoadTrack() async {
     
-        let loadingExpectation = expectation(description: "Loading")
-        let loadedExpectation = expectation(description: "Loaded")
-        
         let trackInfoLoading = expectation(description: "Track info is loading")
         let trackInfoLoaded = expectation(description: "Track info is loaded")
         
@@ -39,15 +36,33 @@ class PlayerViewModelTests: XCTestCase {
             }
         }
         
-        
-        playerViewModel.load()
+        await playerViewModel.load()
         
         wait(for: [trackInfoLoading, trackInfoLoaded], timeout: 10, enforceOrder: true)
     }
     
-    func testPlay() {
+    func testTogglePlay() async {
         
-        playerViewModel.togglePlay()
+        let notPlayingExpectation = expectation(description: "Not playing")
+        let playingExpectation = expectation(description: "Playing")
+        
+        playerViewModel.isPlaying.observe(on: self) { isPlaying in
+            if isPlaying {
+                playingExpectation.fulfill()
+            } else {
+                notPlayingExpectation.fulfill()
+            }
+        }
+        
+        await playerViewModel.togglePlay()
+        
+        wait(for: [notPlayingExpectation, playingExpectation], timeout: 3, enforceOrder: true)
+        
+    }
+    
+    func testPlay() async {
+        
+        await playerViewModel.togglePlay()
         
         let playingExpectation = expectation(description: "Playing")
         let currentTimeExpectation = expectation(description: "Current time is changed")
@@ -68,13 +83,12 @@ class PlayerViewModelTests: XCTestCase {
         }
 
         wait(for: [currentTimeExpectation], timeout: 3, enforceOrder: false)
-        playerViewModel.pause()
     }
     
-    func testPause() {
+    func testPause() async {
         
-        playerViewModel.togglePlay()
-        playerViewModel.togglePlay()
+        await playerViewModel.togglePlay()
+        await playerViewModel.togglePlay()
         
         let currentTimeExpectation = expectation(description: "Current time is changed")
         currentTimeExpectation.isInverted = true

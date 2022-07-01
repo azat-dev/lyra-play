@@ -147,22 +147,3 @@ fileprivate class FilesDelegateMock: AudioFilesBrowserUpdateDelegate {
         onUpdateFiles(updatedFiles)
     }
 }
-
-fileprivate class AudioPlayerUseCaseMock: AudioPlayerUseCase {
-    
-    func setTrack(fileId: UUID) async -> Result<Void, AudioPlayerUseCaseError> {
-        fatalError()
-    }
-    
-    func getCurrentTrackId() async -> Result<UUID?, AudioPlayerUseCaseError> {
-        fatalError()
-    }
-    
-    func play() async -> Result<Void, AudioPlayerUseCaseError> {
-        fatalError()
-    }
-    
-    func pause() async -> Result<Void, AudioPlayerUseCaseError> {
-        fatalError()
-    }
-}

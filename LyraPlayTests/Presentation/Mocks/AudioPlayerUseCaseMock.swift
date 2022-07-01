@@ -11,12 +11,13 @@ import LyraPlay
 class AudioPlayerUseCaseMock: AudioPlayerUseCase {
 
     private var currentTrackId: UUID? = nil
+
+    var isPlaying = Observable(false)
     
     func setTrack(fileId: UUID) async -> Result<Void, AudioPlayerUseCaseError> {
-        
-        return await withCheckedContinuation { contiuation in
             
-        }
+        currentTrackId = fileId
+        return .success(())
     }
     
     func getCurrentTrackId() async -> Result<UUID?, AudioPlayerUseCaseError> {
@@ -24,10 +25,14 @@ class AudioPlayerUseCaseMock: AudioPlayerUseCase {
     }
     
     func play() async -> Result<Void, AudioPlayerUseCaseError> {
+        
+        isPlaying.value = true
         return .success(())
     }
     
     func pause() async -> Result<Void, AudioPlayerUseCaseError> {
+        
+        isPlaying.value = false
         return .success(())
     }
 }

@@ -17,7 +17,12 @@ public enum AudioPlayerUseCaseError: Error {
     case noActiveTrack
 }
 
-public protocol AudioPlayerUseCase {
+public protocol AudioPlayerUseCaseOutput {
+    
+    var isPlaying: Observable<Bool> { get }
+}
+
+public protocol AudioPlayerUseCaseInput {
     
     func setTrack(fileId: UUID) async -> Result<Void, AudioPlayerUseCaseError>
     
@@ -26,6 +31,10 @@ public protocol AudioPlayerUseCase {
     func play() async -> Result<Void, AudioPlayerUseCaseError>
     
     func pause() async -> Result<Void, AudioPlayerUseCaseError>
+}
+
+public protocol AudioPlayerUseCase: AudioPlayerUseCaseInput, AudioPlayerUseCaseOutput {
+    
 }
 
 // MARK: - Implementations
@@ -37,6 +46,8 @@ public final class DefaultAudioPlayerUseCase: AudioPlayerUseCase {
     private let imagesRepository: FilesRepository
     private let playerStateRepository: PlayerStateRepository
     private let audioPlayerService: AudioPlayerService
+    
+    public var isPlaying: Observable<Bool> = Observable(false)
     
     public init(
         audioLibraryRepository: AudioLibraryRepository,
@@ -119,7 +130,12 @@ public final class DefaultAudioPlayerUseCase: AudioPlayerUseCase {
                 coverImage: imageData
             )
             
-            await audioPlayerService.play(trackId: trackId.uuidString, info: mediaInfo, track: fileData)
+            let resultPlay = await audioPlayerService.play(trackId: trackId.uuidString, info: mediaInfo, track: fileData)
+            guard case .success = resultPlay else {
+                return .failure(.internalError(nil))
+            }
+
+            isPlaying.value = true
             return .success(())
             
         } catch {
@@ -128,26 +144,35 @@ public final class DefaultAudioPlayerUseCase: AudioPlayerUseCase {
     }
     
     public func play() async -> Result<Void, AudioPlayerUseCaseError> {
+        
         let result = await getCurrentTrackId()
 
         switch result {
+            
         case .success(let trackId):
 
             guard let trackId = trackId else {
                 return .failure(.noActiveTrack)
             }
 
+            isPlaying.value = true
             return await play(trackId: trackId)
             
         case .failure(let error):
             
             return .failure(.internalError(error))
         }
-        
-        return .success(())
     }
     
     public func pause() async -> Result<Void, AudioPlayerUseCaseError> {
+        
+        let result = await audioPlayerService.pause()
+        
+        guard case .success = result else {
+            return .failure(.internalError(nil))
+        }
+        
+        isPlaying.value = false
         return .success(())
     }
 }
