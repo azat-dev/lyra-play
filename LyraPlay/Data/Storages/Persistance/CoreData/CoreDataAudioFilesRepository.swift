@@ -87,7 +87,7 @@ final class CoreDataAudioLibraryRepository: AudioLibraryRepository {
     }
     
     
-    public func putFile(info file: AudioFileInfo, data: Data) async -> Result<AudioFileInfo, AudioLibraryRepositoryError> {
+    public func putFile(info file: AudioFileInfo) async -> Result<AudioFileInfo, AudioLibraryRepositoryError> {
         
         var existingFile: ManagedAudioFile? = nil
         

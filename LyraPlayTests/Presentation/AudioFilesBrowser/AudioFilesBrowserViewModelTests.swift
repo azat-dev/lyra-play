@@ -76,7 +76,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         }
         
         for file in testFiles {
-            let _ = await audioLibraryRepository.putFile(info: file.info, data: file.data)
+            let _ = await audioLibraryRepository.putFile(info: file.info)
         }
         
         let expectation = XCTestExpectation()

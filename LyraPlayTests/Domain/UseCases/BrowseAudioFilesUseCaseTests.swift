@@ -38,7 +38,7 @@ class BrowseAudioLibraryUseCaseTests: XCTestCase {
         let testFiles = (0..<numberOfTestFiles).map { self.getTestFile(index: $0) }
         
         for file in testFiles {
-            let _ = await audioLibraryRepository.putFile(info: file.info, data: file.data)
+            let _ = await audioLibraryRepository.putFile(info: file.info)
         }
         
         let result = await useCase.listFiles()
@@ -54,7 +54,7 @@ class BrowseAudioLibraryUseCaseTests: XCTestCase {
         let testFiles = (0..<numberOfTestFiles).map { self.getTestFile(index: $0) }
         
         for file in testFiles {
-            let result = await audioLibraryRepository.putFile(info: file.info, data: file.data)
+            let result = await audioLibraryRepository.putFile(info: file.info)
             let savedFile = try! result.get()
             
             let infoResult = await useCase.getFileInfo(fileId: savedFile.id!)

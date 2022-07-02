@@ -26,7 +26,7 @@ class AudioLibraryRepositoryMock: AudioLibraryRepository {
         return .success(info)
     }
     
-    func putFile(info fileInfo: AudioFileInfo, data: Data) async -> Result<AudioFileInfo, AudioLibraryRepositoryError> {
+    func putFile(info fileInfo: AudioFileInfo) async -> Result<AudioFileInfo, AudioLibraryRepositoryError> {
         
         guard let fileId = fileInfo.id else {
             

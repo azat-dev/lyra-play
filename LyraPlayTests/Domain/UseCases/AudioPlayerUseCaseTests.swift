@@ -28,7 +28,23 @@ class AudioPlayerUseCaseTests: XCTestCase {
         audioFilesRepository = FilesRepositoryMock()
         imagesRepository = FilesRepositoryMock()
         
-        useCase = DefaultAudioPlayerUseCase()
+        let showMediaInfoUseCase = DefaultShowMediaInfoUseCase(
+            audioLibraryRepository: audioLibraryRepository,
+            imagesRepository: imagesRepository,
+            defaultImage: "defaultImage".data(using: .utf8)!
+        )
+        
+        let showMediaInfoUseCase = LoadTrackUseCase(
+            audioLibraryRepository: audioLibraryRepository,
+            audioFilesRepository: audioFilesRepository
+        )
+        
+        useCase = DefaultAudioPlayerUseCase(
+            showMediaInfoUseCase: showMediaInfoUseCase,
+            loadTrackUseCase: loadTrackUseCase,
+            playerStateRepository: playerStateRepository,
+            audioPlayerService: DefaultAudioPlayerService()
+        )
 //        useCase = DefaultAudioPlayerUseCase(
 //            audioLibraryRepository: audioLibraryRepository,
 //            audioFilesRepository: audioFilesRepository,

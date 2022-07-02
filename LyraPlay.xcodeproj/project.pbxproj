@@ -46,6 +46,7 @@
 		AA731CC328706CBB0044412F /* ShowMediaInfoUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA731CC228706CBB0044412F /* ShowMediaInfoUseCaseTests.swift */; };
 		AA731CC5287070C00044412F /* ShowMediaInfoUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA731CC4287070C00044412F /* ShowMediaInfoUseCase.swift */; };
 		AA731CC828707EE50044412F /* Result+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA731CC728707EE50044412F /* Result+Utils.swift */; };
+		AA731CCA2870BE890044412F /* LoadTrackUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA731CC92870BE890044412F /* LoadTrackUseCaseTests.swift */; };
 		AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74928567A1C0010FA1E /* AppDelegate.swift */; };
 		AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */; };
 		AA8BF75428567A1C0010FA1E /* LyraPlay.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF75228567A1C0010FA1E /* LyraPlay.xcdatamodeld */; };
@@ -131,6 +132,7 @@
 		AA731CC228706CBB0044412F /* ShowMediaInfoUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowMediaInfoUseCaseTests.swift; sourceTree = "<group>"; };
 		AA731CC4287070C00044412F /* ShowMediaInfoUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowMediaInfoUseCase.swift; sourceTree = "<group>"; };
 		AA731CC728707EE50044412F /* Result+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Utils.swift"; sourceTree = "<group>"; };
+		AA731CC92870BE890044412F /* LoadTrackUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadTrackUseCaseTests.swift; sourceTree = "<group>"; };
 		AA8BF74628567A1C0010FA1E /* LyraPlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LyraPlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA8BF74928567A1C0010FA1E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -466,6 +468,7 @@
 				AACEA31128699F5500111565 /* BrowseAudioFilesUseCaseTests.swift */,
 				AA3BAB16286B67B5005EE01E /* AudioPlayerUseCaseTests.swift */,
 				AA731CC228706CBB0044412F /* ShowMediaInfoUseCaseTests.swift */,
+				AA731CC92870BE890044412F /* LoadTrackUseCaseTests.swift */,
 			);
 			path = UseCases;
 			sourceTree = "<group>";
@@ -781,6 +784,7 @@
 				AACEA3262869B17E00111565 /* ObservableTests.swift in Sources */,
 				AA8BF76428567A1F0010FA1E /* LyraPlayTests.swift in Sources */,
 				AA64C81D286F181F0089F165 /* AudioPlayerUseCaseMock.swift in Sources */,
+				AA731CCA2870BE890044412F /* LoadTrackUseCaseTests.swift in Sources */,
 				AA415084286B0987004549F4 /* AssertResult.swift in Sources */,
 				AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */,
 				AACEA3152869A32A00111565 /* AudioLibraryRepositoryMock.swift in Sources */,

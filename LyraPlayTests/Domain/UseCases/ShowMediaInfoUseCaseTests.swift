@@ -44,7 +44,7 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         
         let testFileData = "file".data(using: .utf8)!
         
-        let putResult = await audioLibraryRepository.putFile(info: testFileInfo, data: testFileData)
+        let putResult = await audioLibraryRepository.putFile(info: testFileInfo)
         let savedFileInfo = try AssertResultSucceded(putResult)
         
         let resultMediaInfo = await useCase.fetchInfo(trackId: savedFileInfo.id!)
@@ -64,7 +64,7 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         
         let testFileData = "file".data(using: .utf8)!
         
-        let putResult = await audioLibraryRepository.putFile(info: testFileInfo, data: testFileData)
+        let putResult = await audioLibraryRepository.putFile(info: testFileInfo)
         let savedFileInfo = try AssertResultSucceded(putResult)
         
         let resultMediaInfo = await useCase.fetchInfo(trackId: savedFileInfo.id!)
@@ -80,7 +80,7 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         
         let testFileData = "file".data(using: .utf8)!
         
-        let putResult = await audioLibraryRepository.putFile(info: testFileInfo, data: testFileData)
+        let putResult = await audioLibraryRepository.putFile(info: testFileInfo)
         let savedFileInfo = try AssertResultSucceded(putResult)
         
         let resultMediaInfo = await useCase.fetchInfo(trackId: savedFileInfo.id!)
