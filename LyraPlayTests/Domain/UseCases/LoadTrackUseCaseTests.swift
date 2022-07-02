@@ -21,7 +21,7 @@ class LoadTrackUseCaseTests: XCTestCase {
         audioFilesRepository = FilesRepositoryMock()
         audioLibraryRepository = AudioLibraryRepositoryMock()
         
-        useCase = LoadTrackUseCase(
+        useCase = DefaultLoadTrackUseCase(
             audioLibraryRepository: audioLibraryRepository,
             audioFilesRepository: audioFilesRepository
         )
@@ -34,7 +34,7 @@ class LoadTrackUseCaseTests: XCTestCase {
         
         let testFileInfo = AudioFileInfo.create(name: "test", duration: 10, audioFile: testName)
         
-        let resultPutFile = await audioFilesRepository.putFile(name: testName, data: testData)
+        let _ = await audioFilesRepository.putFile(name: testName, data: testData)
         
         let resultPut = await audioLibraryRepository.putFile(info: testFileInfo)
         let savedLibraryItem = try AssertResultSucceded(resultPut)
@@ -55,6 +55,7 @@ class LoadTrackUseCaseTests: XCTestCase {
         
         guard case .trackNotFound = error else {
             XCTFail("Wrong error")
+            return
         }
     }
     
@@ -68,13 +69,11 @@ class LoadTrackUseCaseTests: XCTestCase {
         let savedLibraryItem = try AssertResultSucceded(resultPut)
         
         let result = await useCase.load(trackId: savedLibraryItem.id!)
-        let trackData = try AssertResultSucceded(result)
-        
-        let result = await useCase.load(trackId: savedLibraryItem.id!)
         let error = try AssertResultFailed(result)
         
         guard case .trackNotFound = error else {
             XCTFail("Wrong error")
+            return
         }
     }
 }

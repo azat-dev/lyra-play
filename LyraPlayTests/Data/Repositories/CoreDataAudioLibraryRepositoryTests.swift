@@ -37,19 +37,19 @@ extension AudioFileInfo: Comparable {
 
 class CoreDataAudioLibraryRepositoryTests: XCTestCase {
     
-    var repository: AudioLibraryRepository!
+    var library: AudioLibraryRepository!
     
     override func setUpWithError() throws {
 
         let storeURL = URL(fileURLWithPath: "/dev/null")
         let coreDataStore = try! CoreDataStore(storeURL: storeURL)
-        repository = CoreDataAudioLibraryRepository(coreDataStore: coreDataStore)
+        library = CoreDataAudioLibraryRepository(coreDataStore: coreDataStore)
     }
 
     @discardableResult
     private func putAndCheckFile(fileInfo: AudioFileInfo, data fileData: Data) async throws -> AudioFileInfo?  {
         
-        let putResult = await repository.putFile(info: fileInfo, data: fileData)
+        let putResult = await library.putFile(info: fileInfo)
 
         let savedFileInfo = try AssertResultSucceded(putResult)
         XCTAssertNotNil(savedFileInfo.id)
@@ -170,8 +170,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             genre: "Genre1"
         )
         
-        let fileData1 = "data1".data(using: .utf8)!
-        let result = await repository.putFile(info: fileInfo1, data: fileData1)
+        let result = await library.putFile(info: fileInfo1)
         let error = try AssertResultFailed(result)
         
         guard case .fileNotFound = error else {
@@ -207,9 +206,8 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
             genre: "Genre2"
         )
         
-        let fileData2 = "data2".data(using: .utf8)!
         
-        let putResult = await repository.putFile(info: fileInfo2, data: fileData2)
+        let putResult = await library.putFile(info: fileInfo2)
         let putError = try AssertResultFailed(putResult)
     
         guard case .fileNotFound = putError else {
@@ -221,7 +219,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
     func testGetRecordEmptyList() async throws {
         
         let fileId = UUID()
-        let result = await repository.getInfo(fileId: fileId)
+        let result = await library.getInfo(fileId: fileId)
         let error = try AssertResultFailed(result)
         
         guard case .fileNotFound = error else {
@@ -261,7 +259,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         try await putAndCheckFile(fileInfo: fileInfo2, data: fileData2)
         
         let fileId = savedFile1!.id!
-        let result = await repository.getInfo(fileId: fileId)
+        let result = await library.getInfo(fileId: fileId)
         
         let receivedFileInfo1 = try AssertResultSucceded(result, "File does' not exists")
         XCTAssertEqual(savedFile1, receivedFileInfo1)
@@ -269,7 +267,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
     
     func testListFilesEmptyList() async throws {
         
-        let result = await repository.listFiles()
+        let result = await library.listFiles()
         let files = try AssertResultSucceded(result)
         
         XCTAssertTrue(files.isEmpty)
@@ -305,7 +303,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         let fileData2 = "data2".data(using: .utf8)!
         let savedFile2 = try await putAndCheckFile(fileInfo: fileInfo2, data: fileData2)
         
-        let result = await repository.listFiles()
+        let result = await library.listFiles()
         let files = try AssertResultSucceded(result)
         
         fileInfo1.id = savedFile1?.id
@@ -322,7 +320,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
     func test_delete_record_empty_list() async throws {
         
         let fileId = UUID()
-        let result = await repository.delete(fileId: fileId)
+        let result = await library.delete(fileId: fileId)
         
         let error = try AssertResultFailed(result)
         guard case .fileNotFound = error else {
@@ -347,7 +345,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         let fileData1 = "data1".data(using: .utf8)!
         let savedFile1 = try await putAndCheckFile(fileInfo: fileInfo1, data: fileData1)
         
-        let result = await repository.delete(fileId: savedFile1!.id!)
+        let result = await library.delete(fileId: savedFile1!.id!)
         try AssertResultSucceded(result)
     }    
 }

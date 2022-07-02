@@ -34,17 +34,19 @@ class AudioPlayerUseCaseTests: XCTestCase {
             defaultImage: "defaultImage".data(using: .utf8)!
         )
         
-        let showMediaInfoUseCase = LoadTrackUseCase(
-            audioLibraryRepository: audioLibraryRepository,
-            audioFilesRepository: audioFilesRepository
-        )
+//        let showMediaInfoUseCase = LoadTrackUseCase(
+//            audioLibraryRepository: audioLibraryRepository,
+//            audioFilesRepository: audioFilesRepository
+//        )
+//
+//        useCase = DefaultAudioPlayerUseCase(
+//            showMediaInfoUseCase: showMediaInfoUseCase,
+//            loadTrackUseCase: loadTrackUseCase,
+//            playerStateRepository: playerStateRepository,
+//            audioPlayerService: DefaultAudioPlayerService()
+//        )
         
-        useCase = DefaultAudioPlayerUseCase(
-            showMediaInfoUseCase: showMediaInfoUseCase,
-            loadTrackUseCase: loadTrackUseCase,
-            playerStateRepository: playerStateRepository,
-            audioPlayerService: DefaultAudioPlayerService()
-        )
+        useCase = DefaultAudioPlayerUseCase()
 //        useCase = DefaultAudioPlayerUseCase(
 //            audioLibraryRepository: audioLibraryRepository,
 //            audioFilesRepository: audioFilesRepository,
@@ -60,15 +62,12 @@ class AudioPlayerUseCaseTests: XCTestCase {
         let url = bundle.url(forResource: "test_music_with_tags", withExtension: "mp3")!
         let data = try? Data(contentsOf: url)
         
-        let testTrackData = try! XCTUnwrap(data)
-        
         let numberOfTracks = 3
         
         for index in 0..<numberOfTracks {
             
             let result = await audioLibraryRepository.putFile(
-                info: AudioFileInfo.create(name: "Track \(index)", duration: 10, audioFile: "test.mp3"),
-                data: testTrackData
+                info: AudioFileInfo.create(name: "Track \(index)", duration: 10, audioFile: "test.mp3")
             )
             try AssertResultSucceded(result)
         }
