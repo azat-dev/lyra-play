@@ -23,6 +23,8 @@ public protocol NowPlayingInfoService {
 
 public final class DefaultNowPlayingInfoService: NowPlayingInfoService {
     
+    public init() {}
+    
     public func update(currentTime: Double, rate: Float) {
         
         let infoCenter = MPNowPlayingInfoCenter.default()
