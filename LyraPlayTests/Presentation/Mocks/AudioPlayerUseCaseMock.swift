@@ -9,10 +9,12 @@ import Foundation
 import LyraPlay
 
 class AudioPlayerUseCaseMock: AudioPlayerUseCase {
+    
 
     private var currentTrackId: UUID? = nil
 
     var isPlaying = Observable(false)
+    var audioFileInfo: Observable<ExpandedAudioFileInfo?> = Observable(nil)
     
     func setTrack(fileId: UUID) async -> Result<Void, AudioPlayerUseCaseError> {
             

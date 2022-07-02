@@ -30,7 +30,7 @@ class UserDefaultsKeyValueStoreTests: XCTestCase {
         await deleteAllKeys()
     }
     
-    func testPutGet() async {
+    func testPutGet() async throws {
         
         let keyValueStore1 = UserDefaultsKeyValueStore(storeName: "test1")
         let keyValueStore2 = UserDefaultsKeyValueStore(storeName: "test2")
@@ -46,33 +46,33 @@ class UserDefaultsKeyValueStoreTests: XCTestCase {
         await keyValueStore1.put(key: "3", value: testText)
         
         let resultReceivedValue1 = await keyValueStore1.get(key: "1", as: TestStruct.self)
-        let receivedValue1 = AssertResultSucceded(resultReceivedValue1)
+        let receivedValue1 = try AssertResultSucceded(resultReceivedValue1)
         XCTAssertNotNil(receivedValue1)
         XCTAssertEqual(receivedValue1, testStruct)
         
         let resultReceivedValue2 = await keyValueStore1.get(key: "2", as: Int.self)
-        let receivedValue2 = AssertResultSucceded(resultReceivedValue2)
+        let receivedValue2 = try AssertResultSucceded(resultReceivedValue2)
         XCTAssertEqual(receivedValue2, testNumber)
         
         let resultReceivedValue3 = await keyValueStore1.get(key: "3", as: String.self)
-        let receivedValue3 = AssertResultSucceded(resultReceivedValue3)
+        let receivedValue3 = try AssertResultSucceded(resultReceivedValue3)
         XCTAssertEqual(receivedValue3, testText)
         
         let resultReceivedValue22 = await keyValueStore2.get(key: "1", as: Int.self)
-        let receivedValue22 = AssertResultSucceded(resultReceivedValue22)
+        let receivedValue22 = try AssertResultSucceded(resultReceivedValue22)
         XCTAssertEqual(receivedValue22, testNumber2)
     }
     
-    func testGetNotExisitingKey() async {
+    func testGetNotExisitingKey() async throws {
      
         let keyValueStore = UserDefaultsKeyValueStore(storeName: "test1")
         
         let resultReceivedValue = await keyValueStore.get(key: "1", as: Int.self)
-        let receivedValue = AssertResultSucceded(resultReceivedValue)
+        let receivedValue = try AssertResultSucceded(resultReceivedValue)
         XCTAssertNil(receivedValue)
     }
     
-    func testUpdateKey() async {
+    func testUpdateKey() async throws {
         
         let keyValueStore1 = UserDefaultsKeyValueStore(storeName: "test1")
         let keyValueStore2 = UserDefaultsKeyValueStore(storeName: "test2")
@@ -91,19 +91,19 @@ class UserDefaultsKeyValueStoreTests: XCTestCase {
         
 
         let resultReceivedValue1 = await keyValueStore1.get(key: "1", as: Int.self)
-        let receivedValue1 = AssertResultSucceded(resultReceivedValue1)
+        let receivedValue1 = try AssertResultSucceded(resultReceivedValue1)
         XCTAssertEqual(receivedValue1, testNumber1Updated)
         
         let resultReceivedValue2 = await keyValueStore1.get(key: "2", as: Int.self)
-        let receivedValue2 = AssertResultSucceded(resultReceivedValue2)
+        let receivedValue2 = try AssertResultSucceded(resultReceivedValue2)
         XCTAssertEqual(receivedValue2, testNumber2)
         
         let resultReceivedValue22 = await keyValueStore2.get(key: "1", as: Int.self)
-        let receivedValue22 = AssertResultSucceded(resultReceivedValue22)
+        let receivedValue22 = try AssertResultSucceded(resultReceivedValue22)
         XCTAssertEqual(receivedValue22, testNumber22)
     }
     
-    func testListKeys() async {
+    func testListKeys() async throws {
         
         let keyValueStore1 = UserDefaultsKeyValueStore(storeName: "test1")
         let keyValueStore2 = UserDefaultsKeyValueStore(storeName: "test2")
@@ -120,17 +120,17 @@ class UserDefaultsKeyValueStoreTests: XCTestCase {
         await keyValueStore2.put(key: "1", value: testNumber1)
      
         let result = await keyValueStore1.listKeys()
-        let keys1 = AssertResultSucceded(result)
+        let keys1 = try AssertResultSucceded(result)
         
         XCTAssertEqual(keys1.sorted(), ["1", "2"].sorted())
         
         let result2 = await keyValueStore2.listKeys()
-        let keys2 = AssertResultSucceded(result2)
+        let keys2 = try AssertResultSucceded(result2)
         
         XCTAssertEqual(keys2.sorted(), ["1"].sorted())
     }
     
-    func testDeleteKey() async {
+    func testDeleteKey() async throws {
         
         let keyValueStore1 = UserDefaultsKeyValueStore(storeName: "test1")
         let keyValueStore2 = UserDefaultsKeyValueStore(storeName: "test2")
@@ -144,20 +144,20 @@ class UserDefaultsKeyValueStoreTests: XCTestCase {
         await keyValueStore2.put(key: "1", value: testNumber1)
         
         let resultDelete = await keyValueStore1.delete(key: "1")
-        AssertResultSucceded(resultDelete)
+        try AssertResultSucceded(resultDelete)
         
         let result = await keyValueStore1.listKeys()
-        let keys = AssertResultSucceded(result)
+        let keys = try AssertResultSucceded(result)
         
         XCTAssertEqual(keys, ["2"])
         
         let result2 = await keyValueStore2.listKeys()
-        let keys2 = AssertResultSucceded(result2)
+        let keys2 = try AssertResultSucceded(result2)
         
         XCTAssertEqual(keys2, ["1"])
     }
     
-    func testDeleteAll() async {
+    func testDeleteAll() async throws {
         
         let keyValueStore1 = UserDefaultsKeyValueStore(storeName: "test1")
         let keyValueStore2 = UserDefaultsKeyValueStore(storeName: "test2")
@@ -171,15 +171,15 @@ class UserDefaultsKeyValueStoreTests: XCTestCase {
         await keyValueStore2.put(key: "1", value: testNumber1)
         
         let resultDelete = await keyValueStore1.deleteAll()
-        AssertResultSucceded(resultDelete)
+        try AssertResultSucceded(resultDelete)
         
         let result = await keyValueStore1.listKeys()
-        let keys = AssertResultSucceded(result)
+        let keys = try AssertResultSucceded(result)
         
         XCTAssertEqual(keys, [])
         
         let result2 = await keyValueStore2.listKeys()
-        let keys2 = AssertResultSucceded(result2)
+        let keys2 = try AssertResultSucceded(result2)
         
         XCTAssertEqual(keys2, ["1"])
     }

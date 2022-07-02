@@ -13,7 +13,13 @@ extension PlayerViewController {
     final class Styles {
         
         static func apply(contentView: UIView) {
+            
             contentView.backgroundColor = .systemBackground
+        }
+        
+        static func apply(activityIndicator: UIActivityIndicatorView) {
+            
+            activityIndicator.style = .medium
         }
         
         static func apply(titleLabel: UILabel) {

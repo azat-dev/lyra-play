@@ -10,6 +10,15 @@ import UIKit
 
 // MARK: - Interfaces
 
+public struct ExpandedAudioFileInfo {
+    
+    var id: UUID
+    var coverImage: Data
+    var title: String?
+    var artist: String?
+    var duration: Double
+}
+
 public enum AudioPlayerUseCaseError: Error {
     
     case trackNotFound
@@ -20,6 +29,7 @@ public enum AudioPlayerUseCaseError: Error {
 public protocol AudioPlayerUseCaseOutput {
     
     var isPlaying: Observable<Bool> { get }
+    var audioFileInfo: Observable<ExpandedAudioFileInfo?> { get }
 }
 
 public protocol AudioPlayerUseCaseInput {
@@ -48,6 +58,8 @@ public final class DefaultAudioPlayerUseCase: AudioPlayerUseCase {
     private let audioPlayerService: AudioPlayerService
     
     public var isPlaying: Observable<Bool> = Observable(false)
+    public var currentAudioFileInfo: Observable<ExpandedAudioFileInfo?> = Observable(nil)
+    public var audioFileInfo: Observable<ExpandedAudioFileInfo?>
     
     public init(
         audioLibraryRepository: AudioLibraryRepository,
@@ -62,15 +74,80 @@ public final class DefaultAudioPlayerUseCase: AudioPlayerUseCase {
         self.imagesRepository = imagesRepository
         self.playerStateRepository = playerStateRepository
         self.audioPlayerService = audioPlayerService
+        
+        self.audioFileInfo = Observable(nil)
+        syncMediaInfoWithAudioService()
+    }
+    
+    private func getDefaultCoverImage() async -> Data {
+        return UIImage(systemName: "lock")!.pngData()!
+    }
+    
+    private func getCoverImage(name: String?) async -> Data {
+        
+        guard let name = name else {
+            return await getDefaultCoverImage()
+        }
+        
+        let imageDataResult = await imagesRepository.getFile(name: name)
+        
+        if let image = try? imageDataResult.get() {
+            return image
+        }
+        
+        return await getDefaultCoverImage()
+    }
+    
+    private func syncMediaInfoWithAudioService() {
+        
+//
+//            guard let self = self else {
+//                return
+//            }
+//
+//            guard let audioFileInfo = audioFileInfo else {
+//                return
+//            }
+//
+//            Task {
+//                let coverImage = await self.getCoverImage(name: audioFileInfo.name)
+//
+//                let mediaInfo = MediaInfo(
+//                    title: audioFileInfo.name,
+//                    artist: audioFileInfo.artist ?? "",
+//                    coverImage: coverImage
+//                )
+//
+//                await self.audioPlayerService.updateMediaInfo(mediaInfo)
+//            }
+//        }
+    }
+    
+    private func updateCurrentFileInfo(audioFileInfo: AudioFileInfo?) async {
+        
+        guard let audioFileInfo = audioFileInfo else {
+            currentAudioFileInfo.value = nil
+            return
+        }
+
+        let expandedInfo = ExpandedAudioFileInfo(
+            id: audioFileInfo.id!,
+            coverImage: await getCoverImage(name: audioFileInfo.coverImage),
+            duration: audioFileInfo.duration
+        )
+        
+        currentAudioFileInfo.value = expandedInfo
     }
     
     public func setTrack(fileId: UUID) async -> Result<Void, AudioPlayerUseCaseError> {
         
-        let resultSearchFile = await audioLibraryRepository.getInfo(fileId: fileId)
+        let resultFileInfo = await audioLibraryRepository.getInfo(fileId: fileId)
         
-        if case .failure = resultSearchFile {
+        guard case .success(let fileInfo) = resultFileInfo else {
             return .failure(.trackNotFound)
         }
+        
+        await updateCurrentFileInfo(audioFileInfo: fileInfo)
         
         let playerState = PlayerState(
             trackId: fileId,
@@ -79,28 +156,15 @@ public final class DefaultAudioPlayerUseCase: AudioPlayerUseCase {
         
         let result = await playerStateRepository.put(state: playerState)
         
-        switch result {
-            
-        case .failure(let error):
-            return .failure(.internalError(error))
-            
-        case .success:
-            return .success(())
-        }
+        return result.mapError { error in .internalError(error) }
     }
     
     public func getCurrentTrackId() async -> Result<UUID?, AudioPlayerUseCaseError> {
         
         let result = await playerStateRepository.get()
         
-        switch result {
-            
-        case .failure(let error):
-            return .failure(.internalError(error))
-            
-        case .success(let playerState):
-            return .success(playerState?.trackId)
-        }
+        return result.map { state in state?.trackId }
+            .mapError { error in .internalError(error) }
     }
     
     public func play(trackId: UUID) async -> Result<Void, AudioPlayerUseCaseError> {
@@ -125,16 +189,18 @@ public final class DefaultAudioPlayerUseCase: AudioPlayerUseCase {
             let fileData = try fileDataResult.get()
             
             let mediaInfo = MediaInfo(
+                id: trackId.uuidString,
                 title: fileInfo.name,
                 artist: fileInfo.artist ?? "",
-                coverImage: imageData
+                coverImage: imageData,
+                duration: fileInfo.duration
             )
             
-            let resultPlay = await audioPlayerService.play(trackId: trackId.uuidString, info: mediaInfo, track: fileData)
+            let resultPlay = await audioPlayerService.play(mediaInfo: mediaInfo, data: fileData)
             guard case .success = resultPlay else {
                 return .failure(.internalError(nil))
             }
-
+            
             isPlaying.value = true
             return .success(())
             

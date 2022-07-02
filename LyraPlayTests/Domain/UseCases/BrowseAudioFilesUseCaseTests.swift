@@ -70,7 +70,7 @@ class BrowseAudioLibraryUseCaseTests: XCTestCase {
         XCTAssertEqual(infoResult, .failure(.fileNotFound))
     }
     
-    func testFetchImage() async {
+    func testFetchImage() async throws {
         
         let testImageName1 = "image1.png"
         let testImageName2 = "image2.jpeg"
@@ -79,18 +79,18 @@ class BrowseAudioLibraryUseCaseTests: XCTestCase {
         let testImage2 = "image2".data(using: .utf8)!
         
         let put1 = await imagesRepository.putFile(name: testImageName1, data: testImage1)
-        AssertResultSucceded(put1)
+        try AssertResultSucceded(put1)
         
         let put2 = await imagesRepository.putFile(name: testImageName2, data: testImage2)
-        AssertResultSucceded(put2)
+        try AssertResultSucceded(put2)
         
         let resultImage1 = await useCase.fetchImage(name: testImageName1)
-        let imageData1 = AssertResultSucceded(resultImage1)
+        let imageData1 = try AssertResultSucceded(resultImage1)
         
         XCTAssertEqual(imageData1, testImage1)
         
         let resultImage2 = await useCase.fetchImage(name: testImageName2)
-        let imageData2 = AssertResultSucceded(resultImage2)
+        let imageData2 = try AssertResultSucceded(resultImage2)
         
         XCTAssertEqual(imageData2, testImage2)
     }

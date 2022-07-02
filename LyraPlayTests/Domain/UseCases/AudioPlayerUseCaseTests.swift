@@ -37,7 +37,7 @@ class AudioPlayerUseCaseTests: XCTestCase {
         )
     }
     
-    func setUpTestTracks() async {
+    func setUpTestTracks() async throws {
         
         let bundle = Bundle(for: type(of: self ))
         let url = bundle.url(forResource: "test_music_with_tags", withExtension: "mp3")!
@@ -53,24 +53,24 @@ class AudioPlayerUseCaseTests: XCTestCase {
                 info: AudioFileInfo.create(name: "Track \(index)", duration: 10, audioFile: "test.mp3"),
                 data: testTrackData
             )
-            AssertResultSucceded(result)
+            try AssertResultSucceded(result)
         }
     }
 
-    func testSetTrack() async {
+    func testSetTrack() async throws {
 
-        await setUpTestTracks()
+        try await setUpTestTracks()
         
         let resultFiles = await audioLibraryRepository.listFiles()
-        let files = AssertResultSucceded(resultFiles)
+        let files = try AssertResultSucceded(resultFiles)
         
         let testFileId = try! XCTUnwrap(files.first?.id)
         
         let setTrackResult = await useCase.setTrack(fileId: testFileId)
-        AssertResultSucceded(setTrackResult)
+        try AssertResultSucceded(setTrackResult)
         
         let currentTrackResult = await useCase.getCurrentTrackId()
-        let currentTrackId = AssertResultSucceded(currentTrackResult)
+        let currentTrackId = try AssertResultSucceded(currentTrackResult)
         
         XCTAssertEqual(currentTrackId, testFileId)
     }
@@ -83,20 +83,30 @@ class AudioPlayerUseCaseTests: XCTestCase {
         AssertResultFailed(setTrackResult)
     }
 
-    func testPlay() async {
+    func testPlay() async throws {
 
-        await setUpTestTracks()
+        try await setUpTestTracks()
         
         let resultFiles = await audioLibraryRepository.listFiles()
-        let files = AssertResultSucceded(resultFiles)
+        let files = try AssertResultSucceded(resultFiles)
         
         let testFileId = try! XCTUnwrap(files.first?.id)
         
         let setTrackResult = await useCase.setTrack(fileId: testFileId)
-        AssertResultSucceded(setTrackResult)
+        try AssertResultSucceded(setTrackResult)
 
         let resultPlay = await useCase.play()
-//        AssertResultSucceded(resultPlay)
+        try AssertResultSucceded(resultPlay)
+        
+        let playingExpectation = expectation(description: "Playing")
+        
+        useCase.isPlaying.observe(on: self) { isPlaying in
+            if isPlaying {
+                playingExpectation.fulfill()
+            }
+        }
+        
+        wait(for: [playingExpectation], timeout: 10, enforceOrder: false)
     }
     
 //    func testPlayRemovedTrack() async {
@@ -104,12 +114,12 @@ class AudioPlayerUseCaseTests: XCTestCase {
 //        await setUpTestTracks()
 //        
 //        let resultFiles = await audioLibraryRepository.listFiles()
-//        let files = AssertResultSucceded(resultFiles)
+//        let files = try AssertResultSucceded(resultFiles)
 //        
 //        let testFileId = try! XCTUnwrap(files.first?.id)
 //        
 //        let setTrackResult = await useCase.setTrack(fileId: testFileId)
-//        AssertResultSucceded(setTrackResult)
+//        try AssertResultSucceded(setTrackResult)
 //
 //        for file in files {
 //            await audioLibraryRepository.delete(fileId: file.id!)
@@ -124,31 +134,31 @@ class AudioPlayerUseCaseTests: XCTestCase {
 //        await setUpTestTracks()
 //        
 //        let resultFiles = await audioLibraryRepository.listFiles()
-//        let files = AssertResultSucceded(resultFiles)
+//        let files = try AssertResultSucceded(resultFiles)
 //        
 //        let testFileId = try! XCTUnwrap(files.first?.id)
 //        
 //        let setTrackResult = await useCase.setTrack(fileId: testFileId)
-//        AssertResultSucceded(setTrackResult)
+//        try AssertResultSucceded(setTrackResult)
 //
 //        let resultPlay = await useCase.play()
-//        AssertResultSucceded(resultPlay)
+//        try AssertResultSucceded(resultPlay)
 //        
 //        sleep(10)
 //        let resultPause = await useCase.pause()
-//        AssertResultSucceded(resultPause)
+//        try AssertResultSucceded(resultPause)
 //    }
 //
 //    func testVolumeUp() {
 //
 //        let result = await useCase.pause()
-//        AssertResultSucceded(result)
+//        try AssertResultSucceded(result)
 //    }
 //
 //    func testVolumeDown() {
 //
 //        let result = await useCase.pause()
-//        AssertResultSucceded(result)
+//        try AssertResultSucceded(result)
 //    }
 //
 //    func testProgregssDelegate() {
@@ -174,13 +184,13 @@ class AudioPlayerUseCaseTests: XCTestCase {
 //        await setUpTestTracks()
 //
 //        let filesResult = audioLibraryRepository.listFiles()
-//        let files = AssertResultSucceded(filesResult)
+//        let files = try AssertResultSucceded(filesResult)
 //
 //        let firstFile = XCTUnwrap(files.first)
 //        let firstFileId = XCTUnwrap(firstFile.id)
 //
 //        let loadResult = await useCase.loadTrack(fileId: firstFileId)
-//        AssertResultSucceded(loadResult)
+//        try AssertResultSucceded(loadResult)
 //
 //    }
 //

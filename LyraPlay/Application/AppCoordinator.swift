@@ -38,7 +38,8 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var audioPlayerService: AudioPlayerService = {
         
-        return DefaultAudioPlayerService()
+        let nowPlayingInfoService = DefaultNowPlayingInfoService()
+        return DefaultAudioPlayerService(nowPlayingInfoService: nowPlayingInfoService)
     } ()
     
     private lazy var audioPlayerUseCase: AudioPlayerUseCase = {

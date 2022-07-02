@@ -14,9 +14,11 @@ public final class DefaultAudioPlayerService: AudioPlayerService {
     private let audioSession: AVAudioSession
     private var player: AVAudioPlayer?
     private let commandCenter: MPRemoteCommandCenter
+    private let nowPlayingInfoService: NowPlayingInfoService
     
-    public init() {
+    public init(nowPlayingInfoService: NowPlayingInfoService) {
 
+        self.nowPlayingInfoService = nowPlayingInfoService
         self.commandCenter = MPRemoteCommandCenter.shared()
         self.audioSession = AVAudioSession.sharedInstance()
 
@@ -80,7 +82,7 @@ public final class DefaultAudioPlayerService: AudioPlayerService {
                 player.play(atTime: player.currentTime - 10)
             }
             
-            self.updateNowPlayingTime()
+            self.nowPlayingInfoService.update(currentTime: player.currentTime, rate: player.rate)
             return .success
         }
         
@@ -96,52 +98,22 @@ public final class DefaultAudioPlayerService: AudioPlayerService {
             return .success
         }
     }
+
     
-    func updateNowPlayingTime() {
-        
-        guard let player = self.player else {
-            return
-        }
-
-        var nowPlayingInfo = MPNowPlayingInfoCenter.default().nowPlayingInfo ?? [String: Any]()
-        
-        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime
-        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = player.rate
-        
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-    }
-    
-    
-    func updatePlayingNowInfo(trackId: String, info mediaInfo: MediaInfo) {
-
-        var nowPlayingInfo = [String : Any]()
-        
-        nowPlayingInfo[MPMediaItemPropertyTitle] = mediaInfo.title
-        nowPlayingInfo[MPMediaItemPropertyArtist] = mediaInfo.artist
-        nowPlayingInfo[MPMediaItemPropertyPersistentID] = trackId
-
-        let image = UIImage(data: mediaInfo.coverImage)!
-        
-        nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: image.size) { size in
-            return image
-        }
-
-        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = player?.currentTime
-        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = player?.duration
-        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = player?.rate
-
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-    }
-    
-    public func play(trackId: String, info: MediaInfo, track: Data) async -> Result<Void, Error> {
+    public func play(mediaInfo: MediaInfo, data trackData: Data) async -> Result<Void, Error> {
         
         try? audioSession.setActive(true)
         
         do {
 
-            player = try AVAudioPlayer(data: track)
-            player?.play()
-            updatePlayingNowInfo(trackId: trackId, info: info)
+            let player = try AVAudioPlayer(data: trackData)
+            self.player = player
+            
+            player.play()
+            
+            nowPlayingInfoService.update(currentTime: player.currentTime, rate: player.rate)
+            nowPlayingInfoService.update(from: mediaInfo)
+            
         } catch {
 
             print("*** Unable to set up the audio player: \(error.localizedDescription) ***")

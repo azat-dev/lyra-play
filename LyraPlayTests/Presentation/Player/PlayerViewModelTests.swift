@@ -69,20 +69,29 @@ class PlayerViewModelTests: XCTestCase {
         let progressExpectation = expectation(description: "Progress is changed")
         
         playerViewModel.currentTime.observe(on: self) { newTime in
-            currentTimeExpectation.fulfill()
+            if !newTime.isEmpty {
+                currentTimeExpectation.fulfill()
+            }
         }
 
-        playerViewModel.progress.observe(on: self) { newTime in
-            progressExpectation.fulfill()
+        playerViewModel.progress.observe(on: self) { progress in
+            if progress > 0 {
+                progressExpectation.fulfill()
+            }
         }
         
         playerViewModel.isPlaying.observe(on: self) { isPlaying in
             if isPlaying {
-                progressExpectation.fulfill()
+                playingExpectation.fulfill()
             }
         }
 
-        wait(for: [currentTimeExpectation], timeout: 3, enforceOrder: false)
+        let expectations = [
+            currentTimeExpectation,
+            playingExpectation,
+            progressExpectation
+        ]
+        wait(for: expectations, timeout: 3, enforceOrder: false)
     }
     
     func testPause() async {

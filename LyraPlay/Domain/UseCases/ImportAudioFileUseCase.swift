@@ -10,6 +10,7 @@ import Foundation
 // MARK: - Interfaces
 
 public enum ImportAudioFileUseCaseError: Error {
+    
     case wrongFormat
     case internalError(Error?)
 }

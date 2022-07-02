@@ -13,7 +13,7 @@ import UIKit
 public struct TrackInfo {
     
     var title: String
-    var artist: String
+    var description: String
     var image: UIImage
     var duration: String
 }
@@ -23,7 +23,7 @@ public protocol PlayerViewModelOutput {
     var trackInfo: Observable<TrackInfo?> { get }
     var isPlaying: Observable<Bool> { get }
     var progress: Observable<Float> { get }
-    var currentTime: Observable<Float> { get }
+    var currentTime: Observable<String> { get }
     var volume: Observable<Float> { get }
 }
 
@@ -47,7 +47,7 @@ public final class DefaultPlayerViewModel: PlayerViewModel {
     public var trackInfo: Observable<TrackInfo?>
     public var isPlaying: Observable<Bool>
     public var progress: Observable<Float>
-    public var currentTime: Observable<Float>
+    public var currentTime: Observable<String>
     public var volume: Observable<Float>
     
     public init(audioPlayerUseCase: AudioPlayerUseCase) {
@@ -55,7 +55,7 @@ public final class DefaultPlayerViewModel: PlayerViewModel {
         self.audioPlayerUseCase = audioPlayerUseCase
         
         trackInfo = Observable(nil)
-        currentTime = Observable(0)
+        currentTime = Observable("0:00")
         volume = Observable(0)
         isPlaying = Observable(false)
         progress = Observable(0)

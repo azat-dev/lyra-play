@@ -14,7 +14,7 @@ func AssertResultSucceded<Success, Error>(
     _ message: @autoclosure () -> String = "",
     file: StaticString = #filePath,
     line: UInt = #line
-) -> Success {
+) throws -> Success {
     
     let result = expression()
     switch result {
@@ -24,7 +24,7 @@ func AssertResultSucceded<Success, Error>(
         
     case .failure(let _):
         XCTAssertNil(result, message(), file: file, line: line)
-        fatalError()
+        return try result.get()
     }
 }
 
