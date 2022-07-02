@@ -24,17 +24,18 @@ class AudioPlayerUseCaseTests: XCTestCase {
         
         let keyValueStore = UserDefaultsKeyValueStore(storeName: "test")
         playerStateRepository = DefaultPlayerStateRepository(keyValueStore: keyValueStore, key: "player-state")
-        audioLibraryRepository = AudioFilesRepositoryMock()
+        audioLibraryRepository = AudioLibraryRepositoryMock()
         audioFilesRepository = FilesRepositoryMock()
         imagesRepository = FilesRepositoryMock()
         
-        useCase = DefaultAudioPlayerUseCase(
-            audioLibraryRepository: audioLibraryRepository,
-            audioFilesRepository: audioFilesRepository,
-            imagesRepository: imagesRepository,
-            playerStateRepository: playerStateRepository,
-            audioPlayerService: DefaultAudioPlayerService()
-        )
+        useCase = DefaultAudioPlayerUseCase()
+//        useCase = DefaultAudioPlayerUseCase(
+//            audioLibraryRepository: audioLibraryRepository,
+//            audioFilesRepository: audioFilesRepository,
+//            imagesRepository: imagesRepository,
+//            playerStateRepository: playerStateRepository,
+//            audioPlayerService: DefaultAudioPlayerService()
+//        )
     }
     
     func setUpTestTracks() async throws {
@@ -75,12 +76,12 @@ class AudioPlayerUseCaseTests: XCTestCase {
         XCTAssertEqual(currentTrackId, testFileId)
     }
     
-    func testSetTrackDoesntExist() async {
+    func testSetTrackDoesntExist() async throws {
 
         let testFileId = UUID()
 
         let setTrackResult = await useCase.setTrack(fileId: testFileId)
-        AssertResultFailed(setTrackResult)
+        try AssertResultFailed(setTrackResult)
     }
 
     func testPlay() async throws {
@@ -126,7 +127,7 @@ class AudioPlayerUseCaseTests: XCTestCase {
 //        }
 //        
 //        let resultPlay = await useCase.play()
-//        AssertResultFailed(resultPlay)
+//        try AssertResultFailed(resultPlay)
 //    }
 //
 //    func testPause() async {

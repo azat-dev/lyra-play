@@ -57,7 +57,7 @@ public final class DefaultBrowseAudioLibraryUseCase: BrowseAudioLibraryUseCase {
 //        }
 //    }
     
-    private func mapRepositoryError(_ error: AudioFilesRepositoryError) -> BrowseAudioLibraryUseCaseError {
+    private func mapRepositoryError(_ error: AudioLibraryRepositoryError) -> BrowseAudioLibraryUseCaseError {
         
         switch error {
         case .fileNotFound:

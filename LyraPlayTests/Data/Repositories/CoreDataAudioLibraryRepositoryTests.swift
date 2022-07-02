@@ -157,7 +157,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         XCTAssertEqual(savedFile2, fileInfo2)
     }
     
-    func testUpdateNotExistingRecordEmptyList() async {
+    func testUpdateNotExistingRecordEmptyList() async throws {
 
         let fileInfo1 = AudioFileInfo(
             id: UUID(),
@@ -172,8 +172,12 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         
         let fileData1 = "data1".data(using: .utf8)!
         let result = await repository.putFile(info: fileInfo1, data: fileData1)
+        let error = try AssertResultFailed(result)
         
-        XCTAssertEqual(result, Result.failure(AudioFilesRepositoryError.fileNotFound))
+        guard case .fileNotFound = error else {
+            XCTFail("Wrong error")
+            return
+        }
     }
 
     func testUpdateNotExistingRecordNotEmptyList() async throws {
@@ -206,19 +210,24 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         let fileData2 = "data2".data(using: .utf8)!
         
         let putResult = await repository.putFile(info: fileInfo2, data: fileData2)
-        let putError = AssertResultFailed(putResult)
+        let putError = try AssertResultFailed(putResult)
     
-        XCTAssertEqual(putError, .fileNotFound)
+        guard case .fileNotFound = putError else {
+            XCTFail("Wrong error")
+            return
+        }
     }
     
-    func testGetRecordEmptyList() async {
+    func testGetRecordEmptyList() async throws {
         
         let fileId = UUID()
         let result = await repository.getInfo(fileId: fileId)
-        let error = AssertResultFailed(result)
+        let error = try AssertResultFailed(result)
         
-        
-        XCTAssertEqual(error, .fileNotFound)
+        guard case .fileNotFound = error else {
+            XCTFail("Wrong error")
+            return
+        }
     }
     
     func testGetRecordNotEmptyList() async throws {
@@ -310,13 +319,16 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         XCTAssertEqual(files.sorted(), expectedFiles.sorted())
     }
     
-    func test_delete_record_empty_list() async {
+    func test_delete_record_empty_list() async throws {
         
         let fileId = UUID()
         let result = await repository.delete(fileId: fileId)
         
-        let error = AssertResultFailed(result)
-        XCTAssertEqual(error, .fileNotFound)
+        let error = try AssertResultFailed(result)
+        guard case .fileNotFound = error else {
+            XCTFail("Wrong error")
+            return
+        }
     }
     
     func test_delete_record_not_empty_list() async throws {

@@ -22,7 +22,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
     override func setUp() async throws {
         
         filesDelegate = nil
-        audioLibraryRepository = AudioFilesRepositoryMock()
+        audioLibraryRepository = AudioLibraryRepositoryMock()
         imagesRepository = FilesRepositoryMock()
         
         useCase = DefaultBrowseAudioLibraryUseCase(

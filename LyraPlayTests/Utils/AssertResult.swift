@@ -34,17 +34,16 @@ func AssertResultFailed<Success, Error>(
     _ message: @autoclosure () -> String = "",
     file: StaticString = #filePath,
     line: UInt = #line
-) -> Error {
+) throws -> Error {
     
     let result = expression()
     switch result {
         
     case .success(let successResult):
         XCTAssertFalse(true, message(), file: file, line: line)
+        throw NSError(domain: "Expression must fail", code: 0)
         
     case .failure(let error):
         return error
     }
-    
-    fatalError()
 }

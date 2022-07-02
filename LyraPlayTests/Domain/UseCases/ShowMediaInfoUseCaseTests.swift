@@ -15,62 +15,91 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
     private var useCase: ShowMediaInfoUseCase!
     private var audioLibraryRepository: AudioLibraryRepository!
     private var imagesRepository: FilesRepository!
+    private var defaultImage: Data!
 
     override func setUp() async throws {
         
-        audioLibraryRepository = AudioFilesRepositoryMock()
+        audioLibraryRepository = AudioLibraryRepositoryMock()
         imagesRepository = FilesRepositoryMock()
         
-        useCase = ShoMediaInfoUseCase(
+        defaultImage = "defaultImage".data(using: .utf8)!
+        
+        useCase = DefaultShowMediaInfoUseCase(
             audioLibraryRepository: audioLibraryRepository,
-            imagesRepository: imagesRepository
+            imagesRepository: imagesRepository,
+            defaultImage: defaultImage
         )
     }
     
-    func testSetTrack() throws async {
+    func testFetch() async throws {
         
         let testImageData = "image".data(using: .utf8)!
         let testImageName = "test.png"
         
         let putImage = await imagesRepository.putFile(name: testImageName, data: testImageData)
-        AssertResultSucceded(putImage)
+        try AssertResultSucceded(putImage)
         
-        let testFileInfo = AudioFileInfo()
+        var testFileInfo = AudioFileInfo.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
+        testFileInfo.coverImage = testImageName
+        
         let testFileData = "file".data(using: .utf8)!
         
         let putResult = await audioLibraryRepository.putFile(info: testFileInfo, data: testFileData)
         let savedFileInfo = try AssertResultSucceded(putResult)
         
-        let initialListenerExpectation = expectation(description: "Initial listener fullfiled")
-        let listenerExpectation = expectation(description: "Listener fullfiled")
-        
-        
-        useCase.mediaInfo.observe(on: self) { mediaInfo in
-            
-            guard let mediaInfo = mediaInfo else {
-                initialListenerExpectation.fulfill()
-                return
-            }
-            
-            XCTAssertEqual(mediaInfo.image, testImageData)
-            XCTAssertEqual(mediaInfo.title, testFileInfo.name)
-            XCTAssertEqual(mediaInfo.artist, mediaInfo.artist)
-            XCTAssertEqual(mediaInfo.duration, testFileInfo.duration)
-            XCTAssertEqual(mediaInfolid, savedFileInfo.id)
-            
-            listenerExpectation.fulfill()
-        }
-        
-        let mediaInfo = await useCase.setTrack(id: savedFileInfo.id)
+        let resultMediaInfo = await useCase.fetchInfo(trackId: savedFileInfo.id!)
+        let mediaInfo = try AssertResultSucceded(resultMediaInfo)
         
         XCTAssertNotNil(mediaInfo)
-        XCTAssertEqual(mediaInfo.image, testImageData)
+        XCTAssertEqual(mediaInfo.id, savedFileInfo.id?.uuidString)
+        XCTAssertEqual(mediaInfo.coverImage, testImageData)
         XCTAssertEqual(mediaInfo.title, testFileInfo.name)
         XCTAssertEqual(mediaInfo.artist, mediaInfo.artist)
         XCTAssertEqual(mediaInfo.duration, testFileInfo.duration)
-        XCTAssertEqual(mediaInfoid, savedFileInfo.id)
+    }
+    
+    func testFetchDefaultImageIfNoImage() async throws {
+        
+        let testFileInfo = AudioFileInfo.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
+        
+        let testFileData = "file".data(using: .utf8)!
+        
+        let putResult = await audioLibraryRepository.putFile(info: testFileInfo, data: testFileData)
+        let savedFileInfo = try AssertResultSucceded(putResult)
+        
+        let resultMediaInfo = await useCase.fetchInfo(trackId: savedFileInfo.id!)
+        let mediaInfo = try AssertResultSucceded(resultMediaInfo)
+        
+        XCTAssertEqual(mediaInfo.coverImage, defaultImage)
+    }
+    
+    func testFetchDefaultImageIfError() async throws {
+        
+        var testFileInfo = AudioFileInfo.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
+        testFileInfo.coverImage = "someimage.png"
+        
+        let testFileData = "file".data(using: .utf8)!
+        
+        let putResult = await audioLibraryRepository.putFile(info: testFileInfo, data: testFileData)
+        let savedFileInfo = try AssertResultSucceded(putResult)
+        
+        let resultMediaInfo = await useCase.fetchInfo(trackId: savedFileInfo.id!)
+        let mediaInfo = try AssertResultSucceded(resultMediaInfo)
+        
+        XCTAssertEqual(mediaInfo.coverImage, defaultImage)
+    }
+    
+    func testFetchTrackDoesntExist() async throws {
         
 
-        wait(for: [initialListenerExpectation, listenerExpectation], timeout: 3, enforceOrder: true)
+        let trackId = UUID()
+        
+        let resultMediaInfo = await useCase.fetchInfo(trackId: trackId)
+        let error = try AssertResultFailed(resultMediaInfo)
+        
+        guard case .trackNotFound = error else {
+            XCTFail("Wrong error")
+            return
+        }
     }
 }

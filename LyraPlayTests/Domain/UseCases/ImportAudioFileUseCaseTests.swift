@@ -30,7 +30,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
             return tagsParserCallback(url)
         }
         
-        audioLibraryRepository = AudioFilesRepositoryMock()
+        audioLibraryRepository = AudioLibraryRepositoryMock()
         imagesRepository = FilesRepositoryMock()
         audioFilesRepository = FilesRepositoryMock()
         

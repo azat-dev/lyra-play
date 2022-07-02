@@ -44,13 +44,14 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var audioPlayerUseCase: AudioPlayerUseCase = {
         
-        return DefaultAudioPlayerUseCase(
-            audioLibraryRepository: audioLibraryRepository,
-            audioFilesRepository: audioFilesRepository,
-            imagesRepository: imagesRepository,
-            playerStateRepository: playerStateRepository,
-            audioPlayerService: audioPlayerService
-        )
+        return DefaultAudioPlayerUseCase()
+//        return DefaultAudioPlayerUseCase(
+//            audioLibraryRepository: audioLibraryRepository,
+//            audioFilesRepository: audioFilesRepository,
+//            imagesRepository: imagesRepository,
+//            playerStateRepository: playerStateRepository,
+//            audioPlayerService: audioPlayerService
+//        )
     } ()
     
     private lazy var audioLibraryRepository: AudioLibraryRepository = {

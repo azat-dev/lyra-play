@@ -8,16 +8,16 @@
 import Foundation
 import LyraPlay
 
-class AudioFilesRepositoryMock: AudioLibraryRepository {
+class AudioLibraryRepositoryMock: AudioLibraryRepository {
     
     private var files = [AudioFileInfo]()
     
-    func listFiles() async -> Result<[AudioFileInfo], AudioFilesRepositoryError> {
+    func listFiles() async -> Result<[AudioFileInfo], AudioLibraryRepositoryError> {
         
         return .success(files)
     }
     
-    func getInfo(fileId: UUID) async -> Result<AudioFileInfo, AudioFilesRepositoryError> {
+    func getInfo(fileId: UUID) async -> Result<AudioFileInfo, AudioLibraryRepositoryError> {
         
         guard let info = files.first(where: { $0.id == fileId }) else {
             return .failure(.fileNotFound)
@@ -26,7 +26,7 @@ class AudioFilesRepositoryMock: AudioLibraryRepository {
         return .success(info)
     }
     
-    func putFile(info fileInfo: AudioFileInfo, data: Data) async -> Result<AudioFileInfo, AudioFilesRepositoryError> {
+    func putFile(info fileInfo: AudioFileInfo, data: Data) async -> Result<AudioFileInfo, AudioLibraryRepositoryError> {
         
         guard let fileId = fileInfo.id else {
             
@@ -46,7 +46,7 @@ class AudioFilesRepositoryMock: AudioLibraryRepository {
         return .success(fileInfo)
     }
     
-    func delete(fileId: UUID) async -> Result<Void, AudioFilesRepositoryError> {
+    func delete(fileId: UUID) async -> Result<Void, AudioLibraryRepositoryError> {
         self.files = files.filter { $0.id != fileId }
         
         return .success(())

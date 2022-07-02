@@ -72,9 +72,12 @@ class LocalFilesRepositoryTests: XCTestCase {
         try AssertResultSucceded(deleteResult)
         
         let receivedFile1Result = await filesRepository.getFile(name: "file1.txt")
-        let receiveFile1Error = AssertResultFailed(receivedFile1Result)
+        let receiveFile1Error = try AssertResultFailed(receivedFile1Result)
         
-        XCTAssertEqual(receiveFile1Error, .fileNotFound)
+        guard case .fileNotFound = receiveFile1Error else {
+            XCTFail("Wrong error")
+            return
+        }
         
         let receivedFile2Result = await filesRepository.getFile(name: "file2.txt")
         let receivedFile2 = try AssertResultSucceded(receivedFile2Result)
@@ -82,11 +85,15 @@ class LocalFilesRepositoryTests: XCTestCase {
         XCTAssertEqual(receivedFile2, file2)
     }
 
-    func testDeleteNotExistingFile() async {
+    func testDeleteNotExistingFile() async throws {
 
         let deletionResult = await filesRepository.deleteFile(name: "file1.txt")
 
-        let error = AssertResultFailed(deletionResult)
-        XCTAssertEqual(error, .fileNotFound)
+        let error = try AssertResultFailed(deletionResult)
+        
+        guard case .fileNotFound = error else {
+            XCTFail("Wrong error")
+            return
+        }
     }
 }

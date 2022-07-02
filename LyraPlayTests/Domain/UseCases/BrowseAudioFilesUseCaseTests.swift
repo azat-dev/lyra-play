@@ -16,7 +16,7 @@ class BrowseAudioLibraryUseCaseTests: XCTestCase {
 
     override func setUp() async throws {
         
-        audioLibraryRepository = AudioFilesRepositoryMock()
+        audioLibraryRepository = AudioLibraryRepositoryMock()
         imagesRepository = FilesRepositoryMock()
         
         useCase = DefaultBrowseAudioLibraryUseCase(
