@@ -86,4 +86,30 @@ class ObservableTests: XCTestCase {
             enforceOrder: true
         )
     }
+    
+    func testListenersDifferentQueues() {
+        
+        
+        let expectationMain = expectation(description: "Main queue expectation fullfiled")
+        let expectationNoQueue = expectation(description: "No queue expectation fullfiled")
+        
+        let observable = Observable(0)
+        observable.observe(on: self, queue: .main) { value in
+            
+            if value == 1 {
+                expectationMain.fulfill()
+            }
+        }
+        
+        observable.observe(on: self, queue: nil) { value in
+            
+            if value == 1 {
+                expectationNoQueue.fulfill()
+            }
+        }
+        
+        observable.value = 1
+        
+        wait(for: [expectationMain, expectationNoQueue], timeout: 3, enforceOrder: false)
+    }
 }

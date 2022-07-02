@@ -14,7 +14,7 @@ func AssertResultSucceded<Success, Error>(
     _ message: @autoclosure () -> String = "",
     file: StaticString = #filePath,
     line: UInt = #line
-) -> Success {
+) throws -> Success {
     
     let result = expression()
     switch result {
@@ -24,7 +24,7 @@ func AssertResultSucceded<Success, Error>(
         
     case .failure(let _):
         XCTAssertNil(result, message(), file: file, line: line)
-        fatalError()
+        return try result.get()
     }
 }
 
@@ -34,17 +34,16 @@ func AssertResultFailed<Success, Error>(
     _ message: @autoclosure () -> String = "",
     file: StaticString = #filePath,
     line: UInt = #line
-) -> Error {
+) throws -> Error {
     
     let result = expression()
     switch result {
         
     case .success(let successResult):
         XCTAssertFalse(true, message(), file: file, line: line)
+        throw NSError(domain: "Expression must fail", code: 0)
         
     case .failure(let error):
         return error
     }
-    
-    fatalError()
 }

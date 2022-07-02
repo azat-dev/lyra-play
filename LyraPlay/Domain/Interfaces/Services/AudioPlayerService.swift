@@ -7,19 +7,12 @@
 
 import Foundation
 
-public struct MediaInfo {
-    
-    public var title: String
-    public var artist: String
-    public var coverImage: Data
-}
-
 public protocol AudioPlayerServiceOutput {
 }
 
 public protocol AudioPlayerServiceInput {
 
-    func play(trackId: String, info: MediaInfo, track: Data) async -> Result<Void, Error>
+    func play(mediaInfo: MediaInfo, data: Data) async -> Result<Void, Error>
     
     func pause() async -> Result<Void, Error>
     

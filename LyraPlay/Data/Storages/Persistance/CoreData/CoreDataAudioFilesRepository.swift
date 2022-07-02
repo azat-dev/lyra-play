@@ -18,7 +18,7 @@ final class CoreDataAudioLibraryRepository: AudioLibraryRepository {
         self.coreDataStore = coreDataStore
     }
     
-    public func listFiles() async -> Result<[AudioFileInfo], AudioFilesRepositoryError> {
+    public func listFiles() async -> Result<[AudioFileInfo], AudioLibraryRepositoryError> {
         
         let request = ManagedAudioFile.fetchRequest()
 
@@ -39,7 +39,7 @@ final class CoreDataAudioLibraryRepository: AudioLibraryRepository {
             
         } catch {
             
-            return .failure(.internalError)
+            return .failure(.internalError(error))
         }
     }
     
@@ -68,7 +68,7 @@ final class CoreDataAudioLibraryRepository: AudioLibraryRepository {
         }
     }
     
-    public func getInfo(fileId: UUID) async -> Result<AudioFileInfo, AudioFilesRepositoryError> {
+    public func getInfo(fileId: UUID) async -> Result<AudioFileInfo, AudioLibraryRepositoryError> {
         
 
         do {
@@ -82,12 +82,12 @@ final class CoreDataAudioLibraryRepository: AudioLibraryRepository {
             
         } catch {
             
-            return .failure(.internalError)
+            return .failure(.internalError(error))
         }
     }
     
     
-    public func putFile(info file: AudioFileInfo, data: Data) async -> Result<AudioFileInfo, AudioFilesRepositoryError> {
+    public func putFile(info file: AudioFileInfo) async -> Result<AudioFileInfo, AudioLibraryRepositoryError> {
         
         var existingFile: ManagedAudioFile? = nil
         
@@ -128,7 +128,7 @@ final class CoreDataAudioLibraryRepository: AudioLibraryRepository {
         
     }
     
-    public func delete(fileId: UUID) async -> Result<Void, AudioFilesRepositoryError> {
+    public func delete(fileId: UUID) async -> Result<Void, AudioLibraryRepositoryError> {
         
         guard let managedFile = try? await getManagedItem(id: fileId) else {
             return .failure(.fileNotFound)

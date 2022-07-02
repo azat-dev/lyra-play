@@ -26,7 +26,7 @@ public final class Observable<Value> {
         self.value = value
     }
     
-    public func observe(on observer: AnyObject, queue: DispatchQueue, observerBlock: @escaping (Value) -> Void) {
+    public func observe(on observer: AnyObject, queue: DispatchQueue?, observerBlock: @escaping (Value) -> Void) {
         let data = Observer(
             observer: observer,
             queue: queue,
@@ -38,7 +38,7 @@ public final class Observable<Value> {
     }
     
     public func observe(on observer: AnyObject, observerBlock: @escaping (Value) -> Void) {
-        observe(on: observer, queue: .main, observerBlock: observerBlock)
+        observe(on: observer, queue: nil, observerBlock: observerBlock)
     }
     
     public func remove(observer: AnyObject) {
@@ -50,7 +50,14 @@ public final class Observable<Value> {
         let currentValue = self.value
         
         for observer in observers {
-            observer.queue?.async {
+            
+            guard let queue = observer.queue else {
+                
+                observer.block(currentValue)
+                continue
+            }
+            
+            queue.async {
                 observer.block(currentValue)
             }
         }

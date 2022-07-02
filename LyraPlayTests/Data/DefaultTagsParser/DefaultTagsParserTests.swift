@@ -20,14 +20,14 @@ class DefatulTagsParserTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testParse() async {
+    func testParse() async throws {
         
         let bundle = Bundle(for: type(of: self ))
         
         let url = bundle.url(forResource: "test_music_with_tags", withExtension: "mp3")!
         
         let result = await tagsParser.parse(url: url)
-        let tags = AssertResultSucceded(result)
+        let tags = try AssertResultSucceded(result)
         
         XCTAssertEqual(tags.artist ?? "", "Test Artist")
         XCTAssertEqual(tags.title ?? "", "Test Title")

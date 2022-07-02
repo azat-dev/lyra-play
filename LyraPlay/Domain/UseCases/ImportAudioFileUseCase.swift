@@ -10,6 +10,7 @@ import Foundation
 // MARK: - Interfaces
 
 public enum ImportAudioFileUseCaseError: Error {
+    
     case wrongFormat
     case internalError(Error?)
 }
@@ -90,7 +91,7 @@ public final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
             coverImage: savedCoverImageName
         )
         
-        let resultPutFile = await audioLibraryRepository.putFile(info: audioFile, data: fileData)
+        let resultPutFile = await audioLibraryRepository.putFile(info: audioFile)
         
         guard case .success(let savedFileInfo) = resultPutFile else {
             return .failure(.internalError(nil))
