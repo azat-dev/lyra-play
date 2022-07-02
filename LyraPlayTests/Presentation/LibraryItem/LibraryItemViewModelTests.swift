@@ -17,7 +17,7 @@ class LibraryItemViewModelTests: XCTestCase {
     private var viewModel: LibraryItemViewModel!
     private var coordinator: LibraryItemCoordinatorMock!
     
-    override func setUpViewModel(trackId: UUID) async {
+    func setUpViewModel(trackId: UUID) async {
 
         libraryRepository = AudioLibraryRepositoryMock()
         imagesRepository = FilesRepositoryMock()
@@ -31,6 +31,7 @@ class LibraryItemViewModelTests: XCTestCase {
         
         viewModel = DefaultLibraryItemViewModel(
             trackId: trackId,
+            coordinator: coordinator,
             showMediaInfoUseCase: showMediaInfoUseCase
         )
     }
@@ -44,7 +45,7 @@ class LibraryItemViewModelTests: XCTestCase {
         let initialMediaInfoExpectation = expectation(description: "Initial mediaInfo fullfiled")
         let loadedMediaInfoExpectation = expectation(description: "Loaded mediaInfo fullfiled")
         
-        viewModel.mediaInfo.observe(on: self) { info in
+        viewModel.info.observe(on: self) { info in
             
             guard let info = info else {
                 initialMediaInfoExpectation.fulfill()
