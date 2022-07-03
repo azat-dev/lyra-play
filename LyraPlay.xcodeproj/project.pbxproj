@@ -54,6 +54,25 @@
 		AA7B0D522871A6E00067DDB5 /* LibraryItemViewController+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B0D512871A6E00067DDB5 /* LibraryItemViewController+Layout.swift */; };
 		AA7B0D542871A70F0067DDB5 /* LibraryItemViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B0D532871A70F0067DDB5 /* LibraryItemViewController+Styles.swift */; };
 		AA7B0D562871A7390067DDB5 /* LibraryItemViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B0D552871A7390067DDB5 /* LibraryItemViewControllerFactory.swift */; };
+		AA7B0D592871BB340067DDB5 /* ShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B0D582871BB340067DDB5 /* ShadowView.swift */; };
+		AA7B0D5B2871BB500067DDB5 /* ShapedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B0D5A2871BB500067DDB5 /* ShapedView.swift */; };
+		AA7B0D5D2871BBA20067DDB5 /* ImageViewShadowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B0D5C2871BBA20067DDB5 /* ImageViewShadowed.swift */; };
+		AA7B0D6E28721A3F0067DDB5 /* RedHatDisplay-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7B0D6028721A3F0067DDB5 /* RedHatDisplay-BlackItalic.ttf */; };
+		AA7B0D6F28721A3F0067DDB5 /* RedHatDisplay-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7B0D6128721A3F0067DDB5 /* RedHatDisplay-Black.ttf */; };
+		AA7B0D7028721A3F0067DDB5 /* RedHatDisplay-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7B0D6228721A3F0067DDB5 /* RedHatDisplay-ExtraBold.ttf */; };
+		AA7B0D7128721A3F0067DDB5 /* RedHatDisplay-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7B0D6328721A3F0067DDB5 /* RedHatDisplay-MediumItalic.ttf */; };
+		AA7B0D7228721A3F0067DDB5 /* RedHatDisplay-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7B0D6428721A3F0067DDB5 /* RedHatDisplay-SemiBoldItalic.ttf */; };
+		AA7B0D7328721A3F0067DDB5 /* RedHatDisplay-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7B0D6528721A3F0067DDB5 /* RedHatDisplay-Italic.ttf */; };
+		AA7B0D7428721A3F0067DDB5 /* RedHatDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7B0D6628721A3F0067DDB5 /* RedHatDisplay-Bold.ttf */; };
+		AA7B0D7528721A3F0067DDB5 /* RedHatDisplay-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7B0D6728721A3F0067DDB5 /* RedHatDisplay-LightItalic.ttf */; };
+		AA7B0D7628721A3F0067DDB5 /* RedHatDisplay-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7B0D6828721A3F0067DDB5 /* RedHatDisplay-ExtraBoldItalic.ttf */; };
+		AA7B0D7728721A3F0067DDB5 /* RedHatDisplay-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7B0D6928721A3F0067DDB5 /* RedHatDisplay-Medium.ttf */; };
+		AA7B0D7828721A3F0067DDB5 /* RedHatDisplay-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7B0D6A28721A3F0067DDB5 /* RedHatDisplay-SemiBold.ttf */; };
+		AA7B0D7928721A3F0067DDB5 /* RedHatDisplay-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7B0D6B28721A3F0067DDB5 /* RedHatDisplay-BoldItalic.ttf */; };
+		AA7B0D7A28721A3F0067DDB5 /* RedHatDisplay-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7B0D6C28721A3F0067DDB5 /* RedHatDisplay-Light.ttf */; };
+		AA7B0D7B28721A3F0067DDB5 /* RedHatDisplay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7B0D6D28721A3F0067DDB5 /* RedHatDisplay-Regular.ttf */; };
+		AA7B0D7D28721A5E0067DDB5 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B0D7C28721A5E0067DDB5 /* Fonts.swift */; };
+		AA7B0D7F28721B050067DDB5 /* UIFont+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B0D7E28721B050067DDB5 /* UIFont+Utils.swift */; };
 		AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74928567A1C0010FA1E /* AppDelegate.swift */; };
 		AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */; };
 		AA8BF75428567A1C0010FA1E /* LyraPlay.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF75228567A1C0010FA1E /* LyraPlay.xcdatamodeld */; };
@@ -147,6 +166,25 @@
 		AA7B0D512871A6E00067DDB5 /* LibraryItemViewController+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LibraryItemViewController+Layout.swift"; sourceTree = "<group>"; };
 		AA7B0D532871A70F0067DDB5 /* LibraryItemViewController+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LibraryItemViewController+Styles.swift"; sourceTree = "<group>"; };
 		AA7B0D552871A7390067DDB5 /* LibraryItemViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemViewControllerFactory.swift; sourceTree = "<group>"; };
+		AA7B0D582871BB340067DDB5 /* ShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowView.swift; sourceTree = "<group>"; };
+		AA7B0D5A2871BB500067DDB5 /* ShapedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapedView.swift; sourceTree = "<group>"; };
+		AA7B0D5C2871BBA20067DDB5 /* ImageViewShadowed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewShadowed.swift; sourceTree = "<group>"; };
+		AA7B0D6028721A3F0067DDB5 /* RedHatDisplay-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedHatDisplay-BlackItalic.ttf"; sourceTree = "<group>"; };
+		AA7B0D6128721A3F0067DDB5 /* RedHatDisplay-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedHatDisplay-Black.ttf"; sourceTree = "<group>"; };
+		AA7B0D6228721A3F0067DDB5 /* RedHatDisplay-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedHatDisplay-ExtraBold.ttf"; sourceTree = "<group>"; };
+		AA7B0D6328721A3F0067DDB5 /* RedHatDisplay-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedHatDisplay-MediumItalic.ttf"; sourceTree = "<group>"; };
+		AA7B0D6428721A3F0067DDB5 /* RedHatDisplay-SemiBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedHatDisplay-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		AA7B0D6528721A3F0067DDB5 /* RedHatDisplay-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedHatDisplay-Italic.ttf"; sourceTree = "<group>"; };
+		AA7B0D6628721A3F0067DDB5 /* RedHatDisplay-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedHatDisplay-Bold.ttf"; sourceTree = "<group>"; };
+		AA7B0D6728721A3F0067DDB5 /* RedHatDisplay-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedHatDisplay-LightItalic.ttf"; sourceTree = "<group>"; };
+		AA7B0D6828721A3F0067DDB5 /* RedHatDisplay-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedHatDisplay-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		AA7B0D6928721A3F0067DDB5 /* RedHatDisplay-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedHatDisplay-Medium.ttf"; sourceTree = "<group>"; };
+		AA7B0D6A28721A3F0067DDB5 /* RedHatDisplay-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedHatDisplay-SemiBold.ttf"; sourceTree = "<group>"; };
+		AA7B0D6B28721A3F0067DDB5 /* RedHatDisplay-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedHatDisplay-BoldItalic.ttf"; sourceTree = "<group>"; };
+		AA7B0D6C28721A3F0067DDB5 /* RedHatDisplay-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedHatDisplay-Light.ttf"; sourceTree = "<group>"; };
+		AA7B0D6D28721A3F0067DDB5 /* RedHatDisplay-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedHatDisplay-Regular.ttf"; sourceTree = "<group>"; };
+		AA7B0D7C28721A5E0067DDB5 /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
+		AA7B0D7E28721B050067DDB5 /* UIFont+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Utils.swift"; sourceTree = "<group>"; };
 		AA8BF74628567A1C0010FA1E /* LyraPlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LyraPlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA8BF74928567A1C0010FA1E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -368,6 +406,45 @@
 			path = LibraryItem;
 			sourceTree = "<group>";
 		};
+		AA7B0D572871BB260067DDB5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AA7B0D582871BB340067DDB5 /* ShadowView.swift */,
+				AA7B0D5A2871BB500067DDB5 /* ShapedView.swift */,
+				AA7B0D5C2871BBA20067DDB5 /* ImageViewShadowed.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		AA7B0D5E28721A3F0067DDB5 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				AA7B0D5F28721A3F0067DDB5 /* RedHatDisplay */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
+		AA7B0D5F28721A3F0067DDB5 /* RedHatDisplay */ = {
+			isa = PBXGroup;
+			children = (
+				AA7B0D6028721A3F0067DDB5 /* RedHatDisplay-BlackItalic.ttf */,
+				AA7B0D6128721A3F0067DDB5 /* RedHatDisplay-Black.ttf */,
+				AA7B0D6228721A3F0067DDB5 /* RedHatDisplay-ExtraBold.ttf */,
+				AA7B0D6328721A3F0067DDB5 /* RedHatDisplay-MediumItalic.ttf */,
+				AA7B0D6428721A3F0067DDB5 /* RedHatDisplay-SemiBoldItalic.ttf */,
+				AA7B0D6528721A3F0067DDB5 /* RedHatDisplay-Italic.ttf */,
+				AA7B0D6628721A3F0067DDB5 /* RedHatDisplay-Bold.ttf */,
+				AA7B0D6728721A3F0067DDB5 /* RedHatDisplay-LightItalic.ttf */,
+				AA7B0D6828721A3F0067DDB5 /* RedHatDisplay-ExtraBoldItalic.ttf */,
+				AA7B0D6928721A3F0067DDB5 /* RedHatDisplay-Medium.ttf */,
+				AA7B0D6A28721A3F0067DDB5 /* RedHatDisplay-SemiBold.ttf */,
+				AA7B0D6B28721A3F0067DDB5 /* RedHatDisplay-BoldItalic.ttf */,
+				AA7B0D6C28721A3F0067DDB5 /* RedHatDisplay-Light.ttf */,
+				AA7B0D6D28721A3F0067DDB5 /* RedHatDisplay-Regular.ttf */,
+			);
+			path = RedHatDisplay;
+			sourceTree = "<group>";
+		};
 		AA8BF73D28567A1C0010FA1E = {
 			isa = PBXGroup;
 			children = (
@@ -471,7 +548,9 @@
 			children = (
 				AA8BF75528567A1F0010FA1E /* Assets.xcassets */,
 				AA8BF75A28567A1F0010FA1E /* Info.plist */,
+				AA7B0D5E28721A3F0067DDB5 /* fonts */,
 				AA8BF75728567A1F0010FA1E /* LaunchScreen.storyboard */,
+				AA7B0D7C28721A5E0067DDB5 /* Fonts.swift */,
 			);
 			path = SupportFiles;
 			sourceTree = "<group>";
@@ -600,6 +679,7 @@
 			isa = PBXGroup;
 			children = (
 				AACEA3222869B14000111565 /* Observable.swift */,
+				AA7B0D7E28721B050067DDB5 /* UIFont+Utils.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -626,6 +706,7 @@
 		AACEA330286A41CF00111565 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				AA7B0D572871BB260067DDB5 /* Views */,
 				AACEA32E286A418600111565 /* FilePickerViewController.swift */,
 			);
 			path = Common;
@@ -741,6 +822,20 @@
 			files = (
 				AA8BF75928567A1F0010FA1E /* LaunchScreen.storyboard in Resources */,
 				AA8BF75628567A1F0010FA1E /* Assets.xcassets in Resources */,
+				AA7B0D7B28721A3F0067DDB5 /* RedHatDisplay-Regular.ttf in Resources */,
+				AA7B0D7128721A3F0067DDB5 /* RedHatDisplay-MediumItalic.ttf in Resources */,
+				AA7B0D7028721A3F0067DDB5 /* RedHatDisplay-ExtraBold.ttf in Resources */,
+				AA7B0D7528721A3F0067DDB5 /* RedHatDisplay-LightItalic.ttf in Resources */,
+				AA7B0D6E28721A3F0067DDB5 /* RedHatDisplay-BlackItalic.ttf in Resources */,
+				AA7B0D7328721A3F0067DDB5 /* RedHatDisplay-Italic.ttf in Resources */,
+				AA7B0D7628721A3F0067DDB5 /* RedHatDisplay-ExtraBoldItalic.ttf in Resources */,
+				AA7B0D7828721A3F0067DDB5 /* RedHatDisplay-SemiBold.ttf in Resources */,
+				AA7B0D7728721A3F0067DDB5 /* RedHatDisplay-Medium.ttf in Resources */,
+				AA7B0D6F28721A3F0067DDB5 /* RedHatDisplay-Black.ttf in Resources */,
+				AA7B0D7A28721A3F0067DDB5 /* RedHatDisplay-Light.ttf in Resources */,
+				AA7B0D7428721A3F0067DDB5 /* RedHatDisplay-Bold.ttf in Resources */,
+				AA7B0D7928721A3F0067DDB5 /* RedHatDisplay-BoldItalic.ttf in Resources */,
+				AA7B0D7228721A3F0067DDB5 /* RedHatDisplay-SemiBoldItalic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -771,6 +866,7 @@
 				AA731CC5287070C00044412F /* ShowMediaInfoUseCase.swift in Sources */,
 				AA9BEB062865D78C0028DF8E /* AudioLibraryRepository.swift in Sources */,
 				AA4F9709286E3C4C0087F45A /* AudioFilesBrowserViewController+Layout.swift in Sources */,
+				AA7B0D7F28721B050067DDB5 /* UIFont+Utils.swift in Sources */,
 				AA3BAB19286C6883005EE01E /* AudioPlayerUseCase.swift in Sources */,
 				AA3BAB28286CC646005EE01E /* AudioPlayerService.swift in Sources */,
 				AA1ACC2C286317A2000EEDD5 /* TagsParser.swift in Sources */,
@@ -795,6 +891,7 @@
 				AA2BE88B2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift in Sources */,
 				AA8BF78228567C410010FA1E /* AppCoordinator.swift in Sources */,
 				AA3BAB1D286C728B005EE01E /* PlayerStateRepository.swift in Sources */,
+				AA7B0D7D28721A5E0067DDB5 /* Fonts.swift in Sources */,
 				AA3BAB22286C7D32005EE01E /* KeyValueStore.swift in Sources */,
 				AA4F96FD286E325A0087F45A /* PlayerViewController.swift in Sources */,
 				AACEA31A2869ABD700111565 /* AudioFilesBrowserViewController.swift in Sources */,
@@ -813,8 +910,11 @@
 				AA4F96FF286E32710087F45A /* PlayerViewController+Layout.swift in Sources */,
 				AA598D1C2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift in Sources */,
 				AA731CD52870DA740044412F /* LibraryItemViewModel.swift in Sources */,
+				AA7B0D5D2871BBA20067DDB5 /* ImageViewShadowed.swift in Sources */,
 				AA598D1B2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift in Sources */,
+				AA7B0D5B2871BB500067DDB5 /* ShapedView.swift in Sources */,
 				AA8BF75428567A1C0010FA1E /* LyraPlay.xcdatamodeld in Sources */,
+				AA7B0D592871BB340067DDB5 /* ShadowView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

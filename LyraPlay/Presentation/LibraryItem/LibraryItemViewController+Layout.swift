@@ -15,22 +15,63 @@ extension LibraryItemViewController {
         static func apply(
             view: UIView,
             activityIndicator: UIActivityIndicatorView,
-            mainGroup: UIStackView,
-            imageView: UIImageView,
+            mainGroup: UIView,
+            imageView: ImageViewShadowed,
             titleLabel: UILabel,
-            artistLabel: UILabel
+            artistLabel: UILabel,
+            durationLabel: UILabel
             
         ) {
             
             mainGroup.translatesAutoresizingMaskIntoConstraints = false
             activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            titleLabel.translatesAutoresizingMaskIntoConstraints = false
+            artistLabel.translatesAutoresizingMaskIntoConstraints = false
+            durationLabel.translatesAutoresizingMaskIntoConstraints = false
             
             NSLayoutConstraint.activate([
                 
-                mainGroup.topAnchor.constraint(equalTo: view.topAnchor),
-                mainGroup.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-                mainGroup.leftAnchor.constraint(equalTo: view.leftAnchor),
-                mainGroup.rightAnchor.constraint(equalTo: view.rightAnchor),
+                mainGroup.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                mainGroup.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+                mainGroup.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
+                mainGroup.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
+            ])
+
+            NSLayoutConstraint.activate([
+                
+                imageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.87),
+                imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor),
+                
+                imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                imageView.topAnchor.constraint(equalTo: mainGroup.topAnchor, constant: 20)
+            ])
+            
+            NSLayoutConstraint.activate([
+                
+                titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 40),
+                titleLabel.leftAnchor.constraint(equalTo: imageView.leftAnchor),
+                titleLabel.rightAnchor.constraint(equalTo: imageView.rightAnchor),
+            ])
+            
+            NSLayoutConstraint.activate([
+                
+                artistLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0),
+                artistLabel.leftAnchor.constraint(equalTo: imageView.leftAnchor),
+                artistLabel.rightAnchor.constraint(equalTo: imageView.rightAnchor),
+            ])
+            
+            NSLayoutConstraint.activate([
+                
+                durationLabel.topAnchor.constraint(equalTo: artistLabel.bottomAnchor, constant: 0),
+                durationLabel.leftAnchor.constraint(equalTo: imageView.leftAnchor),
+                durationLabel.rightAnchor.constraint(equalTo: imageView.rightAnchor),
+            ])
+            
+            NSLayoutConstraint.activate([
+
+                activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
             ])
                         
             NSLayoutConstraint.activate([

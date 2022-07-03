@@ -13,12 +13,12 @@ public final class LibraryItemViewController: UIViewController {
     private let viewModel: LibraryItemViewModel
     
     private var activityIndicator = UIActivityIndicatorView()
-    private var imageView = UIImageView()
+    private var imageView = ImageViewShadowed()
     private var titleLabel = UILabel()
     private var artistLabel = UILabel()
     private var durationLabel = UILabel()
     
-    private var mainGroup = UIStackView()
+    private var mainGroup = UIView()
     
     init(viewModel: LibraryItemViewModel) {
         
@@ -33,14 +33,19 @@ public final class LibraryItemViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupViews()
-        style()
-        layout()
-        bind(to: viewModel)
+        setup()
         
         Task {
             await viewModel.load()
         }
+    }
+    
+    private func setup() {
+        
+        setupViews()
+        style()
+        layout()
+        bind(to: viewModel)
     }
 }
 
@@ -76,7 +81,7 @@ extension LibraryItemViewController {
                 return
             }
 
-            self.imageView.image = UIImage(data: mediaInfo.coverImage)!
+            self.imageView.imageView.image = UIImage(data: mediaInfo.coverImage)!
             self.titleLabel.text = mediaInfo.title
             self.artistLabel.text = mediaInfo.artist
             self.durationLabel.text = mediaInfo.duration
@@ -92,12 +97,10 @@ extension LibraryItemViewController {
     
     private func setupViews() {
         
-        mainGroup.axis = .vertical
-        
-        mainGroup.addArrangedSubview(imageView)
-        mainGroup.addArrangedSubview(titleLabel)
-        mainGroup.addArrangedSubview(artistLabel)
-        mainGroup.addArrangedSubview(durationLabel)
+        mainGroup.addSubview(imageView)
+        mainGroup.addSubview(titleLabel)
+        mainGroup.addSubview(artistLabel)
+        mainGroup.addSubview(durationLabel)
         
         view.addSubview(activityIndicator)
         view.addSubview(mainGroup)
@@ -115,7 +118,8 @@ extension LibraryItemViewController {
             mainGroup: mainGroup,
             imageView: imageView,
             titleLabel: titleLabel,
-            artistLabel: artistLabel
+            artistLabel: artistLabel,
+            durationLabel: durationLabel
         )
     }
 }
@@ -130,6 +134,7 @@ extension LibraryItemViewController {
         Styles.apply(imageView: imageView)
         Styles.apply(titleLabel: titleLabel)
         Styles.apply(artistLabel: artistLabel)
+        Styles.apply(durationLabel: durationLabel)
     }
 }
 
