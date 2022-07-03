@@ -15,6 +15,8 @@ public protocol AudioFilesBrowserCoordinator: AnyObject {
     func chooseFiles(completion: @escaping (_ urls: [URL]?) -> Void)
     
     func openAudioPlayer(trackId: UUID)
+    
+    func openLibraryItem(trackId: UUID)
 }
 
 public protocol AudioFilesBrowserUpdateDelegate: AnyObject {
@@ -70,7 +72,8 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
     
     private func onPlay(_ trackId: UUID) {
         
-        coordinator.openAudioPlayer(trackId: trackId)
+        coordinator.openLibraryItem(trackId: trackId)
+        
 //        Task {
 //            await audioPlayerUseCase.setTrack(fileId: trackId)
 //            await audioPlayerUseCase.play()

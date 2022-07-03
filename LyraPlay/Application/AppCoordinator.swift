@@ -11,7 +11,7 @@ import CoreData
 
 // MARK: - Interfaces
 
-protocol AppCoordinator: AudioFilesBrowserCoordinator {
+protocol AppCoordinator: AudioFilesBrowserCoordinator, LibraryItemCoordinator {
     
     func start()
 }
@@ -64,6 +64,15 @@ final class DefaultAppCoordinator: AppCoordinator {
         return DefaultBrowseAudioLibraryUseCase(
             audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository
+        )
+    } ()
+    
+    private lazy var showMediaInfoUseCase: ShowMediaInfoUseCase = {
+        
+        return DefaultShowMediaInfoUseCase(
+            audioLibraryRepository: audioLibraryRepository,
+            imagesRepository: imagesRepository,
+            defaultImage: UIImage(systemName: "lock")!.pngData()!
         )
     } ()
     
@@ -145,6 +154,40 @@ final class DefaultAppCoordinator: AppCoordinator {
         self.navigationController.topViewController?.present(vc, animated: true)
     }
     
+    func start() {
+        
+        let vc = makeAudioFilesBrowserVC()
+        navigationController.pushViewController(vc, animated: false)
+    }
+}
+
+// MARK: - LibraryItemCoordinator
+
+extension DefaultAppCoordinator: LibraryItemCoordinator {
+    
+    func chooseSubtitles() async -> Result<URL?, Error> {
+        
+        return .success(nil)
+    }
+}
+
+// MARK: - AudioFilesBrowserCoordinator
+
+extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
+    
+    
+    func openLibraryItem(trackId: UUID) {
+        
+        let factory = LibraryItemViewControllerFactory(
+            coordnator: self,
+            showMediaInfoUseCase: showMediaInfoUseCase
+        )
+
+        let vc = factory.build(with: trackId)
+        
+        navigationController.pushViewController(vc, animated: true)
+    }
+    
     func openAudioPlayer(trackId: UUID) {
         
         let factory = PlayerViewControllerFactory(
@@ -156,11 +199,5 @@ final class DefaultAppCoordinator: AppCoordinator {
         let topViewController = self.navigationController.topViewController
         topViewController?.modalPresentationStyle = .pageSheet
         topViewController?.present(vc, animated: true)
-    }
-    
-    func start() {
-        
-        let vc = makeAudioFilesBrowserVC()
-        navigationController.pushViewController(vc, animated: false)
     }
 }

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 // MARK: - Interfaces
 
@@ -14,7 +13,7 @@ public struct LibraryItemInfoPresentation {
     
     public var title: String
     public var artist: String
-    public var coverImage: UIImage
+    public var coverImage: Data
     public var duration: String
 }
 
@@ -73,7 +72,7 @@ extension DefaultLibraryItemViewModel {
         return LibraryItemInfoPresentation(
             title: info.title ?? "",
             artist: info.artist ?? "",
-            coverImage: UIImage(data: info.coverImage)!,
+            coverImage: info.coverImage,
             duration: formatDuration(info.duration)
         )
     }

@@ -50,6 +50,10 @@
 		AA731CCC2870C2560044412F /* LoadTrackUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA731CCB2870C2560044412F /* LoadTrackUseCase.swift */; };
 		AA731CD22870D25C0044412F /* LibraryItemViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA731CD12870D25C0044412F /* LibraryItemViewModelTests.swift */; };
 		AA731CD52870DA740044412F /* LibraryItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA731CD42870DA740044412F /* LibraryItemViewModel.swift */; };
+		AA7B0D5028719AE20067DDB5 /* LibraryItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B0D4F28719AE20067DDB5 /* LibraryItemViewController.swift */; };
+		AA7B0D522871A6E00067DDB5 /* LibraryItemViewController+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B0D512871A6E00067DDB5 /* LibraryItemViewController+Layout.swift */; };
+		AA7B0D542871A70F0067DDB5 /* LibraryItemViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B0D532871A70F0067DDB5 /* LibraryItemViewController+Styles.swift */; };
+		AA7B0D562871A7390067DDB5 /* LibraryItemViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B0D552871A7390067DDB5 /* LibraryItemViewControllerFactory.swift */; };
 		AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74928567A1C0010FA1E /* AppDelegate.swift */; };
 		AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */; };
 		AA8BF75428567A1C0010FA1E /* LyraPlay.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF75228567A1C0010FA1E /* LyraPlay.xcdatamodeld */; };
@@ -139,6 +143,10 @@
 		AA731CCB2870C2560044412F /* LoadTrackUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadTrackUseCase.swift; sourceTree = "<group>"; };
 		AA731CD12870D25C0044412F /* LibraryItemViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemViewModelTests.swift; sourceTree = "<group>"; };
 		AA731CD42870DA740044412F /* LibraryItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemViewModel.swift; sourceTree = "<group>"; };
+		AA7B0D4F28719AE20067DDB5 /* LibraryItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemViewController.swift; sourceTree = "<group>"; };
+		AA7B0D512871A6E00067DDB5 /* LibraryItemViewController+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LibraryItemViewController+Layout.swift"; sourceTree = "<group>"; };
+		AA7B0D532871A70F0067DDB5 /* LibraryItemViewController+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LibraryItemViewController+Styles.swift"; sourceTree = "<group>"; };
+		AA7B0D552871A7390067DDB5 /* LibraryItemViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemViewControllerFactory.swift; sourceTree = "<group>"; };
 		AA8BF74628567A1C0010FA1E /* LyraPlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LyraPlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA8BF74928567A1C0010FA1E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -352,6 +360,10 @@
 			isa = PBXGroup;
 			children = (
 				AA731CD42870DA740044412F /* LibraryItemViewModel.swift */,
+				AA7B0D4F28719AE20067DDB5 /* LibraryItemViewController.swift */,
+				AA7B0D512871A6E00067DDB5 /* LibraryItemViewController+Layout.swift */,
+				AA7B0D532871A70F0067DDB5 /* LibraryItemViewController+Styles.swift */,
+				AA7B0D552871A7390067DDB5 /* LibraryItemViewControllerFactory.swift */,
 			);
 			path = LibraryItem;
 			sourceTree = "<group>";
@@ -554,8 +566,8 @@
 		AACEA3182869ABB900111565 /* AudioFilesBrowser */ = {
 			isa = PBXGroup;
 			children = (
-				AACEA3192869ABD700111565 /* AudioFilesBrowserViewController.swift */,
 				AACEA31B2869ABEB00111565 /* AudioFilesBrowserViewModel.swift */,
+				AACEA3192869ABD700111565 /* AudioFilesBrowserViewController.swift */,
 				AA4F9706286E3C380087F45A /* AudioFilesBrowserViewController+Styles.swift */,
 				AA4F9708286E3C4C0087F45A /* AudioFilesBrowserViewController+Layout.swift */,
 				AACEA3272869E9C500111565 /* AudioFilesBrowserViewControllerFactory.swift */,
@@ -764,8 +776,10 @@
 				AA1ACC2C286317A2000EEDD5 /* TagsParser.swift in Sources */,
 				AA731CCC2870C2560044412F /* LoadTrackUseCase.swift in Sources */,
 				AA35E585286AA5E10086DB28 /* LocalFilesRepository.swift in Sources */,
+				AA7B0D5028719AE20067DDB5 /* LibraryItemViewController.swift in Sources */,
 				AACEA32B2869ED5800111565 /* AudioFilesBrowserCell.swift in Sources */,
 				AACEA31C2869ABEB00111565 /* AudioFilesBrowserViewModel.swift in Sources */,
+				AA7B0D562871A7390067DDB5 /* LibraryItemViewControllerFactory.swift in Sources */,
 				AA731CC828707EE50044412F /* Result+Utils.swift in Sources */,
 				AA4F9707286E3C380087F45A /* AudioFilesBrowserViewController+Styles.swift in Sources */,
 				AA41508C286B603B004549F4 /* AudioFilesBrowserCell+Styles.swift in Sources */,
@@ -776,6 +790,7 @@
 				AACEA3172869A5C800111565 /* BrowseAudioLibraryUseCase.swift in Sources */,
 				AA598D1F2868D435001F3DE1 /* ManagedAudioFile+Mapping.swift in Sources */,
 				AA4F9705286E32C10087F45A /* PlayerViewModel.swift in Sources */,
+				AA7B0D542871A70F0067DDB5 /* LibraryItemViewController+Styles.swift in Sources */,
 				AA35E582286AA3D90086DB28 /* FilesRepository.swift in Sources */,
 				AA2BE88B2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift in Sources */,
 				AA8BF78228567C410010FA1E /* AppCoordinator.swift in Sources */,
@@ -785,6 +800,7 @@
 				AACEA31A2869ABD700111565 /* AudioFilesBrowserViewController.swift in Sources */,
 				AA4F9701286E327D0087F45A /* PlayerViewController+Styles.swift in Sources */,
 				AA9BEB022865D5BB0028DF8E /* AudioFileInfo.swift in Sources */,
+				AA7B0D522871A6E00067DDB5 /* LibraryItemViewController+Layout.swift in Sources */,
 				AA731CBD2870395B0044412F /* NowPlayingInfoService.swift in Sources */,
 				AACEA3282869E9C500111565 /* AudioFilesBrowserViewControllerFactory.swift in Sources */,
 				AA2BE88D2866EF35005C1AAD /* CoreDataStore.swift in Sources */,
