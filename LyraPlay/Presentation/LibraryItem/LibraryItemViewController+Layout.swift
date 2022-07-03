@@ -19,7 +19,8 @@ extension LibraryItemViewController {
             imageView: ImageViewShadowed,
             titleLabel: UILabel,
             artistLabel: UILabel,
-            durationLabel: UILabel
+            durationLabel: UILabel,
+            playButton: UIButton
             
         ) {
             
@@ -29,6 +30,7 @@ extension LibraryItemViewController {
             titleLabel.translatesAutoresizingMaskIntoConstraints = false
             artistLabel.translatesAutoresizingMaskIntoConstraints = false
             durationLabel.translatesAutoresizingMaskIntoConstraints = false
+            playButton.translatesAutoresizingMaskIntoConstraints = false
             
             NSLayoutConstraint.activate([
                 
@@ -66,6 +68,14 @@ extension LibraryItemViewController {
                 durationLabel.topAnchor.constraint(equalTo: artistLabel.bottomAnchor, constant: 0),
                 durationLabel.leftAnchor.constraint(equalTo: imageView.leftAnchor),
                 durationLabel.rightAnchor.constraint(equalTo: imageView.rightAnchor),
+            ])
+            
+            
+            NSLayoutConstraint.activate([
+                
+                playButton.topAnchor.constraint(equalTo: durationLabel.bottomAnchor, constant: 0),
+                playButton.leftAnchor.constraint(equalTo: imageView.leftAnchor),
+                playButton.rightAnchor.constraint(equalTo: imageView.rightAnchor),
             ])
             
             NSLayoutConstraint.activate([

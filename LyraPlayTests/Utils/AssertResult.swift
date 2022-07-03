@@ -22,7 +22,7 @@ func AssertResultSucceded<Success, Error>(
     case .success(let successResult):
         return successResult
         
-    case .failure(let _):
+    case .failure:
         XCTAssertNil(result, message(), file: file, line: line)
         return try result.get()
     }
@@ -39,7 +39,7 @@ func AssertResultFailed<Success, Error>(
     let result = expression()
     switch result {
         
-    case .success(let successResult):
+    case .success:
         XCTAssertFalse(true, message(), file: file, line: line)
         throw NSError(domain: "Expression must fail", code: 0)
         

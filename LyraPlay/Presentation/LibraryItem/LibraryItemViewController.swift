@@ -17,6 +17,7 @@ public final class LibraryItemViewController: UIViewController {
     private var titleLabel = UILabel()
     private var artistLabel = UILabel()
     private var durationLabel = UILabel()
+    private var playButton = UIButton()
     
     private var mainGroup = UIView()
     
@@ -85,8 +86,21 @@ extension LibraryItemViewController {
             self.titleLabel.text = mediaInfo.title
             self.artistLabel.text = mediaInfo.artist
             self.durationLabel.text = mediaInfo.duration
-            
             self.updateLoading(false)
+        }
+
+        viewModel.isPlaying.observe(on: self) { [weak self] isPlaying in
+            
+            guard let self = self else {
+                return
+            }
+            
+            guard isPlaying else {
+                Styles.apply(playButton: self.playButton)
+                return
+            }
+            
+            Styles.apply(pauseButton: self.playButton)
         }
     }
 }
@@ -95,15 +109,30 @@ extension LibraryItemViewController {
 
 extension LibraryItemViewController {
     
+    @objc
+    private func didTogglePlay() {
+        
+        Task {
+            await viewModel.play()
+        }
+    }
+    
     private func setupViews() {
         
         mainGroup.addSubview(imageView)
         mainGroup.addSubview(titleLabel)
         mainGroup.addSubview(artistLabel)
         mainGroup.addSubview(durationLabel)
+        mainGroup.addSubview(playButton)
         
         view.addSubview(activityIndicator)
         view.addSubview(mainGroup)
+        
+        playButton.addTarget(
+            self,
+            action: #selector(Self.didTogglePlay),
+            for: .touchUpInside
+        )
     }
 }
 
@@ -119,7 +148,8 @@ extension LibraryItemViewController {
             imageView: imageView,
             titleLabel: titleLabel,
             artistLabel: artistLabel,
-            durationLabel: durationLabel
+            durationLabel: durationLabel,
+            playButton: playButton
         )
     }
 }
@@ -135,6 +165,7 @@ extension LibraryItemViewController {
         Styles.apply(titleLabel: titleLabel)
         Styles.apply(artistLabel: artistLabel)
         Styles.apply(durationLabel: durationLabel)
+        Styles.apply(playButton: playButton)
     }
 }
 

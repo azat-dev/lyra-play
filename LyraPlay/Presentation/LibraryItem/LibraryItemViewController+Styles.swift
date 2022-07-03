@@ -76,5 +76,17 @@ extension LibraryItemViewController {
             durationLabel.textAlignment = .left
             durationLabel.textColor = UIColor(named: "Color.Text")
         }
+        
+        static func apply(playButton: UIButton) {
+            
+            playButton.setTitle("Play", for: .normal)
+            playButton.setTitleColor(.black, for: .normal)
+        }
+        
+        static func apply(pauseButton: UIButton) {
+            
+            pauseButton.setTitle("Pause", for: .normal)
+            pauseButton.setTitleColor(.black, for: .normal)
+        }
     }
 }

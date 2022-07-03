@@ -42,9 +42,9 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         var testFileInfo = AudioFileInfo.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
         testFileInfo.coverImage = testImageName
         
-        let testFileData = "file".data(using: .utf8)!
-        
         let putResult = await audioLibraryRepository.putFile(info: testFileInfo)
+        try AssertResultSucceded(putResult)
+        
         let savedFileInfo = try AssertResultSucceded(putResult)
         
         let resultMediaInfo = await useCase.fetchInfo(trackId: savedFileInfo.id!)
@@ -62,8 +62,6 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         
         let testFileInfo = AudioFileInfo.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
         
-        let testFileData = "file".data(using: .utf8)!
-        
         let putResult = await audioLibraryRepository.putFile(info: testFileInfo)
         let savedFileInfo = try AssertResultSucceded(putResult)
         
@@ -77,8 +75,6 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         
         var testFileInfo = AudioFileInfo.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
         testFileInfo.coverImage = "someimage.png"
-        
-        let testFileData = "file".data(using: .utf8)!
         
         let putResult = await audioLibraryRepository.putFile(info: testFileInfo)
         let savedFileInfo = try AssertResultSucceded(putResult)

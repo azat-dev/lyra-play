@@ -31,6 +31,8 @@ public protocol LibraryItemViewModelOutput {
 public protocol LibraryItemViewModelInput {
     
     func load() async -> Result<Void, Error>
+    
+    func play() async -> Result<Void, Error>
 }
 
 public protocol LibraryItemViewModel: LibraryItemViewModelOutput, LibraryItemViewModelInput {
@@ -88,6 +90,11 @@ extension DefaultLibraryItemViewModel {
 
         
         self.info.value = mapInfo(mediaInfo)
+        return .success(())
+    }
+    
+    public func play() async -> Result<Void, Error> {
+        
         return .success(())
     }
 }
