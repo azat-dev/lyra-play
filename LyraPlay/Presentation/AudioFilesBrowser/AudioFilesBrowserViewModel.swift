@@ -46,7 +46,7 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
     private let coordinator: AudioFilesBrowserCoordinator
     private let browseUseCase: BrowseAudioLibraryUseCase
     private let importFileUseCase: ImportAudioFileUseCase
-    private let audioPlayerUseCase: AudioPlayerUseCase
+    private let playerControlUseCase: PlayerControlUseCase
     
     public var isLoading: Observable<Bool>
     public weak var filesDelegate: AudioFilesBrowserUpdateDelegate?
@@ -56,13 +56,13 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
         coordinator: AudioFilesBrowserCoordinator,
         browseUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase,
-        audioPlayerUseCase: AudioPlayerUseCase
+        playerControlUseCase: PlayerControlUseCase
     ) {
         
         self.coordinator = coordinator
         self.browseUseCase = browseUseCase
         self.importFileUseCase = importFileUseCase
-        self.audioPlayerUseCase = audioPlayerUseCase
+        self.playerControlUseCase = playerControlUseCase
         self.isLoading = Observable(true)
     }
     
@@ -75,8 +75,8 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
         coordinator.openLibraryItem(trackId: trackId)
         
 //        Task {
-//            await audioPlayerUseCase.setTrack(fileId: trackId)
-//            await audioPlayerUseCase.play()
+//            await playerControlUseCase.setTrack(fileId: trackId)
+//            await playerControlUseCase.play()
 //        }
     }
     

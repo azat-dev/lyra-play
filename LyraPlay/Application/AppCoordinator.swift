@@ -42,10 +42,10 @@ final class DefaultAppCoordinator: AppCoordinator {
         return DefaultAudioPlayerService(nowPlayingInfoService: nowPlayingInfoService)
     } ()
     
-    private lazy var audioPlayerUseCase: AudioPlayerUseCase = {
+    private lazy var playerControlUseCase: PlayerControlUseCase = {
         
-        return DefaultAudioPlayerUseCase()
-//        return DefaultAudioPlayerUseCase(
+        return DefaulPlayerControlUseCase()
+//        return DefaultPlayerControlUseCase(
 //            audioLibraryRepository: audioLibraryRepository,
 //            audioFilesRepository: audioFilesRepository,
 //            imagesRepository: imagesRepository,
@@ -129,7 +129,7 @@ final class DefaultAppCoordinator: AppCoordinator {
             coordinator: self,
             browseFilesUseCase: browseFilesUseCase,
             importFileUseCase: importFileUseCase,
-            audioPlayerUseCase: audioPlayerUseCase
+            playerControlUseCase: playerControlUseCase
         )
         return factory.build()
     }
@@ -191,7 +191,7 @@ extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
     func openAudioPlayer(trackId: UUID) {
         
         let factory = PlayerViewControllerFactory(
-            audioPlayerUseCase: audioPlayerUseCase
+            playerControlUseCase: playerControlUseCase
         )
 
         let vc = factory.build()

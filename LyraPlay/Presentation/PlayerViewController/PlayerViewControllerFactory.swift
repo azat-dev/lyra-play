@@ -9,17 +9,17 @@ import Foundation
 
 public final class PlayerViewControllerFactory {
     
-    private var audioPlayerUseCase: AudioPlayerUseCase
+    private var playerControlUseCase: PlayerControlUseCase
     
-    init(audioPlayerUseCase: AudioPlayerUseCase) {
+    init(playerControlUseCase: PlayerControlUseCase) {
         
-        self.audioPlayerUseCase = audioPlayerUseCase
+        self.playerControlUseCase = playerControlUseCase
     }
     
     public func build() -> PlayerViewController {
         
         let viewModel = DefaultPlayerViewModel(
-            audioPlayerUseCase: audioPlayerUseCase
+            playerControlUseCase: playerControlUseCase
         )
         
         return PlayerViewController(viewModel: viewModel)

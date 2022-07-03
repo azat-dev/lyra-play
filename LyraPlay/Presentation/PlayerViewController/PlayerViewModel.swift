@@ -42,7 +42,7 @@ public protocol PlayerViewModel: PlayerViewModelOutput, PlayerViewModelInput {
 
 public final class DefaultPlayerViewModel: PlayerViewModel {
 
-    private let audioPlayerUseCase: AudioPlayerUseCase
+    private let playerControlUseCase: PlayerControlUseCase
     
     public var trackInfo: Observable<TrackInfo?>
     public var isPlaying: Observable<Bool>
@@ -50,9 +50,9 @@ public final class DefaultPlayerViewModel: PlayerViewModel {
     public var currentTime: Observable<String>
     public var volume: Observable<Float>
     
-    public init(audioPlayerUseCase: AudioPlayerUseCase) {
+    public init(playerControlUseCase: PlayerControlUseCase) {
         
-        self.audioPlayerUseCase = audioPlayerUseCase
+        self.playerControlUseCase = playerControlUseCase
         
         trackInfo = Observable(nil)
         currentTime = Observable("0:00")
@@ -60,17 +60,17 @@ public final class DefaultPlayerViewModel: PlayerViewModel {
         isPlaying = Observable(false)
         progress = Observable(0)
         
-        audioPlayerUseCase.isPlaying.observe(on: self) { [weak self] isPlaying in
+        playerControlUseCase.isPlaying.observe(on: self) { [weak self] isPlaying in
             self?.isPlaying.value = isPlaying
         }
     }
     
     public func togglePlay() async {
         
-        if audioPlayerUseCase.isPlaying.value {
-            let _ = await audioPlayerUseCase.pause()
+        if playerControlUseCase.isPlaying.value {
+            let _ = await playerControlUseCase.pause()
         } else {
-            let _ = await audioPlayerUseCase.play()
+            let _ = await playerControlUseCase.play()
         }
     }
     
@@ -82,6 +82,6 @@ public final class DefaultPlayerViewModel: PlayerViewModel {
         
         trackInfo.value = nil
         
-//        audioPlayerUseCase.setTrack(fileId: UUID)
+//        playerControlUseCase.setTrack(fileId: UUID)
     }
 }

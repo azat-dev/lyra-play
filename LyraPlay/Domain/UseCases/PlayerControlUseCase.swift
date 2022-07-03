@@ -1,5 +1,5 @@
 //
-//  AudioPlayerUseCase.swift
+//  PlayerControlUseCase.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 29.06.22.
@@ -10,49 +10,49 @@ import UIKit
 
 // MARK: - Interfaces
 
-public enum AudioPlayerUseCaseError: Error {
+public enum PlayerControlUseCaseError: Error {
     
     case trackNotFound
     case internalError(Error?)
     case noActiveTrack
 }
 
-public protocol AudioPlayerUseCaseOutput {
+public protocol PlayerControlUseCaseOutput {
     
     var isPlaying: Observable<Bool> { get }
 }
 
-public protocol AudioPlayerUseCaseInput {
+public protocol PlayerControlUseCaseInput {
     
-    func setTrack(fileId: UUID) async -> Result<Void, AudioPlayerUseCaseError>
+    func setTrack(fileId: UUID) async -> Result<Void, PlayerControlUseCaseError>
     
-    func getCurrentTrackId() async -> Result<UUID?, AudioPlayerUseCaseError>
+    func getCurrentTrackId() async -> Result<UUID?, PlayerControlUseCaseError>
     
-    func play() async -> Result<Void, AudioPlayerUseCaseError>
+    func play() async -> Result<Void, PlayerControlUseCaseError>
     
-    func pause() async -> Result<Void, AudioPlayerUseCaseError>
+    func pause() async -> Result<Void, PlayerControlUseCaseError>
 }
 
-public protocol AudioPlayerUseCase: AudioPlayerUseCaseInput, AudioPlayerUseCaseOutput {
+public protocol PlayerControlUseCase: PlayerControlUseCaseInput, PlayerControlUseCaseOutput {
     
 }
 
 // MARK: - Implementations
 
-public final class DefaultAudioPlayerUseCase: AudioPlayerUseCase {
-    public func setTrack(fileId: UUID) async -> Result<Void, AudioPlayerUseCaseError> {
+public final class DefaulPlayerControlUseCase: PlayerControlUseCase {
+    public func setTrack(fileId: UUID) async -> Result<Void, PlayerControlUseCaseError> {
         return .success(())
     }
     
-    public func getCurrentTrackId() async -> Result<UUID?, AudioPlayerUseCaseError> {
+    public func getCurrentTrackId() async -> Result<UUID?, PlayerControlUseCaseError> {
         return .success(nil)
     }
     
-    public func play() async -> Result<Void, AudioPlayerUseCaseError> {
+    public func play() async -> Result<Void, PlayerControlUseCaseError> {
         return .success(())
     }
     
-    public func pause() async -> Result<Void, AudioPlayerUseCaseError> {
+    public func pause() async -> Result<Void, PlayerControlUseCaseError> {
         return .success(())
     }
     
@@ -119,7 +119,7 @@ public final class DefaultAudioPlayerUseCase: AudioPlayerUseCase {
 ////        }
 //    }
 //    
-////    public func setTrack(fileId: UUID) async -> Result<Void, AudioPlayerUseCaseError> {
+////    public func setTrack(fileId: UUID) async -> Result<Void, PlayerControlUseCaseError> {
 ////
 ////        let resultFileInfo = await audioLibraryRepository.getInfo(fileId: fileId)
 ////
@@ -139,7 +139,7 @@ public final class DefaultAudioPlayerUseCase: AudioPlayerUseCase {
 ////        return result.mapError { error in .internalError(error) }
 ////    }
 //    
-//    public func getCurrentTrackId() async -> Result<UUID?, AudioPlayerUseCaseError> {
+//    public func getCurrentTrackId() async -> Result<UUID?, PlayerControlUseCaseError> {
 //        
 //        let result = await playerStateRepository.get()
 //        
@@ -147,7 +147,7 @@ public final class DefaultAudioPlayerUseCase: AudioPlayerUseCase {
 //            .mapError { error in .internalError(error) }
 //    }
 //    
-//    public func play(trackId: UUID) async -> Result<Void, AudioPlayerUseCaseError> {
+//    public func play(trackId: UUID) async -> Result<Void, PlayerControlUseCaseError> {
 //
 //        do {
 //            
@@ -184,7 +184,7 @@ public final class DefaultAudioPlayerUseCase: AudioPlayerUseCase {
 //        }
 //    }
 //    
-//    public func play() async -> Result<Void, AudioPlayerUseCaseError> {
+//    public func play() async -> Result<Void, PlayerControlUseCaseError> {
 //        
 //        let result = await getCurrentTrackId()
 //
@@ -205,7 +205,7 @@ public final class DefaultAudioPlayerUseCase: AudioPlayerUseCase {
 //        }
 //    }
 //    
-//    public func pause() async -> Result<Void, AudioPlayerUseCaseError> {
+//    public func pause() async -> Result<Void, PlayerControlUseCaseError> {
 //        
 //        let result = await audioPlayerService.pause()
 //        

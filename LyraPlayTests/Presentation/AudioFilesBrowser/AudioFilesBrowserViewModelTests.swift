@@ -56,7 +56,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
             coordinator: coordinator,
             browseUseCase: useCase,
             importFileUseCase: importFileUseCase,
-            audioPlayerUseCase: AudioPlayerUseCaseMock()
+            playerControlUseCase: PlayerControlUseCaseMock()
         )
     }
     

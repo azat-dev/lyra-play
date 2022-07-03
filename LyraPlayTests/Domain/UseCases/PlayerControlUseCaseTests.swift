@@ -1,5 +1,5 @@
 //
-//  AudioPlayerUseCaseTests.swift
+//  PlayerControlUseCaseTests.swift
 //  LyraPlayTests
 //
 //  Created by Azat Kaiumov on 28.06.22.
@@ -10,9 +10,9 @@ import Foundation
 import XCTest
 import LyraPlay
 
-//class AudioPlayerUseCaseTests: XCTestCase {
+class PlayerControlUseCaseTests: XCTestCase {
 //
-//    private var useCase: AudioPlayerUseCase!
+//    private var useCase: PlayerControlUseCase!
 //    private var audioLibraryRepository: AudioLibraryRepository!
 //    private var playerStateRepository: PlayerStateRepository!
 //    private var audioFilesRepository: FilesRepository!
@@ -42,7 +42,7 @@ import LyraPlay
 //        let nowPlayingInfoService = DefaultNowPlayingInfoService()
 //        let audioPlayerService = DefaultAudioPlayerService(nowPlayingInfoService: nowPlayingInfoService)
 //        
-//        useCase = DefaultAudioPlayerUseCase(
+//        useCase = DefaultPlayerControlUseCase(
 //            showMediaInfoUseCase: showMediaInfoUseCase,
 //            loadTrackUseCase: loadTrackUseCase,
 //            playerStateRepository: playerStateRepository,
@@ -208,4 +208,4 @@ import LyraPlay
 ////    func testSetTrackTime() async {
 ////
 ////    }
-//}
+}
