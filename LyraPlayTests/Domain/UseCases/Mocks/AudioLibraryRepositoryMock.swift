@@ -26,6 +26,20 @@ class AudioLibraryRepositoryMock: AudioLibraryRepository {
         return .success(info)
     }
     
+    func putNewFileWithId(info fileInfo: AudioFileInfo) async -> Result<AudioFileInfo, AudioLibraryRepositoryError> {
+        
+        let fileId = fileInfo.id!
+        
+        guard let existingIndex = files.firstIndex(where: { $0.id == fileId }) else {
+            files.append(fileInfo)
+            return .success(fileInfo)
+        }
+        
+        files[existingIndex] = fileInfo
+        
+        return .success(fileInfo)
+    }
+    
     func putFile(info fileInfo: AudioFileInfo) async -> Result<AudioFileInfo, AudioLibraryRepositoryError> {
         
         guard let fileId = fileInfo.id else {

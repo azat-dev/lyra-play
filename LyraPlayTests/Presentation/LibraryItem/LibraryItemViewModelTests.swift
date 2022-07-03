@@ -16,17 +16,23 @@ class LibraryItemViewModelTests: XCTestCase {
     private var libraryRepository: AudioLibraryRepositoryMock!
     private var viewModel: LibraryItemViewModel!
     private var coordinator: LibraryItemCoordinatorMock!
+    private var trackId: UUID!
     
-    func setUpViewModel(trackId: UUID) async {
-
+    override func setUp() {
+        
+        let bundle = Bundle(for: type(of: self ))
+        let testImageUrl = bundle.url(forResource: "test_cover_image", withExtension: "png")!
+        let testImage = try! Data(contentsOf: testImageUrl)
+        
         libraryRepository = AudioLibraryRepositoryMock()
         imagesRepository = FilesRepositoryMock()
         coordinator = LibraryItemCoordinatorMock()
+        trackId = UUID()
         
         showMediaInfoUseCase = DefaultShowMediaInfoUseCase(
             audioLibraryRepository: libraryRepository,
             imagesRepository: imagesRepository,
-            defaultImage: "defaultImage".data(using: .utf8)!
+            defaultImage: testImage
         )
         
         viewModel = DefaultLibraryItemViewModel(
@@ -38,53 +44,60 @@ class LibraryItemViewModelTests: XCTestCase {
     
     func testLoad() async throws {
         
-        let trackId = UUID()
+        var audioFile = AudioFileInfo.create(name: "Test", duration: 10, audioFile: "test.mp3")
+        audioFile.id = trackId
         
-        await setUpViewModel(trackId: trackId)
+        let resultLibraryItem = await libraryRepository.putNewFileWithId(info: audioFile)
+        try AssertResultSucceded(resultLibraryItem)
         
-        let initialMediaInfoExpectation = expectation(description: "Initial mediaInfo fullfiled")
-        let loadedMediaInfoExpectation = expectation(description: "Loaded mediaInfo fullfiled")
+        let initialMediaInfoExpectation = expectation(description: "Initial mediaInfo fulfilled")
+        let loadedMediaInfoExpectation = expectation(description: "Loaded mediaInfo fulfilled")
+
+        let initialPlayingExpectation = expectation(description: "Initial playing fulfilled")
         
         viewModel.info.observe(on: self) { info in
             
-            guard let info = info else {
+            guard let _ = info else {
                 initialMediaInfoExpectation.fulfill()
+                return
             }
             
             loadedMediaInfoExpectation.fulfill()
         }
         
+        viewModel.isPlaying.observe(on: self) { isPlaying in
+            
+            guard isPlaying else {
+                initialPlayingExpectation.fulfill()
+                return
+            }
+        }
+        
         let result = await viewModel.load()
         try AssertResultSucceded(result)
         
+        wait(for: [initialMediaInfoExpectation, loadedMediaInfoExpectation], timeout: 3, enforceOrder: true)
+        wait(for: [initialPlayingExpectation], timeout: 3, enforceOrder: true)
+
         let isPlaying = viewModel.isPlaying.value
         XCTAssertEqual(isPlaying, false)
     }
     
     func testLoadNotExistingTrack() async throws {
         
-        let trackId = UUID()
-        
-        await setUpViewModel(trackId: trackId)
-        
-        let initialMediaInfoExpectation = expectation(description: "Initial mediaInfo fullfiled")
-        let loadedMediaInfoExpectation = expectation(description: "Loaded mediaInfo fullfiled")
-        
         let result = await viewModel.load()
         let error = try AssertResultFailed(result)
+        XCTAssertNotNil(error)
         
-        guard case .trackNotFound = error else {
-            XCTFail("Wrong error")
-            return
-        }
+        // TODO: Implement "doesn't exist" logic
     }
-)
+}
 
 // MARK: - Mocks
     
 private final class LibraryItemCoordinatorMock: LibraryItemCoordinator {
 
     func chooseSubtitles() async -> Result<URL?, Error> {
-        
+        return .success(nil)
     }
 }
