@@ -10,12 +10,28 @@ import Foundation
 // MARK: - Interfaces
 
 public struct MediaInfo {
-    
+
     public var id: String
     public var coverImage: Data
-    public var title: String?
+    public var title: String
     public var artist: String?
     public var duration: Double
+    
+    public init(
+        id: String,
+        coverImage: Data,
+        title: String,
+        duration: Double
+        artist: String
+    ) {
+        
+        self.id = id
+        self.coverImage = coverImage
+        self.title = title
+        self.duration = duration
+        self.artist = artist
+    }
+
 }
 
 public enum ShowMediaInfoUseCaseError: Error {
