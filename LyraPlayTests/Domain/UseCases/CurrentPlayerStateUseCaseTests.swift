@@ -11,20 +11,22 @@ import Foundation
 
 import XCTest
 import LyraPlay
+import CoreMedia
 
 class CurrentPlayerStateUseCaseTests: XCTestCase {
     
     private var currentPlayerStateUseCase: CurrentPlayerStateUseCase!
-    private var audioService: AudioPlayerService!
+    private var audioService: AudioServiceMock!
     private var showMediaInfoUseCase: ShowMediaInfoUseCaseMock!
     
     override func setUp() {
         
         showMediaInfoUseCase = ShowMediaInfoUseCaseMock()
+        audioService = AudioServiceMock()
         
         currentPlayerStateUseCase = DefaultCurrentPlayerStateUseCase(
-            showMediaInfoUseCase: showMediaInfoUseCase,
-            audioServiceOutput: DefaultAudioPlayerService()
+            audioService: audioService,
+            showMediaInfoUseCase: showMediaInfoUseCase
         )
     }
     
@@ -44,7 +46,7 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
             )
             
             showMediaInfoUseCase.tracks[trackId] = testTrackData
-            tracks[testTrackData]
+            tracks.append(testTrackData)
         }
         
         return tracks
@@ -55,183 +57,186 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
         let track = tracks.first!
         
-        let playerStateSequence = AssertSequence(testCase: self, values: [PlayerState.none, PlayerState.playing])
-        
-        let currentTimeSequence = AssertSequence(testCase: self, values: [0, 1])
+        let playerStateSequence = AssertSequence(testCase: self, values: [PlayerState.stopped, PlayerState.playing])
+        let currentTimeSequence = AssertSequence(testCase: self, values: [0.0, 1.0])
         
         let trackIdSequence = AssertSequence(testCase: self, values: [nil, track.id])
         
+        trackIdSequence.observe(currentPlayerStateUseCase.info, mapper: { $0?.id })
+        playerStateSequence.observe(currentPlayerStateUseCase.state)
+        
         let resultPlay = await audioService.play(
-            mediaInfo: track,
+            fileId: track.id,
             data: Data()
         )
         
         try AssertResultSucceded(resultPlay)
         sleep(1)
-        
-        currentPlayerStateUseCase.info.observe(on: self, observerBlock: trackIdSequence.observe)
-        currentPlayerStateUseCase.state.observe(on: self, observeBlock: playerStateSequence.observe)
-        currentPlayerStateUseCase.currentTime.observe(on: self) { value in
-            
-            var mappedValue = value
 
+        
+        currentTimeSequence.observe(currentPlayerStateUseCase.currentTime) { value in
+            
             if value > 0 {
-                mappedValue = 1
+                return 1.0
             } else if value < 0 {
-                mappedValue = -1
+                return -1.0
             }
             
-            currentTimeSequence.observe(mappedValue)
+            return value
         }
-        
-        playerStateSequence.wait(timeout: 10, enforceOrder: true)
-        currentTimeSequence.wait(timeout: 10, enforceOrder: true)
+
+        playerStateSequence.wait(timeout: 3, enforceOrder: true)
+        currentTimeSequence.wait(timeout: 3, enforceOrder: true)
+        trackIdSequence.wait(timeout: 3, enforceOrder: true)
     }
     
     func testPauseTrack() async throws {
-        
+
         let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
         let track = tracks.first!
-        
-        let playerStateSequence = AssertSequence(testCase: self, values: [PlayerState.playing, PlayerState.paused])
-        
-        let currentTimeSequence = AssertSequence(testCase: self, values: [1])
-        
-        let trackIdSequence = AssertSequence(testCase: self, values: [track.id, track.id])
-        
+
+        let playerStateSequence = AssertSequence(testCase: self, values: [PlayerState.stopped, PlayerState.playing, PlayerState.paused])
+        let currentTimeSequence = AssertSequence(testCase: self, values: [0.0])
+        let trackIdSequence = AssertSequence(testCase: self, values: [nil, track.id])
+
+        playerStateSequence.observe(currentPlayerStateUseCase.state)
+        trackIdSequence.observe(currentPlayerStateUseCase.info, mapper: { $0?.id })
+
         let resultPlay = await audioService.play(
-            mediaInfo: track,
+            fileId: track.id,
             data: Data()
         )
         try AssertResultSucceded(resultPlay)
-        
-        sleep(1)
-        
+
         let resultPause = await audioService.pause()
         try AssertResultSucceded(resultPause)
-        
-        currentPlayerStateUseCase.info.observe(on: self, observerBlock: trackIdSequence.observe)
-        currentPlayerStateUseCase.state.observe(on: self, observe: playerStateSequence.observe)
-        currentPlayerStateUseCase.currentTime.observe(on: self) { value in
-            
-            var mappedValue = value
+
+        currentTimeSequence.observe(currentPlayerStateUseCase.currentTime) { value in
 
             if value > 0 {
-                mappedValue = 1
+                return 1.0
             } else if value < 0 {
-                mappedValue = -1
+                return -1.0
             }
-            
-            currentTimeSequence.observe(mappedValue)
+
+            return value
         }
-        
-        playerStateSequence.wait(timeout: 10, enforceOrder: true)
-        currentTimeSequence.wait(timeout: 10, enforceOrder: true)
+
+        trackIdSequence.wait(timeout: 3, enforceOrder: true)
+        playerStateSequence.wait(timeout: 3, enforceOrder: true)
+        currentTimeSequence.wait(timeout: 3, enforceOrder: true)
     }
     
     func testStopTrack() async throws {
-        
+
         let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
         let track = tracks.first!
-        
-        let playerStateSequence = AssertSequence(testCase: self, values: [PlayerState.playing, PlayerState.none])
-        
-        let currentTimeSequence = AssertSequence(testCase: self, values: [1])
-        
-        let trackIdSequence = AssertSequence(testCase: self, values: [trackIdSequence, nil])
-        
+
+        let playerStateSequence = AssertSequence(testCase: self, values: [PlayerState.stopped, PlayerState.playing, PlayerState.stopped])
+        let currentTimeSequence = AssertSequence(testCase: self, values: [0.0])
+        let trackIdSequence = AssertSequence(testCase: self, values: [nil, track.id, nil])
+
+        playerStateSequence.observe(currentPlayerStateUseCase.state)
+        trackIdSequence.observe(currentPlayerStateUseCase.info, mapper: { $0?.id })
+
         let resultPlay = await audioService.play(
-            mediaInfo: track,
+            fileId: track.id,
             data: Data()
         )
         try AssertResultSucceded(resultPlay)
-        
-        let resultStop = await audioService.stop()
-        try AssertResultSucceded(resultStop)
-        
-        currentPlayerStateUseCase.info.observe(on: self, observerBlock: trackIdSequence.observe)
-        currentPlayerStateUseCase.state.observe(on: self, observe: playerStateSequence.observe)
-        currentPlayerStateUseCase.currentTime.observe(on: self) { value in
-            
-            var mappedValue = value
+
+        let resultPause = await audioService.stop()
+        try AssertResultSucceded(resultPause)
+
+        currentTimeSequence.observe(currentPlayerStateUseCase.currentTime) { value in
 
             if value > 0 {
-                mappedValue = 1
+                return 1.0
             } else if value < 0 {
-                mappedValue = -1
+                return -1.0
             }
-            
-            currentTimeSequence.observe(mappedValue)
+
+            return value
         }
-        
-        playerStateSequence.wait(timeout: 10, enforceOrder: true)
-        currentTimeSequence.wait(timeout: 10, enforceOrder: true)
+
+        trackIdSequence.wait(timeout: 3, enforceOrder: true)
+        playerStateSequence.wait(timeout: 3, enforceOrder: true)
+        currentTimeSequence.wait(timeout: 3, enforceOrder: true)
     }
     
-    func testChangeTrack() async throws {
-        
-        let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
-        let track = tracks.first!
-        
-        let track2 = tracks.first!
+    func testChageTrack() async throws {
 
-        let playerStateSequence = AssertSequence(testCase: self, values: [PlayerState.playing, PlayerState.playing])
-        let currentTimeSequence = AssertSequence(testCase: self, values: [1])
-        let trackIdSequence = AssertSequence(testCase: self, values: [track.id, track2.id])
-        
-        let resultPlay = await audioService.play(
-            mediaInfo: track,
+        let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
+        let track1 = tracks.first!
+        let track2 = tracks[1]
+
+        let playerStateSequence = AssertSequence(testCase: self, values: [PlayerState.stopped, PlayerState.playing, PlayerState.playing])
+        let currentTimeSequence = AssertSequence(testCase: self, values: [0.0])
+        let trackIdSequence = AssertSequence(testCase: self, values: [nil, track1.id, track2.id])
+
+        playerStateSequence.observe(currentPlayerStateUseCase.state)
+        trackIdSequence.observe(currentPlayerStateUseCase.info, mapper: { $0?.id })
+
+        let resultPlay1 = await audioService.play(
+            fileId: track1.id,
             data: Data()
         )
-        try AssertResultSucceded(resultPlay)
-        
+        try AssertResultSucceded(resultPlay1)
+
         
         let resultPlay2 = await audioService.play(
-            mediaInfo: track2,
+            fileId: track2.id,
             data: Data()
         )
         try AssertResultSucceded(resultPlay2)
-        
-        currentPlayerStateUseCase.info.observe(on: self, observerBlock: trackIdSequence.observe)
-        currentPlayerStateUseCase.state.observe(on: self, observe: playerStateSequence.observe)
-        currentPlayerStateUseCase.currentTime.observe(on: self) { value in
-            
-            var mappedValue = value
+
+        currentTimeSequence.observe(currentPlayerStateUseCase.currentTime) { value in
 
             if value > 0 {
-                mappedValue = 1
+                return 1.0
             } else if value < 0 {
-                mappedValue = -1
+                return -1.0
             }
-            
-            currentTimeSequence.observe(mappedValue)
+
+            return value
         }
-        
-        playerStateSequence.wait(timeout: 10, enforceOrder: true)
-        currentTimeSequence.wait(timeout: 10, enforceOrder: true)
+
+        trackIdSequence.wait(timeout: 3, enforceOrder: true)
+        playerStateSequence.wait(timeout: 3, enforceOrder: true)
+        currentTimeSequence.wait(timeout: 3, enforceOrder: true)
     }
 }
 
 // MARK: - Mocks
 
-enum PlayerState {
+fileprivate class AudioServiceMock: AudioService {
     
-    case playing
-    case paused
-    case none
-}
-
-fileprivate class AudioServiceMock: AudioPlayerService {
+    public var fileId: Observable<String?> = Observable(nil)
     
-    public var persistentTrackId: Observable<String?> = Observable(nil)
     public var isPlaying = Observable(false)
-    public var currentTime = Observable(0.0)
-    public var volume = Observable(0.0)
     
-    func play(mediaInfo: MediaInfo, data: Data) async -> Result<Void, Error> {
-        
-        persistentTrackId.value = mediaInfo.id
+    public var currentTime = Observable(0.0)
+    
+    public var volume = Observable(0.0)
+
+    
+    func play(fileId: String, data: Data) async -> Result<Void, Error> {
+    
+        self.fileId.value = fileId
         isPlaying.value = true
+        
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 1) { [weak self] in
+            
+            guard
+                let self = self,
+                self.isPlaying.value
+            else {
+                return
+            }
+            
+            
+            self.currentTime.value += 1
+        }
         
         return .success(())
     }
@@ -245,8 +250,8 @@ fileprivate class AudioServiceMock: AudioPlayerService {
     
     func stop() async -> Result<Void, Error> {
         
+        fileId.value = nil
         isPlaying.value = false
-        persistentTrackId.value = nil
         
         return .success(())
     }
@@ -281,15 +286,21 @@ fileprivate class ShowMediaInfoUseCaseMock: ShowMediaInfoUseCase {
 
 class AssertSequence<T: Equatable> {
     
-    private enum ExpectationItem {
-        
-        case withoutValue(expectation: XCTestExpectation)
-        case withValue(expectation: XCTestExpectation, value: T)
+    private struct ExpectationItem {
+        var expectation: XCTestExpectation?
+        var value: T
     }
     
     private unowned var testCase: XCTestCase
-    private var items: [ExpectationItem] = []
-    private var currentIndex = 0
+    private var expectedValues: [T] = [] {
+        didSet {
+            expectation.expectedFulfillmentCount = expectedValues.count
+        }
+    }
+    
+    private var receivedValues = [T]()
+    private var expectation = XCTestExpectation()
+    
     
     init(testCase: XCTestCase, values: [T] = []) {
         
@@ -300,16 +311,7 @@ class AssertSequence<T: Equatable> {
     
     func addExpectation(value: T) {
 
-        let index = items.count
-        let expectation = testCase.expectation(description: "Expectation\(index) value = \(value)")
-        items.append(.withValue(expectation: expectation, value: value))
-    }
-    
-    func addExpectation() {
-
-        let index = items.count
-        let expectation = testCase.expectation(description: "Expectation\(index)")
-        items.append(.withoutValue(expectation: expectation))
+        expectedValues.append(value)
     }
     
     func addExpectations(values: [T]) {
@@ -318,37 +320,35 @@ class AssertSequence<T: Equatable> {
             addExpectation(value: value)
         }
     }
-    
-    func wait(timeout: Double, enforceOrder: Bool) {
-        
-        let mappedExpectations = items.map { item -> XCTestExpectation in
 
-            switch item {
-            case .withValue(expectation: let expectation, value: _):
-                return expectation
-                
-            case .withoutValue(expectation: let expectation):
-                return expectation
-            }
-        }
+    func observe(_ observable: Observable<T>, file: StaticString = #filePath, line: UInt = #line) {
         
-        testCase.wait(for: mappedExpectations, timeout: timeout, enforceOrder: enforceOrder)
+        observe(observable, mapper: { $0 }, file: file, line: line)
     }
     
-    func observe(value: T) {
+    func observe<X>(_ observable: Observable<X>, mapper: @escaping (X) -> T, file: StaticString = #filePath, line: UInt = #line) {
         
-        let item = items[currentIndex]
         
-        switch item {
-        case .withValue(expectation: let expectation, value: let expectedValue):
+        observable.observe(on: self) { [weak self] value in
             
-            if value == expectedValue {
-                expectation.fulfill()
+            guard let self = self else {
+                return
             }
-        default:
-            fatalError()
+            
+            let mappedValue = mapper(value)
+            
+            self.receivedValues.append(mappedValue)
+            self.expectation.fulfill()
+        }
+    }
+    
+    func wait(timeout: TimeInterval, enforceOrder: Bool, file: StaticString = #filePath, line: UInt = #line) {
+        
+        if !enforceOrder {
+            fatalError("Not implemented")
         }
         
-        currentIndex += 1
+        testCase.wait(for: [expectation], timeout: timeout, enforceOrder: enforceOrder)
+        XCTAssertEqual(receivedValues, expectedValues, file: file, line: line)
     }
 }

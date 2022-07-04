@@ -1,5 +1,5 @@
 //
-//  DefaultAudioPlayerService.swift
+//  DefaultAudioService.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 29.06.22.
@@ -9,18 +9,24 @@ import Foundation
 import AVFoundation
 import MediaPlayer
 
-public final class DefaultAudioPlayerService: AudioPlayerService {
-
+public final class DefaultAudioService: AudioService {
+    
     private let audioSession: AVAudioSession
     private var player: AVAudioPlayer?
     private let commandCenter: MPRemoteCommandCenter
-    private let nowPlayingInfoService: NowPlayingInfoService
     
-    public init(nowPlayingInfoService: NowPlayingInfoService) {
+    public var volume: Observable<Double> = Observable(0.0)
+    public var isPlaying = Observable(false)
+    public var fileId: Observable<String?> = Observable(nil)
+    public var currentTime: Observable<Double> = Observable(0.0)
+    
+    private var playerIsPlayingObserver: NSKeyValueObservation? = nil
+    
+    public init() {
 
-        self.nowPlayingInfoService = nowPlayingInfoService
-        self.commandCenter = MPRemoteCommandCenter.shared()
         self.audioSession = AVAudioSession.sharedInstance()
+        self.player = nil
+        self.commandCenter = MPRemoteCommandCenter.shared()
 
         do {
             // Set the audio session category, mode, and options.
@@ -36,6 +42,87 @@ public final class DefaultAudioPlayerService: AudioPlayerService {
         
         setupRemoteControls()
     }
+}
+
+extension DefaultAudioService {
+    
+    private func bind(to player: AVAudioPlayer) {
+        
+        playerIsPlayingObserver = player.observe(\.isPlaying) { [weak self] player, change in
+            
+            guard let newIsPlaying = change.newValue else {
+                return
+            }
+            
+            self?.isPlaying.value = newIsPlaying
+            
+            if !newIsPlaying {
+                self?.fileId.value = nil
+            }
+        }
+    }
+    
+    private func removeBinding(to player: AVAudioPlayer) {
+        
+        playerIsPlayingObserver?.invalidate()
+    }
+}
+
+extension DefaultAudioService {
+    
+    public func play(fileId: String, data trackData: Data) async -> Result<Void, Error> {
+        
+        try? audioSession.setActive(true)
+        
+        do {
+
+            if let prevPlayer = self.player {
+                removeBinding(to: prevPlayer)
+            }
+            
+            let player = try AVAudioPlayer(data: trackData)
+            bind(to: player)
+            
+            self.player = player
+            
+            player.play()
+            
+            self.fileId.value = fileId
+            
+        } catch {
+
+            print("*** Unable to set up the audio player: \(error.localizedDescription) ***")
+            return .failure(error)
+        }
+        
+        return .success(())
+    }
+    
+    public func pause() async -> Result<Void, Error> {
+        
+        player?.pause()
+        return .success(())
+    }
+    
+    public func stop() async -> Result<Void, Error> {
+        
+        player?.stop()
+        return .success(())
+    }
+    
+    public func seek(time: Double) async -> Result<Void, Error> {
+        fatalError()
+    }
+    
+    public func setVolume(value: Double) async -> Result<Void, Error> {
+
+        player?.setVolume(Float(value), fadeDuration: 0)
+        
+        return .success(())
+    }
+}
+
+extension DefaultAudioService {
     
     func setupRemoteControls() {
 
@@ -82,7 +169,6 @@ public final class DefaultAudioPlayerService: AudioPlayerService {
                 player.play(atTime: player.currentTime - 10)
             }
             
-            self.nowPlayingInfoService.update(currentTime: player.currentTime, rate: player.rate)
             return .success
         }
         
@@ -99,49 +185,4 @@ public final class DefaultAudioPlayerService: AudioPlayerService {
         }
     }
 
-    
-    public func play(mediaInfo: MediaInfo, data trackData: Data) async -> Result<Void, Error> {
-        
-        try? audioSession.setActive(true)
-        
-        do {
-
-            let player = try AVAudioPlayer(data: trackData)
-            self.player = player
-            
-            player.play()
-            
-            nowPlayingInfoService.update(currentTime: player.currentTime, rate: player.rate)
-            nowPlayingInfoService.update(from: mediaInfo)
-            
-        } catch {
-
-            print("*** Unable to set up the audio player: \(error.localizedDescription) ***")
-            return .failure(error)
-        }
-        
-        return .success(())
-    }
-    
-    public func pause() async -> Result<Void, Error> {
-        
-        player?.pause()
-        return .success(())
-    }
-    
-    public func stop() async -> Result<Void, Error> {
-        
-        player?.stop()
-        return .success(())
-    }
-    
-    public func seek(time: Int) async -> Result<Void, Error> {
-        fatalError()
-    }
-    
-    public func setVolume(value: Double) async -> Result<Void, Error> {
-
-        player?.setVolume(Float(value), fadeDuration: 0)
-        return .success(())
-    }
 }

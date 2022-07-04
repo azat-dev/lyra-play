@@ -36,22 +36,19 @@ final class DefaultAppCoordinator: AppCoordinator {
         )
     } ()
     
-    private lazy var audioPlayerService: AudioPlayerService = {
+    private lazy var playingNowService: NowPlayingInfoService = {
         
-        let nowPlayingInfoService = DefaultNowPlayingInfoService()
-        return DefaultAudioPlayerService(nowPlayingInfoService: nowPlayingInfoService)
+        return DefaultNowPlayingInfoService()
+    } ()
+    
+    private lazy var audioService: AudioService = {
+        
+        return DefaultAudioService()
     } ()
     
     private lazy var playerControlUseCase: PlayerControlUseCase = {
         
         return DefaulPlayerControlUseCase()
-//        return DefaultPlayerControlUseCase(
-//            audioLibraryRepository: audioLibraryRepository,
-//            audioFilesRepository: audioFilesRepository,
-//            imagesRepository: imagesRepository,
-//            playerStateRepository: playerStateRepository,
-//            audioPlayerService: audioPlayerService
-//        )
     } ()
     
     private lazy var audioLibraryRepository: AudioLibraryRepository = {

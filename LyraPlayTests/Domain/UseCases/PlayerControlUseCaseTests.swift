@@ -40,13 +40,13 @@ class PlayerControlUseCaseTests: XCTestCase {
 //        )
 //
 //        let nowPlayingInfoService = DefaultNowPlayingInfoService()
-//        let audioPlayerService = DefaultAudioPlayerService(nowPlayingInfoService: nowPlayingInfoService)
+//        let audioService = DefaultAudioService(nowPlayingInfoService: nowPlayingInfoService)
 //        
 //        useCase = DefaultPlayerControlUseCase(
 //            showMediaInfoUseCase: showMediaInfoUseCase,
 //            loadTrackUseCase: loadTrackUseCase,
 //            playerStateRepository: playerStateRepository,
-//            audioPlayerService: audioPlayerService
+//            audioService: audioService
 //        )
 //    }
 //    

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct PlayerState {
+public struct LastPlayerState {
 
     public var trackId: UUID
     public var time: Int

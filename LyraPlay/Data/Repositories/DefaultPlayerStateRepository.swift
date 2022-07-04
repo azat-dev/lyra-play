@@ -7,28 +7,28 @@
 
 import Foundation
 
-private struct PlayerStateDTO: Codable {
+private struct LastPlayerStateDTO: Codable {
 
     var trackId: String
     var time: Int
     
-    init(from domain: PlayerState) {
+    init(from domain: LastPlayerState) {
         
         self.trackId = domain.trackId.uuidString
         self.time = domain.time
     }
     
-    func toDomain() -> PlayerState {
-        return PlayerState(
+    func toDomain() -> LastPlayerState {
+        return LastPlayerState(
             trackId: UUID(uuidString: trackId)!,
             time: time
         )
     }
 }
 
-private extension PlayerState {
+private extension LastPlayerState {
     
-    init(from dto: PlayerStateDTO) {
+    init(from dto: LastPlayerStateDTO) {
         
         self.trackId = UUID(uuidString: dto.trackId)!
         self.time = dto.time
@@ -46,9 +46,9 @@ public final class DefaultPlayerStateRepository: PlayerStateRepository {
         self.key = key
     }
     
-    public func get() async -> Result<PlayerState?, PlayerStateRepositoryError> {
+    public func get() async -> Result<LastPlayerState?, PlayerStateRepositoryError> {
         
-        let result = await keyValueStore.get(key: key, as: PlayerStateDTO.self)
+        let result = await keyValueStore.get(key: key, as: LastPlayerStateDTO.self)
         
         switch result {
             
@@ -60,9 +60,9 @@ public final class DefaultPlayerStateRepository: PlayerStateRepository {
         }
     }
     
-    public func put(state: PlayerState) async -> Result<Void, PlayerStateRepositoryError> {
+    public func put(state: LastPlayerState) async -> Result<Void, PlayerStateRepositoryError> {
 
-        let dto = PlayerStateDTO(from: state)
+        let dto = LastPlayerStateDTO(from: state)
         
         let result = await keyValueStore.put(
             key: key,

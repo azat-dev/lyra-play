@@ -64,7 +64,7 @@ public final class DefaulPlayerControlUseCase: PlayerControlUseCase {
 //    private let audioFilesRepository: FilesRepository
 //    private let imagesRepository: FilesRepository
 //    private let playerStateRepository: PlayerStateRepository
-//    private let audioPlayerService: AudioPlayerService
+//    private let audioService: AudioService
 //    private let showMediaInfoUseCase: ShowMediaInfoUseCase
 //    
     public var isPlaying: Observable<Bool> = Observable(false)
@@ -76,14 +76,14 @@ public final class DefaulPlayerControlUseCase: PlayerControlUseCase {
 //        audioFilesRepository: FilesRepository,
 //        imagesRepository: FilesRepository,
 //        playerStateRepository: PlayerStateRepository,
-//        audioPlayerService: AudioPlayerService
+//        audioService: AudioService
 //    ) {
 //        
 //        self.audioLibraryRepository = audioLibraryRepository
 //        self.audioFilesRepository = audioFilesRepository
 //        self.imagesRepository = imagesRepository
 //        self.playerStateRepository = playerStateRepository
-//        self.audioPlayerService = audioPlayerService
+//        self.audioService = audioService
 //        
 //        syncMediaInfoWithAudioService()
 //    }
@@ -114,7 +114,7 @@ public final class DefaulPlayerControlUseCase: PlayerControlUseCase {
 ////                    coverImage: coverImage
 ////                )
 ////
-////                await self.audioPlayerService.updateMediaInfo(mediaInfo)
+////                await self.audioService.updateMediaInfo(mediaInfo)
 ////            }
 ////        }
 //    }
@@ -155,8 +155,8 @@ public final class DefaulPlayerControlUseCase: PlayerControlUseCase {
 //            let fileInfo = try fileInfoResult.get()
 //            let fileDataResult = await audioFilesRepository.getFile(name: fileInfo.audioFile)
 //
-//            audioPlayerService.play(mediaInfo: <#T##MediaInfo#>, data: <#T##Data#>)
-//            let resultPlay = await audioPlayerService.play(mediaInfo: mediaInfo, data: fileData)
+//            audioService.play(mediaInfo: <#T##MediaInfo#>, data: <#T##Data#>)
+//            let resultPlay = await audioService.play(mediaInfo: mediaInfo, data: fileData)
 //            
 //            let mediaInfo = showMediaInfoUseCase.setTrack(trackId: trackId)
 //            
@@ -207,7 +207,7 @@ public final class DefaulPlayerControlUseCase: PlayerControlUseCase {
 //    
 //    public func pause() async -> Result<Void, PlayerControlUseCaseError> {
 //        
-//        let result = await audioPlayerService.pause()
+//        let result = await audioService.pause()
 //        
 //        guard case .success = result else {
 //            return .failure(.internalError(nil))

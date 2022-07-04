@@ -21,7 +21,7 @@ public struct MediaInfo {
         id: String,
         coverImage: Data,
         title: String,
-        duration: Double
+        duration: Double,
         artist: String
     ) {
         
@@ -100,8 +100,8 @@ public final class DefaultShowMediaInfoUseCase: ShowMediaInfoUseCase {
             id: fileInfo.id!.uuidString,
             coverImage: coverImage,
             title: fileInfo.name,
-            artist: fileInfo.artist ?? "",
-            duration: fileInfo.duration
+            duration: fileInfo.duration,
+            artist: fileInfo.artist ?? ""
         )
         
         self.mediaInfo.value = mediaInfo

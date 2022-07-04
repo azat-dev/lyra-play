@@ -8,12 +8,13 @@
 import Foundation
 
 public enum PlayerStateRepositoryError: Error {
+    
     case internalError(Error?)
 }
 
 public protocol PlayerStateRepository {
     
-    func put(state: PlayerState) async -> Result<Void, PlayerStateRepositoryError>
+    func put(state: LastPlayerState) async -> Result<Void, PlayerStateRepositoryError>
     
-    func get() async -> Result<PlayerState?, PlayerStateRepositoryError>
+    func get() async -> Result<LastPlayerState?, PlayerStateRepositoryError>
 }
