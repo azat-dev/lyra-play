@@ -205,22 +205,3 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         currentTimeSequence.wait(timeout: 3, enforceOrder: true)
     }
 }
-
-// MARK: - Mocks
-
-fileprivate 
-
-
-fileprivate class ShowMediaInfoUseCaseMock: ShowMediaInfoUseCase {
-
-    public var tracks = [UUID: MediaInfo]()
-    
-    func fetchInfo(trackId: UUID) async -> Result<MediaInfo, ShowMediaInfoUseCaseError> {
-        
-        guard let trackData = tracks[trackId] else {
-            return .failure(.trackNotFound)
-        }
-        
-        return .success(trackData)
-    }
-}
