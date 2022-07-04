@@ -24,7 +24,7 @@ class AudioServiceMock: AudioService {
         self.fileId.value = fileId
         isPlaying.value = true
         
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.1) { [weak self] in
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.01) { [weak self] in
             
             guard
                 let self = self,

@@ -93,7 +93,10 @@ public final class DefaultCurrentPlayerStateUseCase: CurrentPlayerStateUseCase {
                 
                 if isStateChanged {
                     self.state.value = newStateValue
-                    self.info.value = nil
+                    
+                    if self.info.value != nil {
+                        self.info.value = nil
+                    }
                 }
                 return
             }
