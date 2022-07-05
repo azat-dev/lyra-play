@@ -51,13 +51,15 @@ class PlayerControlUseCaseTests: XCTestCase {
         setUpTracks(loadTrackUseCase: loadTrackUseCase)
         
         let track = loadTrackUseCase.tracks.first!
+        let trackId = track.0
         
-        let trackIdSequence = AssertSequence(testCase: self, values: [nil, track.id.uuidString])
-        
-        let result = await useCase.play(trackId: UUID())
-        try AssertResultSucceded(result)
+        let trackIdSequence = AssertSequence(testCase: self, values: [nil, trackId.uuidString])
         
         trackIdSequence.observe(audioService.fileId)
+        
+        let result = await useCase.play(trackId: trackId)
+        try AssertResultSucceded(result)
+        
         trackIdSequence.wait(timeout: 3, enforceOrder: true)
     }
 }
