@@ -37,17 +37,18 @@ extension AudioFileInfo: Comparable {
 
 class CoreDataAudioLibraryRepositoryTests: XCTestCase {
     
-    var library: AudioLibraryRepository!
-    
-    override func setUpWithError() throws {
+    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> AudioLibraryRepository{
 
         let storeURL = URL(fileURLWithPath: "/dev/null")
         let coreDataStore = try! CoreDataStore(storeURL: storeURL)
-        library = CoreDataAudioLibraryRepository(coreDataStore: coreDataStore)
+        let library = CoreDataAudioLibraryRepository(coreDataStore: coreDataStore)
+        
+        detectMemoryLeak(instance: library, file: file, line: line)
+        return library
     }
 
     @discardableResult
-    private func putAndCheckFile(fileInfo: AudioFileInfo, data fileData: Data) async throws -> AudioFileInfo?  {
+    private func putAndCheckFile(library: AudioLibraryRepository, fileInfo: AudioFileInfo, data fileData: Data) async throws -> AudioFileInfo?  {
         
         let putResult = await library.putFile(info: fileInfo)
 
@@ -65,6 +66,8 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
     
     func testCreateNewRecordEmptyList() async throws {
         
+        let library = createSUT()
+        
         let fileInfo = AudioFileInfo(
             id: nil,
             createdAt: nil,
@@ -77,7 +80,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         )
         let fileData = "data".data(using: .utf8)!
         
-        let savedFile = try await putAndCheckFile(fileInfo: fileInfo, data: fileData)
+        let savedFile = try await putAndCheckFile(library: library, fileInfo: fileInfo, data: fileData)
         
         XCTAssertNotNil(savedFile)
         XCTAssertNotNil(savedFile?.createdAt)
@@ -87,6 +90,8 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
     
     func testCreateNewRecordNotEmptyList() async throws {
 
+        let library = createSUT()
+        
         let fileInfo1 = AudioFileInfo(
             id: nil,
             createdAt: nil,
@@ -99,7 +104,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData1 = "data1".data(using: .utf8)!
-        let savedFile1 = try await putAndCheckFile(fileInfo: fileInfo1, data: fileData1)
+        let savedFile1 = try await putAndCheckFile(library: library,  fileInfo: fileInfo1, data: fileData1)
         
         let fileInfo2 = AudioFileInfo(
             id: nil,
@@ -113,13 +118,15 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData2 = "data2".data(using: .utf8)!
-        let savedFile2 = try await putAndCheckFile(fileInfo: fileInfo2, data: fileData2)
+        let savedFile2 = try await putAndCheckFile(library: library,  fileInfo: fileInfo2, data: fileData2)
 
         XCTAssertNotEqual(savedFile1?.id, savedFile2?.id)
         XCTAssertNotEqual(savedFile1, savedFile2)
     }
     
     func testUpdateExistingRecord() async throws {
+        
+        let library = createSUT()
         
         let fileInfo1 = AudioFileInfo(
             id: nil,
@@ -133,7 +140,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData1 = "data1".data(using: .utf8)!
-        let savedFile1 = try await putAndCheckFile(fileInfo: fileInfo1, data: fileData1)
+        let savedFile1 = try await putAndCheckFile(library: library,  fileInfo: fileInfo1, data: fileData1)
         
         var fileInfo2 = AudioFileInfo(
             id: savedFile1!.id,
@@ -147,7 +154,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData2 = "data2".data(using: .utf8)!
-        let savedFile2 = try await putAndCheckFile(fileInfo: fileInfo2, data: fileData2)
+        let savedFile2 = try await putAndCheckFile(library: library,  fileInfo: fileInfo2, data: fileData2)
 
         XCTAssertEqual(savedFile1?.id, savedFile2?.id)
         XCTAssertEqual(savedFile1?.createdAt, savedFile2?.createdAt)
@@ -158,6 +165,8 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
     }
     
     func testUpdateNotExistingRecordEmptyList() async throws {
+        
+        let library = createSUT()
 
         let fileInfo1 = AudioFileInfo(
             id: UUID(),
@@ -181,6 +190,8 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
 
     func testUpdateNotExistingRecordNotEmptyList() async throws {
         
+        let library = createSUT()
+        
         let fileInfo1 = AudioFileInfo(
             id: nil,
             createdAt: .now,
@@ -193,7 +204,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData1 = "data1".data(using: .utf8)!
-        try await putAndCheckFile(fileInfo: fileInfo1, data: fileData1)
+        try await putAndCheckFile(library: library, fileInfo: fileInfo1, data: fileData1)
         
         let fileInfo2 = AudioFileInfo(
             id: UUID(),
@@ -218,6 +229,8 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
     
     func testGetRecordEmptyList() async throws {
         
+        let library = createSUT()
+        
         let fileId = UUID()
         let result = await library.getInfo(fileId: fileId)
         let error = try AssertResultFailed(result)
@@ -229,6 +242,8 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
     }
     
     func testGetRecordNotEmptyList() async throws {
+        
+        let library = createSUT()
         
         let fileInfo1 = AudioFileInfo(
             id: nil,
@@ -242,7 +257,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData1 = "data1".data(using: .utf8)!
-        let savedFile1 = try await putAndCheckFile(fileInfo: fileInfo1, data: fileData1)
+        let savedFile1 = try await putAndCheckFile(library: library,  fileInfo: fileInfo1, data: fileData1)
         
         let fileInfo2 = AudioFileInfo(
             id: nil,
@@ -256,7 +271,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData2 = "data1".data(using: .utf8)!
-        try await putAndCheckFile(fileInfo: fileInfo2, data: fileData2)
+        try await putAndCheckFile(library: library,  fileInfo: fileInfo2, data: fileData2)
         
         let fileId = savedFile1!.id!
         let result = await library.getInfo(fileId: fileId)
@@ -267,6 +282,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
     
     func testListFilesEmptyList() async throws {
         
+        let library = createSUT()
         let result = await library.listFiles()
         let files = try AssertResultSucceded(result)
         
@@ -274,6 +290,8 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
     }
     
     func test_list_files_not_empty_list() async throws {
+        
+        let library = createSUT()
         
         var fileInfo1 = AudioFileInfo(
             id: nil,
@@ -287,7 +305,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData1 = "data1".data(using: .utf8)!
-        let savedFile1 = try await putAndCheckFile(fileInfo: fileInfo1, data: fileData1)
+        let savedFile1 = try await putAndCheckFile(library: library,  fileInfo: fileInfo1, data: fileData1)
         
         var fileInfo2 = AudioFileInfo(
             id: nil,
@@ -301,7 +319,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData2 = "data2".data(using: .utf8)!
-        let savedFile2 = try await putAndCheckFile(fileInfo: fileInfo2, data: fileData2)
+        let savedFile2 = try await putAndCheckFile(library: library,  fileInfo: fileInfo2, data: fileData2)
         
         let result = await library.listFiles()
         let files = try AssertResultSucceded(result)
@@ -319,6 +337,8 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
     
     func test_delete_record_empty_list() async throws {
         
+        let library = createSUT()
+        
         let fileId = UUID()
         let result = await library.delete(fileId: fileId)
         
@@ -330,6 +350,8 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
     }
     
     func test_delete_record_not_empty_list() async throws {
+        
+        let library = createSUT()
         
         let fileInfo1 = AudioFileInfo(
             id: nil,
@@ -343,7 +365,7 @@ class CoreDataAudioLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData1 = "data1".data(using: .utf8)!
-        let savedFile1 = try await putAndCheckFile(fileInfo: fileInfo1, data: fileData1)
+        let savedFile1 = try await putAndCheckFile(library: library,  fileInfo: fileInfo1, data: fileData1)
         
         let result = await library.delete(fileId: savedFile1!.id!)
         try AssertResultSucceded(result)
