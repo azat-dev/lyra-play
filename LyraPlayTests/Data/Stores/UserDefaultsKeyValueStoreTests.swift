@@ -12,9 +12,8 @@ import XCTest
 
 class UserDefaultsKeyValueStoreTests: XCTestCase {
 
-    private var keyValueStore: KeyValueStore!
-
     private func deleteAllKeys() async {
+        
         let store1 = UserDefaultsKeyValueStore(storeName: "test1")
         let store2 = UserDefaultsKeyValueStore(storeName: "test2")
         
@@ -30,10 +29,18 @@ class UserDefaultsKeyValueStoreTests: XCTestCase {
         await deleteAllKeys()
     }
     
+    func createSUT(name: String) -> KeyValueStore {
+        
+        let store = UserDefaultsKeyValueStore(storeName: name)
+        detectMemoryLeak(instance: store)
+        
+        return store
+    }
+    
     func testPutGet() async throws {
         
-        let keyValueStore1 = UserDefaultsKeyValueStore(storeName: "test1")
-        let keyValueStore2 = UserDefaultsKeyValueStore(storeName: "test2")
+        let keyValueStore1 = createSUT(name: "test1")
+        let keyValueStore2 = createSUT(name: "test2")
         
         let testStruct = TestStruct(a: "test", b: 1)
         let testNumber = 1
@@ -65,7 +72,7 @@ class UserDefaultsKeyValueStoreTests: XCTestCase {
     
     func testGetNotExisitingKey() async throws {
      
-        let keyValueStore = UserDefaultsKeyValueStore(storeName: "test1")
+        let keyValueStore = createSUT(name: "test1")
         
         let resultReceivedValue = await keyValueStore.get(key: "1", as: Int.self)
         let receivedValue = try AssertResultSucceded(resultReceivedValue)
@@ -74,8 +81,8 @@ class UserDefaultsKeyValueStoreTests: XCTestCase {
     
     func testUpdateKey() async throws {
         
-        let keyValueStore1 = UserDefaultsKeyValueStore(storeName: "test1")
-        let keyValueStore2 = UserDefaultsKeyValueStore(storeName: "test2")
+        let keyValueStore1 = createSUT(name: "test1")
+        let keyValueStore2 = createSUT(name: "test2")
         
         let testNumber1 = 1
         let testNumber1Updated = 3
@@ -105,8 +112,8 @@ class UserDefaultsKeyValueStoreTests: XCTestCase {
     
     func testListKeys() async throws {
         
-        let keyValueStore1 = UserDefaultsKeyValueStore(storeName: "test1")
-        let keyValueStore2 = UserDefaultsKeyValueStore(storeName: "test2")
+        let keyValueStore1 = createSUT(name: "test1")
+        let keyValueStore2 = createSUT(name: "test2")
         
         let testNumber1 = 1
         let testNumber2 = 2
@@ -132,8 +139,8 @@ class UserDefaultsKeyValueStoreTests: XCTestCase {
     
     func testDeleteKey() async throws {
         
-        let keyValueStore1 = UserDefaultsKeyValueStore(storeName: "test1")
-        let keyValueStore2 = UserDefaultsKeyValueStore(storeName: "test2")
+        let keyValueStore1 = createSUT(name: "test1")
+        let keyValueStore2 = createSUT(name: "test2")
         
         let testNumber1 = 1
         let testNumber2 = 2
@@ -159,8 +166,8 @@ class UserDefaultsKeyValueStoreTests: XCTestCase {
     
     func testDeleteAll() async throws {
         
-        let keyValueStore1 = UserDefaultsKeyValueStore(storeName: "test1")
-        let keyValueStore2 = UserDefaultsKeyValueStore(storeName: "test2")
+        let keyValueStore1 = createSUT(name: "test1")
+        let keyValueStore2 = createSUT(name: "test2")
         
         let testNumber1 = 1
         let testNumber2 = 2
