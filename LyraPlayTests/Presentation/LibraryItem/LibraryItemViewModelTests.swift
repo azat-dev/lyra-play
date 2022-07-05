@@ -11,76 +11,26 @@ import XCTest
 
 class LibraryItemViewModelTests: XCTestCase {
 
-    private var showMediaInfoUseCase: ShowMediaInfoUseCase!
-    private var imagesRepository: FilesRepositoryMock!
-    private var libraryRepository: AudioLibraryRepositoryMock!
+    private var showMediaInfoUseCase: ShowMediaInfoUseCaseMock!
     private var viewModel: LibraryItemViewModel!
     private var coordinator: LibraryItemCoordinatorMock!
+    private var playerControlUseCase: PlayerControlUseCaseMock!
+    
     private var trackId: UUID!
     
     override func setUp() {
         
-        let bundle = Bundle(for: type(of: self ))
-        let testImageUrl = bundle.url(forResource: "test_cover_image", withExtension: "png")!
-        let testImage = try! Data(contentsOf: testImageUrl)
-        
-        libraryRepository = AudioLibraryRepositoryMock()
-        imagesRepository = FilesRepositoryMock()
         coordinator = LibraryItemCoordinatorMock()
         trackId = UUID()
         
-        showMediaInfoUseCase = DefaultShowMediaInfoUseCase(
-            audioLibraryRepository: libraryRepository,
-            imagesRepository: imagesRepository,
-            defaultImage: testImage
-        )
-        
+        showMediaInfoUseCase = ShowMediaInfoUseCaseMock()
+
         viewModel = DefaultLibraryItemViewModel(
             trackId: trackId,
             coordinator: coordinator,
             showMediaInfoUseCase: showMediaInfoUseCase
+//            playerControlUseCase: playerControlUseCase
         )
-    }
-    
-    func testLoad() async throws {
-        
-        var audioFile = AudioFileInfo.create(name: "Test", duration: 10, audioFile: "test.mp3")
-        audioFile.id = trackId
-        
-        let resultLibraryItem = await libraryRepository.putNewFileWithId(info: audioFile)
-        try AssertResultSucceded(resultLibraryItem)
-        
-        let initialMediaInfoExpectation = expectation(description: "Initial mediaInfo fulfilled")
-        let loadedMediaInfoExpectation = expectation(description: "Loaded mediaInfo fulfilled")
-
-        let initialPlayingExpectation = expectation(description: "Initial playing fulfilled")
-        
-        viewModel.info.observe(on: self) { info in
-            
-            guard let _ = info else {
-                initialMediaInfoExpectation.fulfill()
-                return
-            }
-            
-            loadedMediaInfoExpectation.fulfill()
-        }
-        
-        viewModel.isPlaying.observe(on: self) { isPlaying in
-            
-            guard isPlaying else {
-                initialPlayingExpectation.fulfill()
-                return
-            }
-        }
-        
-        let result = await viewModel.load()
-        try AssertResultSucceded(result)
-        
-        wait(for: [initialMediaInfoExpectation, loadedMediaInfoExpectation], timeout: 3, enforceOrder: true)
-        wait(for: [initialPlayingExpectation], timeout: 3, enforceOrder: true)
-
-        let isPlaying = viewModel.isPlaying.value
-        XCTAssertEqual(isPlaying, false)
     }
     
     func testLoadNotExistingTrack() async throws {
@@ -88,8 +38,33 @@ class LibraryItemViewModelTests: XCTestCase {
         let result = await viewModel.load()
         let error = try AssertResultFailed(result)
         XCTAssertNotNil(error)
-        
         // TODO: Implement "doesn't exist" logic
+    }
+    
+    func testLoad() async throws {
+        
+        showMediaInfoUseCase.tracks[trackId] = MediaInfo(
+            id: trackId.uuidString,
+            coverImage: Data(),
+            title: "Test",
+            duration: 20,
+            artist: ""
+        )
+        
+        let mediaInfoSequence = AssertSequence(testCase: self, values: [false, true])
+        let playingSequence = AssertSequence(testCase: self, values: [false])
+        
+        mediaInfoSequence.observe(viewModel.info, mapper: { $0 != nil })
+        playingSequence.observe(viewModel.isPlaying)
+        
+        let result = await viewModel.load()
+        try AssertResultSucceded(result)
+        
+        playingSequence.wait(timeout: 3, enforceOrder: true)
+        mediaInfoSequence.wait(timeout: 3, enforceOrder: true)
+
+        let isPlaying = viewModel.isPlaying.value
+        XCTAssertEqual(isPlaying, false)
     }
 }
 
