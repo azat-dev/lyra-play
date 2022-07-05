@@ -19,12 +19,10 @@ class PlayerControlUseCaseTests: XCTestCase {
     override func setUp() async throws {
         
         audioService = AudioServiceMock()
-        audioFileLoader = AudioFileLoader()
         loadTrackUseCase = LoadTrackUseCaseMock()
         
-        useCase = DefaultAudioPlayerControlUseCase(
+        useCase = DefaulPlayerControlUseCase(
             audioService: audioService,
-            audioLoader: audioFileLoader,
             loadTrackUseCase: loadTrackUseCase
         )
     }

@@ -72,7 +72,7 @@ extension DefaultLibraryItemViewModel {
     private func mapInfo(_ info: MediaInfo) -> LibraryItemInfoPresentation {
         
         return LibraryItemInfoPresentation(
-            title: info.title ?? "",
+            title: info.title,
             artist: info.artist ?? "",
             coverImage: info.coverImage,
             duration: formatDuration(info.duration)

@@ -7,6 +7,11 @@
 
 import Foundation
 
+public enum AudioServiceError: Error {
+    
+    case internalError(Error?)
+}
+
 public protocol AudioServiceOutput {
     
     var fileId: Observable<String?> { get }
@@ -20,15 +25,15 @@ public protocol AudioServiceOutput {
 
 public protocol AudioServiceInput {
 
-    func play(fileId: String, data: Data) async -> Result<Void, Error>
+    func play(fileId: String, data: Data) async -> Result<Void, AudioServiceError>
     
-    func pause() async -> Result<Void, Error>
+    func pause() async -> Result<Void, AudioServiceError>
     
-    func stop() async -> Result<Void, Error>
+    func stop() async -> Result<Void, AudioServiceError>
     
-    func seek(time: Double) async -> Result<Void, Error>
+    func seek(time: Double) async -> Result<Void, AudioServiceError>
     
-    func setVolume(value: Double) async -> Result<Void, Error>
+    func setVolume(value: Double) async -> Result<Void, AudioServiceError>
 }
 
 public protocol AudioService: AudioServiceInput, AudioServiceOutput {

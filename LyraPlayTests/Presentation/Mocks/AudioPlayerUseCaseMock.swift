@@ -9,31 +9,12 @@ import Foundation
 import LyraPlay
 
 class PlayerControlUseCaseMock: PlayerControlUseCase {
-    
 
     private var currentTrackId: UUID? = nil
-
-    var isPlaying = Observable(false)
     
-    func setTrack(fileId: UUID) async -> Result<Void, PlayerControlUseCaseError> {
-            
-        currentTrackId = fileId
-        return .success(())
-    }
-    
-    func getCurrentTrackId() async -> Result<UUID?, PlayerControlUseCaseError> {
-        return .success(currentTrackId)
-    }
-    
-    func play() async -> Result<Void, PlayerControlUseCaseError> {
+    func play(trackId: UUID) async -> Result<Void, PlayerControlUseCaseError> {
         
-        isPlaying.value = true
-        return .success(())
-    }
-    
-    func pause() async -> Result<Void, PlayerControlUseCaseError> {
-        
-        isPlaying.value = false
+        currentTrackId = trackId
         return .success(())
     }
 }

@@ -33,6 +33,7 @@ public final class DefaultAudioService: AudioService {
             try audioSession.setCategory(
                 .playback,
                 mode: .spokenAudio,
+                policy: .longFormAudio,
                 options: [
                 ]
             )
@@ -70,7 +71,7 @@ extension DefaultAudioService {
 
 extension DefaultAudioService {
     
-    public func play(fileId: String, data trackData: Data) async -> Result<Void, Error> {
+    public func play(fileId: String, data trackData: Data) async -> Result<Void, AudioServiceError> {
         
         try? audioSession.setActive(true)
         
@@ -92,32 +93,31 @@ extension DefaultAudioService {
         } catch {
 
             print("*** Unable to set up the audio player: \(error.localizedDescription) ***")
-            return .failure(error)
+            return .failure(.internalError(error))
         }
         
         return .success(())
     }
     
-    public func pause() async -> Result<Void, Error> {
+    public func pause() async -> Result<Void, AudioServiceError> {
         
         player?.pause()
         return .success(())
     }
     
-    public func stop() async -> Result<Void, Error> {
+    public func stop() async -> Result<Void, AudioServiceError> {
         
         player?.stop()
         return .success(())
     }
     
-    public func seek(time: Double) async -> Result<Void, Error> {
+    public func seek(time: Double) async -> Result<Void, AudioServiceError> {
         fatalError()
     }
     
-    public func setVolume(value: Double) async -> Result<Void, Error> {
+    public func setVolume(value: Double) async -> Result<Void, AudioServiceError> {
 
         player?.setVolume(Float(value), fadeDuration: 0)
-        
         return .success(())
     }
 }

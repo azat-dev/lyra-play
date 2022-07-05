@@ -19,7 +19,7 @@ class AudioServiceMock: AudioService {
     public var volume = Observable(0.0)
 
     
-    func play(fileId: String, data: Data) async -> Result<Void, Error> {
+    func play(fileId: String, data: Data) async -> Result<Void, AudioServiceError> {
     
         self.fileId.value = fileId
         isPlaying.value = true
@@ -40,14 +40,14 @@ class AudioServiceMock: AudioService {
         return .success(())
     }
     
-    func pause() async -> Result<Void, Error> {
+    func pause() async -> Result<Void, AudioServiceError> {
         
         isPlaying.value = false
         
         return .success(())
     }
     
-    func stop() async -> Result<Void, Error> {
+    func stop() async -> Result<Void, AudioServiceError> {
         
         fileId.value = nil
         isPlaying.value = false
@@ -55,13 +55,13 @@ class AudioServiceMock: AudioService {
         return .success(())
     }
     
-    func seek(time: Double) async -> Result<Void, Error> {
+    func seek(time: Double) async -> Result<Void, AudioServiceError> {
         
         currentTime.value = time
         return .success(())
     }
     
-    func setVolume(value: Double) async -> Result<Void, Error> {
+    func setVolume(value: Double) async -> Result<Void, AudioServiceError> {
         
         volume.value = value
         return .success(())

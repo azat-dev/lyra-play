@@ -60,18 +60,18 @@ public final class DefaultPlayerViewModel: PlayerViewModel {
         isPlaying = Observable(false)
         progress = Observable(0)
         
-        playerControlUseCase.isPlaying.observe(on: self) { [weak self] isPlaying in
-            self?.isPlaying.value = isPlaying
-        }
+//        playerControlUseCase.isPlaying.observe(on: self) { [weak self] isPlaying in
+//            self?.isPlaying.value = isPlaying
+//        }
     }
     
     public func togglePlay() async {
         
-        if playerControlUseCase.isPlaying.value {
-            let _ = await playerControlUseCase.pause()
-        } else {
-            let _ = await playerControlUseCase.play()
-        }
+//        if playerControlUseCase.isPlaying.value {
+//            let _ = await playerControlUseCase.pause()
+//        } else {
+//            let _ = await playerControlUseCase.play()
+//        }
     }
     
     public func setVolume() async {

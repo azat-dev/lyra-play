@@ -46,9 +46,20 @@ final class DefaultAppCoordinator: AppCoordinator {
         return DefaultAudioService()
     } ()
     
+    private lazy var loadTrackUseCase: LoadTrackUseCase = {
+        
+        return DefaultLoadTrackUseCase(
+            audioLibraryRepository: audioLibraryRepository,
+            audioFilesRepository: audioFilesRepository
+        )
+    } ()
+    
     private lazy var playerControlUseCase: PlayerControlUseCase = {
         
-        return DefaulPlayerControlUseCase()
+        return DefaulPlayerControlUseCase(
+            audioService: audioService,
+            loadTrackUseCase: loadTrackUseCase
+        )
     } ()
     
     private lazy var audioLibraryRepository: AudioLibraryRepository = {
@@ -179,7 +190,7 @@ extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
             coordnator: self,
             showMediaInfoUseCase: showMediaInfoUseCase
         )
-
+        
         let vc = factory.build(with: trackId)
         
         navigationController.pushViewController(vc, animated: true)
@@ -190,7 +201,7 @@ extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
         let factory = PlayerViewControllerFactory(
             playerControlUseCase: playerControlUseCase
         )
-
+        
         let vc = factory.build()
         
         let topViewController = self.navigationController.topViewController
