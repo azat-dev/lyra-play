@@ -41,7 +41,6 @@ class PlayerControlUseCaseTests: XCTestCase {
     private func setUpTracks(loadTrackUseCase: LoadTrackUseCaseMock) {
         
         for _ in 0..<5 {
-            
             loadTrackUseCase.tracks[UUID()] = Data()
         }
     }
@@ -54,13 +53,29 @@ class PlayerControlUseCaseTests: XCTestCase {
         let trackId = track.0
         
         let trackIdSequence = AssertSequence(testCase: self, values: [nil, trackId.uuidString])
+        let playingSequence = AssertSequence(testCase: self, values: [false, true])
         
         trackIdSequence.observe(audioService.fileId)
+        playingSequence.observe(audioService.isPlaying)
         
         let result = await useCase.play(trackId: trackId)
         try AssertResultSucceded(result)
         
         trackIdSequence.wait(timeout: 3, enforceOrder: true)
+        playingSequence.wait(timeout: 3, enforceOrder: true)
+    }
+    
+    func testPauseNotActiveTrack() async throws {
+
+        let track = loadTrackUseCase.tracks.first!
+        let trackId = track.0
+        
+        let result = await useCase.pause()
+        let error = try AssertResultFailed(result)
+        
+        guard case .noActiveTrack = error else {
+            XCTFail("Wrong error type \(result)")
+        }
     }
 }
 
