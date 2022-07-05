@@ -41,7 +41,7 @@ class LibraryItemViewModelTests: XCTestCase {
         // TODO: Implement "doesn't exist" logic
     }
     
-    func testLoad() async throws {
+    private func setUpTestTrack() {
         
         showMediaInfoUseCase.tracks[trackId] = MediaInfo(
             id: trackId.uuidString,
@@ -50,6 +50,11 @@ class LibraryItemViewModelTests: XCTestCase {
             duration: 20,
             artist: ""
         )
+    }
+    
+    func testLoad() async throws {
+        
+        setUpTestTrack()
         
         let mediaInfoSequence = AssertSequence(testCase: self, values: [false, true])
         let playingSequence = AssertSequence(testCase: self, values: [false])
@@ -65,6 +70,24 @@ class LibraryItemViewModelTests: XCTestCase {
 
         let isPlaying = viewModel.isPlaying.value
         XCTAssertEqual(isPlaying, false)
+    }
+    
+    func testTogglePlay() async throws {
+        
+        setUpTestTrack()
+        
+        let playingSequence = AssertSequence(testCase: self, values: [false, true, false])
+        playingSequence.observe(viewModel.isPlaying)
+        
+        let _ = await viewModel.load()
+
+        let playResult = await viewModel.togglePlay()
+        try AssertResultSucceded(playResult)
+
+        let pauseResult = await viewModel.togglePlay()
+        try AssertResultSucceded(pauseResult)
+        
+        playingSequence.wait(timeout: 3, enforceOrder: true)
     }
 }
 
