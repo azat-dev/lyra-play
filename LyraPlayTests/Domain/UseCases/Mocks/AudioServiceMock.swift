@@ -41,13 +41,20 @@ class AudioServiceMock: AudioService {
     }
     
     func pause() async -> Result<Void, AudioServiceError> {
+    
+        guard fileId.value != nil else {
+            return .failure(.noActiveFile)
+        }
         
         isPlaying.value = false
-        
         return .success(())
     }
     
     func stop() async -> Result<Void, AudioServiceError> {
+        
+        guard fileId.value != nil else {
+            return .failure(.noActiveFile)
+        }
         
         fileId.value = nil
         isPlaying.value = false
@@ -56,6 +63,10 @@ class AudioServiceMock: AudioService {
     }
     
     func seek(time: Double) async -> Result<Void, AudioServiceError> {
+        
+        guard fileId.value != nil else {
+            return .failure(.noActiveFile)
+        }
         
         currentTime.value = time
         return .success(())
