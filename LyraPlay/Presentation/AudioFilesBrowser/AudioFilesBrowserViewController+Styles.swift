@@ -26,6 +26,8 @@ extension AudioFilesBrowserViewController {
         static func apply(tableView: UITableView) {
             
             tableView.separatorStyle = .none
+            tableView.backgroundColor = .clear
+            tableView.backgroundView = nil
         }
     }
 }

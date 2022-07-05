@@ -18,6 +18,11 @@ extension AudioFilesBrowserCell {
         private static let titleFont: UIFont = Fonts.RedHatDisplay.medium.preferred(with: .headline)
         private static let descriptionFont: UIFont = Fonts.RedHatDisplay.regular.preferred(with: .subheadline)
         
+        static func apply(contentView: UIView) {
+            
+            contentView.backgroundColor = .clear
+        }
+        
         static func apply(coverImageView: UIImageView) {
         
             coverImageView.layer.cornerRadius = 5

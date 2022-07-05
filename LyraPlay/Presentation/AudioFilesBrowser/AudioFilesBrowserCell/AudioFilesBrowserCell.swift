@@ -69,7 +69,11 @@ extension AudioFilesBrowserCell {
 extension AudioFilesBrowserCell {
 
     private func style() {
+
+        backgroundView = nil
+        backgroundColor = .clear
         
+        Styles.apply(contentView: contentView)
         Styles.apply(coverImageView: coverImageView)
         Styles.apply(titleLabel: titleLabel)
         Styles.apply(descriptionLabel: descritionLabel)

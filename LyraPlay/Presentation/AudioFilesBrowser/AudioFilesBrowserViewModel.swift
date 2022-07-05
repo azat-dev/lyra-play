@@ -114,7 +114,7 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
             return AudioFilesBrowserCellViewModel(
                 id: file.id!,
                 title: file.name,
-                description: file.artist ?? "",
+                description: file.artist ?? "Unknown",
                 image: images[file.coverImage ?? ""] ?? stubItemImage,
                 onOpen: self.onOpen,
                 onPlay: self.onPlay
