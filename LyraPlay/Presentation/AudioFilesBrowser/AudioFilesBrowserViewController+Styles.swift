@@ -17,5 +17,15 @@ extension AudioFilesBrowserViewController {
             navigationItem.title = "Library"
             navigationItem.largeTitleDisplayMode = .always
         }
+        
+        static func apply(contentView: UIView) {
+            
+            contentView.backgroundColor = UIColor(named: "Color.Background")
+        }
+        
+        static func apply(tableView: UITableView) {
+            
+            tableView.separatorStyle = .none
+        }
     }
 }

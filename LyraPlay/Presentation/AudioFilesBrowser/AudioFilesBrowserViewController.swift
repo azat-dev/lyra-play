@@ -94,6 +94,8 @@ extension AudioFilesBrowserViewController {
                 return cell
             }
         )
+        
+        self.tableDataSource.defaultRowAnimation = .fade
 
         self.tableView.dataSource = tableDataSource
         view.addSubview(self.tableView)
@@ -107,6 +109,8 @@ extension AudioFilesBrowserViewController {
     private func style() {
         
         Styles.apply(navigationItem: navigationItem)
+        Styles.apply(contentView: view)
+        Styles.apply(tableView: tableView)
     }
 }
 

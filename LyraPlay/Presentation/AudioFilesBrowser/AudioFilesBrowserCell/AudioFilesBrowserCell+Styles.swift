@@ -9,8 +9,14 @@ import Foundation
 import UIKit
 
 extension AudioFilesBrowserCell {
+    
 
     final class Styles {
+        
+        private static let secondaryTextColor = UIColor(named: "Color.Text.Secondary")
+        private static let textColor = UIColor(named: "Color.Text")
+        private static let titleFont: UIFont = Fonts.RedHatDisplay.medium.preferred(with: .headline)
+        private static let descriptionFont: UIFont = Fonts.RedHatDisplay.regular.preferred(with: .subheadline)
         
         static func apply(coverImageView: UIImageView) {
         
@@ -21,16 +27,16 @@ extension AudioFilesBrowserCell {
         static func apply(titleLabel: UILabel) {
             
             titleLabel.numberOfLines = 1
-            titleLabel.font = .preferredFont(forTextStyle: .headline)
-            titleLabel.textColor = UIColor(named: "AudioFilesBrowser.cell.titleColor")
+            titleLabel.font = titleFont
+            titleLabel.textColor = textColor
             titleLabel.textAlignment = .left
         }
         
         static func apply(descriptionLabel: UILabel) {
             
             descriptionLabel.numberOfLines = 1
-            descriptionLabel.font = .preferredFont(forTextStyle: .subheadline)
-            descriptionLabel.textColor = UIColor(named: "AudioFilesBrowser.cell.descriptionColor")
+            descriptionLabel.font = descriptionFont
+            descriptionLabel.textColor = secondaryTextColor
             descriptionLabel.textAlignment = .left
         }
     }
