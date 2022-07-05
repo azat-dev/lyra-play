@@ -13,13 +13,13 @@ import XCTest
 
 class LocalFilesRepositoryTests: XCTestCase {
 
-    private var filesRepository: FilesRepository!
-    private var baseDirectory: URL!
+    private var baseDirectory = FileManager.default.temporaryDirectory.appendingPathComponent("test", isDirectory: true)
     
-    override func setUp() async throws {
+    func createSUT() -> FilesRepository {
         
-        baseDirectory = FileManager.default.temporaryDirectory.appendingPathComponent("test", isDirectory: true)
-        filesRepository = try! LocalFilesRepository(baseDirectory: baseDirectory)
+        let filesRepository = try! LocalFilesRepository(baseDirectory: baseDirectory)
+        detectMemoryLeak(instance: filesRepository)
+        return filesRepository
     }
     
     override func tearDown() {
@@ -27,6 +27,8 @@ class LocalFilesRepositoryTests: XCTestCase {
     }
 
     func testPutGetFile() async throws {
+        
+        let filesRepository = createSUT()
         
         let file1 = "file1".data(using: .utf8)!
         let file2 = "file2".data(using: .utf8)!
@@ -59,6 +61,8 @@ class LocalFilesRepositoryTests: XCTestCase {
     
     func testDeleteFile() async throws {
         
+        let filesRepository = createSUT()
+        
         let file1 = "file1".data(using: .utf8)!
         let file2 = "file2".data(using: .utf8)!
         
@@ -86,6 +90,8 @@ class LocalFilesRepositoryTests: XCTestCase {
     }
 
     func testDeleteNotExistingFile() async throws {
+        
+        let filesRepository = createSUT()
 
         let deletionResult = await filesRepository.deleteFile(name: "file1.txt")
 
