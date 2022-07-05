@@ -71,7 +71,7 @@ extension LibraryItemViewController {
 
     private func bind(to viewModel: LibraryItemViewModel) {
         
-        viewModel.info.observe(on: self) { [weak self] mediaInfo in
+        viewModel.info.observe(on: self, queue: .main) { [weak self] mediaInfo in
             
             guard let self = self else {
                 return
@@ -89,7 +89,7 @@ extension LibraryItemViewController {
             self.updateLoading(false)
         }
 
-        viewModel.isPlaying.observe(on: self) { [weak self] isPlaying in
+        viewModel.isPlaying.observe(on: self, queue: .main) { [weak self] isPlaying in
             
             guard let self = self else {
                 return

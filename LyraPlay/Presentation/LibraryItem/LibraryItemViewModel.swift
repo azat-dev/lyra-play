@@ -84,11 +84,11 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
     
     private func bind(to currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput) {
         
-        currentPlayerStateUseCase.state.observe(on: self, queue: .main) { [weak self] _ in
+        currentPlayerStateUseCase.state.observe(on: self) { [weak self] _ in
             self?.updatePlayingState()
         }
         
-        currentPlayerStateUseCase.info.observe(on: self, queue: .main) { [weak self] _ in
+        currentPlayerStateUseCase.info.observe(on: self) { [weak self] _ in
             self?.updatePlayingState()
         }
     }
@@ -125,7 +125,7 @@ extension DefaultLibraryItemViewModel {
     
     public func togglePlay() async {
      
-        if isPlaying.value {
+        if currentPlayerStateUseCase.state.value == .playing {
             
             let _ = await playerControlUseCase.pause()
             return

@@ -96,4 +96,25 @@ class PlayerControlUseCaseTests: XCTestCase {
         trackIdSequence.wait(timeout: 3, enforceOrder: true)
         playingSequence.wait(timeout: 3, enforceOrder: true)
     }
+    
+    func testChangeActiveTrack() async throws {
+        
+        setUpTracks(loadTrackUseCase: loadTrackUseCase)
+        
+        let tracks = Array(loadTrackUseCase.tracks.keys)
+        let trackId1 = tracks[0]
+        let trackId2 = tracks[1]
+        
+        let trackIdSequence = AssertSequence(testCase: self, values: [nil, trackId1.uuidString, trackId2.uuidString])
+        let playingSequence = AssertSequence(testCase: self, values: [false, true, true])
+        
+        trackIdSequence.observe(audioService.fileId)
+        playingSequence.observe(audioService.isPlaying)
+        
+        let _ = await useCase.play(trackId: trackId1)
+        let _ = await useCase.play(trackId: trackId2)
+        
+        trackIdSequence.wait(timeout: 3, enforceOrder: true)
+        playingSequence.wait(timeout: 3, enforceOrder: true)
+    }
 }

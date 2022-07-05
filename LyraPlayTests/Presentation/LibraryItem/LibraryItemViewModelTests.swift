@@ -24,17 +24,16 @@ class LibraryItemViewModelTests: XCTestCase {
         coordinator = LibraryItemCoordinatorMock()
         trackId = UUID()
         
-//        currentPlayerStateUseCase = CurrentPlayerStateUseCaseMock()
-        playerControlUseCase = PlayerControlUseCaseMock(currentPlayerStateUseCase: currentPlayerStateUseCase)
         showMediaInfoUseCase = ShowMediaInfoUseCaseMock()
-        
+        currentPlayerStateUseCase = CurrentPlayerStateUseCaseMock(showMediaInfoUseCase: showMediaInfoUseCase)
+        playerControlUseCase = PlayerControlUseCaseMock(currentPlayerStateUseCase: currentPlayerStateUseCase)
         
         viewModel = DefaultLibraryItemViewModel(
             trackId: trackId,
             coordinator: coordinator,
             showMediaInfoUseCase: showMediaInfoUseCase,
-            playerControlUseCase: playerControlUseCase,
-            currentPlayerStateUseCase: currentPlayerStateUseCase
+            currentPlayerStateUseCase: currentPlayerStateUseCase,
+            playerControlUseCase: playerControlUseCase
         )
     }
     
@@ -51,7 +50,7 @@ class LibraryItemViewModelTests: XCTestCase {
             coverImage: Data(),
             title: "Test",
             duration: 20,
-            artist: ""
+            artist: "Artist"
         )
     }
     
@@ -78,11 +77,12 @@ class LibraryItemViewModelTests: XCTestCase {
         
         setUpTestTrack()
         
-        let playingSequence = AssertSequence(testCase: self, values: [false, true, false])
+        let playingSequence = AssertSequence(testCase: self, values: [false, true, false, true])
         playingSequence.observe(viewModel.isPlaying)
         
         let _ = await viewModel.load()
 
+        await viewModel.togglePlay()
         await viewModel.togglePlay()
         await viewModel.togglePlay()
         
@@ -99,7 +99,7 @@ private final class LibraryItemCoordinatorMock: LibraryItemCoordinator {
     }
 }
 
-private final class CurrentPlayerStateUseCaseMock: CurrentPlayerStateUseCase {
+final class CurrentPlayerStateUseCaseMock: CurrentPlayerStateUseCase {
     
     var info: Observable<MediaInfo?> = Observable(nil)
     
@@ -109,10 +109,25 @@ private final class CurrentPlayerStateUseCaseMock: CurrentPlayerStateUseCase {
     
     var volume: Observable<Double> = Observable(0.0)
     
-    private var playerControlUseCase: PlayerControlUseCase
+    private var showMediaInfoUseCase: ShowMediaInfoUseCaseMock
     
-    init(playerControlUseCase: PlayerControlUseCase) {
-        self.playerControlUseCase = playerControlUseCase
+    init(showMediaInfoUseCase: ShowMediaInfoUseCaseMock) {
+        self.showMediaInfoUseCase = showMediaInfoUseCase
+    }
+    
+    public func setTrack(trackId: UUID?) async {
+
+        guard let trackId = trackId else {
+            info.value = nil
+            return
+        }
+        
+        let result = await showMediaInfoUseCase.fetchInfo(trackId: trackId)
+        guard case .success(let data) = result else {
+            return
+        }
+        
+        info.value = data
     }
     
 }
