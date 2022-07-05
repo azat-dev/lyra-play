@@ -97,17 +97,3 @@ class PlayerControlUseCaseTests: XCTestCase {
         playingSequence.wait(timeout: 3, enforceOrder: true)
     }
 }
-
-fileprivate class LoadTrackUseCaseMock: LoadTrackUseCase {
-    
-    public var tracks = [UUID: Data]()
-    
-    func load(trackId: UUID) async -> Result<Data, LoadTrackUseCaseError> {
-        
-        guard let data = tracks[trackId] else {
-            return .failure(.trackNotFound)
-        }
-        
-        return .success(data)
-    }
-}
