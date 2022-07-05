@@ -13,7 +13,7 @@ extension LibraryItemViewController {
     final class Styles {
         
         static var imageCornerRadius: CGFloat {
-            0
+            10
         }
         
         static var imageShape: ShapeCallback {
@@ -33,16 +33,16 @@ extension LibraryItemViewController {
         
         static func apply(contentView: UIView) {
             
-            contentView.backgroundColor = .systemBackground
+            contentView.backgroundColor = UIColor(named: "Color.Background")
         }
         
         static func apply(imageView: ImageViewShadowed) {
          
             imageView.sizeToFit()
             
-
             imageView.shadowView.shape = Self.imageShape
             imageView.containerView.shape = Self.imageShape
+            imageView.imageView.backgroundColor = .white
             
             let shadowColor = UIColor(red: 0.094, green: 0.153, blue: 0.3, alpha: 1).cgColor
             imageView.shadowView.shadows = [
@@ -58,23 +58,24 @@ extension LibraryItemViewController {
         
         static func apply(titleLabel: UILabel) {
             
-            titleLabel.font = Fonts.RedHatDisplay.bold.preferred(with: .headline)
+            titleLabel.font = Fonts.RedHatDisplay.bold.preferred(with: .title3)
             titleLabel.textAlignment = .left
             titleLabel.textColor = UIColor(named: "Color.Text")
         }
         
         static func apply(artistLabel: UILabel) {
             
-            artistLabel.font = Fonts.RedHatDisplay.medium.preferred(with: .footnote)
+            artistLabel.font = Fonts.RedHatDisplay.regular.preferred(with: .subheadline)
             artistLabel.textAlignment = .left
-            artistLabel.textColor = UIColor(named: "Color.Text")
+            artistLabel.textColor = UIColor(named: "Color.Text.Secondary")
         }
         
         static func apply(durationLabel: UILabel) {
             
             durationLabel.font = Fonts.RedHatDisplay.medium.preferred(with: .footnote)
             durationLabel.textAlignment = .left
-            durationLabel.textColor = UIColor(named: "Color.Text")
+            durationLabel.textColor = UIColor(named: "Color.Text.Secondary")
+            durationLabel.isHidden = true
         }
         
         static func apply(playButton: UIButton) {

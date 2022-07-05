@@ -51,7 +51,8 @@ extension LibraryItemViewController {
             
             NSLayoutConstraint.activate([
                 
-                titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 40),
+                titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 30),
+                titleLabel.widthAnchor.constraint(lessThanOrEqualTo: imageView.widthAnchor, multiplier: 0.9),
                 titleLabel.leftAnchor.constraint(equalTo: imageView.leftAnchor),
                 titleLabel.rightAnchor.constraint(equalTo: imageView.rightAnchor),
             ])
