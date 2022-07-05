@@ -125,7 +125,7 @@ extension DefaultLibraryItemViewModel {
     
     public func togglePlay() async {
      
-        if currentPlayerStateUseCase.state.value == .playing {
+        if self.isPlaying.value {
             
             let _ = await playerControlUseCase.pause()
             return

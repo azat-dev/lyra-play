@@ -166,5 +166,4 @@ final class CurrentPlayerStateUseCaseMock: CurrentPlayerStateUseCase {
         
         info.value = data
     }
-    
 }
