@@ -13,6 +13,7 @@ import UIKit
 public enum PlayerControlUseCaseError: Error {
     
     case trackNotFound
+    case noActiveTrack
     case internalError(Error?)
 }
 
@@ -23,6 +24,8 @@ public protocol PlayerControlUseCaseOutput {
 public protocol PlayerControlUseCaseInput {
     
     func play(trackId: UUID) async -> Result<Void, PlayerControlUseCaseError>
+
+    func pause() async -> Result<Void, PlayerControlUseCaseError>
 }
 
 public protocol PlayerControlUseCase: PlayerControlUseCaseInput, PlayerControlUseCaseOutput {
@@ -61,6 +64,8 @@ public final class DefaulPlayerControlUseCase: PlayerControlUseCase {
         switch error {
         case .internalError(let err):
             return .internalError(err)
+        case .noActiveFile:
+            return .noActiveTrack
         }
     }
     
@@ -77,6 +82,18 @@ public final class DefaulPlayerControlUseCase: PlayerControlUseCase {
         
         guard case .success = playResult else {
             let mappedError = mapAudioServiceError(playResult.error!)
+            return .failure(mappedError)
+        }
+        
+        return .success(())
+    }
+    
+    public func pause() async -> Result<Void, PlayerControlUseCaseError> {
+        
+        let pauseResult = await audioService.pause()
+        
+        guard case .success = pauseResult else {
+            let mappedError = mapAudioServiceError(pauseResult.error!)
             return .failure(mappedError)
         }
         

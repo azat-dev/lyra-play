@@ -67,14 +67,12 @@ class PlayerControlUseCaseTests: XCTestCase {
     
     func testPauseNotActiveTrack() async throws {
 
-        let track = loadTrackUseCase.tracks.first!
-        let trackId = track.0
-        
         let result = await useCase.pause()
         let error = try AssertResultFailed(result)
         
         guard case .noActiveTrack = error else {
             XCTFail("Wrong error type \(result)")
+            return
         }
     }
 }

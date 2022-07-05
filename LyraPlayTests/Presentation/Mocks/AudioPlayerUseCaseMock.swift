@@ -17,4 +17,13 @@ class PlayerControlUseCaseMock: PlayerControlUseCase {
         currentTrackId = trackId
         return .success(())
     }
+    
+    func pause() async -> Result<Void, PlayerControlUseCaseError> {
+        
+        guard  currentTrackId != nil else {
+            return .failure(.noActiveTrack)
+        }
+        
+        return .success(())
+    }
 }
