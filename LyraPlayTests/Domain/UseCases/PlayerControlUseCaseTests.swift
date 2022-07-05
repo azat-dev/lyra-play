@@ -75,6 +75,27 @@ class PlayerControlUseCaseTests: XCTestCase {
             return
         }
     }
+    
+    func testPauseActiveTrack() async throws {
+        
+        setUpTracks(loadTrackUseCase: loadTrackUseCase)
+        
+        let track = loadTrackUseCase.tracks.first!
+        let trackId = track.0
+        
+        let trackIdSequence = AssertSequence(testCase: self, values: [nil, trackId.uuidString])
+        let playingSequence = AssertSequence(testCase: self, values: [false, true, false])
+        
+        trackIdSequence.observe(audioService.fileId)
+        playingSequence.observe(audioService.isPlaying)
+        
+        let _ = await useCase.play(trackId: trackId)
+        let result = await useCase.pause()
+        try AssertResultSucceded(result)
+        
+        trackIdSequence.wait(timeout: 3, enforceOrder: true)
+        playingSequence.wait(timeout: 3, enforceOrder: true)
+    }
 }
 
 fileprivate class LoadTrackUseCaseMock: LoadTrackUseCase {
