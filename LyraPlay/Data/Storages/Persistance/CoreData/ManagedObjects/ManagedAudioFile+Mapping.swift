@@ -33,6 +33,7 @@ extension ManagedAudioFile {
         self.updatedAt = source.updatedAt
         self.coverImage = source.coverImage
         self.audioFile = source.audioFile
+        self.duration = source.duration
     }
     
     static func create(_ context: NSManagedObjectContext, from domain: AudioFileInfo) -> ManagedAudioFile {

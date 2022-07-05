@@ -56,10 +56,21 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var currentPlayerStateUseCase: CurrentPlayerStateUseCase = {
         
-        return DefaultCurrentPlayerStateUseCase(
+        let currentState = DefaultCurrentPlayerStateUseCase(
             audioService: audioService,
             showMediaInfoUseCase: showMediaInfoUseCase
         )
+        
+        currentState.info.observe(on: self) { [weak self] info in
+            
+            guard let info = info else {
+                return
+            }
+
+            self?.playingNowService.update(from: info)
+        }
+        
+        return currentState
     } ()
     
     private lazy var playerControlUseCase: PlayerControlUseCase = {

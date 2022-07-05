@@ -43,7 +43,6 @@ public final class DefaultNowPlayingInfoService: NowPlayingInfoService {
         
         nowPlayingInfo[MPMediaItemPropertyTitle] = mediaInfo.title
         nowPlayingInfo[MPMediaItemPropertyArtist] = mediaInfo.artist
-        nowPlayingInfo[MPMediaItemPropertyPersistentID] = mediaInfo.id
 
         let image = UIImage(data: mediaInfo.coverImage)!
         
