@@ -47,26 +47,33 @@ public final class DefaultAudioService: AudioService {
 
 extension DefaultAudioService {
     
-    private func bind(to player: AVAudioPlayer) {
-        
-        playerIsPlayingObserver = player.observe(\.isPlaying) { [weak self] player, change in
-            
-            guard let newIsPlaying = change.newValue else {
-                return
-            }
-            
-            self?.isPlaying.value = newIsPlaying
-            
-            if !newIsPlaying {
-                self?.fileId.value = nil
-            }
-        }
-    }
-    
-    private func removeBinding(to player: AVAudioPlayer) {
-        
-        playerIsPlayingObserver?.invalidate()
-    }
+//    private func bind(to player: AVAudioPlayer) {
+//
+//        playerIsPlayingObserver = player.observe(\.isPlaying, options: [.initial, .new, .old, .prior]) { [weak self] player, change in
+//
+//
+//            debugPrint(player.isPlaying)
+//            debugPrint(change)
+//
+//            guard let newIsPlaying = change.newValue else {
+//                return
+//            }
+//
+//            guard self?.isPlaying.value != newIsPlaying else {
+//                return
+//            }
+//
+//            self?.isPlaying.value = newIsPlaying
+//            if !newIsPlaying {
+//                self?.fileId.value = nil
+//            }
+//        }
+//    }
+//
+//    private func removeBinding(to player: AVAudioPlayer) {
+//
+//        playerIsPlayingObserver?.invalidate()
+//    }
 }
 
 extension DefaultAudioService {
@@ -74,21 +81,23 @@ extension DefaultAudioService {
     public func play(fileId: String, data trackData: Data) async -> Result<Void, AudioServiceError> {
         
         try? audioSession.setActive(true)
-        
+
         do {
 
-            if let prevPlayer = self.player {
-                removeBinding(to: prevPlayer)
-            }
+//            if let prevPlayer = self.player {
+//                removeBinding(to: prevPlayer)
+//            }
             
             let player = try AVAudioPlayer(data: trackData)
-            bind(to: player)
+//            bind(to: player)
+            
             
             self.player = player
             
             player.play()
             
             self.fileId.value = fileId
+            self.isPlaying.value = true
             
         } catch {
 
@@ -105,6 +114,7 @@ extension DefaultAudioService {
             return .failure(.noActiveFile)
         }
         
+        self.isPlaying.value = false
         player.pause()
         return .success(())
     }
@@ -116,8 +126,10 @@ extension DefaultAudioService {
         }
         
         player.stop()
-        removeBinding(to: player)
+//        removeBinding(to: player)
         self.player = nil
+        self.isPlaying.value = false
+        self.fileId.value = nil
         self.currentTime.value = 0
         
         return .success(())

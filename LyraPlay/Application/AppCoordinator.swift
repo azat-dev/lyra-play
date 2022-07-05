@@ -54,6 +54,14 @@ final class DefaultAppCoordinator: AppCoordinator {
         )
     } ()
     
+    private lazy var currentPlayerStateUseCase: CurrentPlayerStateUseCase = {
+        
+        return DefaultCurrentPlayerStateUseCase(
+            audioService: audioService,
+            showMediaInfoUseCase: showMediaInfoUseCase
+        )
+    } ()
+    
     private lazy var playerControlUseCase: PlayerControlUseCase = {
         
         return DefaulPlayerControlUseCase(
@@ -188,7 +196,9 @@ extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
         
         let factory = LibraryItemViewControllerFactory(
             coordnator: self,
-            showMediaInfoUseCase: showMediaInfoUseCase
+            showMediaInfoUseCase: showMediaInfoUseCase,
+            currentPlayerStateUseCase: currentPlayerStateUseCase,
+            playerControlUseCase: playerControlUseCase
         )
         
         let vc = factory.build(with: trackId)

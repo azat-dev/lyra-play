@@ -30,9 +30,9 @@ public protocol LibraryItemViewModelOutput {
 
 public protocol LibraryItemViewModelInput {
     
-    func load() async -> Result<Void, Error>
+    func load() async
     
-    func play() async -> Result<Void, Error>
+    func togglePlay() async
 }
 
 public protocol LibraryItemViewModel: LibraryItemViewModelOutput, LibraryItemViewModelInput {
@@ -45,6 +45,8 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
     private let trackId: UUID
     private let coordinator: LibraryItemCoordinator
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
+    private let playerControlUseCase: PlayerControlUseCase
+    private let currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput
     
     public var isPlaying: Observable<Bool> = Observable(false)
     public var info: Observable<LibraryItemInfoPresentation?> = Observable(nil)
@@ -52,12 +54,43 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
     public init(
         trackId: UUID,
         coordinator: LibraryItemCoordinator,
-        showMediaInfoUseCase: ShowMediaInfoUseCase
+        showMediaInfoUseCase: ShowMediaInfoUseCase,
+        currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput,
+        playerControlUseCase: PlayerControlUseCase
     ) {
         
         self.trackId = trackId
         self.coordinator = coordinator
         self.showMediaInfoUseCase = showMediaInfoUseCase
+        self.playerControlUseCase = playerControlUseCase
+        self.currentPlayerStateUseCase = currentPlayerStateUseCase
+        
+        bind(to: currentPlayerStateUseCase)
+    }
+    
+    private func updatePlayingState() {
+        
+        let currentTrackId = currentPlayerStateUseCase.info.value?.id
+        let state = currentPlayerStateUseCase.state.value
+        
+        let isPlaying = (state == .playing && currentTrackId == trackId.uuidString)
+        
+        guard isPlaying != self.isPlaying.value else {
+            return
+        }
+
+        self.isPlaying.value = isPlaying
+    }
+    
+    private func bind(to currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput) {
+        
+        currentPlayerStateUseCase.state.observe(on: self, queue: .main) { [weak self] _ in
+            self?.updatePlayingState()
+        }
+        
+        currentPlayerStateUseCase.info.observe(on: self, queue: .main) { [weak self] _ in
+            self?.updatePlayingState()
+        }
     }
 }
 
@@ -79,22 +112,25 @@ extension DefaultLibraryItemViewModel {
         )
     }
     
-    public func load() async -> Result<Void, Error> {
+    public func load() async {
         
         let resultMediaInfo = await showMediaInfoUseCase.fetchInfo(trackId: trackId)
         
         guard case .success(let mediaInfo) = resultMediaInfo else {
-            let error = NSError(domain: "", code: 0)
-            return .failure(error)
+            return
         }
-
         
         self.info.value = mapInfo(mediaInfo)
-        return .success(())
     }
     
-    public func play() async -> Result<Void, Error> {
+    public func togglePlay() async {
+     
+        if isPlaying.value {
+            
+            let _ = await playerControlUseCase.pause()
+            return
+        }
         
-        return .success(())
+        let _ = await playerControlUseCase.play(trackId: trackId)
     }
 }

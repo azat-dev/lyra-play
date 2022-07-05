@@ -113,7 +113,7 @@ extension LibraryItemViewController {
     private func didTogglePlay() {
         
         Task {
-            await viewModel.play()
+            await viewModel.togglePlay()
         }
     }
     
