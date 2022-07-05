@@ -10,17 +10,17 @@ import XCTest
 
 class DefatulTagsParserTests: XCTestCase {
     
-    var tagsParser: TagsParser!
-    
-    override func setUpWithError() throws {
-        tagsParser = DefaultTagsParser()
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    func createSUT() -> TagsParser {
+        
+        let tagsParser = DefaultTagsParser()
+        detectMemoryLeak(instance: tagsParser)
+        
+        return tagsParser
     }
 
     func testParse() async throws {
+        
+        let tagsParser = createSUT()
         
         let bundle = Bundle(for: type(of: self ))
         
