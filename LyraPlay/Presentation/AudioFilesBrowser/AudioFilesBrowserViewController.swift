@@ -44,7 +44,7 @@ extension AudioFilesBrowserViewController {
     
     private func bind(to viewModel: AudioFilesBrowserViewModel) {
         
-        self.viewModel.isLoading.observe(on: self) { isLoading in }
+        self.viewModel.isLoading.observe(on: self, queue: .main) { isLoading in }
         self.viewModel.filesDelegate = self
     }
 }
