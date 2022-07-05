@@ -12,51 +12,55 @@ import XCTest
 class LibraryItemViewModelTests: XCTestCase {
 
     private var showMediaInfoUseCase: ShowMediaInfoUseCaseMock!
-    private var viewModel: LibraryItemViewModel!
     private var coordinator: LibraryItemCoordinatorMock!
     private var playerControlUseCase: PlayerControlUseCaseMock!
     private var currentPlayerStateUseCase: CurrentPlayerStateUseCaseMock!
     
-    private var trackId: UUID!
-    
-    override func setUp() {
-        
+    override func setUp() async throws {
         coordinator = LibraryItemCoordinatorMock()
-        trackId = UUID()
         
         showMediaInfoUseCase = ShowMediaInfoUseCaseMock()
         currentPlayerStateUseCase = CurrentPlayerStateUseCaseMock(showMediaInfoUseCase: showMediaInfoUseCase)
         playerControlUseCase = PlayerControlUseCaseMock(currentPlayerStateUseCase: currentPlayerStateUseCase)
+    }
+    
+    func createViewModel(trackId: UUID) -> LibraryItemViewModel {
         
-        viewModel = DefaultLibraryItemViewModel(
+        let viewModel = DefaultLibraryItemViewModel(
             trackId: trackId,
             coordinator: coordinator,
             showMediaInfoUseCase: showMediaInfoUseCase,
             currentPlayerStateUseCase: currentPlayerStateUseCase,
             playerControlUseCase: playerControlUseCase
         )
+        
+        return viewModel
     }
     
     func testLoadNotExistingTrack() async throws {
         
+        let viewModel = createViewModel(trackId: UUID())
         await viewModel.load()
         // TODO: Implement "doesn't exist" logic
     }
     
-    private func setUpTestTrack() {
+    private func setUpTestTrack(trackId: UUID) {
         
         showMediaInfoUseCase.tracks[trackId] = MediaInfo(
             id: trackId.uuidString,
             coverImage: Data(),
-            title: "Test",
+            title: "Test \(trackId)",
             duration: 20,
-            artist: "Artist"
+            artist: "Artist \(trackId)"
         )
     }
     
     func testLoad() async throws {
         
-        setUpTestTrack()
+        let trackId = UUID()
+        
+        let viewModel = createViewModel(trackId: trackId)
+        setUpTestTrack(trackId: trackId)
         
         let mediaInfoSequence = AssertSequence(testCase: self, values: [false, true])
         let playingSequence = AssertSequence(testCase: self, values: [false])
@@ -75,7 +79,10 @@ class LibraryItemViewModelTests: XCTestCase {
     
     func testTogglePlay() async throws {
         
-        setUpTestTrack()
+        let trackId = UUID()
+        
+        let viewModel = createViewModel(trackId: trackId)
+        setUpTestTrack(trackId: trackId)
         
         let playingSequence = AssertSequence(testCase: self, values: [false, true, false, true])
         playingSequence.observe(viewModel.isPlaying)
@@ -87,6 +94,36 @@ class LibraryItemViewModelTests: XCTestCase {
         await viewModel.togglePlay()
         
         playingSequence.wait(timeout: 3, enforceOrder: true)
+    }
+    
+    func testTogglePlayDifferentTrack() async throws {
+        
+        let trackId1 = UUID()
+        
+        let viewModel1 = createViewModel(trackId: trackId1)
+        setUpTestTrack(trackId: trackId1)
+
+        let trackId2 = UUID()
+        
+        let viewModel2 = createViewModel(trackId: trackId2)
+        setUpTestTrack(trackId: trackId2)
+
+        
+        let playingSequence1 = AssertSequence(testCase: self, values: [false, true, false])
+        playingSequence1.observe(viewModel1.isPlaying)
+        
+        let playingSequence2 = AssertSequence(testCase: self, values: [false, true])
+        playingSequence2.observe(viewModel2.isPlaying)
+        
+        
+        let _ = await viewModel1.load()
+        await viewModel1.togglePlay()
+        
+        let _ = await viewModel2.load()
+        await viewModel2.togglePlay()
+        
+        playingSequence1.wait(timeout: 3, enforceOrder: true)
+        playingSequence2.wait(timeout: 3, enforceOrder: true)
     }
 }
 
