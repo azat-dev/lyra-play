@@ -12,22 +12,24 @@ import XCTest
 
 class LoadTrackUseCaseTests: XCTestCase {
 
-    private var audioFilesRepository: FilesRepository!
-    private var audioLibraryRepository: AudioLibraryRepository!
-    private var useCase: LoadTrackUseCase!
-    
-    override func setUp() {
+    func createSUT() -> (useCase: LoadTrackUseCase, audioFilesRepository: FilesRepositoryMock, audioLibraryRepository: AudioLibraryRepositoryMock) {
         
-        audioFilesRepository = FilesRepositoryMock()
-        audioLibraryRepository = AudioLibraryRepositoryMock()
+        let audioFilesRepository = FilesRepositoryMock()
+        let audioLibraryRepository = AudioLibraryRepositoryMock()
         
-        useCase = DefaultLoadTrackUseCase(
+        let useCase = DefaultLoadTrackUseCase(
             audioLibraryRepository: audioLibraryRepository,
             audioFilesRepository: audioFilesRepository
         )
+        
+        detectMemoryLeak(instance: useCase)
+        
+        return (useCase, audioFilesRepository, audioLibraryRepository)
     }
     
     func testLoadTrack() async throws {
+        
+        let (useCase, audioFilesRepository, audioLibraryRepository) = createSUT()
         
         let testData = "testdata".data(using: .utf8)!
         let testName = "test.mp3"
@@ -48,6 +50,8 @@ class LoadTrackUseCaseTests: XCTestCase {
     
     func testLoadTrackWithoutLibraryItem() async throws {
         
+        let (useCase, _, _) = createSUT()
+        
         let testId = UUID()
         
         let result = await useCase.load(trackId: testId)
@@ -60,6 +64,8 @@ class LoadTrackUseCaseTests: XCTestCase {
     }
     
     func testLoadTrackWithoutAudioFile() async throws {
+        
+        let (useCase, _, audioLibraryRepository) = createSUT()
         
         let testName = "test.mp3"
         
