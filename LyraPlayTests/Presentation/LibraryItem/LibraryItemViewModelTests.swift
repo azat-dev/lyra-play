@@ -34,6 +34,7 @@ class LibraryItemViewModelTests: XCTestCase {
             playerControlUseCase: playerControlUseCase
         )
         
+        detectMemoryLeak(instance: viewModel)
         return viewModel
     }
     
