@@ -101,13 +101,25 @@ extension DefaultAudioService {
     
     public func pause() async -> Result<Void, AudioServiceError> {
         
-        player?.pause()
+        guard let player = player else {
+            return .failure(.noActiveFile)
+        }
+        
+        player.pause()
         return .success(())
     }
     
     public func stop() async -> Result<Void, AudioServiceError> {
         
-        player?.stop()
+        guard let player = player else {
+            return .failure(.noActiveFile)
+        }
+        
+        player.stop()
+        removeBinding(to: player)
+        self.player = nil
+        self.currentTime.value = 0
+        
         return .success(())
     }
     

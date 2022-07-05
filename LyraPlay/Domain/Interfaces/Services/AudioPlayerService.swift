@@ -10,6 +10,7 @@ import Foundation
 public enum AudioServiceError: Error {
     
     case internalError(Error?)
+    case noActiveFile
 }
 
 public protocol AudioServiceOutput {
