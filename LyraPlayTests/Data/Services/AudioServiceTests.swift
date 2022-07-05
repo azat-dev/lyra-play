@@ -12,11 +12,13 @@ import LyraPlay
 
 class AudioServiceTests: XCTestCase {
 
-    private var audioService: AudioService!
-    
-    override func setUp() async throws {
+    func createSUT() -> AudioService {
 
-        audioService = DefaultAudioService()
+        let audioService = DefaultAudioService()
+        
+        detectMemoryLeak(instance: audioService)
+        
+        return audioService
     }
     
     private func getTestFile() throws -> Data {
@@ -28,6 +30,8 @@ class AudioServiceTests: XCTestCase {
     }
     
     func testPlay() async throws {
+        
+        let audioService = createSUT()
     
         let fileId1 = "test1"
         let fileId2 = "test2"
