@@ -15,23 +15,27 @@ import CoreMedia
 
 class CurrentPlayerStateUseCaseTests: XCTestCase {
     
-    private var currentPlayerStateUseCase: CurrentPlayerStateUseCase!
-    private var audioService: AudioServiceMock!
-    private var showMediaInfoUseCase: ShowMediaInfoUseCaseMock!
-    
-    override func setUp() {
+    func createSUT() -> (
+        currentPlayerStateUseCase: CurrentPlayerStateUseCase,
+        audioService: AudioServiceMock,
+        showMediaInfoUseCase: ShowMediaInfoUseCaseMock
+    ){
         
-        showMediaInfoUseCase = ShowMediaInfoUseCaseMock()
-        audioService = AudioServiceMock()
+        let showMediaInfoUseCase = ShowMediaInfoUseCaseMock()
+        let audioService = AudioServiceMock()
         
-        currentPlayerStateUseCase = DefaultCurrentPlayerStateUseCase(
+        let currentPlayerStateUseCase = DefaultCurrentPlayerStateUseCase(
             audioService: audioService,
             showMediaInfoUseCase: showMediaInfoUseCase
         )
+        
+        detectMemoryLeak(instance: currentPlayerStateUseCase)
+        
+        return (currentPlayerStateUseCase, audioService, showMediaInfoUseCase)
     }
     
     private func setupTracks(showMediaInfoUseCase: ShowMediaInfoUseCaseMock) -> [MediaInfo] {
-
+        
         var tracks = [MediaInfo]()
         
         for index in 0..<5 {
@@ -53,6 +57,8 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
     }
     
     func testPlayTrack() async throws {
+        
+        let (currentPlayerStateUseCase, audioService, showMediaInfoUseCase) = createSUT()
     
         let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
         let track = tracks.first!
@@ -90,6 +96,8 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
     }
     
     func testPauseTrack() async throws {
+        
+        let (currentPlayerStateUseCase, audioService, showMediaInfoUseCase) = createSUT()
 
         let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
         let track = tracks.first!
@@ -127,6 +135,8 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
     }
     
     func testStopTrack() async throws {
+        
+        let (currentPlayerStateUseCase, audioService, showMediaInfoUseCase) = createSUT()
 
         let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
         let track = tracks.first!
@@ -164,6 +174,8 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
     }
     
     func testChageTrack() async throws {
+        
+        let (currentPlayerStateUseCase, audioService, showMediaInfoUseCase) = createSUT()
 
         let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
         let track1 = tracks.first!
