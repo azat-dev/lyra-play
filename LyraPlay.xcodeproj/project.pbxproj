@@ -110,6 +110,7 @@
 		AAFB979328759C45007A76A7 /* MessageChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB979228759C45007A76A7 /* MessageChannelTests.swift */; };
 		AAFB979528759D45007A76A7 /* MessageChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB979428759D45007A76A7 /* MessageChannel.swift */; };
 		AAFB97972875BCAD007A76A7 /* Subtitles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB97962875BCAD007A76A7 /* Subtitles.swift */; };
+		AAFB979B2875C60F007A76A7 /* LyricsParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB979A2875C60F007A76A7 /* LyricsParserTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -237,6 +238,7 @@
 		AAFB979228759C45007A76A7 /* MessageChannelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageChannelTests.swift; sourceTree = "<group>"; };
 		AAFB979428759D45007A76A7 /* MessageChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageChannel.swift; sourceTree = "<group>"; };
 		AAFB97962875BCAD007A76A7 /* Subtitles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subtitles.swift; sourceTree = "<group>"; };
+		AAFB979A2875C60F007A76A7 /* LyricsParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsParserTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -277,10 +279,10 @@
 		AA1ACC202862FE65000EEDD5 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				AAFB97982875C5D1007A76A7 /* Utils */,
 				AA252C982874750C001B7AEE /* Services */,
 				AA3BAB23286C7EB9005EE01E /* Stores */,
 				AA9BEB0928661DA70028DF8E /* Repositories */,
-				AA1ACC2528630F9E000EEDD5 /* DefaultTagsParser */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -753,6 +755,23 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
+		AAFB97982875C5D1007A76A7 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				AAFB97992875C5DF007A76A7 /* Subtitles */,
+				AA1ACC2528630F9E000EEDD5 /* DefaultTagsParser */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		AAFB97992875C5DF007A76A7 /* Subtitles */ = {
+			isa = PBXGroup;
+			children = (
+				AAFB979A2875C60F007A76A7 /* LyricsParserTests.swift */,
+			);
+			path = Subtitles;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -978,6 +997,7 @@
 				AACEA3262869B17E00111565 /* ObservableTests.swift in Sources */,
 				AA8BF76428567A1F0010FA1E /* LyraPlayTests.swift in Sources */,
 				AA64C81D286F181F0089F165 /* AudioPlayerUseCaseMock.swift in Sources */,
+				AAFB979B2875C60F007A76A7 /* LyricsParserTests.swift in Sources */,
 				AA731CCA2870BE890044412F /* LoadTrackUseCaseTests.swift in Sources */,
 				AA415084286B0987004549F4 /* AssertResult.swift in Sources */,
 				AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */,
