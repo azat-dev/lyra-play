@@ -52,17 +52,17 @@ class LyricsParserTests: XCTestCase {
                 .init(
                     startTime: 12,
                     duration: 0,
-                    text: .notSynced(text: "")
+                    text: .notSynced(text: "Line 1 lyrics")
                 ),
                 .init(
                     startTime: 17.2,
                     duration: 0,
-                    text: .notSynced(text: "")
+                    text: .notSynced(text: "Line 2 lyrics")
                 ),
                 .init(
                     startTime: 21.10,
                     duration: 0,
-                    text: .notSynced(text: "")
+                    text: .notSynced(text: "Line 3 lyrics")
                 )
             ]
         )

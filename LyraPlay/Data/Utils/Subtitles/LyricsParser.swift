@@ -27,11 +27,15 @@ public class LyricsParser: SubtitlesParser {
     
     public init() {}
     
+    private static func parseText(text: String) async  {
+        
+    }
+    
     private static func parseLine(_ line: String) async -> ParsedLine {
         
         let range = NSRange(location: 0, length: line.utf16.count)
         
-        let regex = try! NSRegularExpression(pattern: #"\s*\[(?<duration>\d+:[0-5][0-9](\.(\d){1,3})?)\]"#)
+        let regex = try! NSRegularExpression(pattern: #"^\s*\[(?<duration>\d+:[0-5][0-9](\.(\d){1,3})?)\](?<text>.*)"#)
         
         let match = regex.firstMatch(in: line, range: range)
         
@@ -40,13 +44,14 @@ public class LyricsParser: SubtitlesParser {
         }
         
         let durationRange = match.range(withName: "duration")
+        let textRange = match.range(withName: "text")
         
         guard let durationSubstring = line.substring(with: durationRange) else {
             return .empty
         }
         
+
         let durationText = String(durationSubstring)
-        
         let parser = DurationParser()
         
         guard
@@ -54,13 +59,23 @@ public class LyricsParser: SubtitlesParser {
         else {
             return .empty
         }
+
+        var text = ""
         
+        if let textSubstring = line.substring(with: textRange) {
+           
+            text = String(textSubstring.trimmingCharacters(in: .whitespacesAndNewlines))
+        }
+        
+        if text.isEmpty {
+            return .empty
+        }
         
         return .sentence(
             .init(
                 startTime: startTime,
                 duration: 0,
-                text: .notSynced(text: "")
+                text: .notSynced(text: text)
             )
         )
     }
