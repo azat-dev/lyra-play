@@ -78,4 +78,61 @@ class LyricsParserTests: XCTestCase {
         XCTAssertEqual(parsedSubtitles.sentences.count, expecteSubtitles.sentences.count)
         XCTAssertEqual(parsedSubtitles, expecteSubtitles)
     }
+    
+    func testParseEnhancedLyrics() async throws {
+        
+        let parser = createSUT()
+        
+        let text = """
+        
+        [ar: Test Artist]
+        [al: Test Album]
+        [au: Test]
+        [length: 2:58]
+        [by: test]
+        [ti: Test Test]
+
+        [00:00.00] <00:00.04> Word11 <00:00.16> Word12 <00:00.82> Word13
+        
+        [00:06.47] <00:07.67> Word21 <00:07.94> Word22
+        
+        [00:13.34] <00:14.32> Word31
+        """
+        
+        let result = await parser.parse(text)
+        let parsedSubtitles = try AssertResultSucceded(result)
+        
+        
+        let expecteSubtitles = Subtitles(
+            sentences: [
+                .init(
+                    startTime: 0,
+                    duration: 0,
+                    text: .synced(items: [
+                        .init(startTime: 0.04, duration: 0, text: "Word11"),
+                        .init(startTime: 0.16, duration: 0, text: "Word12"),
+                        .init(startTime: 0.82, duration: 0, text: "Word13"),
+                    ])
+                ),
+                .init(
+                    startTime: 7.67,
+                    duration: 0,
+                    text: .synced(items: [
+                        .init(startTime: 7.67, duration: 0, text: "Word21"),
+                        .init(startTime: 7.94, duration: 0, text: "Word22"),
+                    ])
+                ),
+                .init(
+                    startTime: 13.34,
+                    duration: 0,
+                    text: .synced(items: [
+                        .init(startTime: 14.32, duration: 0, text: "Word31"),
+                    ])
+                )
+            ]
+        )
+        
+        XCTAssertEqual(parsedSubtitles.sentences.count, expecteSubtitles.sentences.count)
+        XCTAssertEqual(parsedSubtitles, expecteSubtitles)
+    }
 }

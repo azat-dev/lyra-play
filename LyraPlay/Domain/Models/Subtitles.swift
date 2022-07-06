@@ -42,7 +42,7 @@ extension Subtitles {
     public enum SentenceText: Equatable {
         
         case notSynced(text: String)
-        case synced(items: SyncedItem)
+        case synced(items: [SyncedItem])
     }
     
     public struct SyncedItem: Equatable {
@@ -51,7 +51,7 @@ extension Subtitles {
         public var duration: Double
         public var text: String
         
-        internal init(
+        public init(
             startTime: Double,
             duration: Double,
             text: String
