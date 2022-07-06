@@ -8,15 +8,36 @@
 import Foundation
 
 
-struct SubtitleItem {
+struct Subtitles {
     
-    var startTime: Double
-    var duration: Double
-    
-    var words: [String]
+    public var sentences: [Sentence]
 }
 
-struct Subtitles {
+// MARK: - Sentence
 
-    var items: [SubtitleItem]
+extension Subtitles {
+    public struct Sentence {
+        
+        public var startTime: Double
+        public var duration: Double
+        public var text: SentenceText
+    }
+}
+
+// MARK: - Text
+
+extension Subtitles {
+    
+    public enum SentenceText {
+        
+        case notSynced(text: String)
+        case synced(items: SyncedItem)
+    }
+    
+    public struct SyncedItem {
+        
+        public var startTime: Double
+        public var duration: Double
+        public var text: String
+    }
 }
