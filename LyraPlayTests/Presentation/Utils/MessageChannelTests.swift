@@ -26,31 +26,29 @@ class MessageChannelTests: XCTestCase {
         
         // Sequence1
         let sequence1 = AssertSequence(testCase: self, values: testValues)
-        let channel = createSUT()
+        let channel: MessageChannel<Int> = createSUT()
 
         sequence1.observe(channel)
         
         let numberOfValuesSequence1 = numberOfValues - 3
         
-        for index in 1..<numberOfValuesSequence1 {
+        for index in 0..<numberOfValuesSequence1 {
             
             let testValue = testValues[index]
-            channel.sendMessage(testValue)
+            channel.send(testValue)
         }
         
-        let sequence2 = AssertSequence(testCase: self, values: ((numberOfValuesSequence1 - 1)..<numberOfValues).map { testValues[$0] })
+        let sequence2 = AssertSequence(testCase: self, values: (numberOfValuesSequence1..<numberOfValues).map { testValues[$0] })
         sequence2.observe(channel)
         
         for index in numberOfValuesSequence1..<numberOfValues {
 
             let testValue = testValues[index]
-            channel.sendMessage(testValue)
+            channel.send(testValue)
         }
         
         sequence1.wait(timeout: 3, enforceOrder: true)
         sequence2.wait(timeout: 3, enforceOrder: true)
-
-        XCTAssertEqual(channel.value, testValues.last)
     }
     
     func testListenersDifferentQueues() {
@@ -58,7 +56,7 @@ class MessageChannelTests: XCTestCase {
         let expectationMain = expectation(description: "Main queue expectation fullfiled")
         let expectationNoQueue = expectation(description: "No queue expectation fullfiled")
         
-        let channel = createSUT()
+        let channel: MessageChannel<Int> = createSUT()
         channel.observe(on: self, queue: .main) { value in
             
             if value == 1 {
@@ -73,7 +71,7 @@ class MessageChannelTests: XCTestCase {
             }
         }
         
-        channel.sendMessage(1)
+        channel.send(1)
         
         wait(for: [expectationMain, expectationNoQueue], timeout: 3, enforceOrder: false)
     }
