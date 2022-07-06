@@ -33,11 +33,19 @@ class LyricsParserTests: XCTestCase {
         XCTAssertEqual(parsedSubtitles.sentences.count, 0)
     }
     
-    func testParseNormalLyricsWithoutIdTags() async throws {
+    func testParseNormalLyrics() async throws {
         
         let parser = createSUT()
         
         let text = """
+        
+        [ar: Test Artist]
+        [al: Test Album]
+        [au: Test]
+        [length: 2:58]
+        [by: lrc-maker]
+        [ti: Test Test]
+
         [00:12.00]Line 1 lyrics
         [00:17.20]Line 2 lyrics
         [00:21.10]Line 3 lyrics
