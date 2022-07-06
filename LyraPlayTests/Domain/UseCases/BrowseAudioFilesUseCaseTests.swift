@@ -10,18 +10,28 @@ import LyraPlay
 
 class BrowseAudioLibraryUseCaseTests: XCTestCase {
 
-    private var useCase: BrowseAudioLibraryUseCase!
-    private var audioLibraryRepository: AudioLibraryRepository!
-    private var imagesRepository: FilesRepository!
+    typealias SUT = (
+        useCase: BrowseAudioLibraryUseCase,
+        audioLibraryRepository: AudioLibraryRepository,
+        imagesRepository: FilesRepository
+    )
 
-    override func setUp() async throws {
+    func createSUT() -> SUT {
         
-        audioLibraryRepository = AudioLibraryRepositoryMock()
-        imagesRepository = FilesRepositoryMock()
+        let audioLibraryRepository = AudioLibraryRepositoryMock()
+        let imagesRepository = FilesRepositoryMock()
         
-        useCase = DefaultBrowseAudioLibraryUseCase(
+        let useCase = DefaultBrowseAudioLibraryUseCase(
             audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository
+        )
+        
+        detectMemoryLeak(instance: useCase)
+        
+        return (
+            useCase,
+            audioLibraryRepository,
+            imagesRepository
         )
     }
     
@@ -33,6 +43,8 @@ class BrowseAudioLibraryUseCaseTests: XCTestCase {
     }
     
     func testListFiles() async throws {
+        
+        let (useCase, audioLibraryRepository, _) = createSUT()
         
         let numberOfTestFiles = 5
         let testFiles = (0..<numberOfTestFiles).map { self.getTestFile(index: $0) }
@@ -50,6 +62,8 @@ class BrowseAudioLibraryUseCaseTests: XCTestCase {
     
     func testGetFileInfo() async {
         
+        let (useCase, audioLibraryRepository, _) = createSUT()
+        
         let numberOfTestFiles = 5
         let testFiles = (0..<numberOfTestFiles).map { self.getTestFile(index: $0) }
         
@@ -66,11 +80,15 @@ class BrowseAudioLibraryUseCaseTests: XCTestCase {
     
     func testGetFileInfoNotExisting() async throws {
         
+        let (useCase, _, _) = createSUT()
+        
         let infoResult = await useCase.getFileInfo(fileId: UUID())
         XCTAssertEqual(infoResult, .failure(.fileNotFound))
     }
     
     func testFetchImage() async throws {
+        
+        let (useCase, _, imagesRepository) = createSUT()
         
         let testImageName1 = "image1.png"
         let testImageName2 = "image2.jpeg"
