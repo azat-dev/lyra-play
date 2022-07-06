@@ -39,7 +39,7 @@ public class LyricsParser: SubtitlesParser {
     
     typealias SplitItem = (time: Double, text: String)
     
-    private static func splitTextByTimeCode(text: String, match: NSTextCheckingResult) -> Result<SplitItem?, Error> {
+    private static func splitTextByTimeCode(text: String, match: NSTextCheckingResult) async -> Result<SplitItem?, Error> {
         
         let durationRange = match.range(withName: "duration")
         let textRange = match.range(withName: "text")
@@ -70,7 +70,7 @@ public class LyricsParser: SubtitlesParser {
         return .success(item)
     }
     
-    private static func parseText(text: String) async -> Subtitles.SentenceText  {
+    private static func parseText(text: String) async -> Subtitles.SentenceText?  {
         
 
         let timecodes = findTimeCodes(text: text)
@@ -93,6 +93,10 @@ public class LyricsParser: SubtitlesParser {
                 
                 guard let split = split else {
                     return .notSynced(text: text)
+                }
+                
+                guard !split.text.isEmpty else {
+                    return nil
                 }
                 
                 items.append(
@@ -148,11 +152,16 @@ public class LyricsParser: SubtitlesParser {
             return .empty
         }
         
+        guard let parsedItem = await parseText(text: text) else {
+            return .empty
+        }
+        
+        
         return .sentence(
             .init(
                 startTime: startTime,
                 duration: 0,
-                text: await parseText(text: text)
+                text: parsedItem
             )
         )
     }

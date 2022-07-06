@@ -97,6 +97,8 @@ class LyricsParserTests: XCTestCase {
         [00:06.47] <00:07.67> Word21 <00:07.94> Word22
         
         [00:13.34] <00:14.32> Word31
+        [00:15.34] <00:16.32>
+
         """
         
         let result = await parser.parse(text)
@@ -126,7 +128,7 @@ class LyricsParserTests: XCTestCase {
                     startTime: 13.34,
                     duration: 0,
                     text: .synced(items: [
-                        .init(startTime: 14.32, duration: 0, text: "Word23"),
+                        .init(startTime: 14.32, duration: 0, text: "Word31"),
                     ])
                 )
             ]
