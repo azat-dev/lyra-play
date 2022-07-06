@@ -16,7 +16,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
     
     private var useCase: BrowseAudioLibraryUseCase!
     private var viewModel: AudioFilesBrowserViewModel!
-    private var tagsParserCallback: TagsParserCallback?
+    private var tagsParserCallback: TagsParserMock.Callback?
     private var filesDelegate: AudioFilesBrowserUpdateDelegate? = nil
     
     override func setUp() async throws {
@@ -31,14 +31,16 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         )
         
         tagsParserCallback = nil
-        let tagsParser = TagsParserMock(callback: { [weak self] data in
+        let tagsParser = TagsParserMock()
+        
+        tagsParser.callback = { [weak self] data in
             
             guard let tagsParserCallback = self?.tagsParserCallback else {
                 fatalError()
             }
             
             return tagsParserCallback(data)
-        })
+        }
         
         let audioFilesRepository = FilesRepositoryMock()
         let imagesRepository = FilesRepositoryMock()

@@ -12,37 +12,49 @@ import XCTest
 
 class ImportAudioFileUseCaseTests: XCTestCase {
 
-    private var tagsParserCallback: TagsParserCallback?
-    private var imagesRepository: FilesRepository!
-    private var audioFilesRepository: FilesRepository!
-    private var audioLibraryRepository: AudioLibraryRepository!
-    private var importAudioFileUseCase: ImportAudioFileUseCase!
+    typealias SUT = (
+        importAudioFileUseCase: ImportAudioFileUseCase,
+        audioLibraryRepository: AudioLibraryRepository,
+        imagesRepository: FilesRepository,
+        audioFilesRepository: FilesRepository,
+        tagsParser: TagsParserMock
+    )
     
-    override func setUp() {
+    func createSUT() -> SUT {
 
-        tagsParserCallback = nil
+        let tagsParser = TagsParserMock()
         
-        let tagsParser = TagsParserMock { [weak self] url in
-            guard let tagsParserCallback = self?.tagsParserCallback else {
-                fatalError()
-            }
-            
-            return tagsParserCallback(url)
-        }
+        let audioLibraryRepository = AudioLibraryRepositoryMock()
+        let imagesRepository = FilesRepositoryMock()
+        let audioFilesRepository = FilesRepositoryMock()
         
-        audioLibraryRepository = AudioLibraryRepositoryMock()
-        imagesRepository = FilesRepositoryMock()
-        audioFilesRepository = FilesRepositoryMock()
-        
-        importAudioFileUseCase = DefaultImportAudioFileUseCase(
+        let importAudioFileUseCase = DefaultImportAudioFileUseCase(
             audioLibraryRepository: audioLibraryRepository,
             audioFilesRepository: audioFilesRepository,
             imagesRepository: imagesRepository,
             tagsParser: tagsParser
         )
+        
+        detectMemoryLeak(instance: importAudioFileUseCase)
+        
+        return (
+            importAudioFileUseCase,
+            audioLibraryRepository,
+            imagesRepository,
+            audioFilesRepository,
+            tagsParser
+        )
     }
     
     func testImportingWithoutId3Tags() async throws {
+        
+        let (
+            importAudioFileUseCase,
+            audioLibraryRepository,
+            _,
+            audioFilesRepository,
+            tagsParser
+        ) = createSUT()
         
         let testFilesOriginalNames: [String] = [
             "test1.mp3",
@@ -54,7 +66,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
             "test2".data(using: .utf8)!,
         ]
         
-        tagsParserCallback = { url in
+        tagsParser.callback = { url in
             return AudioFileTags(duration: 10)
         }
 
@@ -91,6 +103,15 @@ class ImportAudioFileUseCaseTests: XCTestCase {
 
     func testImportingWithId3Tags() async throws {
         
+        let (
+            importAudioFileUseCase,
+            audioLibraryRepository,
+            imagesRepository,
+            audioFilesRepository,
+            tagsParser
+        ) = createSUT()
+
+        
         let originalName = "test1.mp3"
         let testFile = "data".data(using: .utf8)!
 
@@ -106,7 +127,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
             lyrics: "Lyrics"
         )
         
-        tagsParserCallback = { url in
+        tagsParser.callback = { url in
 
             return testTags
         }
@@ -137,7 +158,15 @@ class ImportAudioFileUseCaseTests: XCTestCase {
     
     func testFetchingData() async throws {
         
-        tagsParserCallback = { data in
+        let (
+            importAudioFileUseCase,
+            _,
+            _,
+            audioFilesRepository,
+            tagsParser
+        ) = createSUT()
+
+        tagsParser.callback = { data in
             return AudioFileTags(
                 title: "Test",
                 genre: nil,
