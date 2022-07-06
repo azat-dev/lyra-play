@@ -11,27 +11,45 @@ import XCTest
 import LyraPlay
 
 class ShowMediaInfoUseCaseTests: XCTestCase {
-
-    private var useCase: ShowMediaInfoUseCase!
-    private var audioLibraryRepository: AudioLibraryRepository!
-    private var imagesRepository: FilesRepository!
-    private var defaultImage: Data!
-
-    override func setUp() async throws {
+    
+    typealias SUT = (
+        useCase: ShowMediaInfoUseCase,
+        audioLibraryRepository: AudioLibraryRepository,
+        imagesRepository: FilesRepository,
+        defaultImage: Data
+    )
+    
+    func createSUT() -> SUT {
         
-        audioLibraryRepository = AudioLibraryRepositoryMock()
-        imagesRepository = FilesRepositoryMock()
+        let audioLibraryRepository = AudioLibraryRepositoryMock()
+        let imagesRepository = FilesRepositoryMock()
         
-        defaultImage = "defaultImage".data(using: .utf8)!
+        let defaultImage = "defaultImage".data(using: .utf8)!
         
-        useCase = DefaultShowMediaInfoUseCase(
+        let useCase = DefaultShowMediaInfoUseCase(
             audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository,
             defaultImage: defaultImage
         )
+        
+        detectMemoryLeak(instance: useCase)
+        
+        return (
+            useCase,
+            audioLibraryRepository,
+            imagesRepository,
+            defaultImage
+        )
     }
     
     func testFetch() async throws {
+        
+        let (
+            useCase,
+            audioLibraryRepository,
+            imagesRepository,
+            _
+        ) = createSUT()
         
         let testImageData = "image".data(using: .utf8)!
         let testImageName = "test.png"
@@ -60,6 +78,13 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
     
     func testFetchDefaultImageIfNoImage() async throws {
         
+        let (
+            useCase,
+            audioLibraryRepository,
+            _,
+            defaultImage
+        ) = createSUT()
+        
         let testFileInfo = AudioFileInfo.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
         
         let putResult = await audioLibraryRepository.putFile(info: testFileInfo)
@@ -72,6 +97,13 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
     }
     
     func testFetchDefaultImageIfError() async throws {
+        
+        let (
+            useCase,
+            audioLibraryRepository,
+            _,
+            defaultImage
+        ) = createSUT()
         
         var testFileInfo = AudioFileInfo.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
         testFileInfo.coverImage = "someimage.png"
@@ -87,7 +119,13 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
     
     func testFetchTrackDoesntExist() async throws {
         
-
+        let (
+            useCase,
+            _,
+            _,
+            _
+        ) = createSUT()
+        
         let trackId = UUID()
         
         let resultMediaInfo = await useCase.fetchInfo(trackId: trackId)
