@@ -111,6 +111,7 @@
 		AAFB979528759D45007A76A7 /* MessageChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB979428759D45007A76A7 /* MessageChannel.swift */; };
 		AAFB97972875BCAD007A76A7 /* Subtitles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB97962875BCAD007A76A7 /* Subtitles.swift */; };
 		AAFB979B2875C60F007A76A7 /* LyricsParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB979A2875C60F007A76A7 /* LyricsParserTests.swift */; };
+		AAFB979F2875CFA9007A76A7 /* SubtitlesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB979E2875CFA9007A76A7 /* SubtitlesParser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -239,6 +240,7 @@
 		AAFB979428759D45007A76A7 /* MessageChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageChannel.swift; sourceTree = "<group>"; };
 		AAFB97962875BCAD007A76A7 /* Subtitles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subtitles.swift; sourceTree = "<group>"; };
 		AAFB979A2875C60F007A76A7 /* LyricsParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsParserTests.swift; sourceTree = "<group>"; };
+		AAFB979E2875CFA9007A76A7 /* SubtitlesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -629,6 +631,7 @@
 		AA9BEB032865D76C0028DF8E /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
+				AAFB979D2875CF96007A76A7 /* Utils */,
 				AA3BAB26286CC623005EE01E /* Services */,
 				AA9BEB042865D7740028DF8E /* Repositories */,
 			);
@@ -649,6 +652,7 @@
 			isa = PBXGroup;
 			children = (
 				AA1ACC2B286317A2000EEDD5 /* TagsParser.swift */,
+				AAFB979C2875CF58007A76A7 /* Subtitles */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -770,6 +774,21 @@
 				AAFB979A2875C60F007A76A7 /* LyricsParserTests.swift */,
 			);
 			path = Subtitles;
+			sourceTree = "<group>";
+		};
+		AAFB979C2875CF58007A76A7 /* Subtitles */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Subtitles;
+			sourceTree = "<group>";
+		};
+		AAFB979D2875CF96007A76A7 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				AAFB979E2875CFA9007A76A7 /* SubtitlesParser.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -943,6 +962,7 @@
 				AACEA3232869B14000111565 /* Observable.swift in Sources */,
 				AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */,
 				AA3BAB1B286C7225005EE01E /* PlayerState.swift in Sources */,
+				AAFB979F2875CFA9007A76A7 /* SubtitlesParser.swift in Sources */,
 				AA0930C4287349DA00E62DB3 /* CurrentPlayerStateUseCase.swift in Sources */,
 				AACEA32D2869EDE400111565 /* AudioFilesBrowserCellViewModel.swift in Sources */,
 				AACEA3172869A5C800111565 /* BrowseAudioLibraryUseCase.swift in Sources */,
