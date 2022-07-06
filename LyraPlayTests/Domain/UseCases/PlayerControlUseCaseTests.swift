@@ -12,22 +12,34 @@ import LyraPlay
 
 class PlayerControlUseCaseTests: XCTestCase {
 
-    private var useCase: PlayerControlUseCase!
-    private var audioService: AudioServiceMock!
-    private var loadTrackUseCase: LoadTrackUseCaseMock!
+    typealias SUT = (
+        useCase: PlayerControlUseCase,
+        audioService: AudioServiceMock,
+        loadTrackUseCase: LoadTrackUseCaseMock
+    )
     
-    override func setUp() async throws {
+    func createSUT() -> SUT {
         
-        audioService = AudioServiceMock()
-        loadTrackUseCase = LoadTrackUseCaseMock()
+        let audioService = AudioServiceMock()
+        let loadTrackUseCase = LoadTrackUseCaseMock()
         
-        useCase = DefaulPlayerControlUseCase(
+        let useCase = DefaulPlayerControlUseCase(
             audioService: audioService,
             loadTrackUseCase: loadTrackUseCase
+        )
+        
+        detectMemoryLeak(instance: useCase)
+        
+        return (
+            useCase,
+            audioService,
+            loadTrackUseCase
         )
     }
     
     func testPlayNotExistingTrack() async throws {
+        
+        let (useCase, _, _) = createSUT()
         
         let result = await useCase.play(trackId: UUID())
         let error = try AssertResultFailed(result)
@@ -47,6 +59,8 @@ class PlayerControlUseCaseTests: XCTestCase {
     
     func testPlayExistingTrack() async throws {
 
+        let (useCase, audioService, loadTrackUseCase) = createSUT()
+        
         setUpTracks(loadTrackUseCase: loadTrackUseCase)
         
         let track = loadTrackUseCase.tracks.first!
@@ -67,6 +81,8 @@ class PlayerControlUseCaseTests: XCTestCase {
     
     func testPauseNotActiveTrack() async throws {
 
+        let (useCase, _, _) = createSUT()
+        
         let result = await useCase.pause()
         let error = try AssertResultFailed(result)
         
@@ -77,6 +93,8 @@ class PlayerControlUseCaseTests: XCTestCase {
     }
     
     func testPauseActiveTrack() async throws {
+        
+        let (useCase, audioService, loadTrackUseCase) = createSUT()
         
         setUpTracks(loadTrackUseCase: loadTrackUseCase)
         
@@ -98,6 +116,8 @@ class PlayerControlUseCaseTests: XCTestCase {
     }
     
     func testChangeActiveTrack() async throws {
+        
+        let (useCase, audioService, loadTrackUseCase) = createSUT()
         
         setUpTracks(loadTrackUseCase: loadTrackUseCase)
         
