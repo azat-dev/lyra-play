@@ -13,6 +13,7 @@
 		AA0930CA28739BD900E62DB3 /* ShowMediaInfoUseCaseMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0930C928739BD900E62DB3 /* ShowMediaInfoUseCaseMock.swift */; };
 		AA0D3F7B2875F7A8006717B9 /* DurationParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0D3F7A2875F7A8006717B9 /* DurationParser.swift */; };
 		AA0D3F7D2875F811006717B9 /* DurationParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0D3F7C2875F811006717B9 /* DurationParserTests.swift */; };
+		AA0D3F812876244D006717B9 /* CoreDataSubtitlesRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0D3F802876244C006717B9 /* CoreDataSubtitlesRepositoryTests.swift */; };
 		AA1ACC222862FE7E000EEDD5 /* DefaultTagsParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1ACC212862FE7E000EEDD5 /* DefaultTagsParserTests.swift */; };
 		AA1ACC2C286317A2000EEDD5 /* TagsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1ACC2B286317A2000EEDD5 /* TagsParser.swift */; };
 		AA1ACC31286329B8000EEDD5 /* test_music_with_tags.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = AA1ACC30286329B8000EEDD5 /* test_music_with_tags.mp3 */; };
@@ -140,6 +141,7 @@
 		AA0930C928739BD900E62DB3 /* ShowMediaInfoUseCaseMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowMediaInfoUseCaseMock.swift; sourceTree = "<group>"; };
 		AA0D3F7A2875F7A8006717B9 /* DurationParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationParser.swift; sourceTree = "<group>"; };
 		AA0D3F7C2875F811006717B9 /* DurationParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationParserTests.swift; sourceTree = "<group>"; };
+		AA0D3F802876244C006717B9 /* CoreDataSubtitlesRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataSubtitlesRepositoryTests.swift; sourceTree = "<group>"; };
 		AA1ACC212862FE7E000EEDD5 /* DefaultTagsParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTagsParserTests.swift; sourceTree = "<group>"; };
 		AA1ACC2B286317A2000EEDD5 /* TagsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsParser.swift; sourceTree = "<group>"; };
 		AA1ACC30286329B8000EEDD5 /* test_music_with_tags.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = test_music_with_tags.mp3; sourceTree = "<group>"; };
@@ -680,6 +682,7 @@
 			isa = PBXGroup;
 			children = (
 				AA9BEB0A28661DCE0028DF8E /* CoreDataAudioLibraryRepositoryTests.swift */,
+				AA0D3F802876244C006717B9 /* CoreDataSubtitlesRepositoryTests.swift */,
 				AA35E57F286AA07F0086DB28 /* LocalFilesRepositoryTests.swift */,
 			);
 			path = Repositories;
@@ -1036,6 +1039,7 @@
 				AAFB979B2875C60F007A76A7 /* LyricsParserTests.swift in Sources */,
 				AA731CCA2870BE890044412F /* LoadTrackUseCaseTests.swift in Sources */,
 				AA415084286B0987004549F4 /* AssertResult.swift in Sources */,
+				AA0D3F812876244D006717B9 /* CoreDataSubtitlesRepositoryTests.swift in Sources */,
 				AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */,
 				AACEA3152869A32A00111565 /* AudioLibraryRepositoryMock.swift in Sources */,
 				AA3BAB17286B67B5005EE01E /* PlayerControlUseCaseTests.swift in Sources */,
