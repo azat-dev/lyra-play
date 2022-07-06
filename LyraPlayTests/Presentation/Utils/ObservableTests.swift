@@ -11,25 +11,24 @@ import XCTest
 
 class ObservableTests: XCTestCase {
 
+    func createSUT<T>(value: T) -> Observable<T> {
+        
+        let observable = Observable(value)
+        
+        detectMemoryLeak(instance: observable)
+        return observable
+    }
+    
     func testListener() async throws {
         
         let numberOfValues = 10
         let testValues = (0..<numberOfValues).map { $0 }
         
         // Sequence1
-        let valuesExpectationsListener1 = testValues.indices.map { expectation(description: "Listener1: value expectation: index = \($0)")}
-        let observable = Observable(testValues.first!)
-        
-        observable.observe(on: self) { newValue in
-            
-            guard let expectationIndex = testValues.firstIndex(of: newValue) else {
-                XCTAssertFalse(true, "Unexpected value: \(newValue)")
-                return
-            }
+        let sequence1 = AssertSequence(testCase: self, values: testValues)
+        let observable = createSUT(value: testValues.first!)
 
-            let expectation = valuesExpectationsListener1[expectationIndex]
-            expectation.fulfill()
-        }
+        sequence1.observe(observable)
         
         let numberOfValuesSequence1 = numberOfValues - 3
         
@@ -38,57 +37,23 @@ class ObservableTests: XCTestCase {
             let testValue = testValues[index]
             observable.value = testValue
         }
-
-        // Sequence2
         
-        let valuesExpectationsListener2 = (0..<numberOfValues).map { index -> XCTestExpectation in
-
-            guard index >= numberOfValuesSequence1 - 1 else {
-                
-                let invertedExpectation = expectation(description: "Listner2: value expectation - index = \(index)")
-                invertedExpectation.isInverted = true
-                return invertedExpectation
-            }
-
-            return expectation(description: "Listner2 value expectation: index = \(index)")
-        }
-
-
-        observable.observe(on: self) { newValue in
-
-            guard let expectationIndex = testValues.firstIndex(of: newValue) else {
-                XCTAssertFalse(true, "Unexpected value: \(newValue)")
-                return
-            }
-
-            let expectation = valuesExpectationsListener2[expectationIndex]
-            expectation.fulfill()
-        }
-
-
+        let sequence2 = AssertSequence(testCase: self, values: ((numberOfValuesSequence1 - 1)..<numberOfValues).map { testValues[$0] })
+        sequence2.observe(observable)
+        
         for index in numberOfValuesSequence1..<numberOfValues {
 
             let testValue = testValues[index]
             observable.value = testValue
         }
-
-        // Wait for results
         
-        wait(
-            for: valuesExpectationsListener1,
-            timeout: 2,
-            enforceOrder: true
-        )
+        sequence1.wait(timeout: 3, enforceOrder: true)
+        sequence2.wait(timeout: 3, enforceOrder: true)
 
-        wait(
-            for: valuesExpectationsListener2,
-            timeout: 2,
-            enforceOrder: true
-        )
+        XCTAssertEqual(observable.value, testValues.last)
     }
     
     func testListenersDifferentQueues() {
-        
         
         let expectationMain = expectation(description: "Main queue expectation fullfiled")
         let expectationNoQueue = expectation(description: "No queue expectation fullfiled")
@@ -111,5 +76,6 @@ class ObservableTests: XCTestCase {
         observable.value = 1
         
         wait(for: [expectationMain, expectationNoQueue], timeout: 3, enforceOrder: false)
+        XCTAssertEqual(observable.value, 1)
     }
 }
