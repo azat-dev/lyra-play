@@ -112,6 +112,7 @@
 		AAFB97972875BCAD007A76A7 /* Subtitles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB97962875BCAD007A76A7 /* Subtitles.swift */; };
 		AAFB979B2875C60F007A76A7 /* LyricsParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB979A2875C60F007A76A7 /* LyricsParserTests.swift */; };
 		AAFB979F2875CFA9007A76A7 /* SubtitlesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB979E2875CFA9007A76A7 /* SubtitlesParser.swift */; };
+		AAFB97A12875D0FD007A76A7 /* LyricsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB97A02875D0FD007A76A7 /* LyricsParser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -241,6 +242,7 @@
 		AAFB97962875BCAD007A76A7 /* Subtitles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subtitles.swift; sourceTree = "<group>"; };
 		AAFB979A2875C60F007A76A7 /* LyricsParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsParserTests.swift; sourceTree = "<group>"; };
 		AAFB979E2875CFA9007A76A7 /* SubtitlesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesParser.swift; sourceTree = "<group>"; };
+		AAFB97A02875D0FD007A76A7 /* LyricsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -779,6 +781,7 @@
 		AAFB979C2875CF58007A76A7 /* Subtitles */ = {
 			isa = PBXGroup;
 			children = (
+				AAFB97A02875D0FD007A76A7 /* LyricsParser.swift */,
 			);
 			path = Subtitles;
 			sourceTree = "<group>";
@@ -959,6 +962,7 @@
 				AA731CC828707EE50044412F /* Result+Utils.swift in Sources */,
 				AA4F9707286E3C380087F45A /* AudioFilesBrowserViewController+Styles.swift in Sources */,
 				AA41508C286B603B004549F4 /* AudioFilesBrowserCell+Styles.swift in Sources */,
+				AAFB97A12875D0FD007A76A7 /* LyricsParser.swift in Sources */,
 				AACEA3232869B14000111565 /* Observable.swift in Sources */,
 				AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */,
 				AA3BAB1B286C7225005EE01E /* PlayerState.swift in Sources */,

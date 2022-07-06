@@ -10,27 +10,25 @@ import LyraPlay
 
 class LyricsParserTests: XCTestCase {
 
-    typealias SUT = (
-        parser: SubtitlesParser
-    )
+    typealias SUT = SubtitlesParser
     
     func createSUT() -> SUT {
         
         let parser = LyricsParser()
         detectMemoryLeak(instance: parser)
         
-        return (parser)
+        return parser
     }
     
     func testParseEmptyLyrics() async throws {
         
-        let (parser) = createSUT()
+        let parser = createSUT()
         
         let text = ""
         
         let result = await parser.parse(text)
         let parsedSubtitles = try AssertResultSucceded(result)
         
-        XCTAssertEqual(parsedSubtitles.sentences, [])
+        XCTAssertEqual(parsedSubtitles.sentences.count, 0)
     }
 }
