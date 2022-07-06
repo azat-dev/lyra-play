@@ -7,17 +7,84 @@
 
 import Foundation
 
+extension String {
+    func substring(with nsrange: NSRange) -> Substring? {
+        
+        guard let range = Range(nsrange, in: self) else { return nil }
+        return self[range]
+    }
+}
+
+
 public class LyricsParser: SubtitlesParser {
+    
+    private enum ParsedLine {
+        
+        case sentence(Subtitles.Sentence)
+        case tag
+        case empty
+    }
     
     public init() {}
     
+    private static func parseLine(_ line: String) async -> ParsedLine {
+        
+        let range = NSRange(location: 0, length: line.utf16.count)
+        
+        let regex = try! NSRegularExpression(pattern: #"\s*\[(?<duration>\d+:[0-5][0-9](\.(\d){1,3})?)\]"#)
+        
+        let match = regex.firstMatch(in: line, range: range)
+        
+        guard let match = match else {
+            return .empty
+        }
+        
+        let durationRange = match.range(withName: "duration")
+        
+        guard let durationSubstring = line.substring(with: durationRange) else {
+            return .empty
+        }
+        
+        let durationText = String(durationSubstring)
+        
+        let parser = DurationParser()
+        
+        guard
+            let startTime = parser.parse(durationText)
+        else {
+            return .empty
+        }
+        
+        
+        return .sentence(
+            .init(
+                startTime: startTime,
+                duration: 0,
+                text: .notSynced(text: "")
+            )
+        )
+    }
+    
     public func parse(_ text: String) async -> Result<Subtitles, SubtitlesParserError> {
         
+        var sentences = [Subtitles.Sentence]()
         let splittedText = text.split(separator: "\n")
+
+        for line in splittedText {
+            
+            let parsedLine = await Self.parseLine(String(line))
+            
+            switch parsedLine {
+            case .sentence(let sentence):
+                sentences.append(sentence)
+            case .tag:
+                break
+            case .empty:
+                break
+            }
+        }
         
-        let sentences: [Subtitles.Sentence] = []
         let result = Subtitles(sentences: sentences)
-        
         return .success(result)
     }
 }

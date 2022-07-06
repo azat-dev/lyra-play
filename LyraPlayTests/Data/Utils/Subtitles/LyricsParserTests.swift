@@ -8,6 +8,7 @@
 import XCTest
 import LyraPlay
 
+
 class LyricsParserTests: XCTestCase {
 
     typealias SUT = SubtitlesParser
@@ -45,6 +46,28 @@ class LyricsParserTests: XCTestCase {
         let result = await parser.parse(text)
         let parsedSubtitles = try AssertResultSucceded(result)
         
-        XCTAssertEqual(parsedSubtitles.sentences.count, 0)
+        
+        let expecteSubtitles = Subtitles(
+            sentences: [
+                .init(
+                    startTime: 12,
+                    duration: 0,
+                    text: .notSynced(text: "")
+                ),
+                .init(
+                    startTime: 17.2,
+                    duration: 0,
+                    text: .notSynced(text: "")
+                ),
+                .init(
+                    startTime: 21.10,
+                    duration: 0,
+                    text: .notSynced(text: "")
+                )
+            ]
+        )
+        
+        XCTAssertEqual(parsedSubtitles.sentences.count, expecteSubtitles.sentences.count)
+        XCTAssertEqual(parsedSubtitles, expecteSubtitles)
     }
 }
