@@ -27,12 +27,53 @@ public class LyricsParser: SubtitlesParser {
     
     public init() {}
     
-    private static func parseText(text: String) async -> Subtitles.SentenceText  {
+    private static func findTimeCodes(text: String) -> [NSTextCheckingResult] {
         
         let range = NSRange(location: 0, length: text.utf16.count)
-        let regex = try! NSRegularExpression(pattern: #"<(?<duration>\d+:[0-5][0-9](\.(\d){1,3})?)>"#)
+        let regex = try! NSRegularExpression(pattern: #"<(?<duration>\d+:[0-5][0-9](\.(\d){1,3})?)>(?<text>.*?)(?=(\n|$|(<\d+:[0-5][0-9](\.(\d){1,3})?>)))"#)
         
         let timecodes = regex.matches(in: text, range: range)
+        
+        return timecodes
+    }
+    
+    typealias SplitItem = (time: Double, text: String)
+    
+    private static func splitTextByTimeCode(text: String, match: NSTextCheckingResult) -> Result<SplitItem?, Error> {
+        
+        let durationRange = match.range(withName: "duration")
+        let textRange = match.range(withName: "text")
+        
+        guard let durationSubstring = text.substring(with: durationRange) else {
+            return .success(nil)
+        }
+
+        let durationText = String(durationSubstring)
+        let parser = DurationParser()
+
+        guard
+            let startTime = parser.parse(durationText)
+        else {
+            return .success(nil)
+        }
+        
+        guard let textSubstring = text.substring(with: textRange) else {
+            return .success(nil)
+        }
+        
+        let parsedText = String(textSubstring)
+        
+        let item = (
+            time: startTime,
+            text: parsedText.trimmingCharacters(in: .whitespacesAndNewlines)
+        )
+        return .success(item)
+    }
+    
+    private static func parseText(text: String) async -> Subtitles.SentenceText  {
+        
+
+        let timecodes = findTimeCodes(text: text)
         
         guard !timecodes.isEmpty else {
             return .notSynced(text: text)
@@ -42,22 +83,26 @@ public class LyricsParser: SubtitlesParser {
         
         for timecodeMatch in timecodes {
             
-            let durationRange = timecodeMatch.range(withName: "duration")
-            
-            guard let durationSubstring = text.substring(with: durationRange) else {
-                return .notSynced(text: text)
-            }
+            let splitResult = await splitTextByTimeCode(text: text, match: timecodeMatch)
 
-            let durationText = String(durationSubstring)
-            let parser = DurationParser()
-
-            guard
-                let startTime = parser.parse(durationText)
-            else {
+            switch splitResult {
+            case .failure:
                 return .notSynced(text: text)
+                
+            case .success(let split):
+                
+                guard let split = split else {
+                    return .notSynced(text: text)
+                }
+                
+                items.append(
+                    .init(
+                        startTime: split.time,
+                        duration: 0,
+                        text: split.text
+                    )
+                )
             }
-            
-            items.append(.init(startTime: startTime, duration: 0, text: ""))
         }
         
         return .synced(items: items)
