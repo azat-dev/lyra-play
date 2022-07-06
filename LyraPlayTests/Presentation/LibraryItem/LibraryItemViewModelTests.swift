@@ -10,28 +10,38 @@ import LyraPlay
 import XCTest
 
 class LibraryItemViewModelTests: XCTestCase {
-
-    private var showMediaInfoUseCase: ShowMediaInfoUseCaseMock!
-    private var coordinator: LibraryItemCoordinatorMock!
-    private var playerControlUseCase: PlayerControlUseCaseMock!
-    private var currentPlayerStateUseCase: CurrentPlayerStateUseCaseMock!
     
-    override func setUp() async throws {
-        coordinator = LibraryItemCoordinatorMock()
+    fileprivate typealias SUT = (
+        coordinator: LibraryItemCoordinatorMock,
+        showMediaInfoUseCase: ShowMediaInfoUseCaseMock,
+        playerControlUseCase: PlayerControlUseCaseMock,
+        currentPlayerStateUseCase: CurrentPlayerStateUseCaseMock
+    )
+    
+    fileprivate func createSUT() -> SUT {
         
-        showMediaInfoUseCase = ShowMediaInfoUseCaseMock()
-        currentPlayerStateUseCase = CurrentPlayerStateUseCaseMock(showMediaInfoUseCase: showMediaInfoUseCase)
-        playerControlUseCase = PlayerControlUseCaseMock(currentPlayerStateUseCase: currentPlayerStateUseCase)
+        let coordinator = LibraryItemCoordinatorMock()
+        
+        let showMediaInfoUseCase = ShowMediaInfoUseCaseMock()
+        let currentPlayerStateUseCase = CurrentPlayerStateUseCaseMock(showMediaInfoUseCase: showMediaInfoUseCase)
+        let playerControlUseCase = PlayerControlUseCaseMock(currentPlayerStateUseCase: currentPlayerStateUseCase)
+        
+        return (
+            coordinator,
+            showMediaInfoUseCase,
+            playerControlUseCase,
+            currentPlayerStateUseCase
+        )
     }
     
-    func createViewModel(trackId: UUID) -> LibraryItemViewModel {
+    fileprivate func createViewModel(trackId: UUID, sut: SUT) -> LibraryItemViewModel {
         
         let viewModel = DefaultLibraryItemViewModel(
             trackId: trackId,
-            coordinator: coordinator,
-            showMediaInfoUseCase: showMediaInfoUseCase,
-            currentPlayerStateUseCase: currentPlayerStateUseCase,
-            playerControlUseCase: playerControlUseCase
+            coordinator: sut.coordinator,
+            showMediaInfoUseCase: sut.showMediaInfoUseCase,
+            currentPlayerStateUseCase: sut.currentPlayerStateUseCase,
+            playerControlUseCase: sut.playerControlUseCase
         )
         
         detectMemoryLeak(instance: viewModel)
@@ -40,14 +50,16 @@ class LibraryItemViewModelTests: XCTestCase {
     
     func testLoadNotExistingTrack() async throws {
         
-        let viewModel = createViewModel(trackId: UUID())
+        let sut = createSUT()
+        let viewModel = createViewModel(trackId: UUID(), sut: sut)
+        
         await viewModel.load()
         // TODO: Implement "doesn't exist" logic
     }
     
-    private func setUpTestTrack(trackId: UUID) {
+    private func setUpTestTrack(trackId: UUID, sut: SUT) {
         
-        showMediaInfoUseCase.tracks[trackId] = MediaInfo(
+        sut.showMediaInfoUseCase.tracks[trackId] = MediaInfo(
             id: trackId.uuidString,
             coverImage: Data(),
             title: "Test \(trackId)",
@@ -58,10 +70,11 @@ class LibraryItemViewModelTests: XCTestCase {
     
     func testLoad() async throws {
         
+        let sut = createSUT()
         let trackId = UUID()
         
-        let viewModel = createViewModel(trackId: trackId)
-        setUpTestTrack(trackId: trackId)
+        let viewModel = createViewModel(trackId: trackId, sut: sut)
+        setUpTestTrack(trackId: trackId, sut: sut)
         
         let mediaInfoSequence = AssertSequence(testCase: self, values: [false, true])
         let playingSequence = AssertSequence(testCase: self, values: [false])
@@ -73,23 +86,24 @@ class LibraryItemViewModelTests: XCTestCase {
         
         playingSequence.wait(timeout: 3, enforceOrder: true)
         mediaInfoSequence.wait(timeout: 3, enforceOrder: true)
-
+        
         let isPlaying = viewModel.isPlaying.value
         XCTAssertEqual(isPlaying, false)
     }
     
     func testTogglePlay() async throws {
         
+        let sut = createSUT()
         let trackId = UUID()
         
-        let viewModel = createViewModel(trackId: trackId)
-        setUpTestTrack(trackId: trackId)
+        let viewModel = createViewModel(trackId: trackId, sut: sut)
+        setUpTestTrack(trackId: trackId, sut: sut)
         
         let playingSequence = AssertSequence(testCase: self, values: [false, true, false, true])
         playingSequence.observe(viewModel.isPlaying)
         
         let _ = await viewModel.load()
-
+        
         await viewModel.togglePlay()
         await viewModel.togglePlay()
         await viewModel.togglePlay()
@@ -99,16 +113,18 @@ class LibraryItemViewModelTests: XCTestCase {
     
     func testTogglePlayDifferentTrack() async throws {
         
+        let sut = createSUT()
+        
         let trackId1 = UUID()
         
-        let viewModel1 = createViewModel(trackId: trackId1)
-        setUpTestTrack(trackId: trackId1)
-
+        let viewModel1 = createViewModel(trackId: trackId1, sut: sut)
+        setUpTestTrack(trackId: trackId1, sut: sut)
+        
         let trackId2 = UUID()
         
-        let viewModel2 = createViewModel(trackId: trackId2)
-        setUpTestTrack(trackId: trackId2)
-
+        let viewModel2 = createViewModel(trackId: trackId2, sut: sut)
+        setUpTestTrack(trackId: trackId2, sut: sut)
+        
         
         let playingSequence1 = AssertSequence(testCase: self, values: [false, true, false])
         playingSequence1.observe(viewModel1.isPlaying)
@@ -129,9 +145,9 @@ class LibraryItemViewModelTests: XCTestCase {
 }
 
 // MARK: - Mocks
-    
-private final class LibraryItemCoordinatorMock: LibraryItemCoordinator {
 
+private final class LibraryItemCoordinatorMock: LibraryItemCoordinator {
+    
     func chooseSubtitles() async -> Result<URL?, Error> {
         return .success(nil)
     }
@@ -154,7 +170,7 @@ final class CurrentPlayerStateUseCaseMock: CurrentPlayerStateUseCase {
     }
     
     public func setTrack(trackId: UUID?) async {
-
+        
         guard let trackId = trackId else {
             info.value = nil
             return

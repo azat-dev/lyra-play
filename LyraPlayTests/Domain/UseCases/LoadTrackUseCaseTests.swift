@@ -12,7 +12,13 @@ import XCTest
 
 class LoadTrackUseCaseTests: XCTestCase {
 
-    func createSUT() -> (useCase: LoadTrackUseCase, audioFilesRepository: FilesRepositoryMock, audioLibraryRepository: AudioLibraryRepositoryMock) {
+    typealias SUT = (
+        useCase: LoadTrackUseCase,
+        audioFilesRepository: FilesRepositoryMock,
+        audioLibraryRepository: AudioLibraryRepositoryMock
+    )
+    
+    func createSUT() -> SUT  {
         
         let audioFilesRepository = FilesRepositoryMock()
         let audioLibraryRepository = AudioLibraryRepositoryMock()
@@ -24,7 +30,11 @@ class LoadTrackUseCaseTests: XCTestCase {
         
         detectMemoryLeak(instance: useCase)
         
-        return (useCase, audioFilesRepository, audioLibraryRepository)
+        return (
+            useCase,
+            audioFilesRepository,
+            audioLibraryRepository
+        )
     }
     
     func testLoadTrack() async throws {

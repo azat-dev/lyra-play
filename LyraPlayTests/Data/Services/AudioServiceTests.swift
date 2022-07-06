@@ -15,9 +15,7 @@ class AudioServiceTests: XCTestCase {
     func createSUT() -> AudioService {
 
         let audioService = DefaultAudioService()
-        
         detectMemoryLeak(instance: audioService)
-        
         return audioService
     }
     

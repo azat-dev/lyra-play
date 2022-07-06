@@ -15,11 +15,13 @@ import CoreMedia
 
 class CurrentPlayerStateUseCaseTests: XCTestCase {
     
-    func createSUT() -> (
+    typealias SUT = (
         currentPlayerStateUseCase: CurrentPlayerStateUseCase,
         audioService: AudioServiceMock,
         showMediaInfoUseCase: ShowMediaInfoUseCaseMock
-    ){
+    )
+    
+    func createSUT() -> SUT {
         
         let showMediaInfoUseCase = ShowMediaInfoUseCaseMock()
         let audioService = AudioServiceMock()
@@ -31,7 +33,11 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         
         detectMemoryLeak(instance: currentPlayerStateUseCase)
         
-        return (currentPlayerStateUseCase, audioService, showMediaInfoUseCase)
+        return (
+            currentPlayerStateUseCase,
+            audioService,
+            showMediaInfoUseCase
+        )
     }
     
     private func setupTracks(showMediaInfoUseCase: ShowMediaInfoUseCaseMock) -> [MediaInfo] {

@@ -10,40 +10,27 @@ import LyraPlay
 import XCTest
 
 class AudioFilesBrowserViewModelTests: XCTestCase {
-
-    private var audioLibraryRepository: AudioLibraryRepository!
-    private var imagesRepository: FilesRepository!
     
-    private var useCase: BrowseAudioLibraryUseCase!
-    private var viewModel: AudioFilesBrowserViewModel!
-    private var tagsParserCallback: TagsParserMock.Callback?
-    private var filesDelegate: AudioFilesBrowserUpdateDelegate? = nil
+    typealias SUT = (
+        viewModel: AudioFilesBrowserViewModel,
+        audioLibraryRepository: AudioLibraryRepository,
+        imagesRepository: FilesRepository,
+        useCase: BrowseAudioLibraryUseCase,
+        tagsParser: TagsParserMock
+    )
     
-    override func setUp() async throws {
+    func createSUT() -> SUT {
         
-        filesDelegate = nil
-        audioLibraryRepository = AudioLibraryRepositoryMock()
-        imagesRepository = FilesRepositoryMock()
+        let audioLibraryRepository = AudioLibraryRepositoryMock()
+        let imagesRepository = FilesRepositoryMock()
         
-        useCase = DefaultBrowseAudioLibraryUseCase(
+        let useCase = DefaultBrowseAudioLibraryUseCase(
             audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository
         )
         
-        tagsParserCallback = nil
         let tagsParser = TagsParserMock()
-        
-        tagsParser.callback = { [weak self] data in
-            
-            guard let tagsParserCallback = self?.tagsParserCallback else {
-                fatalError()
-            }
-            
-            return tagsParserCallback(data)
-        }
-        
         let audioFilesRepository = FilesRepositoryMock()
-        let imagesRepository = FilesRepositoryMock()
         
         let importFileUseCase = DefaultImportAudioFileUseCase(
             audioLibraryRepository: audioLibraryRepository,
@@ -54,11 +41,21 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         
         let coordinator = AudioFilesBrowserCoordinatorMock()
         
-        viewModel = DefaultAudioFilesBrowserViewModel(
+        let viewModel = DefaultAudioFilesBrowserViewModel(
             coordinator: coordinator,
             browseUseCase: useCase,
             importFileUseCase: importFileUseCase,
             playerControlUseCase: PlayerControlUseCaseMock()
+        )
+        
+        detectMemoryLeak(instance: viewModel)
+        
+        return (
+            viewModel,
+            audioLibraryRepository,
+            imagesRepository,
+            useCase,
+            tagsParser
         )
     }
     
@@ -70,6 +67,14 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
     }
     
     func testListFiles() async throws {
+        
+        var (
+            viewModel,
+            audioLibraryRepository,
+            _,
+            _,
+            tagsParser
+        ) = createSUT()
         
         let numberOfTestFiles = 5
         let testFiles = (0..<numberOfTestFiles).map { self.getTestFile(index: $0) }
@@ -83,14 +88,14 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         
         let expectation = XCTestExpectation()
         
-        tagsParserCallback = { url in
+        tagsParser.callback = { url in
             
             let index = testFiles.firstIndex { $0.info.audioFile == url.absoluteString }
-                                              
+            
             guard let index = index else {
                 fatalError()
             }
-                                              
+            
             return AudioFileTags(
                 title: "Title \(index)",
                 genre: "Genre \(index)",
@@ -104,10 +109,10 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
             )
         }
         
-        filesDelegate = FilesDelegateMock(onUpdateFiles: { files in
+        let filesDelegate = FilesDelegateMock(onUpdateFiles: { files in
             
             let expectedTitles = testFiles.map { $0.info.name }
-            let expectedDescriptions = testFiles.map { $0.info.artist ?? "" }
+            let expectedDescriptions = testFiles.map { $0.info.artist ?? "Unknown" }
             
             XCTAssertEqual(files.map { $0.title }, expectedTitles)
             XCTAssertEqual(files.map { $0.description }, expectedDescriptions)
@@ -116,7 +121,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         })
         
         viewModel.filesDelegate = filesDelegate
-
+        
         await viewModel.load()
         wait(for: [expectation], timeout: 3, enforceOrder: true)
     }
