@@ -10,10 +10,34 @@ import LyraPlay
 import CoreData
 
 extension SubtitlesInfo: Equatable {
+    
     public static func == (lhs: SubtitlesInfo, rhs: SubtitlesInfo) -> Bool {
         return lhs.language == rhs.language &&
             lhs.mediaFileId == rhs.mediaFileId &&
             lhs.file == rhs.file
+    }
+}
+
+extension SubtitlesInfo: Comparable {
+    public static func < (lhs: SubtitlesInfo, rhs: SubtitlesInfo) -> Bool {
+        
+        if lhs == rhs {
+            return false
+        }
+
+        if lhs.mediaFileId.uuidString > rhs.mediaFileId.uuidString {
+            return true
+        }
+
+        if lhs.language > rhs.language {
+            return true
+        }
+
+        if lhs.file > rhs.file {
+            return true
+        }
+        
+        return false
     }
 }
 
@@ -30,13 +54,13 @@ class CoreDataSubtitlesRepositoryTests: XCTestCase {
         return subtitlesRepository
     }
     
-    private func createTestItem(index: Int) -> SubtitlesInfo {
+    private func createTestItem(index: Int, language: String = "English") -> SubtitlesInfo {
         
         let mediaFileId = UUID()
         
         return SubtitlesInfo(
             mediaFileId: mediaFileId,
-            language: "English",
+            language: language,
             file: "test\(index).lrc"
         )
     }
@@ -70,5 +94,30 @@ class CoreDataSubtitlesRepositoryTests: XCTestCase {
         let items = try AssertResultSucceded(listResult)
         
         XCTAssertEqual(items, [])
+    }
+    
+    func testListRecords() async throws {
+        
+        let subtitlesRepository = createSUT()
+
+        let testItem1 = createTestItem(index: 0)
+        let testItem2 = createTestItem(index: 1)
+        var testItem3 = createTestItem(index: 2, language: "French")
+        testItem3.mediaFileId = testItem1.mediaFileId
+        
+        let _ = await subtitlesRepository.put(info: testItem1)
+        let _ = await subtitlesRepository.put(info: testItem2)
+        let _ = await subtitlesRepository.put(info: testItem3)
+        
+        
+        let listResult1 = await subtitlesRepository.list(mediaFileId: testItem1.mediaFileId)
+        let items1 = try AssertResultSucceded(listResult1)
+        
+        XCTAssertEqual(items1.sorted(), [testItem1, testItem3].sorted())
+        
+        let listResult2 = await subtitlesRepository.list(mediaFileId: testItem2.mediaFileId)
+        let items2 = try AssertResultSucceded(listResult2)
+        
+        XCTAssertEqual(items2.sorted(), [testItem2].sorted())
     }
 }
