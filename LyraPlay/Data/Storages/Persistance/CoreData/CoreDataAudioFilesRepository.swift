@@ -48,7 +48,11 @@ final class CoreDataAudioLibraryRepository: AudioLibraryRepository {
         let request = ManagedAudioFile.fetchRequest()
         request.fetchLimit = 1
         request.resultType = .managedObjectResultType
-        request.predicate = NSPredicate(format: "%K = %@", "id", id.uuidString)
+        request.predicate = NSPredicate(
+            format: "%K = %@",
+            (\ManagedAudioFile.id)._kvcKeyPathString!,
+            id.uuidString
+        )
 
         do {
             let managedItems = try await coreDataStore.performSync { context -> Result<[ManagedAudioFile], Error> in

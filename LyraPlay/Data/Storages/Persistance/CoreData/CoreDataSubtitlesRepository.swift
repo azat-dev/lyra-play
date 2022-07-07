@@ -28,7 +28,7 @@ public final class CoreDataSubtitlesRepository: SubtitlesRepository {
                 request.resultType = .managedObjectResultType
                 request.predicate = NSPredicate(
                     format: "%K = %@",
-                    "mediaFileId",
+                    #keyPath(ManagedSubtitles.mediaFileId),
                     mediaFileId.uuidString
                 )
                 
@@ -100,7 +100,7 @@ public final class CoreDataSubtitlesRepository: SubtitlesRepository {
         let request = ManagedSubtitles.fetchRequest()
         request.predicate = NSPredicate(
             format: "%K = %@",
-            "mediaFileId",
+            #keyPath(ManagedSubtitles.mediaFileId),
             mediaFileId.uuidString
         )
         
