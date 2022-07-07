@@ -14,7 +14,7 @@ import CoreMedia
 class ImportSubtitlesUseCaseTests: XCTestCase {
  
     typealias SUT = (
-        useCase: Any,
+        useCase: ImportSubtitlesUseCase,
         subtitlesRepository: SubtitlesRepository,
         subtitlesParser: SubtitlesParser,
         subtitlesFilesRepository: FilesRepository
@@ -99,7 +99,7 @@ private final class SubtitlesRepositoryMock: SubtitlesRepository {
     
     func put(info item: SubtitlesInfo) async -> Result<SubtitlesInfo, SubtitlesRepositoryError> {
         
-        let index = items.firstIndex { $0.mediaFileId == item.mediaFileId && $0.language = item.language }
+        let index = items.firstIndex { $0.mediaFileId == item.mediaFileId && $0.language == item.language }
         
         guard let index = index else {
             items.append(item)
@@ -112,7 +112,7 @@ private final class SubtitlesRepositoryMock: SubtitlesRepository {
     
     func fetch(mediaFileId: UUID, language: String) async -> Result<SubtitlesInfo, SubtitlesRepositoryError> {
         
-        let item = items.first { $0.mediaFileId == mediaFileId && $0.language = language }
+        let item = items.first { $0.mediaFileId == mediaFileId && $0.language == language }
         
         guard let item = item else {
             return .failure(.itemNotFound)
@@ -131,7 +131,7 @@ private final class SubtitlesRepositoryMock: SubtitlesRepository {
     
     func delete(mediaFileId: UUID, language: String) async -> Result<Void, SubtitlesRepositoryError> {
         
-        let index = items.firstIndex { $0.mediaFileId == item.mediaFileId && $0.language = item.language }
+        let index = items.firstIndex { $0.mediaFileId == mediaFileId && $0.language == language }
         
         guard let index = index else {
             return .failure(.itemNotFound)
