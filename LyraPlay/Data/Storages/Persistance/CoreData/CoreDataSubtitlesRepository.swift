@@ -127,11 +127,10 @@ public final class CoreDataSubtitlesRepository: SubtitlesRepository {
     
     public func delete(mediaFileId: UUID, language: String) async -> Result<Void, SubtitlesRepositoryError> {
         
-        var item: ManagedSubtitles?
         
         do {
             
-            item = try await getManagedItem(
+            let item = try await getManagedItem(
                 mediaFileId: mediaFileId,
                 language: language
             )
