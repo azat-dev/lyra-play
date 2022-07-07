@@ -139,4 +139,56 @@ class CoreDataSubtitlesRepositoryTests: XCTestCase {
         
         XCTAssertEqual(items.sorted(), [testItem1, testItem2, testItem3].sorted())
     }
+
+    func testPutAllowMultipleRecordsWithDifferentLanguages() async throws {
+        
+        let sut = createSUT()
+        
+        let item1 = createTestItem(index: 0, language: "English")
+        let item2 = createTestItem(index: 1)
+        var item3 = createTestItem(index: 1, language: "French")
+        item3.mediaFileId = item1.mediaFileId
+        
+        let result1 = await sut.put(info: item1)
+        try AssertResultSucceded(result1)
+        
+        let result2 = await sut.put(info: item2)
+        try AssertResultSucceded(result2)
+
+        let result3 = await sut.put(info: item3)
+        try AssertResultSucceded(result3)
+        
+        let listResult = await sut.list()
+        let list = try AssertResultSucceded(listResult)
+
+        let expectedItems = [item1, item2, item3]
+        XCTAssertEqual(list.count, expectedItems.count)
+        XCTAssertEqual(list.sorted(), expectedItems.sorted())
+    }
+    
+    func testPutAllowOnlyOneRecordWithUniqueMediaIdLanguagePair() async throws {
+        
+        let sut = createSUT()
+        
+        let item1 = createTestItem(index: 0, language: "English")
+        let item2 = createTestItem(index: 1)
+        var item3 = createTestItem(index: 1, language: "English")
+        item3.mediaFileId = item1.mediaFileId
+        
+        let result1 = await sut.put(info: item1)
+        try AssertResultSucceded(result1)
+        
+        let result2 = await sut.put(info: item2)
+        try AssertResultSucceded(result2)
+
+        let result3 = await sut.put(info: item3)
+        try AssertResultSucceded(result3)
+        
+        let listResult = await sut.list()
+        let list = try AssertResultSucceded(listResult)
+
+        let expectedItems = [item3, item2]
+        XCTAssertEqual(list.count, expectedItems.count)
+        XCTAssertEqual(list.sorted(), expectedItems.sorted())
+    }
 }

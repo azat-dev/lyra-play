@@ -27,9 +27,11 @@ public final class CoreDataSubtitlesRepository: SubtitlesRepository {
                 request.fetchLimit = 1
                 request.resultType = .managedObjectResultType
                 request.predicate = NSPredicate(
-                    format: "%K = %@",
+                    format: "%K = %@ AND %K = %@ ",
                     #keyPath(ManagedSubtitles.mediaFileId),
-                    mediaFileId.uuidString
+                    mediaFileId.uuidString,
+                    #keyPath(ManagedSubtitles.language),
+                    language
                 )
                 
                 do {
@@ -53,7 +55,10 @@ public final class CoreDataSubtitlesRepository: SubtitlesRepository {
         
         do {
             
-            existingItem = try await getManagedItem(mediaFileId: item.mediaFileId, language: item.language)
+            existingItem = try await getManagedItem(
+                mediaFileId: item.mediaFileId,
+                language: item.language
+            )
         } catch {
             return .failure(.internalError(error))
         }
