@@ -108,7 +108,7 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
             trackId: trackId,
             language: language,
             fileName: testFileName,
-            data: testFileData
+            data: testFileDataUpdated
         )
         
         try AssertResultSucceded(importResult)
@@ -127,6 +127,39 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         let fileData = try AssertResultSucceded(fileResult)
         
         XCTAssertEqual(fileData, testFileDataUpdated)
+    }
+    
+    func testImportWrongData() async throws {
+        
+        let (
+            useCase,
+            _,
+            _,
+            _
+        ) = createSUT()
+        
+        let bundle = Bundle(for: type(of: self ))
+        let url = bundle.url(forResource: "test_music_with_tags", withExtension: "mp3")!
+        
+        let testFileData = try Data(contentsOf: url)
+
+        let language = "English"
+        let trackId = UUID()
+        let testFileName = "test.lrc"
+        
+        let importResult = await useCase.importFile(
+            trackId: trackId,
+            language: language,
+            fileName: testFileName,
+            data: testFileData
+        )
+        
+        let error = try AssertResultFailed(importResult)
+        
+        guard case .wrongData = error else {
+            XCTFail("Wrong error type \(error)")
+            return
+        }
     }
 }
 
