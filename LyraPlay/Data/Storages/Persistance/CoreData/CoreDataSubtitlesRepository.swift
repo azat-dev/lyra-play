@@ -19,34 +19,24 @@ public final class CoreDataSubtitlesRepository: SubtitlesRepository {
     }
     
     private func getManagedItem(mediaFileId: UUID, language: String) async throws -> ManagedSubtitles?  {
-        
-        do {
-            let managedItems = try await coreDataStore.performSync { context -> Result<[ManagedSubtitles], Error> in
-                
-                let request = ManagedSubtitles.fetchRequest()
-                request.fetchLimit = 1
-                request.resultType = .managedObjectResultType
-                request.predicate = NSPredicate(
-                    format: "%K = %@ AND %K = %@ ",
-                    #keyPath(ManagedSubtitles.mediaFileId),
-                    mediaFileId.uuidString,
-                    #keyPath(ManagedSubtitles.language),
-                    language
-                )
-                
-                do {
-                    let result = try context.fetch(request)
-                    return .success(result)
-                } catch {
-                    return .failure(error)
-                }
-            }
+
+        let managedItems = try coreDataStore.performSync { context -> [ManagedSubtitles] in
             
-            return managedItems.first
+            let request = ManagedSubtitles.fetchRequest()
+            request.fetchLimit = 1
+            request.resultType = .managedObjectResultType
+            request.predicate = NSPredicate(
+                format: "%K = %@ AND %K = %@ ",
+                #keyPath(ManagedSubtitles.mediaFileId),
+                mediaFileId.uuidString,
+                #keyPath(ManagedSubtitles.language),
+                language
+            )
             
-        } catch {
-            throw error
+            return try context.fetch(request)
         }
+        
+        return managedItems.first
     }
     
     public func put(info item: SubtitlesInfo) async -> Result<SubtitlesInfo, SubtitlesRepositoryError> {
@@ -63,22 +53,20 @@ public final class CoreDataSubtitlesRepository: SubtitlesRepository {
             return .failure(.internalError(error))
         }
         
-        let updatedItem = try! await coreDataStore.performSync { context -> Result<ManagedSubtitles, Error> in
-            
+        let updatedItem = try! coreDataStore.performSync { context -> ManagedSubtitles in
             
             if let existingItem = existingItem {
                 
                 existingItem.fillFields(from: item)
                 try! context.save()
                 
-                return .success(existingItem)
+                return existingItem
             }
             
             
             let newItem = ManagedSubtitles.create(context, from: item)
-            try! context.save()
-            return .success(newItem)
-            
+            try context.save()
+            return newItem
         }
         
         return .success(updatedItem.toDomain())
@@ -122,14 +110,10 @@ public final class CoreDataSubtitlesRepository: SubtitlesRepository {
         }
         
         do {
-            let managedItems = try await coreDataStore.performSync { context -> Result<[ManagedSubtitles], Error> in
+            
+            let managedItems = try coreDataStore.performSync { context -> [ManagedSubtitles] in
                 
-                do {
-                    let result = try context.fetch(request)
-                    return .success(result)
-                } catch {
-                    return .failure(error)
-                }
+                return try context.fetch(request)
             }
             
             let domainItems = managedItems.map { $0.toDomain() }
@@ -158,7 +142,20 @@ public final class CoreDataSubtitlesRepository: SubtitlesRepository {
         guard let item = item else {
             return .failure(.itemNotFound)
         }
+        
 
+        do {
+
+            try coreDataStore.performSync { context in
+                
+                context.delete(item)
+                try context.save()
+            }
+            
+        } catch {
+            return .failure(.internalError(error))
+        }
+        
         return .success(())
     }
 }

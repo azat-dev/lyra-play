@@ -35,15 +35,23 @@ public class CoreDataStore {
         }
     }
     
-    func performSync<R>(_ action: (NSManagedObjectContext) -> Result<R, Error>) async throws -> R {
+    func performSync<R>(_ action: (NSManagedObjectContext) throws -> R) throws -> R {
+
         let context = self.context
         var result: Result<R, Error>!
+        
         context.performAndWait {
-            result = action(context)
+            
+            do {
+                let actionResult = try action(context)
+                result = .success(actionResult)
+            } catch {
+                result = .failure(error)
+            }
         }
+        
         return try result.get()
     }
-    
 }
 
 

@@ -21,20 +21,14 @@ final class CoreDataAudioLibraryRepository: AudioLibraryRepository {
     public func listFiles() async -> Result<[AudioFileInfo], AudioLibraryRepositoryError> {
         
         let request = ManagedAudioFile.fetchRequest()
-
+        
         do {
-            let managedItems = try await coreDataStore.performSync { context -> Result<[ManagedAudioFile], Error> in
+            let managedItems = try coreDataStore.performSync { context -> [ManagedAudioFile] in
                 
-                do {
-                    let result = try context.fetch(request)
-                    return .success(result)
-                } catch {
-                    return .failure(error)
-                }
+                return try context.fetch(request)
             }
             
             let domainItems = managedItems.map { $0.toDomain() }
-            
             return .success(domainItems)
             
         } catch {
@@ -53,28 +47,18 @@ final class CoreDataAudioLibraryRepository: AudioLibraryRepository {
             (\ManagedAudioFile.id)._kvcKeyPathString!,
             id.uuidString
         )
-
-        do {
-            let managedItems = try await coreDataStore.performSync { context -> Result<[ManagedAudioFile], Error> in
-                
-                do {
-                    let result = try context.fetch(request)
-                    return .success(result)
-                } catch {
-                    return .failure(error)
-                }
-            }
+        
+        let managedItems = try coreDataStore.performSync { context -> [ManagedAudioFile] in
             
-            return managedItems.first
-            
-        } catch {
-            throw error
+            return try context.fetch(request)
         }
+        
+        return managedItems.first
     }
     
     public func getInfo(fileId: UUID) async -> Result<AudioFileInfo, AudioLibraryRepositoryError> {
         
-
+        
         do {
             let managedItem = try await getManagedItem(id: fileId)
             
@@ -103,16 +87,16 @@ final class CoreDataAudioLibraryRepository: AudioLibraryRepository {
             }
         }
         
-        let updatedFile = try! await coreDataStore.performSync { context -> Result<AudioFileInfo, Error> in
+        let action = { (context: NSManagedObjectContext) throws -> ManagedAudioFile in
             
             var updatedFile: ManagedAudioFile!
             
             if let existingFile = existingFile {
-            
+                
                 existingFile.fillFields(from: file)
                 updatedFile = existingFile
                 updatedFile.updatedAt = .now
-            
+                
             } else {
                 
                 let newFile = ManagedAudioFile.create(context, from: file)
@@ -121,15 +105,19 @@ final class CoreDataAudioLibraryRepository: AudioLibraryRepository {
                 updatedFile = newFile
             }
             
-            
-            try! context.save()
-            let domainItem: AudioFileInfo = updatedFile.toDomain()
-            
-            return .success(domainItem)
+            try context.save()
+            return updatedFile
         }
         
-        return .success(updatedFile)
-        
+        do {
+            
+            let updatedFile = try coreDataStore.performSync(action)
+            let domainItem: AudioFileInfo = updatedFile.toDomain()
+            return .success(domainItem)
+
+        } catch {
+            return .failure(.internalError(error))
+        }
     }
     
     public func delete(fileId: UUID) async -> Result<Void, AudioLibraryRepositoryError> {
@@ -138,11 +126,17 @@ final class CoreDataAudioLibraryRepository: AudioLibraryRepository {
             return .failure(.fileNotFound)
         }
         
-        try! await coreDataStore.performSync { context -> Result<Void, Error> in
+        let action = { (context: NSManagedObjectContext) throws -> Void in
+
             context.delete(managedFile)
-            try! context.save()
+            try context.save()
+        }
+
+        do {
             
-            return .success(())
+            try coreDataStore.performSync(action)
+        } catch {
+            return .failure(.internalError(error))
         }
         
         return .success(())
