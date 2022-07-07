@@ -191,4 +191,16 @@ class CoreDataSubtitlesRepositoryTests: XCTestCase {
         XCTAssertEqual(list.count, expectedItems.count)
         XCTAssertEqual(list.sorted(), expectedItems.sorted())
     }
+    
+    func testDeleteFailIfNotFound() async throws {
+        
+        let sut = createSUT()
+        
+        let result = await sut.delete(mediaFileId: UUID(), language: "English")
+        let error = try AssertResultFailed(result)
+        
+        guard case .itemNotFound = error else {
+            XCTFail("Wrong error type \(error)")
+        }
+    }
 }
