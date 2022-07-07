@@ -16,10 +16,6 @@ public struct Subtitles: Equatable {
         self.sentences = sentences
     }
 
-}
-
-extension Subtitles {
-    
     public struct Sentence: Equatable {
         
         public var startTime: Double

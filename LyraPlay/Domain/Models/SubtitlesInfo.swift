@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct SubtitleInfo {
+public struct SubtitlesInfo {
     
     public var id: UUID
     public var mediaFileId: UUID
