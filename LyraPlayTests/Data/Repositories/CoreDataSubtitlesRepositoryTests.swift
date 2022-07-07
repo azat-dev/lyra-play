@@ -201,6 +201,7 @@ class CoreDataSubtitlesRepositoryTests: XCTestCase {
         
         guard case .itemNotFound = error else {
             XCTFail("Wrong error type \(error)")
+            return
         }
     }
 }

@@ -140,4 +140,25 @@ public final class CoreDataSubtitlesRepository: SubtitlesRepository {
             return .failure(.internalError(error))
         }
     }
+    
+    public func delete(mediaFileId: UUID, language: String) async -> Result<Void, SubtitlesRepositoryError> {
+        
+        var item: ManagedSubtitles?
+        
+        do {
+            
+            item = try await getManagedItem(
+                mediaFileId: mediaFileId,
+                language: language
+            )
+        } catch {
+            return .failure(.internalError(error))
+        }
+        
+        guard let item = item else {
+            return .failure(.itemNotFound)
+        }
+
+        return .success(())
+    }
 }
