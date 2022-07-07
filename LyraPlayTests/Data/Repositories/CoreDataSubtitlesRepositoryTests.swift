@@ -60,4 +60,15 @@ class CoreDataSubtitlesRepositoryTests: XCTestCase {
         let unwrappedItem = try XCTUnwrap(receivedItem)
         XCTAssertEqual(unwrappedItem, testItem1)
     }
+    
+    func testListEmptyRecords() async throws {
+        
+        let subtitlesRepository = createSUT()
+
+        let mediaId = UUID()
+        let listResult = await subtitlesRepository.listSubtitles(for: mediaId)
+        let items = try AssertResultSucceded(listResult)
+        
+        XCTAssertEqual(items, [])
+    }
 }
