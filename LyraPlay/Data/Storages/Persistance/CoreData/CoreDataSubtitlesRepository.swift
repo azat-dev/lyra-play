@@ -95,14 +95,26 @@ public final class CoreDataSubtitlesRepository: SubtitlesRepository {
         }
     }
     
+    public func list() async -> Result<[SubtitlesInfo], SubtitlesRepositoryError> {
+        return await listFiltered(mediaFileId: nil)
+    }
+    
     public func list(mediaFileId: UUID) async -> Result<[SubtitlesInfo], SubtitlesRepositoryError> {
+        return await listFiltered(mediaFileId: mediaFileId)
+    }
+    
+    private func listFiltered(mediaFileId: UUID?) async -> Result<[SubtitlesInfo], SubtitlesRepositoryError> {
         
         let request = ManagedSubtitles.fetchRequest()
-        request.predicate = NSPredicate(
-            format: "%K = %@",
-            #keyPath(ManagedSubtitles.mediaFileId),
-            mediaFileId.uuidString
-        )
+        
+        if let mediaFileId = mediaFileId {
+            
+            request.predicate = NSPredicate(
+                format: "%K = %@",
+                #keyPath(ManagedSubtitles.mediaFileId),
+                mediaFileId.uuidString
+            )
+        }
         
         do {
             let managedItems = try await coreDataStore.performSync { context -> Result<[ManagedSubtitles], Error> in

@@ -21,5 +21,7 @@ public protocol SubtitlesRepository {
     
     func fetch(mediaFileId: UUID, language: String) async -> Result<SubtitlesInfo, SubtitlesRepositoryError>
     
+    func list() async -> Result<[SubtitlesInfo], SubtitlesRepositoryError>
+
     func list(mediaFileId: UUID) async -> Result<[SubtitlesInfo], SubtitlesRepositoryError>
 }

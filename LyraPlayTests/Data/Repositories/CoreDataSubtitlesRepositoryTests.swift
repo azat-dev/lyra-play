@@ -134,7 +134,7 @@ class CoreDataSubtitlesRepositoryTests: XCTestCase {
         let _ = await subtitlesRepository.put(info: testItem3)
         
         
-        let listResult = await subtitlesRepository.list(mediaFileId: testItem1.mediaFileId)
+        let listResult = await subtitlesRepository.list()
         let items = try AssertResultSucceded(listResult)
         
         XCTAssertEqual(items.sorted(), [testItem1, testItem2, testItem3].sorted())
