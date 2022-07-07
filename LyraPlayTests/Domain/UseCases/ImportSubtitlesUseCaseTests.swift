@@ -80,6 +80,54 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         
         XCTAssertEqual(fileData, testFileData)
     }
+    
+    func testReplaceExistingSubtitles() async throws {
+        
+        let (
+            useCase,
+            subtitlesRepository,
+            _,
+            subtitlesFilesRepository
+        ) = createSUT()
+        
+        let testFileData = "testFileData".data(using: .utf8)!
+        let testFileDataUpdated = "testFileData".data(using: .utf8)!
+
+        let language = "English"
+        let trackId = UUID()
+        let testFileName = "test.lrc"
+        
+        let _ = await useCase.importFile(
+            trackId: trackId,
+            language: language,
+            fileName: testFileName,
+            data: testFileData
+        )
+        
+        let importResult = await useCase.importFile(
+            trackId: trackId,
+            language: language,
+            fileName: testFileName,
+            data: testFileData
+        )
+        
+        try AssertResultSucceded(importResult)
+        
+        let subtitleInfoResult = await subtitlesRepository.fetch(
+            mediaFileId: trackId,
+            language: language
+        )
+        
+        let subtitles = try AssertResultSucceded(subtitleInfoResult)
+
+        XCTAssertEqual(subtitles.mediaFileId, trackId)
+        XCTAssertEqual(subtitles.language, language)
+        
+        let fileResult = await subtitlesFilesRepository.getFile(name: subtitles.file)
+        let fileData = try AssertResultSucceded(fileResult)
+        
+        XCTAssertEqual(fileData, testFileDataUpdated)
+    }
 }
 
 // MARK: - Mocks
