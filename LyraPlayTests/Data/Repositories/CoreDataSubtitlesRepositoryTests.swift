@@ -204,4 +204,30 @@ class CoreDataSubtitlesRepositoryTests: XCTestCase {
             return
         }
     }
+    
+    func testDeleteOnlySpecificItem() async throws {
+        
+        let sut = createSUT()
+        
+        let item1 = createTestItem(index: 0, language: "English")
+        let item2 = createTestItem(index: 1, language: "English")
+
+        var item3 = createTestItem(index: 3, language: "French")
+        item3.mediaFileId = item1.mediaFileId
+
+        let _ = await sut.put(info: item1)
+        let _ = await sut.put(info: item2)
+        let _ = await sut.put(info: item3)
+        
+        
+        let result = await sut.delete(mediaFileId: item1.mediaFileId, language: "English")
+        try AssertResultSucceded(result)
+        
+        let listResult = await sut.list()
+        let list = try AssertResultSucceded(listResult)
+
+        let expectedItems = [item3, item2]
+        XCTAssertEqual(list.count, expectedItems.count)
+        XCTAssertEqual(list.sorted(), expectedItems.sorted())
+    }
 }
