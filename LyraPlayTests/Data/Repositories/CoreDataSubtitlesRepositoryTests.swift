@@ -120,4 +120,23 @@ class CoreDataSubtitlesRepositoryTests: XCTestCase {
         
         XCTAssertEqual(items2.sorted(), [testItem2].sorted())
     }
+    
+    func testListAllRecords() async throws {
+        
+        let subtitlesRepository = createSUT()
+
+        let testItem1 = createTestItem(index: 0)
+        let testItem2 = createTestItem(index: 1)
+        let testItem3 = createTestItem(index: 2)
+        
+        let _ = await subtitlesRepository.put(info: testItem1)
+        let _ = await subtitlesRepository.put(info: testItem2)
+        let _ = await subtitlesRepository.put(info: testItem3)
+        
+        
+        let listResult = await subtitlesRepository.list(mediaFileId: testItem1.mediaFileId)
+        let items = try AssertResultSucceded(listResult)
+        
+        XCTAssertEqual(items.sorted(), [testItem1, testItem2, testItem3].sorted())
+    }
 }
