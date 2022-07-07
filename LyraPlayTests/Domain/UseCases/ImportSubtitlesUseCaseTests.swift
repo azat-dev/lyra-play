@@ -47,7 +47,7 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         let (
             useCase,
             subtitlesRepository,
-            subtitlesParser,
+            _,
             subtitlesFilesRepository
         ) = createSUT()
         
