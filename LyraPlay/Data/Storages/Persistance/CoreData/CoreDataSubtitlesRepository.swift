@@ -1,0 +1,97 @@
+//
+//  CoreDataSubtitlesRepository.swift
+//  LyraPlay
+//
+//  Created by Azat Kaiumov on 07.07.22.
+//
+
+import Foundation
+import CoreData
+
+// MARK: - Implementations
+
+public final class CoreDataSubtitlesRepository: SubtitlesRepository {
+    
+    private let coreDataStore: CoreDataStore
+    
+    public init(coreDataStore: CoreDataStore) {
+        self.coreDataStore = coreDataStore
+    }
+    
+    private func getManagedItem(mediaFileId: UUID, language: String) async throws -> ManagedSubtitles?  {
+        
+        do {
+            let managedItems = try await coreDataStore.performSync { context -> Result<[ManagedSubtitles], Error> in
+                
+                let request = ManagedSubtitles.fetchRequest()
+                request.fetchLimit = 1
+                request.resultType = .managedObjectResultType
+                request.predicate = NSPredicate(
+                    format: "%K = %@",
+                    "mediaFileId",
+                    mediaFileId.uuidString
+                )
+                
+                do {
+                    let result = try context.fetch(request)
+                    return .success(result)
+                } catch {
+                    return .failure(error)
+                }
+            }
+            
+            return managedItems.first
+            
+        } catch {
+            throw error
+        }
+    }
+    
+    public func put(info item: SubtitlesInfo) async -> Result<SubtitlesInfo, SubtitlesRepositoryError> {
+        
+        var existingItem: ManagedSubtitles? = nil
+        
+        do {
+            
+            existingItem = try await getManagedItem(mediaFileId: item.mediaFileId, language: item.language)
+        } catch {
+            return .failure(.internalError(error))
+        }
+        
+        let updatedItem = try! await coreDataStore.performSync { context -> Result<ManagedSubtitles, Error> in
+            
+            
+            if let existingItem = existingItem {
+                
+                existingItem.fillFields(from: item)
+                try! context.save()
+                
+                return .success(existingItem)
+            }
+            
+            
+            let newItem = ManagedSubtitles.create(context, from: item)
+            try! context.save()
+            return .success(newItem)
+            
+        }
+        
+        return .success(updatedItem.toDomain())
+    }
+    
+    public func fetch(mediaFileId: UUID, language: String) async -> Result<SubtitlesInfo, SubtitlesRepositoryError> {
+        
+        do {
+            
+            let item = try await getManagedItem(mediaFileId: mediaFileId, language: language)
+            guard let item = item else {
+                return .failure(.itemNotFound)
+            }
+            
+            return .success(item.toDomain())
+            
+        } catch {
+            return .failure(.internalError(error))
+        }
+    }
+}

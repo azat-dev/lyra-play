@@ -10,12 +10,14 @@ import Foundation
 // MARK: - Interfaces
 
 public enum SubtitlesRepositoryError: Error {
-    
-    case mediaFileNotFound
+
+    case itemNotFound
     case internalError(Error?)
 }
 
 public protocol SubtitlesRepository {
     
-    func put(info: SubtitleInfo) async -> Result<SubtitleInfo, SubtitlesRepositoryError>
+    func put(info: SubtitlesInfo) async -> Result<SubtitlesInfo, SubtitlesRepositoryError>
+    
+    func fetch(mediaFileId: UUID, language: String) async -> Result<SubtitlesInfo, SubtitlesRepositoryError>
 }

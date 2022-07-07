@@ -9,6 +9,14 @@ import XCTest
 import LyraPlay
 import CoreData
 
+extension SubtitlesInfo: Equatable {
+    public static func == (lhs: SubtitlesInfo, rhs: SubtitlesInfo) -> Bool {
+        return lhs.language == rhs.language &&
+            lhs.mediaFileId == rhs.mediaFileId &&
+            lhs.file == rhs.file
+    }
+}
+
 
 class CoreDataSubtitlesRepositoryTests: XCTestCase {
     
@@ -21,28 +29,35 @@ class CoreDataSubtitlesRepositoryTests: XCTestCase {
         detectMemoryLeak(instance: subtitlesRepository, file: file, line: line)
         return subtitlesRepository
     }
+    
+    private func createTestItem(index: Int) -> SubtitlesInfo {
+        
+        let mediaFileId = UUID()
+        
+        return SubtitlesInfo(
+            mediaFileId: mediaFileId,
+            language: "English",
+            file: "test\(index).lrc"
+        )
+    }
 
-    func testAttachToNotExistingFile() async throws {
+    func testPutFetch() async throws {
         
         let subtitlesRepository = createSUT()
 
-        let mediaFileId = UUID()
+        let testItem1 = createTestItem(index: 0)
+
+        let putResult = await subtitlesRepository.put(info: testItem1)
+        try AssertResultSucceded(putResult)
         
-        let subtitlesInfo = SubtitlesAttachment(
-            id: nil,
-            createdAt: nil,
-            updatedAt: nil,
-            mediaFileId: mediaFileId,
-            language: "English",
-            file: "test.lrc"
+        let fetchResult = await subtitlesRepository.fetch(
+            mediaFileId: testItem1.mediaFileId,
+            language: testItem1.language
         )
         
+        let receivedItem = try AssertResultSucceded(fetchResult)
         
-        let result = await subtitlesRepository.put(info: subtitlesInfo)
-        let error = try AssertResultFailed(result)
-        
-        guard case .mediaFileNotFound = error else {
-            XCTFail("Wrong error type: \(error)")
-        }
+        let unwrappedItem = try XCTUnwrap(receivedItem)
+        XCTAssertEqual(unwrappedItem, testItem1)
     }
 }

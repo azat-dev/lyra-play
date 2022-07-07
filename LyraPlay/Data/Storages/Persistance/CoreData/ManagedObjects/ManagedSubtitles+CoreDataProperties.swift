@@ -16,10 +16,9 @@ extension ManagedSubtitles {
         return NSFetchRequest<ManagedSubtitles>(entityName: "ManagedSubtitles")
     }
 
-    @NSManaged public var id: UUID
-    @NSManaged public var mediaFileId: UUID
-    @NSManaged public var language: String
-    @NSManaged public var file: String
+    @NSManaged public var file: String?
+    @NSManaged public var language: String?
+    @NSManaged public var mediaFileId: UUID?
 
 }
 

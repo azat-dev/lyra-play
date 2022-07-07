@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="ManagedAudioFile" representedClassName="ManagedAudioFile" syncable="YES">
+    <entity name="ManagedAudioFile" representedClassName=".ManagedAudioFile" syncable="YES">
         <attribute name="artist" optional="YES" attributeType="String"/>
         <attribute name="audioFile" attributeType="String"/>
         <attribute name="coverImage" optional="YES" attributeType="String"/>
@@ -16,23 +16,19 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="Subtitles" representedClassName="Subtitles" syncable="YES">
-        <attribute name="file" attributeType="String"/>
-        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="language" attributeType="String"/>
+    <entity name="ManagedSubtitles" representedClassName=".ManagedSubtitles" syncable="YES">
         <attribute name="mediaFileId" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="file" attributeType="String"/>
+        <attribute name="language" attributeType="String"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="mediaFileId"/>
                 <constraint value="language"/>
             </uniquenessConstraint>
-            <uniquenessConstraint>
-                <constraint value="id"/>
-            </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
     <elements>
         <element name="ManagedAudioFile" positionX="-63" positionY="-18" width="128" height="164"/>
-        <element name="Subtitles" positionX="-63" positionY="54" width="128" height="89"/>
+        <element name="ManagedSubtitles" positionX="-63" positionY="54" width="128" height="74"/>
     </elements>
 </model>
