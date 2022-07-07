@@ -135,17 +135,11 @@ public final class CoreDataSubtitlesRepository: SubtitlesRepository {
                 mediaFileId: mediaFileId,
                 language: language
             )
-        } catch {
-            return .failure(.internalError(error))
-        }
-        
-        guard let item = item else {
-            return .failure(.itemNotFound)
-        }
-        
-
-        do {
-
+            
+            guard let item = item else {
+                return .failure(.itemNotFound)
+            }
+            
             try coreDataStore.performSync { context in
                 
                 context.delete(item)
