@@ -21,23 +21,16 @@ extension SubtitlesInfo: Equatable {
 extension SubtitlesInfo: Comparable {
     public static func < (lhs: SubtitlesInfo, rhs: SubtitlesInfo) -> Bool {
         
-        if lhs == rhs {
-            return false
-        }
 
-        if lhs.mediaFileId.uuidString > rhs.mediaFileId.uuidString {
-            return true
-        }
-
-        if lhs.language > rhs.language {
-            return true
-        }
-
-        if lhs.file > rhs.file {
-            return true
+        if lhs.mediaFileId != rhs.mediaFileId {
+            return lhs.mediaFileId.uuidString < rhs.mediaFileId.uuidString
         }
         
-        return false
+        if lhs.language != rhs.language {
+            return lhs.language < rhs.language
+        }
+
+        return lhs.file < rhs.file
     }
 }
 
@@ -228,6 +221,6 @@ class CoreDataSubtitlesRepositoryTests: XCTestCase {
 
         let expectedItems = [item3, item2]
         XCTAssertEqual(list.count, expectedItems.count)
-        XCTAssertEqual(list.sorted(), expectedItems.sorted())
+        XCTAssertEqual(list.sorted(by: >), expectedItems.sorted(by: >))
     }
 }
