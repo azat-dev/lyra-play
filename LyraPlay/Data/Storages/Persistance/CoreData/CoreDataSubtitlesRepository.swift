@@ -94,4 +94,33 @@ public final class CoreDataSubtitlesRepository: SubtitlesRepository {
             return .failure(.internalError(error))
         }
     }
+    
+    public func list(mediaFileId: UUID) async -> Result<[SubtitlesInfo], SubtitlesRepositoryError> {
+        
+        let request = ManagedSubtitles.fetchRequest()
+        request.predicate = NSPredicate(
+            format: "%K = %@",
+            "mediaFileId",
+            mediaFileId.uuidString
+        )
+        
+        do {
+            let managedItems = try await coreDataStore.performSync { context -> Result<[ManagedSubtitles], Error> in
+                
+                do {
+                    let result = try context.fetch(request)
+                    return .success(result)
+                } catch {
+                    return .failure(error)
+                }
+            }
+            
+            let domainItems = managedItems.map { $0.toDomain() }
+            return .success(domainItems)
+            
+        } catch {
+            
+            return .failure(.internalError(error))
+        }
+    }
 }
