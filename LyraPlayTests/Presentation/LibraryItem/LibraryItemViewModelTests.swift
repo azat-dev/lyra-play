@@ -15,7 +15,8 @@ class LibraryItemViewModelTests: XCTestCase {
         coordinator: LibraryItemCoordinatorMock,
         showMediaInfoUseCase: ShowMediaInfoUseCaseMock,
         playerControlUseCase: PlayerControlUseCaseMock,
-        currentPlayerStateUseCase: CurrentPlayerStateUseCaseMock
+        currentPlayerStateUseCase: CurrentPlayerStateUseCaseMock,
+        importSubtitlesUseCase: ImportSubtitlesUseCaseMock
     )
     
     fileprivate func createSUT() -> SUT {
@@ -26,11 +27,14 @@ class LibraryItemViewModelTests: XCTestCase {
         let currentPlayerStateUseCase = CurrentPlayerStateUseCaseMock(showMediaInfoUseCase: showMediaInfoUseCase)
         let playerControlUseCase = PlayerControlUseCaseMock(currentPlayerStateUseCase: currentPlayerStateUseCase)
         
+        let importSubtitlesUseCase = ImportSubtitlesUseCaseMock()
+        
         return (
             coordinator,
             showMediaInfoUseCase,
             playerControlUseCase,
-            currentPlayerStateUseCase
+            currentPlayerStateUseCase,
+            importSubtitlesUseCase
         )
     }
     
@@ -41,7 +45,8 @@ class LibraryItemViewModelTests: XCTestCase {
             coordinator: sut.coordinator,
             showMediaInfoUseCase: sut.showMediaInfoUseCase,
             currentPlayerStateUseCase: sut.currentPlayerStateUseCase,
-            playerControlUseCase: sut.playerControlUseCase
+            playerControlUseCase: sut.playerControlUseCase,
+            importSubtitlesUseCase: sut.importSubtitlesUseCase
         )
         
         detectMemoryLeak(instance: viewModel)
@@ -142,14 +147,98 @@ class LibraryItemViewModelTests: XCTestCase {
         playingSequence1.wait(timeout: 3, enforceOrder: true)
         playingSequence2.wait(timeout: 3, enforceOrder: true)
     }
+
+    func testAttachSubtitlesCancel() async throws {
+        
+        let expectation = expectation(description: "Shouldn't be called")
+        expectation.isInverted = true
+        
+        let trackId = UUID()
+        let language = "English"
+        
+        let sut = createSUT()
+        let viewModel = createViewModel(trackId: trackId, sut: sut)
+    
+        sut.coordinator.resolveChooseSubtitles = { nil }
+        sut.importSubtitlesUseCase.resolveImportFile = { _, _, _, _ in
+            expectation.fulfill()
+            return .success(())
+        }
+        
+        await viewModel.attachSubtitles(language: language)
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func testAttachSubtitlesResolvedWithBrokenFile() async throws {
+        
+        let trackId = UUID()
+        let language = "English"
+        
+        let showImportErrorSequence = AssertSequence(testCase: self, values: [true])
+        let sut = createSUT()
+        let viewModel = createViewModel(trackId: trackId, sut: sut)
+
+        let bundle = Bundle(for: type(of: self ))
+        let url = bundle.url(forResource: "test_music_with_tags", withExtension: "mp3")!
+        
+        sut.coordinator.resolveShowImportSubtitlesError = {
+            showImportErrorSequence.fulfill(with: true)
+        }
+        
+        sut.importSubtitlesUseCase.resolveImportFile = { _, _, _, _ in
+            return .failure(.wrongData)
+        }
+        
+        await viewModel.attachSubtitles(language: language)
+        showImportErrorSequence.wait(timeout: 1, enforceOrder: true)
+        
+        // TODO: How to show to the user?
+    }
+    
+    func testAttachSubtitlesResolvedWithGoodFile() async throws {
+        
+        let trackId = UUID()
+        let language = "English"
+        
+        let showImportErrorSequence = AssertSequence<Bool>(testCase: self, values: [])
+        let sut = createSUT()
+        let viewModel = createViewModel(trackId: trackId, sut: sut)
+
+        sut.coordinator.resolveChooseSubtitles = {
+            
+            let bundle = Bundle(for: type(of: self ))
+            return bundle.url(forResource: "test_subtitles", withExtension: "lrc")!
+        }
+        
+        sut.coordinator.resolveShowImportSubtitlesError = {
+            showImportErrorSequence.fulfill(with: true)
+        }
+
+        await viewModel.attachSubtitles(language: language)
+        
+        // TODO: How to show to the user?
+        showImportErrorSequence.wait(timeout: 1, enforceOrder: true)
+    }
 }
 
 // MARK: - Mocks
 
 private final class LibraryItemCoordinatorMock: LibraryItemCoordinator {
+
+    typealias ChooseSubtitlesCallback = () -> URL?
+    typealias ShowImportSubttitlesErrorCallback = () -> Void?
     
-    func chooseSubtitles() async -> Result<URL?, Error> {
-        return .success(nil)
+    public var resolveChooseSubtitles: ChooseSubtitlesCallback?
+    public var resolveShowImportSubtitlesError: ShowImportSubttitlesErrorCallback?
+    
+    public func chooseSubtitles() async -> Result<URL?, Error> {
+
+        return resolveChooseSubtitles?() ?? .success(subtitles)
+    }
+    
+    public func showImportSubtitlesError() -> Void {
+        resolveShowImportSubtitlesError?()
     }
 }
 
@@ -182,5 +271,18 @@ final class CurrentPlayerStateUseCaseMock: CurrentPlayerStateUseCase {
         }
         
         info.value = data
+    }
+}
+
+final class ImportSubtitlesUseCaseMock: ImportSubtitlesUseCase {
+    
+    typealias ImportFileCallback = (_ trackId: UUID, _ language: String, _ fileName: String, _ data: Data) -> Result<Void, ImportSubtitlesUseCaseError>
+    
+    public var resolveImportFile: ImportFileCallback? = nil
+    
+    
+    func importFile(trackId: UUID, language: String, fileName: String, data: Data) async -> Result<Void, ImportSubtitlesUseCaseError> {
+        
+        return resolveImportFile?() ?? .success()
     }
 }

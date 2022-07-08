@@ -263,6 +263,7 @@
 		AAFB979A2875C60F007A76A7 /* LyricsParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsParserTests.swift; sourceTree = "<group>"; };
 		AAFB979E2875CFA9007A76A7 /* SubtitlesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesParser.swift; sourceTree = "<group>"; };
 		AAFB97A02875D0FD007A76A7 /* LyricsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsParser.swift; sourceTree = "<group>"; };
+		AAFDF5D92878973500AF0709 /* test_subtitles.lrc */ = {isa = PBXFileReference; lastKnownFileType = text; path = test_subtitles.lrc; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -332,6 +333,7 @@
 			children = (
 				AA1ACC30286329B8000EEDD5 /* test_music_with_tags.mp3 */,
 				AA415087286B2BA4004549F4 /* test_cover_image.png */,
+				AAFDF5D92878973500AF0709 /* test_subtitles.lrc */,
 			);
 			path = Assets;
 			sourceTree = "<group>";

@@ -25,7 +25,6 @@ class AssertSequence<T: Equatable> {
     init(testCase: XCTestCase, values: [T] = []) {
         
         self.testCase = testCase
-        
         addExpectations(values: values)
     }
     
@@ -50,6 +49,12 @@ class AssertSequence<T: Equatable> {
         testCase.wait(for: [expectation], timeout: timeout, enforceOrder: enforceOrder)
         XCTAssertEqual(receivedValues, expectedValues, file: file, line: line)
     }
+    
+    func fulfill(with value: T) {
+        
+        self.receivedValues.append(value)
+        self.expectation.fulfill()
+    }
 }
 
 // MARK: - Observable
@@ -70,9 +75,7 @@ extension AssertSequence {
             }
             
             let mappedValue = mapper(value)
-            
-            self.receivedValues.append(mappedValue)
-            self.expectation.fulfill()
+            self.fulfill(with: mappedValue)
         }
     }
 }
@@ -96,9 +99,7 @@ extension AssertSequence {
             }
             
             let mappedValue = mapper(value)
-            
-            self.receivedValues.append(mappedValue)
-            self.expectation.fulfill()
+            self.fulfill(with: mappedValue)
         }
     }
 }

@@ -23,7 +23,6 @@ class DefatulTagsParserTests: XCTestCase {
         let tagsParser = createSUT()
         
         let bundle = Bundle(for: type(of: self ))
-        
         let url = bundle.url(forResource: "test_music_with_tags", withExtension: "mp3")!
         
         let result = await tagsParser.parse(url: url)
