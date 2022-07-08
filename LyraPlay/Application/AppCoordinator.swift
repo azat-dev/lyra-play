@@ -145,6 +145,34 @@ final class DefaultAppCoordinator: AppCoordinator {
         )
     } ()
     
+    private lazy var subtitlesFilesRepository: FilesRepository = {
+        
+        let url = try! FileManager.default.url(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: false
+        )
+        
+        let subtitlesDirectory = url.appendingPathComponent("subtitles", isDirectory: true)
+        
+        return try! LocalFilesRepository(baseDirectory: subtitlesDirectory)
+    } ()
+    
+    private lazy var subtitlesRepository: SubtitlesRepository = {
+      
+        return CoreDataSubtitlesRepository(coreDataStore: coreDataStore)
+    } ()
+    
+    private lazy var importSubtitlesUseCase = {
+        
+        return DefaultImportSubtitlesUseCase(
+            subtitlesRepository: subtitlesRepository,
+            subtitlesParser: LyricsParser(),
+            subtitlesFilesRepository: subtitlesFilesRepository
+        )
+    } ()
+    
     init(navigationController: UINavigationController) {
         
         self.navigationController = navigationController
@@ -196,6 +224,9 @@ extension DefaultAppCoordinator: LibraryItemCoordinator {
         
         return .success(nil)
     }
+    
+    func showImportSubtitlesError() {
+    }
 }
 
 // MARK: - AudioFilesBrowserCoordinator
@@ -209,7 +240,8 @@ extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
             coordnator: self,
             showMediaInfoUseCase: showMediaInfoUseCase,
             currentPlayerStateUseCase: currentPlayerStateUseCase,
-            playerControlUseCase: playerControlUseCase
+            playerControlUseCase: playerControlUseCase,
+            importSubtitlesUseCase: importSubtitlesUseCase
         )
         
         let vc = factory.build(with: trackId)

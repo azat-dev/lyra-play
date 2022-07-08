@@ -123,6 +123,7 @@
 		AAFB979B2875C60F007A76A7 /* LyricsParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB979A2875C60F007A76A7 /* LyricsParserTests.swift */; };
 		AAFB979F2875CFA9007A76A7 /* SubtitlesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB979E2875CFA9007A76A7 /* SubtitlesParser.swift */; };
 		AAFB97A12875D0FD007A76A7 /* LyricsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB97A02875D0FD007A76A7 /* LyricsParser.swift */; };
+		AAFDF5DA28789C5300AF0709 /* test_subtitles.lrc in Resources */ = {isa = PBXBuildFile; fileRef = AAFDF5D92878973500AF0709 /* test_subtitles.lrc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -967,6 +968,7 @@
 			files = (
 				AA1ACC31286329B8000EEDD5 /* test_music_with_tags.mp3 in Resources */,
 				AA415088286B2BA4004549F4 /* test_cover_image.png in Resources */,
+				AAFDF5DA28789C5300AF0709 /* test_subtitles.lrc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

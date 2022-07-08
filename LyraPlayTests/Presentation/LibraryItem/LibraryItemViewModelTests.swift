@@ -159,7 +159,7 @@ class LibraryItemViewModelTests: XCTestCase {
         let sut = createSUT()
         let viewModel = createViewModel(trackId: trackId, sut: sut)
     
-        sut.coordinator.resolveChooseSubtitles = { nil }
+        sut.coordinator.resolveChooseSubtitles = { .success(nil) }
         sut.importSubtitlesUseCase.resolveImportFile = { _, _, _, _ in
             expectation.fulfill()
             return .success(())
@@ -179,8 +179,14 @@ class LibraryItemViewModelTests: XCTestCase {
         let sut = createSUT()
         let viewModel = createViewModel(trackId: trackId, sut: sut)
 
-        let bundle = Bundle(for: type(of: self ))
-        let url = bundle.url(forResource: "test_music_with_tags", withExtension: "mp3")!
+        
+        sut.coordinator.resolveChooseSubtitles = {
+            
+            let bundle = Bundle(for: type(of: self ))
+            let url = bundle.url(forResource: "test_cover_image", withExtension: "png")!
+            
+            return .success(url)
+        }
         
         sut.coordinator.resolveShowImportSubtitlesError = {
             showImportErrorSequence.fulfill(with: true)
@@ -201,24 +207,27 @@ class LibraryItemViewModelTests: XCTestCase {
         let trackId = UUID()
         let language = "English"
         
-        let showImportErrorSequence = AssertSequence<Bool>(testCase: self, values: [])
+        let showImportErrorExpectation = expectation(description: "Shouldn't be called")
+        showImportErrorExpectation.isInverted = true
         let sut = createSUT()
         let viewModel = createViewModel(trackId: trackId, sut: sut)
 
         sut.coordinator.resolveChooseSubtitles = {
             
             let bundle = Bundle(for: type(of: self ))
-            return bundle.url(forResource: "test_subtitles", withExtension: "lrc")!
+            let url = bundle.url(forResource: "test_subtitles", withExtension: "lrc")!
+            
+            return .success(url)
         }
         
         sut.coordinator.resolveShowImportSubtitlesError = {
-            showImportErrorSequence.fulfill(with: true)
+            showImportErrorExpectation.fulfill()
         }
 
         await viewModel.attachSubtitles(language: language)
         
         // TODO: How to show to the user?
-        showImportErrorSequence.wait(timeout: 1, enforceOrder: true)
+        wait(for: [showImportErrorExpectation], timeout: 1)
     }
 }
 
@@ -226,7 +235,7 @@ class LibraryItemViewModelTests: XCTestCase {
 
 private final class LibraryItemCoordinatorMock: LibraryItemCoordinator {
 
-    typealias ChooseSubtitlesCallback = () -> URL?
+    typealias ChooseSubtitlesCallback = () -> Result<URL?, Error>
     typealias ShowImportSubttitlesErrorCallback = () -> Void?
     
     public var resolveChooseSubtitles: ChooseSubtitlesCallback?
@@ -234,11 +243,22 @@ private final class LibraryItemCoordinatorMock: LibraryItemCoordinator {
     
     public func chooseSubtitles() async -> Result<URL?, Error> {
 
-        return resolveChooseSubtitles?() ?? .success(subtitles)
+        guard let resolveChooseSubtitles = resolveChooseSubtitles else {
+            XCTFail("No implementation")
+            return .success(nil)
+        }
+        
+        return resolveChooseSubtitles()
     }
     
     public func showImportSubtitlesError() -> Void {
-        resolveShowImportSubtitlesError?()
+        
+        guard let resolveShowImportSubtitlesError = resolveShowImportSubtitlesError else {
+            XCTFail("No implementation")
+            return
+        }
+        
+        resolveShowImportSubtitlesError()
     }
 }
 
@@ -283,6 +303,6 @@ final class ImportSubtitlesUseCaseMock: ImportSubtitlesUseCase {
     
     func importFile(trackId: UUID, language: String, fileName: String, data: Data) async -> Result<Void, ImportSubtitlesUseCaseError> {
         
-        return resolveImportFile?() ?? .success()
+        return resolveImportFile?(trackId, language, fileName, data) ?? .success(())
     }
 }

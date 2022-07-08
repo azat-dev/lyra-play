@@ -20,6 +20,7 @@ public struct LibraryItemInfoPresentation {
 public protocol LibraryItemCoordinator {
     
     func chooseSubtitles() async -> Result<URL?, Error>
+    func showImportSubtitlesError() -> Void
 }
 
 public protocol LibraryItemViewModelOutput {
@@ -33,6 +34,8 @@ public protocol LibraryItemViewModelInput {
     func load() async
     
     func togglePlay() async
+    
+    func attachSubtitles(language: String) async
 }
 
 public protocol LibraryItemViewModel: LibraryItemViewModelOutput, LibraryItemViewModelInput {
@@ -47,6 +50,7 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
     private let playerControlUseCase: PlayerControlUseCase
     private let currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput
+    private let importSubtitlesUseCase: ImportSubtitlesUseCase
     
     public var isPlaying: Observable<Bool> = Observable(false)
     public var info: Observable<LibraryItemInfoPresentation?> = Observable(nil)
@@ -56,7 +60,8 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
         coordinator: LibraryItemCoordinator,
         showMediaInfoUseCase: ShowMediaInfoUseCase,
         currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput,
-        playerControlUseCase: PlayerControlUseCase
+        playerControlUseCase: PlayerControlUseCase,
+        importSubtitlesUseCase: ImportSubtitlesUseCase
     ) {
         
         self.trackId = trackId
@@ -64,6 +69,7 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
         self.showMediaInfoUseCase = showMediaInfoUseCase
         self.playerControlUseCase = playerControlUseCase
         self.currentPlayerStateUseCase = currentPlayerStateUseCase
+        self.importSubtitlesUseCase = importSubtitlesUseCase
         
         bind(to: currentPlayerStateUseCase)
     }
@@ -132,5 +138,49 @@ extension DefaultLibraryItemViewModel {
         }
         
         let _ = await playerControlUseCase.play(trackId: trackId)
+    }
+    
+    
+    private func showImportSuccess() {
+        
+        // TODO:
+        print("Import success")
+    }
+    
+    public func attachSubtitles(language: String) async {
+        
+        let chooseResult = await coordinator.chooseSubtitles()
+        
+        print(chooseResult)
+        
+        guard case .success(let url) = chooseResult else {
+            return
+        }
+        
+        guard let url = url else {
+            return
+        }
+        
+        url.startAccessingSecurityScopedResource()
+        
+        guard let fileData = try? Data(contentsOf: url) else {
+            return
+        }
+        
+        let fileName = url.lastPathComponent
+        
+        let importResult = await importSubtitlesUseCase.importFile(
+            trackId: trackId,
+            language: language,
+            fileName: fileName,
+            data: fileData
+        )
+        
+        guard case .success() = importResult else {
+            coordinator.showImportSubtitlesError()
+            return
+        }
+        
+        showImportSuccess()
     }
 }
