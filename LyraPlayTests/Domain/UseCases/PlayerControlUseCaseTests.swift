@@ -66,8 +66,8 @@ class PlayerControlUseCaseTests: XCTestCase {
         let track = loadTrackUseCase.tracks.first!
         let trackId = track.0
         
-        let trackIdSequence = AssertSequence(testCase: self, values: [nil, trackId.uuidString])
-        let playingSequence = AssertSequence(testCase: self, values: [false, true])
+        let trackIdSequence = self.expectSequence([nil, trackId.uuidString])
+        let playingSequence = self.expectSequence([false, true])
         
         trackIdSequence.observe(audioService.fileId)
         playingSequence.observe(audioService.isPlaying)
@@ -101,8 +101,8 @@ class PlayerControlUseCaseTests: XCTestCase {
         let track = loadTrackUseCase.tracks.first!
         let trackId = track.0
         
-        let trackIdSequence = AssertSequence(testCase: self, values: [nil, trackId.uuidString])
-        let playingSequence = AssertSequence(testCase: self, values: [false, true, false])
+        let trackIdSequence = self.expectSequence([nil, trackId.uuidString])
+        let playingSequence = self.expectSequence([false, true, false])
         
         trackIdSequence.observe(audioService.fileId)
         playingSequence.observe(audioService.isPlaying)
@@ -125,8 +125,8 @@ class PlayerControlUseCaseTests: XCTestCase {
         let trackId1 = tracks[0]
         let trackId2 = tracks[1]
         
-        let trackIdSequence = AssertSequence(testCase: self, values: [nil, trackId1.uuidString, trackId2.uuidString])
-        let playingSequence = AssertSequence(testCase: self, values: [false, true, true])
+        let trackIdSequence = self.expectSequence([nil, trackId1.uuidString, trackId2.uuidString])
+        let playingSequence = self.expectSequence([false, true, true])
         
         trackIdSequence.observe(audioService.fileId)
         playingSequence.observe(audioService.isPlaying)

@@ -81,8 +81,8 @@ class LibraryItemViewModelTests: XCTestCase {
         let viewModel = createViewModel(trackId: trackId, sut: sut)
         setUpTestTrack(trackId: trackId, sut: sut)
         
-        let mediaInfoSequence = AssertSequence(testCase: self, values: [false, true])
-        let playingSequence = AssertSequence(testCase: self, values: [false])
+        let mediaInfoSequence = self.expectSequence([false, true])
+        let playingSequence = self.expectSequence([false])
         
         mediaInfoSequence.observe(viewModel.info, mapper: { $0 != nil })
         playingSequence.observe(viewModel.isPlaying)
@@ -104,7 +104,7 @@ class LibraryItemViewModelTests: XCTestCase {
         let viewModel = createViewModel(trackId: trackId, sut: sut)
         setUpTestTrack(trackId: trackId, sut: sut)
         
-        let playingSequence = AssertSequence(testCase: self, values: [false, true, false, true])
+        let playingSequence = self.expectSequence([false, true, false, true])
         playingSequence.observe(viewModel.isPlaying)
         
         let _ = await viewModel.load()
@@ -131,10 +131,10 @@ class LibraryItemViewModelTests: XCTestCase {
         setUpTestTrack(trackId: trackId2, sut: sut)
         
         
-        let playingSequence1 = AssertSequence(testCase: self, values: [false, true, false])
+        let playingSequence1 = self.expectSequence([false, true, false])
         playingSequence1.observe(viewModel1.isPlaying)
         
-        let playingSequence2 = AssertSequence(testCase: self, values: [false, true])
+        let playingSequence2 = self.expectSequence([false, true])
         playingSequence2.observe(viewModel2.isPlaying)
         
         
@@ -175,7 +175,7 @@ class LibraryItemViewModelTests: XCTestCase {
         let trackId = UUID()
         let language = "English"
         
-        let showImportErrorSequence = AssertSequence(testCase: self, values: [true])
+        let showImportErrorSequence = self.expectSequence([true])
         let sut = createSUT()
         let viewModel = createViewModel(trackId: trackId, sut: sut)
 

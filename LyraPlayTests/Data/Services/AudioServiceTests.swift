@@ -34,8 +34,8 @@ class AudioServiceTests: XCTestCase {
         let fileId1 = "test1"
         let fileId2 = "test2"
         
-        let playingSequence = AssertSequence(testCase: self, values: [false, true, true])
-        let filesIdsSequence = AssertSequence(testCase: self, values: [nil, fileId1, fileId2])
+        let playingSequence = self.expectSequence([false, true, true])
+        let filesIdsSequence = self.expectSequence([nil, fileId1, fileId2])
         
         playingSequence.observe(audioService.isPlaying)
         filesIdsSequence.observe(audioService.fileId)

@@ -67,10 +67,10 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
         let track = tracks.first!
         
-        let playerStateSequence = AssertSequence(testCase: self, values: [PlayerState.stopped, PlayerState.playing])
-        let currentTimeSequence = AssertSequence(testCase: self, values: [0.0, 1.0])
+        let playerStateSequence = self.expectSequence([PlayerState.stopped, PlayerState.playing])
+        let currentTimeSequence = self.expectSequence([0.0, 1.0])
         
-        let trackIdSequence = AssertSequence(testCase: self, values: [nil, track.id])
+        let trackIdSequence = self.expectSequence([nil, track.id])
         
         trackIdSequence.observe(currentPlayerStateUseCase.info, mapper: { $0?.id })
         playerStateSequence.observe(currentPlayerStateUseCase.state)
@@ -106,9 +106,9 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
         let track = tracks.first!
 
-        let playerStateSequence = AssertSequence(testCase: self, values: [PlayerState.stopped, PlayerState.playing, PlayerState.paused])
-        let currentTimeSequence = AssertSequence(testCase: self, values: [0.0])
-        let trackIdSequence = AssertSequence(testCase: self, values: [nil, track.id])
+        let playerStateSequence = self.expectSequence([PlayerState.stopped, PlayerState.playing, PlayerState.paused])
+        let currentTimeSequence = self.expectSequence([0.0])
+        let trackIdSequence = self.expectSequence([nil, track.id])
 
         playerStateSequence.observe(currentPlayerStateUseCase.state)
         trackIdSequence.observe(currentPlayerStateUseCase.info, mapper: { $0?.id })
@@ -145,9 +145,9 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
         let track = tracks.first!
 
-        let playerStateSequence = AssertSequence(testCase: self, values: [PlayerState.stopped, PlayerState.playing, PlayerState.stopped])
-        let currentTimeSequence = AssertSequence(testCase: self, values: [0.0])
-        let trackIdSequence = AssertSequence(testCase: self, values: [nil, track.id, nil])
+        let playerStateSequence = self.expectSequence([PlayerState.stopped, PlayerState.playing, PlayerState.stopped])
+        let currentTimeSequence = self.expectSequence([0.0])
+        let trackIdSequence = self.expectSequence([nil, track.id, nil])
 
         playerStateSequence.observe(currentPlayerStateUseCase.state)
         trackIdSequence.observe(currentPlayerStateUseCase.info, mapper: { $0?.id })
@@ -185,9 +185,9 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         let track1 = tracks.first!
         let track2 = tracks[1]
 
-        let playerStateSequence = AssertSequence(testCase: self, values: [PlayerState.stopped, PlayerState.playing, PlayerState.playing])
-        let currentTimeSequence = AssertSequence(testCase: self, values: [0.0])
-        let trackIdSequence = AssertSequence(testCase: self, values: [nil, track1.id, track2.id])
+        let playerStateSequence = self.expectSequence([PlayerState.stopped, PlayerState.playing, PlayerState.playing])
+        let currentTimeSequence = self.expectSequence([0.0])
+        let trackIdSequence = self.expectSequence([nil, track1.id, track2.id])
 
         playerStateSequence.observe(currentPlayerStateUseCase.state)
         trackIdSequence.observe(currentPlayerStateUseCase.info, mapper: { $0?.id })

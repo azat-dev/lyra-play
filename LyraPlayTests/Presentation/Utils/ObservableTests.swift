@@ -25,7 +25,7 @@ class ObservableTests: XCTestCase {
         let testValues = (0..<numberOfValues).map { $0 }
         
         // Sequence1
-        let sequence1 = AssertSequence(testCase: self, values: testValues)
+        let sequence1 = self.expectSequence(testValues)
         let observable = createSUT(value: testValues.first!)
 
         sequence1.observe(observable)
@@ -38,7 +38,7 @@ class ObservableTests: XCTestCase {
             observable.value = testValue
         }
         
-        let sequence2 = AssertSequence(testCase: self, values: ((numberOfValuesSequence1 - 1)..<numberOfValues).map { testValues[$0] })
+        let sequence2 = self.expectSequence(((numberOfValuesSequence1 - 1)..<numberOfValues).map { testValues[$0] })
         sequence2.observe(observable)
         
         for index in numberOfValuesSequence1..<numberOfValues {

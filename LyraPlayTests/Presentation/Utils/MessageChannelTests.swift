@@ -25,7 +25,7 @@ class MessageChannelTests: XCTestCase {
         let testValues = (0..<numberOfValues).map { $0 }
         
         // Sequence1
-        let sequence1 = AssertSequence(testCase: self, values: testValues)
+        let sequence1 = self.expectSequence(testValues)
         let channel: MessageChannel<Int> = createSUT()
 
         sequence1.observe(channel)
@@ -38,7 +38,7 @@ class MessageChannelTests: XCTestCase {
             channel.send(testValue)
         }
         
-        let sequence2 = AssertSequence(testCase: self, values: (numberOfValuesSequence1..<numberOfValues).map { testValues[$0] })
+        let sequence2 = self.expectSequence((numberOfValuesSequence1..<numberOfValues).map { testValues[$0] })
         sequence2.observe(channel)
         
         for index in numberOfValuesSequence1..<numberOfValues {
