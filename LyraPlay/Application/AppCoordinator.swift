@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import CoreData
+import UniformTypeIdentifiers
 
 // MARK: - Interfaces
 
@@ -23,8 +24,8 @@ final class DefaultAppCoordinator: AppCoordinator {
     private let navigationController: UINavigationController
     
     private lazy var coreDataStore: CoreDataStore = {
-        let url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("LyraPlay.sqlite")
         
+        let url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("LyraPlay.sqlite")
         return try! CoreDataStore(storeURL: url)
     } ()
     
@@ -189,13 +190,11 @@ final class DefaultAppCoordinator: AppCoordinator {
         return factory.build()
     }
     
-    func chooseFiles(completion: @escaping (_ urls: [URL]?) -> Void) {
-        
+    private func openFilePicker(multiple: Bool, documentTypes: [String], completion: @escaping (_ urls: [URL]?) -> Void) {
+
         let vc = FilePickerViewController.create(
             allowMultipleSelection: true,
-            documentTypes: [
-                "public.audio"
-            ],
+            documentTypes: documentTypes,
             onSelect: { urls in
                 
                 completion(urls)
@@ -203,10 +202,19 @@ final class DefaultAppCoordinator: AppCoordinator {
             onCancel: {
                 
                 completion(nil)
-                
             }
         )
+        
         self.navigationController.topViewController?.present(vc, animated: true)
+    }
+    
+    func chooseFiles(completion: @escaping (_ urls: [URL]?) -> Void) {
+        
+        openFilePicker(
+            multiple: true,
+            documentTypes: ["public.audio"],
+            completion: completion
+        )
     }
     
     func start() {
@@ -220,9 +228,13 @@ final class DefaultAppCoordinator: AppCoordinator {
 
 extension DefaultAppCoordinator: LibraryItemCoordinator {
     
-    func chooseSubtitles() async -> Result<URL?, Error> {
+    func chooseSubtitles(completion: @escaping (_ url: URL?) -> Void) {
         
-        return .success(nil)
+        openFilePicker(
+            multiple: true,
+            documentTypes: ["com.azatkaiumov.lrc"],
+            completion: { completion($0?.first) }
+        )
     }
     
     func showImportSubtitlesError() {

@@ -18,6 +18,7 @@ public final class LibraryItemViewController: UIViewController {
     private var artistLabel = UILabel()
     private var durationLabel = UILabel()
     private var playButton = UIButton()
+    private var addSubtitlesButton = UIButton()
     
     private var mainGroup = UIView()
     
@@ -117,6 +118,14 @@ extension LibraryItemViewController {
         }
     }
     
+    @objc
+    private func didTapAttachSubtitles() {
+        
+        Task {
+            await viewModel.attachSubtitles(language: "English")
+        }
+    }
+    
     private func setupViews() {
         
         mainGroup.addSubview(imageView)
@@ -124,6 +133,7 @@ extension LibraryItemViewController {
         mainGroup.addSubview(artistLabel)
         mainGroup.addSubview(durationLabel)
         mainGroup.addSubview(playButton)
+        mainGroup.addSubview(addSubtitlesButton)
         
         view.addSubview(activityIndicator)
         view.addSubview(mainGroup)
@@ -131,6 +141,12 @@ extension LibraryItemViewController {
         playButton.addTarget(
             self,
             action: #selector(Self.didTogglePlay),
+            for: .touchUpInside
+        )
+        
+        addSubtitlesButton.addTarget(
+            self,
+            action: #selector(Self.didTapAttachSubtitles),
             for: .touchUpInside
         )
     }
@@ -149,7 +165,8 @@ extension LibraryItemViewController {
             titleLabel: titleLabel,
             artistLabel: artistLabel,
             durationLabel: durationLabel,
-            playButton: playButton
+            playButton: playButton,
+            attachSubtitlesButton: addSubtitlesButton
         )
     }
 }
@@ -166,6 +183,7 @@ extension LibraryItemViewController {
         Styles.apply(artistLabel: artistLabel)
         Styles.apply(durationLabel: durationLabel)
         Styles.apply(playButton: playButton)
+        Styles.apply(attachSubtitlesButton: addSubtitlesButton)
     }
 }
 

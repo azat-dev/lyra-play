@@ -159,7 +159,7 @@ class LibraryItemViewModelTests: XCTestCase {
         let sut = createSUT()
         let viewModel = createViewModel(trackId: trackId, sut: sut)
     
-        sut.coordinator.resolveChooseSubtitles = { .success(nil) }
+        sut.coordinator.resolveChooseSubtitles = { nil }
         sut.importSubtitlesUseCase.resolveImportFile = { _, _, _, _ in
             expectation.fulfill()
             return .success(())
@@ -185,7 +185,7 @@ class LibraryItemViewModelTests: XCTestCase {
             let bundle = Bundle(for: type(of: self ))
             let url = bundle.url(forResource: "test_cover_image", withExtension: "png")!
             
-            return .success(url)
+            return url
         }
         
         sut.coordinator.resolveShowImportSubtitlesError = {
@@ -217,7 +217,7 @@ class LibraryItemViewModelTests: XCTestCase {
             let bundle = Bundle(for: type(of: self ))
             let url = bundle.url(forResource: "test_subtitles", withExtension: "lrc")!
             
-            return .success(url)
+            return url
         }
         
         sut.coordinator.resolveShowImportSubtitlesError = {
@@ -235,20 +235,21 @@ class LibraryItemViewModelTests: XCTestCase {
 
 private final class LibraryItemCoordinatorMock: LibraryItemCoordinator {
 
-    typealias ChooseSubtitlesCallback = () -> Result<URL?, Error>
+    typealias ChooseSubtitlesCallback = () -> URL?
     typealias ShowImportSubttitlesErrorCallback = () -> Void?
     
     public var resolveChooseSubtitles: ChooseSubtitlesCallback?
     public var resolveShowImportSubtitlesError: ShowImportSubttitlesErrorCallback?
     
-    public func chooseSubtitles() async -> Result<URL?, Error> {
+    public func chooseSubtitles(completion: @escaping (_ urls: URL?) -> Void) {
 
         guard let resolveChooseSubtitles = resolveChooseSubtitles else {
             XCTFail("No implementation")
-            return .success(nil)
+            completion(nil)
+            return
         }
         
-        return resolveChooseSubtitles()
+        completion(resolveChooseSubtitles())
     }
     
     public func showImportSubtitlesError() -> Void {

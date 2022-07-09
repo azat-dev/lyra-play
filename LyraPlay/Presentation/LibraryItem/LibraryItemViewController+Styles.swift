@@ -12,6 +12,9 @@ extension LibraryItemViewController {
     
     final class Styles {
         
+        static let textColor = UIColor(named: "Color.Text")
+        static let textColorSecondary = UIColor(named: "Color.Text.Secondary")
+        
         static var imageCornerRadius: CGFloat {
             10
         }
@@ -60,34 +63,41 @@ extension LibraryItemViewController {
             
             titleLabel.font = Fonts.RedHatDisplay.bold.preferred(with: .title3)
             titleLabel.textAlignment = .left
-            titleLabel.textColor = UIColor(named: "Color.Text")
+            titleLabel.textColor = textColor
         }
         
         static func apply(artistLabel: UILabel) {
             
             artistLabel.font = Fonts.RedHatDisplay.regular.preferred(with: .subheadline)
             artistLabel.textAlignment = .left
-            artistLabel.textColor = UIColor(named: "Color.Text.Secondary")
+            artistLabel.textColor = textColorSecondary
         }
         
         static func apply(durationLabel: UILabel) {
             
             durationLabel.font = Fonts.RedHatDisplay.medium.preferred(with: .footnote)
             durationLabel.textAlignment = .left
-            durationLabel.textColor = UIColor(named: "Color.Text.Secondary")
+            durationLabel.textColor = textColorSecondary
             durationLabel.isHidden = true
         }
         
         static func apply(playButton: UIButton) {
             
             playButton.setTitle("Play", for: .normal)
-            playButton.setTitleColor(.black, for: .normal)
+            playButton.setTitleColor(textColor, for: .normal)
         }
         
         static func apply(pauseButton: UIButton) {
             
             pauseButton.setTitle("Pause", for: .normal)
-            pauseButton.setTitleColor(.black, for: .normal)
+            pauseButton.setTitleColor(textColor, for: .normal)
+        }
+        
+        
+        static func apply(attachSubtitlesButton: UIButton) {
+            
+            attachSubtitlesButton.setTitle("Add subtitles", for: .normal)
+            attachSubtitlesButton.setTitleColor(textColor, for: .normal)
         }
     }
 }

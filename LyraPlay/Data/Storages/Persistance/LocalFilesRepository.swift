@@ -10,13 +10,15 @@ import Foundation
 public final class LocalFilesRepository: FilesRepository {
 
     private var baseDirectory: URL
+    private let fileManager: FileManager
     
-    public init(baseDirectory: URL) throws {
+    public init(baseDirectory: URL, fileManager: FileManager = FileManager.default) throws {
         
         self.baseDirectory = baseDirectory
+        self.fileManager = fileManager
         
         do {
-            try FileManager.default.createDirectory(at: baseDirectory, withIntermediateDirectories: true)
+            try fileManager.createDirectory(at: baseDirectory, withIntermediateDirectories: true)
         } catch {
             throw FilesRepositoryError.internalError(error)
         }
@@ -29,8 +31,19 @@ public final class LocalFilesRepository: FilesRepository {
     public func putFile(name: String, data: Data) async -> Result<Void, FilesRepositoryError> {
         
         let url = baseDirectory.appendingPathComponent(name, isDirectory: false)
+        let tempUrl = fileManager.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: false)
         
-        try! data.write(to: url)
+        fileManager.createFile(atPath: tempUrl.path, contents: data, attributes: nil)
+        
+        do {
+            
+            let _ = try fileManager.replaceItemAt(url, withItemAt: tempUrl)
+        } catch {
+            return .failure(.internalError(error))
+        }
+        
+        
+        try? fileManager.removeItem(at: tempUrl)
         
         return .success(())
     }
@@ -39,7 +52,7 @@ public final class LocalFilesRepository: FilesRepository {
         
         let url = getFileUrl(name: name)
 
-        guard FileManager.default.fileExists(atPath: url.path) else {
+        guard fileManager.fileExists(atPath: url.path) else {
             return .failure(.fileNotFound)
         }
         
@@ -56,12 +69,12 @@ public final class LocalFilesRepository: FilesRepository {
         
         let url = getFileUrl(name: name)
         
-        guard FileManager.default.fileExists(atPath: url.path) else {
+        guard fileManager.fileExists(atPath: url.path) else {
             return .failure(.fileNotFound)
         }
         
         do {
-            try FileManager.default.removeItem(at: url)
+            try fileManager.removeItem(at: url)
         } catch {
             return .failure(.internalError(error))
         }

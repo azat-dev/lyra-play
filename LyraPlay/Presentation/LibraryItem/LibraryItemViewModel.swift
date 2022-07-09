@@ -19,7 +19,7 @@ public struct LibraryItemInfoPresentation {
 
 public protocol LibraryItemCoordinator {
     
-    func chooseSubtitles() async -> Result<URL?, Error>
+    func chooseSubtitles(completion: @escaping (_ url: URL?) -> Void)
     func showImportSubtitlesError() -> Void
 }
 
@@ -147,15 +147,7 @@ extension DefaultLibraryItemViewModel {
         print("Import success")
     }
     
-    public func attachSubtitles(language: String) async {
-        
-        let chooseResult = await coordinator.chooseSubtitles()
-        
-        print(chooseResult)
-        
-        guard case .success(let url) = chooseResult else {
-            return
-        }
+    private func attachSubtitlesAfter(language: String, url: URL?) async {
         
         guard let url = url else {
             return
@@ -182,5 +174,19 @@ extension DefaultLibraryItemViewModel {
         }
         
         showImportSuccess()
+    }
+    
+    public func attachSubtitles(language: String) async {
+        
+        coordinator.chooseSubtitles { [weak self] url in
+            
+            guard let attachSubtitles = self?.attachSubtitlesAfter else {
+                return
+            }
+            
+            Task {
+                await attachSubtitles(language, url)
+            }
+        }
     }
 }
