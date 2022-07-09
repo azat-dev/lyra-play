@@ -19,8 +19,8 @@ class LoadSubtitlesUseCaseTests: XCTestCase {
 
     func createSUT() -> SUT {
         
-        let audioLibraryRepository = AudioLibraryRepositoryMock()
-        let imagesRepository = FilesRepositoryMock()
+        let subtitlesRepository = SubtitlesRepositoryMock()
+        let subtitlesFiles = FilesRepositoryMock()
         let subtitlesParser = SubtitlesParserMock()
         
         let useCase = DefaultLoadSubtitlesUseCase(
@@ -43,37 +43,80 @@ class LoadSubtitlesUseCaseTests: XCTestCase {
         return "English"
     }
     
-    func testLoadFailIfSubtitlesDoesntExist() async throws {
+    func testLoadingFailIfSubtitlesDoesntExist() async throws {
         
         let sut = createSUT()
 
         let trackId = UUID()
+        
         
         let result = await sut.useCase.load(for: trackId, language: anyLanguage())
         let error = try AssertResultFailed(result)
         
-        if case .itemNotFound = error {
+        guard case .itemNotFound = error else {
             XCTFail("Wrong error type \(error)")
+            return
         }
     }
     
-    func testLoadFailIfBroken() async throws {
-        
+    func testLoadingFailIfBroken() async throws {
+
         let sut = createSUT()
 
         let trackId = UUID()
+
+        let _ = await sut.subtitlesRepository.put(
+            info: .init(
+                mediaFileId: trackId,
+                language: anyLanguage(),
+                file: "test"
+            )
+        )
         
-        let expectedSubtitles = Subtitles(sentences: [
-            .init(startTime: 0, duration: 10, text: "Test")
-        ])
+        let bundle = Bundle(for: type(of: self ))
+        let url = bundle.url(forResource: "test_music_with_tags", withExtension: "mp3")!
         
+        let brokenData = try! Data(contentsOf: url)
+        
+        let _ = await sut.subtitlesFiles.putFile(name: "test", data: brokenData)
+
         sut.subtitlesParser.resolve = { text in
-            expectedSubtitles
+            return .failure(.internalError(nil))
         }
+
+        let result = await sut.useCase.load(for: trackId, language: anyLanguage())
+        let error = try AssertResultFailed(result)
+
+        guard case .internalError = error else {
+            XCTFail("Wrong error type \(error)")
+            return
+        }
+    }
+    
+    func testLoading() async throws {
+
+        let sut = createSUT()
+
+        let trackId = UUID()
+
+        let expectedSubtitles = Subtitles(sentences: [
+            .init(startTime: 0, duration: 0, text: .notSynced(text: "Test"))
+        ])
+
+        let _ = await sut.subtitlesRepository.put(
+            info: .init(
+                mediaFileId: trackId,
+                language: anyLanguage(),
+                file: "test"
+            )
+        )
         
+        let _ = await sut.subtitlesFiles.putFile(name: "test", data: Data())
+        sut.subtitlesParser.resolve = { text in .success(expectedSubtitles) }
+
         let result = await sut.useCase.load(for: trackId, language: anyLanguage())
         let loadedSubtitles = try AssertResultSucceded(result)
-        
+
         XCTAssertEqual(loadedSubtitles, expectedSubtitles)
     }
 }
