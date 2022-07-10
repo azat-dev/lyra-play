@@ -40,6 +40,7 @@ class AssertSequence<T: Equatable> {
         }
     }
     
+    
     func wait(timeout: TimeInterval, enforceOrder: Bool, file: StaticString = #filePath, line: UInt = #line) {
         
         if !enforceOrder {
@@ -47,13 +48,33 @@ class AssertSequence<T: Equatable> {
         }
         
         testCase.wait(for: [expectation], timeout: timeout, enforceOrder: enforceOrder)
+        
         XCTAssertEqual(receivedValues, expectedValues, file: file, line: line)
     }
     
-    func fulfill(with value: T) {
+    func fulfill(with value: T, file: StaticString = #filePath, line: UInt = #line) {
         
-        self.receivedValues.append(value)
-        self.expectation.fulfill()
+        receivedValues.append(value)
+        expectation.fulfill()
+        
+        let index = receivedValues.count - 1
+        
+        guard index < expectedValues.count else {
+            XCTFail(
+                "Expected value at \(index), doesn't exist",
+                file: file,
+                line: line
+            )
+            return
+        }
+        
+        XCTAssertEqual(
+            value,
+            expectedValues[index],
+            "Expected value at \(index), doesn't match received value",
+            file: file,
+            line: line
+        )
     }
 }
 
@@ -75,7 +96,7 @@ extension AssertSequence {
             }
             
             let mappedValue = mapper(value)
-            self.fulfill(with: mappedValue)
+            self.fulfill(with: mappedValue, file: file, line: line)
         }
     }
 }
@@ -99,7 +120,7 @@ extension AssertSequence {
             }
             
             let mappedValue = mapper(value)
-            self.fulfill(with: mappedValue)
+            self.fulfill(with: mappedValue, file: file, line: line)
         }
     }
 }
