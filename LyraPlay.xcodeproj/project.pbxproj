@@ -448,14 +448,6 @@
 			path = ManagedObjects;
 			sourceTree = "<group>";
 		};
-		AA64C818286F16F00089F165 /* Player */ = {
-			isa = PBXGroup;
-			children = (
-				AA64C819286F170C0089F165 /* PlayerViewModelTests.swift */,
-			);
-			path = Player;
-			sourceTree = "<group>";
-		};
 		AA64C81B286F18120089F165 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
@@ -470,14 +462,6 @@
 				AA731CC728707EE50044412F /* Result+Utils.swift */,
 			);
 			path = Extensions;
-			sourceTree = "<group>";
-		};
-		AA731CD02870D1F80044412F /* LibraryItem */ = {
-			isa = PBXGroup;
-			children = (
-				AA731CD12870D25C0044412F /* LibraryItemViewModelTests.swift */,
-			);
-			path = LibraryItem;
 			sourceTree = "<group>";
 		};
 		AA731CD32870DA510044412F /* LibraryItem */ = {
@@ -759,21 +743,13 @@
 		AACEA31D2869AC2300111565 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				AACEA31F2869AC5B00111565 /* AudioFilesBrowserViewModelTests.swift */,
+				AA731CD12870D25C0044412F /* LibraryItemViewModelTests.swift */,
+				AA64C819286F170C0089F165 /* PlayerViewModelTests.swift */,
 				AA64C81B286F18120089F165 /* Mocks */,
 				AACEA3242869B16E00111565 /* Utils */,
-				AA64C818286F16F00089F165 /* Player */,
-				AACEA31E2869AC4000111565 /* AudioFilesBrowser */,
-				AA731CD02870D1F80044412F /* LibraryItem */,
 			);
 			path = Presentation;
-			sourceTree = "<group>";
-		};
-		AACEA31E2869AC4000111565 /* AudioFilesBrowser */ = {
-			isa = PBXGroup;
-			children = (
-				AACEA31F2869AC5B00111565 /* AudioFilesBrowserViewModelTests.swift */,
-			);
-			path = AudioFilesBrowser;
 			sourceTree = "<group>";
 		};
 		AACEA3212869B0FC00111565 /* Utils */ = {
