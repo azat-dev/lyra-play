@@ -11,63 +11,61 @@ import LyraPlay
 
 class SubtitlesPresenterViewModelTests: XCTestCase {
 
-    typealias SUT = (
-        presenterViewModel: SubtitlesPresenterViewModel,
-        loadSubtitlesUseCase: LoadSubtitlesUseCaseMock
-    )
+    typealias SUT = SubtitlesPresenterViewModel
+    private let specialCharacters = "\"!@#$^&%*()+=-[]\\/{}|:<>?,._"
     
-    func createSUT(mediaFileId: UUID, language: String) -> SUT {
-        
-        let loadSubtitlesUseCase = LoadSubtitlesUseCaseMock()
+    func createSUT(subtitles: Subtitles) -> SUT {
         
         let presenterViewModel = DefaultSubtitlesPresenterViewModel(
-            mediaFileId: mediaFileId,
-            language: language,
-            loadSubtitlesUseCase: loadSubtitlesUseCase
+            subtitles: subtitles
         )
         detectMemoryLeak(instance: presenterViewModel)
         
-        return (
-            presenterViewModel,
-            loadSubtitlesUseCase
-        )
+        return presenterViewModel
     }
     
-    func anyLanguage() -> String {
-        return "English"
-    }
-        
-    func testLoadNotExistingSubtitles() async throws {
-        
-        let mediaFileId = UUID()
-        let loadingSequence = self.expectSequence([false, true])
-        
-        let sut = createSUT(mediaFileId, language: anyLanguage())
-        
-        sut.loadSubtitlesUseCase.resolveLoad = { _, _ in .failure(.itemNotFound) }
-        
-        loadingSequence.observe(sut.presenterViewModel.isLoading)
-        
-        await sut.viewModel.load()
-        
-        loadingSequence.wait(timeout: 3, enforceOrder: true)
-    }
-}
-
-// MARK: - Mocks
-
-final class LoadSubtitlesUseCaseMock: LoadSubtitlesUseCase {
-
-    typealias LoadSubtitlesCallback = (_ mediaFileId: UUID, _ language: String) async -> Result<Subtitles, LoadSubtitlesUseCaseError>
     
-    public var resolveLoad: LoadSubtitlesCallback? = nil
-    
-    func load(for mediaFileId: UUID, language: String) async -> Result<Subtitles, LoadSubtitlesUseCaseError> {
+    func testSplitSentences() async throws {
         
-        guard let resolveLoad = resolveLoad else {
-            fatalError("Not implemented")
-        }
+        let sut = createSUT()
         
-        return await resolveLoad(mediaFileId, language)
+        let testSubtitles = Subtitles(sentences: [
+            .init(
+                startTime: 0.1,
+                duration: 0,
+                text: .notSynced(text: "Word1, word2 word3.")
+            ),
+            .init(
+                startTime: 0.2,
+                duration: 0,
+                text: .notSynced(text: "Word1,word2,word3.Word4")
+            )
+        ])
+        
+        let expectedItems = [
+            [
+                .word(0, "Word1"),
+                .specialCharacter(5, ","),
+                .space(6, " "),
+                .word(7, "word2"),
+                .space(12, " "),
+                .word(13, "word3"),
+                .specialCharacter(18, " ")
+            ],
+            [
+                .word(0, "Word1"),
+                .specialCharacter(5, ","),
+                .word(6, "word2"),
+                .specialCharacter(11, ","),
+                .word(12, "word3"),
+                .specialCharacter(17, "."),
+                .word(18, "Word4")
+            ]
+        ]
+        
+        let itemsSequence = expectSequence([expectedItems])
+        
+        itemsSequence.observe(sut.items.value)
+        itemsSequence.wait(timeout: 3, enforceOrder: true)
     }
 }
