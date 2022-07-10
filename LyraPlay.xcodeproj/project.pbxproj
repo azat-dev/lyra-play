@@ -554,11 +554,11 @@
 		AA8BF74828567A1C0010FA1E /* LyraPlay */ = {
 			isa = PBXGroup;
 			children = (
-				AA731CC628707ED20044412F /* Extensions */,
-				AA8BF77C28567A420010FA1E /* Domain */,
-				AA8BF77E28567A8F0010FA1E /* Data */,
-				AA8BF77D28567A580010FA1E /* Presentation */,
 				AA8BF77F28567AA10010FA1E /* Application */,
+				AA8BF77E28567A8F0010FA1E /* Data */,
+				AA8BF77C28567A420010FA1E /* Domain */,
+				AA8BF77D28567A580010FA1E /* Presentation */,
+				AA731CC628707ED20044412F /* Extensions */,
 				AA8BF78028567ACC0010FA1E /* SupportFiles */,
 			);
 			path = LyraPlay;
@@ -567,12 +567,12 @@
 		AA8BF76228567A1F0010FA1E /* LyraPlayTests */ = {
 			isa = PBXGroup;
 			children = (
-				AA415082286B0979004549F4 /* TestUtils */,
-				AA0D3F752875F716006717B9 /* Utils */,
 				AA1ACC2628630FCD000EEDD5 /* Assets */,
 				AA1ACC202862FE65000EEDD5 /* Data */,
-				AACEA31D2869AC2300111565 /* Presentation */,
 				AA9BEAFA2865BF4A0028DF8E /* Domain */,
+				AACEA31D2869AC2300111565 /* Presentation */,
+				AA0D3F752875F716006717B9 /* Utils */,
+				AA415082286B0979004549F4 /* TestUtils */,
 			);
 			path = LyraPlayTests;
 			sourceTree = "<group>";
