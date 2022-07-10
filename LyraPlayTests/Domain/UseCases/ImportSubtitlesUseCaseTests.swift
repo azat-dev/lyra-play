@@ -15,9 +15,9 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
  
     typealias SUT = (
         useCase: ImportSubtitlesUseCase,
-        subtitlesRepository: SubtitlesRepository,
-        subtitlesParser: SubtitlesParser,
-        subtitlesFilesRepository: FilesRepository
+        subtitlesRepository: SubtitlesRepositoryMock,
+        subtitlesParser: SubtitlesParserMock,
+        subtitlesFilesRepository: FilesRepositoryMock
     )
     
     func createSUT() -> SUT {
@@ -47,7 +47,7 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         let (
             useCase,
             subtitlesRepository,
-            _,
+            subtitlesParser,
             subtitlesFilesRepository
         ) = createSUT()
         
@@ -55,6 +55,11 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         let language = "English"
         let trackId = UUID()
         let testFileName = "test.lrc"
+        
+        
+        subtitlesParser.resolve = { _ in
+            return .success(.init(sentences: []))
+        }
         
         let importResult = await useCase.importFile(
             trackId: trackId,
@@ -86,7 +91,7 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         let (
             useCase,
             subtitlesRepository,
-            _,
+            subtitlesParser,
             subtitlesFilesRepository
         ) = createSUT()
         
@@ -96,6 +101,8 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         let language = "English"
         let trackId = UUID()
         let testFileName = "test.lrc"
+        
+        subtitlesParser.resolve = { _ in .success(.init(sentences: [])) }
         
         let _ = await useCase.importFile(
             trackId: trackId,
