@@ -25,7 +25,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     }
     
     
-    func testSplitSentences() async throws {
+    func testSplitNotSyncSentences() async throws {
         
         let testSubtitles = Subtitles(sentences: [
             .init(
@@ -45,29 +45,30 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         let expectedItems: [SentencePresentation] = [
             SentencePresentation(
                 items: [
-                    .word(0, "Word1"),
-                    .specialCharacter(5, ","),
-                    .space(6, " "),
-                    .word(7, "word2"),
-                    .space(12, " "),
-                    .word(13, "word3"),
-                    .specialCharacter(18, ".")
+                    
+                    .word(position: .init(itemIndex: 0, startsAt: 0), text: "Word1"),
+                    .specialCharacter(position: .init(itemIndex: 0, startsAt: 5), text: ","),
+                    .space(position: .init(itemIndex: 0, startsAt: 6), text: " "),
+                    .word(position: .init(itemIndex: 0, startsAt: 7), text: "word2"),
+                    .space(position: .init(itemIndex: 0, startsAt: 12), text: " "),
+                    .word(position: .init(itemIndex: 0, startsAt: 13), text: "word3"),
+                    .specialCharacter(position: .init(itemIndex: 0, startsAt: 18), text: ".")
                 ]
             ),
             SentencePresentation(
                 items: [
-                    .word(0, "Word1"),
-                    .specialCharacter(5, ","),
-                    .word(6, "word2"),
-                    .specialCharacter(11, ","),
-                    .word(12, "word3"),
-                    .specialCharacter(17, "."),
-                    .word(18, "Word4"),
-                    .space(23, " "),
-                    .word(24, "Word5-Word6"),
-                    .space(35, " "),
-                    .specialCharacter(36, "-"),
-                    .word(37, "Word7")
+                    .word(position: .init(itemIndex: 0, startsAt: 0), text: "Word1"),
+                    .specialCharacter(position: .init(itemIndex: 0, startsAt: 5), text: ","),
+                    .word(position: .init(itemIndex: 0, startsAt: 6), text: "word2"),
+                    .specialCharacter(position: .init(itemIndex: 0, startsAt: 11), text: ","),
+                    .word(position: .init(itemIndex: 0, startsAt: 12), text: "word3"),
+                    .specialCharacter(position: .init(itemIndex: 0, startsAt: 17), text: "."),
+                    .word(position: .init(itemIndex: 0, startsAt: 18), text: "Word4"),
+                    .space(position: .init(itemIndex: 0, startsAt: 23), text: " "),
+                    .word(position: .init(itemIndex: 0, startsAt: 24), text: "Word5-Word6"),
+                    .space(position: .init(itemIndex: 0, startsAt: 35), text: " "),
+                    .specialCharacter(position: .init(itemIndex: 0, startsAt: 36), text: "-"),
+                    .word(position: .init(itemIndex: 0, startsAt: 37), text: "Word7")
                 ]
             )
         ]
@@ -91,4 +92,12 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
 
         itemsSequence.wait(timeout: 3, enforceOrder: true)
     }
+    
+//    func testSplitSyncSentences() async throws {
+//        
+//        let testSubtitles = Subtitles(sentences: [
+//            .init(startTime: 0.1, duration: 0, text: .synced(items: <#T##[Subtitles.SyncedItem]#>))
+//        ])
+//        let sut = createSUT()
+//    }
 }

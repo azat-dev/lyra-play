@@ -15,9 +15,21 @@ public struct SentencePresentation: Equatable {
     public var items: [Item]
     
     public enum Item: Equatable {
-        case space(Int, String)
-        case word(Int, String)
-        case specialCharacter(Int, String)
+        
+        public struct Position: Equatable {
+            
+            public var itemIndex: Int
+            public var startsAt: Int
+            
+            public init(itemIndex: Int, startsAt: Int) {
+                self.itemIndex = itemIndex
+                self.startsAt = startsAt
+            }
+        }
+        
+        case space(position: Position, text: String)
+        case word(position: Position, text: String)
+        case specialCharacter(position: Position, text: String)
     }
     
     public init(items: [SentencePresentation.Item]) {
@@ -75,7 +87,15 @@ extension DefaultSubtitlesPresenterViewModel {
                 return
             }
             
-            items.append(.word(currentWordStart!, currentWord))
+            let word = SentencePresentation.Item.word(
+                position: .init(
+                    itemIndex: 0,
+                    startsAt: currentWordStart!
+                ),
+                text: currentWord
+            )
+            
+            items.append(word)
             currentWordStart = nil
             currentWord = ""
         }
@@ -87,14 +107,32 @@ extension DefaultSubtitlesPresenterViewModel {
             if character.isNewline || character.isWhitespace {
                 
                 appendCurrentWord()
-                items.append(.space(index, String(character)))
+                
+                let space = SentencePresentation.Item.space(
+                    position: .init(
+                        itemIndex: 0,
+                        startsAt: index
+                    ),
+                    text: String(character)
+                )
+                
+                items.append(space)
                 continue
             }
             
             if character == "," {
                 
                 appendCurrentWord()
-                items.append(.specialCharacter(index, String(character)))
+                
+                let specialCharacter = SentencePresentation.Item.specialCharacter(
+                    position: .init(
+                        itemIndex: 0,
+                        startsAt: index
+                    ),
+                    text: String(character)
+                )
+                
+                items.append(specialCharacter)
                 continue
             }
             
@@ -108,7 +146,15 @@ extension DefaultSubtitlesPresenterViewModel {
             if !(character.isLetter || character.isNumber) {
                 
                 appendCurrentWord()
-                items.append(.specialCharacter(index, String(character)))
+                
+                let specialCharacter = SentencePresentation.Item.specialCharacter(
+                    position: .init(
+                        itemIndex: 0,
+                        startsAt: index
+                    ),
+                    text: String(character)
+                )
+                items.append(specialCharacter)
                 continue
             }
             
