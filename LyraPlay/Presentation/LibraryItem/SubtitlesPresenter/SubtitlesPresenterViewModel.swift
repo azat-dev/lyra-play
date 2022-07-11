@@ -37,16 +37,29 @@ public struct SentencePresentation: Equatable {
     }
 }
 
+public struct CurrentSubtitlePosition {
+    
+    public var sentence: Int?
+    public var word: Int?
+    
+    public init(sentence: Int? = nil, word: Int? = nil) {
+
+        self.sentence = sentence
+        self.word = word
+    }
+}
+
 public protocol SubtitlesPresenterViewModelOutput {
 
     var sentences: Observable<[SentencePresentation]?> { get }
-    var currentSentenceIndex: Observable<Int?> { get }
-    var currentWordIndex: Observable<Int?> { get }
+    var currentPosition: Observable<CurrentSubtitlePosition> { get }
 }
 
 public protocol SubtitlesPresenterViewModelInput {
 
     func load() async
+    
+//    func play(at: TimeInterval, speed: Double) async
 }
 
 public protocol SubtitlesPresenterViewModel: SubtitlesPresenterViewModelOutput, SubtitlesPresenterViewModelInput {
@@ -56,17 +69,22 @@ public protocol SubtitlesPresenterViewModel: SubtitlesPresenterViewModelOutput, 
 
 public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewModel {
 
-    private var subtitles: Subtitles
+    private let subtitles: Subtitles
 
     public let sentences: Observable<[SentencePresentation]?> = Observable(nil)
-    public let currentSentenceIndex: Observable<Int?> = Observable(nil)
-    public let currentWordIndex: Observable<Int?> = Observable(nil)
+    public let currentPosition: Observable<CurrentSubtitlePosition> = Observable(.init())
+    public let subtitlesIterator: SubtitlesIterator
 
+    private var sentenceTimer: TimeoutTimer? = nil
+    private var wordTimer: TimeoutTimer? = nil
+    private var currentSpeed: Double = 1.0
+    
     public init(
         subtitles: Subtitles
     ) {
         
         self.subtitles = subtitles
+        self.subtitlesIterator = DefaultSubtitlesIterator(subtitles: subtitles)
     }
 }
 
@@ -195,4 +213,42 @@ extension DefaultSubtitlesPresenterViewModel {
         
         self.sentences.value = await Self.parse(subtitles: subtitles)
     }
+    
+//    private func scheduleNextWord(from: TimeInterval) {
+//
+//        let currentPosition = currentPosition.value
+//
+//
+//        let index = subtitlesIterator.getNextWord()
+//        let sentenceTimer = TimeoutTimer.create()
+//        sentenceTimer.execute(in: <#T##TimeInterval#>, block: <#T##() async -> Void#>)
+//
+//
+//    }
+//
+//
+//    public func play(at time: TimeInterval, speed: Double) async {
+//
+//        currentSpeed = speed
+//        wordTimer?.cancel()
+//        sentenceTimer?.cancel()
+//
+//        let recentSentenceResult = subtitlesIterator.searchRecentSentence(at: time)
+//
+//        var recentWordIndex: Int? = nil
+//
+//        if recentSentenceResult != nil {
+//
+//            let result = subtitlesIterator.searchRecentWord(at: time, in: recentSentenceResult!.index)
+//            recentWordIndex = result?.index
+//        }
+//
+//        let position = CurrentSubtitlePosition(
+//            sentence: recentSentenceResult?.index,
+//            word: recentWordIndex
+//        )
+//
+//        scheduleNextWord()
+//        currentPosition.value = position
+//    }
 }

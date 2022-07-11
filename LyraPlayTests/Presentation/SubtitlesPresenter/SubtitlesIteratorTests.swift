@@ -52,58 +52,35 @@ class SubtitlesIteratorTests: XCTestCase {
         ])
     }
     
-    func testSearchForTheMostRecentSentenceInEmptyList() async throws {
+    func testMoveToTheMostRecentPositionInEmptyList() async throws {
         
         let subtitles = Subtitles(sentences: [])
         let sut = createSUT(subtitles: subtitles)
         
-        let result = sut.searchRecentSentence(at: 10)
+        let result = sut.move(to: 10)
         XCTAssertNil(result)
     }
     
-    func testSearchForTheMostRecentWordInEmptyList() async throws {
-
-        let subtitles = Subtitles(sentences: [])
-        let sut = createSUT(subtitles: subtitles)
-
-        let sentenceIndex = 10
-
-        let result = sut.searchRecentWord(at: 10, in: sentenceIndex)
-        XCTAssertNil(result)
-    }
-    
-    func testSearchForTheMostRecentSentenceNotEmptyList() async throws {
+    func testMoveToTheMostRecentSentenceNotEmptyList() async throws {
         
         let subtitles = getTestSubtitles()
         let sut = createSUT(subtitles: subtitles)
         
         let timeMarks = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
-        
         let indexSequence = expectSequence([0, 0, 1, 1, 2, 2, 3, 3, 3] as [Int?])
-        let sentenceSequence = expectSequence([false, false, false, false, false, false, false, false, false])
         
         for timeMark in timeMarks {
             
-            let result = sut.searchRecentSentence(at: timeMark)
+            let result = sut.move(to: timeMark)
             
-            indexSequence.fulfill(with: result?.index)
-            sentenceSequence.fulfill(with: result?.sentence == nil)
+            indexSequence.fulfill(with: result.sentence?.index)
         }
         
         indexSequence.wait(timeout: 3, enforceOrder: true)
         sentenceSequence.wait(timeout: 3, enforceOrder: true)
     }
     
-    func testSearchForTheMostRecentWordNotExistingSentence() async throws {
-        
-        let subtitles = Subtitles(sentences: [])
-        let sut = createSUT(subtitles: subtitles)
-        
-        let result = sut.searchRecentWord(at: 100, in: 100)
-        XCTAssertNil(result)
-    }
-    
-    func testSearchForTheMostRecentWordNotSyncSentence() async throws {
+    func testMoveToTheMostRecentWordNotSyncSentence() async throws {
         
         let subtitles = Subtitles(sentences: [
             notSyncedSentence(at: 0.0),
@@ -116,17 +93,17 @@ class SubtitlesIteratorTests: XCTestCase {
         
         let sut = createSUT(subtitles: subtitles)
         
-        let result1 = sut.searchRecentWord(at: sentence.startTime - 1.0, in: sentenceIndex)
-        XCTAssertNil(result1)
+        let result1 = sut.move(to: sentence.startTime - 1.0, in: sentenceIndex)
+        XCTAssertNil(result1.word)
         
-        let result2 = sut.searchRecentWord(at: sentence.startTime, in: sentenceIndex)
-        XCTAssertNil(result2)
+        let result2 = sut.move(to: sentence.startTime, in: sentenceIndex)
+        XCTAssertNil(result2.word)
         
-        let result3 = sut.searchRecentWord(at: sentence.startTime + 1, in: sentenceIndex)
-        XCTAssertNil(result3)
+        let result3 = sut.move(to: sentence.startTime + 1, in: sentenceIndex)
+        XCTAssertNil(result3.word)
     }
     
-    func testSearchForTheMostRecentWordSyncSentence() async throws {
+    func testMoveToTheMostRecentWordSyncSentence() async throws {
         
         let subtitles = Subtitles(sentences: [
             notSyncedSentence(at: 0.0),
@@ -159,83 +136,43 @@ class SubtitlesIteratorTests: XCTestCase {
         
         let sut = createSUT(subtitles: subtitles)
         
-        let result1 = sut.searchRecentWord(at: sentence.startTime - 1, in: sentenceIndex)
-        XCTAssertNil(result1)
+        let result1 = sut.move(to: sentence.startTime - 1, in: sentenceIndex)
+        XCTAssertNil(result1.word)
         
-        let result2 = sut.searchRecentWord(at: sentence.startTime, in: sentenceIndex)
-        XCTAssertNil(result2)
+        let result2 = sut.move(to: sentence.startTime, in: sentenceIndex)
+        XCTAssertNil(result2.word)
         
-        let result3 = sut.searchRecentWord(at: sentence.startTime + 0.1, in: sentenceIndex)
-        XCTAssertEqual(result3?.index, 0)
+        let result3 = sut.move(to: sentence.startTime + 0.1, in: sentenceIndex)
+        XCTAssertEqual(result3.word?.index, 0)
         
-        let result4 = sut.searchRecentWord(at: sentence.startTime + 0.15, in: sentenceIndex)
-        XCTAssertEqual(result4?.index, 0)
+        let result4 = sut.move(to: sentence.startTime + 0.15, in: sentenceIndex)
+        XCTAssertEqual(result4.word?.index, 0)
         
-        let result5 = sut.searchRecentWord(at: sentence.startTime + 0.2, in: sentenceIndex)
-        XCTAssertEqual(result5?.index, 1)
+        let result5 = sut.move(to: sentence.startTime + 0.2, in: sentenceIndex)
+        XCTAssertEqual(result5.word?.index, 1)
     }
-    
-    func testGetNextSentenceInEmptyList() async throws {
- 
-        let subtitles = Subtitles(sentences: [])
-        let sut = createSUT(subtitles: subtitles)
-        
-        let result = sut.getNextSentence(from: 10)
-        XCTAssertNil(result)
-    }
-    
-    func testGetNextSentenceNotEmptyList() async throws {
- 
-        let subtitles = Subtitles(sentences: [
-            notSyncedSentence(at: 0),
-            notSyncedSentence(at: 1)
-        ])
-        let sut = createSUT(subtitles: subtitles)
-        
-        let result1 = sut.getNextSentence(from: 0)
-        XCTAssertEqual(result1?.index, 1)
-        
-        let result2 = sut.getNextSentence(from: 1)
-        XCTAssertNil(result2?.index)
-    }
-    
-    func testGetFirstWordEmptyList() async throws {
-
-        let subtitles = Subtitles(sentences: [])
-        let sut = createSUT(subtitles: subtitles)
-
-        let sentenceIndex = 100
-        let result = sut.getFirstWord(in: sentenceIndex)
-        XCTAssertNil(result)
-    }
-
-    func testGetFirstWordNotEmptyList() async throws {
-
-        let subtitles = Subtitles(sentences: [
-            notSyncedSentence(at: 0),
-            Subtitles.Sentence(
-                startTime: 1,
-                duration: 0,
-                text: .synced(items: [
-                    Subtitles.SyncedItem(
-                        startTime: 1.1,
-                        duration: 0,
-                        text: ""
-                    ),
-                    Subtitles.SyncedItem(
-                        startTime: 1.2,
-                        duration: 0,
-                        text: ""
-                    ),
-                ])
-            )
-        ])
-        let sut = createSUT(subtitles: subtitles)
-
-        let result1 = sut.getFirstWord(in: 0)
-        XCTAssertNil(result1)
-
-        let result2 = sut.getFirstWord(in: 1)
-        XCTAssertEqual(result2?.startTime, 1.1)
-    }
+//    
+//    func testGetNextInEmptyList() async throws {
+// 
+//        let subtitles = Subtitles(sentences: [])
+//        let sut = createSUT(subtitles: subtitles)
+//        
+//        let result = sut.getNext(from: 10)
+//        XCTAssertNil(result)
+//    }
+//    
+//    func testGetNextNotEmptyList() async throws {
+// 
+//        let subtitles = Subtitles(sentences: [
+//            notSyncedSentence(at: 0),
+//            notSyncedSentence(at: 1)
+//        ])
+//        let sut = createSUT(subtitles: subtitles)
+//        
+//        let result1 = sut.getNextSentence(from: 0)
+//        XCTAssertEqual(result1?.index, 1)
+//        
+//        let result2 = sut.getNextSentence(from: 1)
+//        XCTAssertNil(result2?.index)
+//    }
 }
