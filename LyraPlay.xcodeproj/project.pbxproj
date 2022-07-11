@@ -32,6 +32,7 @@
 		AA2BE88B2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE88A2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift */; };
 		AA2BE88D2866EF35005C1AAD /* CoreDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE88C2866EF35005C1AAD /* CoreDataStore.swift */; };
 		AA3166C6287C016800348781 /* SubtitlesIteratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3166C5287C016800348781 /* SubtitlesIteratorTests.swift */; };
+		AA3166C8287C066000348781 /* SubtitlesIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3166C7287C066000348781 /* SubtitlesIterator.swift */; };
 		AA35E57E286A993B0086DB28 /* TagsParserMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA35E57D286A993B0086DB28 /* TagsParserMock.swift */; };
 		AA35E580286AA07F0086DB28 /* LocalFilesRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA35E57F286AA07F0086DB28 /* LocalFilesRepositoryTests.swift */; };
 		AA35E582286AA3D90086DB28 /* FilesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA35E581286AA3D90086DB28 /* FilesRepository.swift */; };
@@ -178,6 +179,7 @@
 		AA2BE88A2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataAudioFilesRepository.swift; sourceTree = "<group>"; };
 		AA2BE88C2866EF35005C1AAD /* CoreDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStore.swift; sourceTree = "<group>"; };
 		AA3166C5287C016800348781 /* SubtitlesIteratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesIteratorTests.swift; sourceTree = "<group>"; };
+		AA3166C7287C066000348781 /* SubtitlesIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesIterator.swift; sourceTree = "<group>"; };
 		AA35E57D286A993B0086DB28 /* TagsParserMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsParserMock.swift; sourceTree = "<group>"; };
 		AA35E57F286AA07F0086DB28 /* LocalFilesRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFilesRepositoryTests.swift; sourceTree = "<group>"; };
 		AA35E581286AA3D90086DB28 /* FilesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesRepository.swift; sourceTree = "<group>"; };
@@ -321,6 +323,7 @@
 			isa = PBXGroup;
 			children = (
 				AA190E71287AC6AC000514AB /* SubtitlesPresenterViewModel.swift */,
+				AA3166C7287C066000348781 /* SubtitlesIterator.swift */,
 			);
 			path = SubtitlesPresenter;
 			sourceTree = "<group>";
@@ -1034,6 +1037,7 @@
 				AAF2CFE82876CC650003FCF7 /* CoreDataSubtitlesRepository.swift in Sources */,
 				AA3BAB1B286C7225005EE01E /* PlayerState.swift in Sources */,
 				AAFB979F2875CFA9007A76A7 /* SubtitlesParser.swift in Sources */,
+				AA3166C8287C066000348781 /* SubtitlesIterator.swift in Sources */,
 				AA0930C4287349DA00E62DB3 /* CurrentPlayerStateUseCase.swift in Sources */,
 				AA1D7E802876E71F0095E490 /* ManagedSubtitles+CoreDataClass.swift in Sources */,
 				AACEA32D2869EDE400111565 /* AudioFilesBrowserCellViewModel.swift in Sources */,
