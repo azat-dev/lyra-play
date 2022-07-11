@@ -174,4 +174,68 @@ class SubtitlesIteratorTests: XCTestCase {
         let result5 = sut.searchRecentWord(at: sentence.startTime + 0.2, in: sentenceIndex)
         XCTAssertEqual(result5?.index, 1)
     }
+    
+    func testGetNextSentenceInEmptyList() async throws {
+ 
+        let subtitles = Subtitles(sentences: [])
+        let sut = createSUT(subtitles: subtitles)
+        
+        let result = sut.getNextSentence(from: 10)
+        XCTAssertNil(result)
+    }
+    
+    func testGetNextSentenceNotEmptyList() async throws {
+ 
+        let subtitles = Subtitles(sentences: [
+            notSyncedSentence(at: 0),
+            notSyncedSentence(at: 1)
+        ])
+        let sut = createSUT(subtitles: subtitles)
+        
+        let result1 = sut.getNextSentence(from: 0)
+        XCTAssertEqual(result1, 1)
+        
+        let result2 = sut.getNextSentence(from: 1)
+        XCTAssertNil(result2)
+    }
+    
+    func testGetFirstWordEmptyList() async throws {
+ 
+        let subtitles = Subtitles(sentences: [])
+        let sut = createSUT(subtitles: subtitles)
+        
+        let sentenceIndex = 100
+        let result = sut.getThirstWord(in: sentenceIndex)
+        XCTAssertNil(result)
+    }
+    
+    func testGetFirstWordNotEmptyList() async throws {
+ 
+        let subtitles = Subtitles(sentences: [
+            notSyncedSentence(at: 0),
+            Subtitles.Sentence(
+                startTime: 1,
+                duration: 0,
+                text: .synced(items: [
+                    Subtitles.SyncedItem(
+                        startTime: 1.1,
+                        duration: 0,
+                        text: ""
+                    ),
+                    Subtitles.SyncedItem(
+                        startTime: 1.2,
+                        duration: 0,
+                        text: ""
+                    ),
+                ])
+            )
+        ])
+        let sut = createSUT(subtitles: subtitles)
+        
+        let result1 = sut.getFirstWord(in: 0)
+        XCTAssertNil(result1)
+        
+        let result2 = sut.getFirstWord(in: 0)
+        XCTAssertEqual(result2?.word?.duration, 1.1)
+    }
 }
