@@ -22,7 +22,7 @@ class SubtitlesIteratorTests: XCTestCase {
         
         return subtitlesIterator
     }
-
+    
     func testLastFlagOnEmptyList() async throws {
         
         let subtitles = Subtitles(sentences: [
@@ -30,5 +30,76 @@ class SubtitlesIteratorTests: XCTestCase {
         
         let sut = createSUT(subtitles: subtitles)
         XCTAssertEqual(sut.isLast, true)
+    }
+    
+    func notSyncedSentence(at: Double) {
+        return Subtitles.Sentence(
+            startTime: at,
+            duration: 0,
+            text: .notSynced(text: "")
+        )
+    }
+    
+    func getTestSubtitles() -> Subtitles {
+        
+        return Subtitles(sentences: [
+            notSyncedSentence(at: 0.0),
+            notSyncedSentence(at: 1.0),
+            Subtitles.Sentence(
+                startTime: 2.0,
+                duration: 0,
+                text: .synced(items: [
+                    .init(startTime: 2.0, duration: 0, text: "")
+                    .init(startTime: 2.2, duration: 0, text: "")
+                ])
+            )
+            Subtitles.Sentence(
+                startTime: 3.0,
+                duration: 0,
+                text: .synced(items: [])
+            )
+        ])
+    }
+    
+    func testSearchForTheMostRecentSentenceInEmptyList() async throws {
+        
+        let subtitles = Subtitles(sentences: [])
+        let sut = createSUT(subtitles: subtitles)
+        
+        let result = sut.searchRecentSentence(at: 10)
+        XCTAssertNil(result)
+    }
+    
+    func testSearchForTheMostRecentWordInEmptyList() async throws {
+        
+        let subtitles = Subtitles(sentences: [])
+        let sut = createSUT(subtitles: subtitles)
+        
+        let sentenceIndex = 10
+        
+        let result = sut.searchRecentWord(at: 10, in: sentenceIndex)
+        XCTAssertNil(result)
+    }
+    
+    func testSearchForTheMostRecentSentenceNotEmptyList() async throws {
+        
+        let subtitles = getTestSubtitles()
+        let sut = createSUT(subtitles: subtitles)
+        
+        let timeMarks = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
+        
+        let indexSequence = expectSequence([0, 0, 1, 1, 2, 2, 2, 3, 3, 3])
+        let sentenceSequence = expectSequence([false, false, false, false, false, false, false, false])
+        
+        for timeMark in timeMarks {
+            
+            let result = sut.searchRecentSentence(at: timeMark)
+            
+            indexSequence.fulfill(with: result?.sentenceIndex)
+            sentenceSequence.fulfill(with: result?.sentence == nil)
+        }
+        
+        indexSequence.wait(timeout: 3, enforceOrder: true)
+        sentenceSequence.wait(timeout: 3, enforceOrder: true)
     }
 }

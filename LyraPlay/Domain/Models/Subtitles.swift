@@ -32,7 +32,6 @@ public struct Subtitles: Equatable {
             self.duration = duration
             self.text = text
         }
-
     }
 
     public enum SentenceText: Equatable {
