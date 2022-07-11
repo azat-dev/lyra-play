@@ -61,16 +61,16 @@ class SubtitlesIteratorTests: XCTestCase {
         XCTAssertNil(result)
     }
     
-//    func testSearchForTheMostRecentWordInEmptyList() async throws {
-//
-//        let subtitles = Subtitles(sentences: [])
-//        let sut = createSUT(subtitles: subtitles)
-//
-//        let sentenceIndex = 10
-//
-//        let result = sut.searchRecentWord(at: 10, in: sentenceIndex)
-//        XCTAssertNil(result)
-//    }
+    func testSearchForTheMostRecentWordInEmptyList() async throws {
+
+        let subtitles = Subtitles(sentences: [])
+        let sut = createSUT(subtitles: subtitles)
+
+        let sentenceIndex = 10
+
+        let result = sut.searchRecentWord(at: 10, in: sentenceIndex)
+        XCTAssertNil(result)
+    }
     
     func testSearchForTheMostRecentSentenceNotEmptyList() async throws {
         
@@ -92,5 +92,86 @@ class SubtitlesIteratorTests: XCTestCase {
         
         indexSequence.wait(timeout: 3, enforceOrder: true)
         sentenceSequence.wait(timeout: 3, enforceOrder: true)
+    }
+    
+    func testSearchForTheMostRecentWordNotExistingSentence() async throws {
+        
+        let subtitles = Subtitles(sentences: [])
+        let sut = createSUT(subtitles: subtitles)
+        
+        let result = sut.searchRecentWord(at: 100, in: 100)
+        XCTAssertNil(result)
+    }
+    
+    func testSearchForTheMostRecentWordNotSyncSentence() async throws {
+        
+        let subtitles = Subtitles(sentences: [
+            notSyncedSentence(at: 0.0),
+            notSyncedSentence(at: 1.0),
+            notSyncedSentence(at: 2.0),
+        ])
+        
+        let sentenceIndex = 1
+        let sentence = subtitles.sentences[sentenceIndex]
+        
+        let sut = createSUT(subtitles: subtitles)
+        
+        let result1 = sut.searchRecentWord(at: sentence.startTime - 1.0, in: sentenceIndex)
+        XCTAssertNil(result1)
+        
+        let result2 = sut.searchRecentWord(at: sentence.startTime, in: sentenceIndex)
+        XCTAssertNil(result2)
+        
+        let result3 = sut.searchRecentWord(at: sentence.startTime + 1, in: sentenceIndex)
+        XCTAssertNil(result3)
+    }
+    
+    func testSearchForTheMostRecentWordSyncSentence() async throws {
+        
+        let subtitles = Subtitles(sentences: [
+            notSyncedSentence(at: 0.0),
+            Subtitles.Sentence(
+                startTime: 1.0,
+                duration: 0,
+                text: .synced(items: [
+                    Subtitles.SyncedItem(
+                        startTime: 1.1,
+                        duration: 0,
+                        text: ""
+                    ),
+                    Subtitles.SyncedItem(
+                        startTime: 1.2,
+                        duration: 0,
+                        text: ""
+                    ),
+                    Subtitles.SyncedItem(
+                        startTime: 1.3,
+                        duration: 0,
+                        text: ""
+                    ),
+                ])
+            ),
+            notSyncedSentence(at: 2.0),
+        ])
+        
+        let sentenceIndex = 1
+        let sentence = subtitles.sentences[sentenceIndex]
+        
+        let sut = createSUT(subtitles: subtitles)
+        
+        let result1 = sut.searchRecentWord(at: sentence.startTime - 1, in: sentenceIndex)
+        XCTAssertNil(result1)
+        
+        let result2 = sut.searchRecentWord(at: sentence.startTime, in: sentenceIndex)
+        XCTAssertNil(result2)
+        
+        let result3 = sut.searchRecentWord(at: sentence.startTime + 0.1, in: sentenceIndex)
+        XCTAssertEqual(result3?.index, 0)
+        
+        let result4 = sut.searchRecentWord(at: sentence.startTime + 0.15, in: sentenceIndex)
+        XCTAssertEqual(result4?.index, 0)
+        
+        let result5 = sut.searchRecentWord(at: sentence.startTime + 0.2, in: sentenceIndex)
+        XCTAssertEqual(result5?.index, 1)
     }
 }

@@ -12,54 +12,73 @@ import Foundation
 public protocol SubtitlesIterator {
     
     func searchRecentSentence(at: TimeInterval) -> (index: Int, sentence: Subtitles.Sentence)?
+    
+    func searchRecentWord(at: TimeInterval, in: Int) -> (index: Int, word: Subtitles.SyncedItem)?
 }
 
 // MARK: - Implementations
 
 public final class DefaultSubtitlesIterator: SubtitlesIterator {
     
-    private var subtitles: Subtitles
+    private let subtitles: Subtitles
+    private lazy var sentencesStartTimes: [TimeInterval] = { subtitles.sentences.map { $0.startTime }
+    } ()
     
     public init(subtitles: Subtitles) {
         
         self.subtitles = subtitles
     }
     
+    private static func searchRecentItem(items: [TimeInterval], time: TimeInterval) -> Int? {
+        
+        let lastIndex = items.lastIndex { $0 <= time }
+        return lastIndex
+    }
+    
     
     public func searchRecentSentence(at time: TimeInterval) -> (index: Int, sentence: Subtitles.Sentence)? {
         
         let sentences = subtitles.sentences
+        
+        let index = Self.searchRecentItem(
+            items: sentencesStartTimes,
+            time: time
+        )
+        
+        guard let index = index else {
+            return nil
+        }
 
-        for index in 0..<sentences.count {
-            
-            let sentence = sentences[index]
-
-            if time == sentence.startTime {
-                return (index, sentence)
-            }
-            
-            if time > sentence.startTime {
-                
-                let isLast = (index == sentences.count - 1)
-                
-                if isLast {
-                    return (index, sentence)
-                }
-                
-                continue
-            }
-
-            if index == 0 {
-                return nil
-            }
-            
-            let prevIndex = index - 1
-            let prevSentence = sentences[prevIndex]
-            
-            return (prevIndex, prevSentence)
+        return (index, sentences[index])
+    }
+    
+    public func searchRecentWord(at time: TimeInterval, in sentenceIndex: Int) -> (index: Int, word: Subtitles.SyncedItem)? {
+        
+        let sentences = subtitles.sentences
+        
+        guard sentences.count > sentenceIndex else {
+            return nil
         }
         
-        return nil
+        let sentence = sentences[sentenceIndex]
+        
+        switch sentence.text {
+        case .notSynced:
+            return nil
+            
+        case .synced(items: let items):
+        
+            let index = Self.searchRecentItem(
+                items: items.map { $0.startTime },
+                time: time
+            )
+            
+            guard let index = index else {
+                return nil
+            }
+
+            return (index, items[index])
+        }
     }
 }
 
