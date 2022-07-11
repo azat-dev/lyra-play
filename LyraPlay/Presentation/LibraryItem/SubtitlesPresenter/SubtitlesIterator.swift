@@ -14,6 +14,10 @@ public protocol SubtitlesIterator {
     func searchRecentSentence(at: TimeInterval) -> (index: Int, sentence: Subtitles.Sentence)?
     
     func searchRecentWord(at: TimeInterval, in: Int) -> (index: Int, word: Subtitles.SyncedItem)?
+    
+    func getNextSentence(from: Int) -> (index: Int, sentence: Subtitles.Sentence)?
+    
+    func getFirstWord(in: Int) -> Subtitles.SyncedItem?
 }
 
 // MARK: - Implementations
@@ -56,7 +60,7 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         
         let sentences = subtitles.sentences
         
-        guard sentences.count > sentenceIndex else {
+        if sentenceIndex >= sentences.count {
             return nil
         }
         
@@ -78,6 +82,37 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
             }
 
             return (index, items[index])
+        }
+    }
+    
+    public func getNextSentence(from currentSentenceIndex: Int) -> (index: Int, sentence: Subtitles.Sentence)? {
+        
+        let sentences = subtitles.sentences
+        let nextIndex = currentSentenceIndex + 1
+        
+        if nextIndex >= sentences.count {
+            return nil
+        }
+        
+        return (nextIndex, sentences[nextIndex])
+    }
+    
+    public func getFirstWord(in sentenceIndex: Int) -> Subtitles.SyncedItem? {
+        
+        let sentences = subtitles.sentences
+        
+        if sentenceIndex >= sentences.count {
+            return nil
+        }
+        
+        let sentence = sentences[sentenceIndex]
+        
+        switch sentence.text {
+        case .notSynced:
+            return nil
+            
+        case .synced(items: let items):
+            return items.first
         }
     }
 }

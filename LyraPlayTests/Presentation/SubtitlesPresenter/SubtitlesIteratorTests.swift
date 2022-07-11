@@ -193,24 +193,24 @@ class SubtitlesIteratorTests: XCTestCase {
         let sut = createSUT(subtitles: subtitles)
         
         let result1 = sut.getNextSentence(from: 0)
-        XCTAssertEqual(result1, 1)
+        XCTAssertEqual(result1?.index, 1)
         
         let result2 = sut.getNextSentence(from: 1)
-        XCTAssertNil(result2)
+        XCTAssertNil(result2?.index)
     }
     
     func testGetFirstWordEmptyList() async throws {
- 
+
         let subtitles = Subtitles(sentences: [])
         let sut = createSUT(subtitles: subtitles)
-        
+
         let sentenceIndex = 100
-        let result = sut.getThirstWord(in: sentenceIndex)
+        let result = sut.getFirstWord(in: sentenceIndex)
         XCTAssertNil(result)
     }
-    
+
     func testGetFirstWordNotEmptyList() async throws {
- 
+
         let subtitles = Subtitles(sentences: [
             notSyncedSentence(at: 0),
             Subtitles.Sentence(
@@ -231,11 +231,11 @@ class SubtitlesIteratorTests: XCTestCase {
             )
         ])
         let sut = createSUT(subtitles: subtitles)
-        
+
         let result1 = sut.getFirstWord(in: 0)
         XCTAssertNil(result1)
-        
-        let result2 = sut.getFirstWord(in: 0)
-        XCTAssertEqual(result2?.word?.duration, 1.1)
+
+        let result2 = sut.getFirstWord(in: 1)
+        XCTAssertEqual(result2?.startTime, 1.1)
     }
 }
