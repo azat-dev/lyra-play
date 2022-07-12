@@ -21,6 +21,9 @@ class AssertSequence<T: Equatable> {
     private var receivedValues = [T]()
     private var expectation = XCTestExpectation()
     
+    public var isCompleted: Bool {
+        return expectedValues.count == receivedValues.count
+    }
     
     init(testCase: XCTestCase, values: [T] = []) {
         

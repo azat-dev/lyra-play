@@ -9,15 +9,17 @@ import Foundation
 
 // MARK: - Interfaces
 
+public typealias SubtitlesIteratorPosition = (sentence: Int, word: Int?)
+
 public protocol SubtitlesIterator {
     
-    func searchRecentSentence(at: TimeInterval) -> (index: Int, sentence: Subtitles.Sentence)?
+    func move(to: TimeInterval) -> SubtitlesIteratorPosition?
     
-    func searchRecentWord(at: TimeInterval, in: Int) -> (index: Int, word: Subtitles.SyncedItem)?
+    func getNext() -> SubtitlesIteratorPosition?
     
-    func getNextSentence(from: Int) -> (index: Int, sentence: Subtitles.Sentence)?
+    func next() -> SubtitlesIteratorPosition?
     
-    func getFirstWord(in: Int) -> Subtitles.SyncedItem?
+    var position: SubtitlesIteratorPosition? { get }
 }
 
 // MARK: - Implementations
@@ -25,8 +27,16 @@ public protocol SubtitlesIterator {
 public final class DefaultSubtitlesIterator: SubtitlesIterator {
     
     private let subtitles: Subtitles
-    private lazy var sentencesStartTimes: [TimeInterval] = { subtitles.sentences.map { $0.startTime }
+    
+    private var sentences: [Subtitles.Sentence] { subtitles.sentences }
+    
+    private lazy var sentencesStartTimes: [TimeInterval] = {
+        sentences.map { $0.startTime }
     } ()
+    
+    private var currentPosition: SubtitlesIteratorPosition? = nil
+    
+    public var position: SubtitlesIteratorPosition? { currentPosition }
     
     public init(subtitles: Subtitles) {
         
@@ -40,25 +50,15 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
     }
     
     
-    public func searchRecentSentence(at time: TimeInterval) -> (index: Int, sentence: Subtitles.Sentence)? {
+    private func searchRecentSentence(at time: TimeInterval) -> Int? {
         
-        let sentences = subtitles.sentences
-        
-        let index = Self.searchRecentItem(
+        return Self.searchRecentItem(
             items: sentencesStartTimes,
             time: time
         )
-        
-        guard let index = index else {
-            return nil
-        }
-
-        return (index, sentences[index])
     }
     
-    public func searchRecentWord(at time: TimeInterval, in sentenceIndex: Int) -> (index: Int, word: Subtitles.SyncedItem)? {
-        
-        let sentences = subtitles.sentences
+    private func searchRecentWord(at time: TimeInterval, in sentenceIndex: Int) -> Int? {
         
         if sentenceIndex >= sentences.count {
             return nil
@@ -69,51 +69,114 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         switch sentence.text {
         case .notSynced:
             return nil
-            
-        case .synced(items: let items):
-        
-            let index = Self.searchRecentItem(
-                items: items.map { $0.startTime },
+
+        case .synced(items: let words):
+            return Self.searchRecentItem(
+                items: words.map { $0.startTime },
                 time: time
             )
-            
-            guard let index = index else {
-                return nil
-            }
+        }
+    }
+    
+    public func move(to time: TimeInterval) -> SubtitlesIteratorPosition? {
+        
+        guard
+            let recentSentence = searchRecentSentence(at: time)
+        else {
+            return nil
+        }
+        
+        let recentWord = searchRecentWord(at: time, in: recentSentence)
+        currentPosition = (recentSentence, recentWord)
+        
+        return currentPosition
+    }
+    
 
-            return (index, items[index])
-        }
-    }
+    private func getWords(sentence: Subtitles.Sentence) -> [Subtitles.SyncedItem]? {
     
-    public func getNextSentence(from currentSentenceIndex: Int) -> (index: Int, sentence: Subtitles.Sentence)? {
-        
-        let sentences = subtitles.sentences
-        let nextIndex = currentSentenceIndex + 1
-        
-        if nextIndex >= sentences.count {
-            return nil
-        }
-        
-        return (nextIndex, sentences[nextIndex])
-    }
-    
-    public func getFirstWord(in sentenceIndex: Int) -> Subtitles.SyncedItem? {
-        
-        let sentences = subtitles.sentences
-        
-        if sentenceIndex >= sentences.count {
-            return nil
-        }
-        
-        let sentence = sentences[sentenceIndex]
-        
         switch sentence.text {
         case .notSynced:
             return nil
             
         case .synced(items: let items):
-            return items.first
+            return items
         }
     }
-}
+    
+    public func getNext() -> SubtitlesIteratorPosition? {
+        
+        guard let currentPosition = currentPosition else {
+        
+            if let firstSentence = sentences.first {
+                
+                guard
+                    let words = getWords(sentence: firstSentence),
+                    let firstWord = words.first,
+                    firstWord.startTime == firstSentence.startTime
+                else {
+                    return (sentence: 0, word: nil)
+                }
 
+                return (sentence: 0, word: 0)
+            }
+            
+            return nil
+        }
+        
+        let sentence = sentences[currentPosition.sentence]
+        
+        if
+            let words = getWords(sentence: sentence),
+            !words.isEmpty
+        {
+            
+            guard let currentWordIndex = currentPosition.word else {
+
+                return (
+                    sentence: currentPosition.sentence,
+                    word: 0
+                )
+            }
+            
+            let nextWordIndex = currentWordIndex + 1
+            if nextWordIndex < words.count {
+                return (
+                    sentence: currentPosition.sentence,
+                    word: nextWordIndex
+                )
+            }
+        }
+        
+        let nextSentenceIndex = currentPosition.sentence + 1
+        
+        guard nextSentenceIndex < sentences.count else {
+            return nil
+        }
+
+        let nextSentence = sentences[nextSentenceIndex]
+        let nextSentenceWords = getWords(sentence: nextSentence)
+        
+        guard
+            let firstWordOfNextSentence = nextSentenceWords?.first
+        else {
+            return (
+                sentence: nextSentenceIndex,
+                word: nil
+            )
+        }
+
+        return (
+            sentence: nextSentenceIndex,
+            word: firstWordOfNextSentence.startTime == nextSentence.startTime ? 0 : nil
+        )
+    }
+    
+    public func next() -> SubtitlesIteratorPosition? {
+        
+        let nextPosition = getNext()
+        currentPosition = nextPosition
+        
+        return nextPosition
+    }
+}
