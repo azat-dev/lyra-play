@@ -7,18 +7,29 @@
 
 import Foundation
 
-public final class TimeoutTimer {
+// MARK: - Interfaces
+
+public protocol ActionTimer {
     
-    let queue = DispatchQueue(label: "lyraplay.timer")
-    var workItem: DispatchWorkItem?
+    static func create(speed: Double) -> ActionTimer
+    
+    func executeAfter(_ interval: TimeInterval, block: @escaping () async -> Void)
+    
+    func cancel()
+}
+
+public final class DefaultActionTimer: ActionTimer {
+    
+    private let queue = DispatchQueue(label: "lyraplay.timer", qos: .userInteractive)
+    private var workItem: DispatchWorkItem?
     
     private init() {}
     
-    public static func create() -> TimeoutTimer {
-        return TimeoutTimer()
+    public static func create(speed: Double) -> ActionTimer {
+        return DefaultActionTimer()
     }
     
-    public func execute(in interval: TimeInterval, block: @escaping () async -> Void) async {
+    public func executeAfter(_ interval: TimeInterval, block: @escaping () async -> Void) {
         
         queue.sync { [weak self] in
 

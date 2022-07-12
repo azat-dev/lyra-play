@@ -75,8 +75,8 @@ public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewMod
     public let currentPosition: Observable<CurrentSubtitlePosition> = Observable(.init())
     public let subtitlesIterator: SubtitlesIterator
 
-    private var sentenceTimer: TimeoutTimer? = nil
-    private var wordTimer: TimeoutTimer? = nil
+    private var sentenceTimer: ActionTimer? = nil
+    private var wordTimer: ActionTimer? = nil
     private var currentSpeed: Double = 1.0
     
     public init(
