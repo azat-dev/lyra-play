@@ -23,12 +23,24 @@ class SubtitlesIteratorTests: XCTestCase {
         return subtitlesIterator
     }
     
-    func notSyncedSentence(at: Double) -> Subtitles.Sentence {
+    private func notSyncedSentence(at: TimeInterval) -> Subtitles.Sentence {
         return Subtitles.Sentence(
             startTime: at,
             duration: 0,
             text: .notSynced(text: "")
         )
+    }
+    
+    private func syncItem(at: TimeInterval) -> Subtitles.SyncedItem {
+        return .init(
+            startTime: at,
+            duration: 0,
+            text: ""
+        )
+    }
+    
+    private func syncItems(_ startingTimes: [TimeInterval]) -> [Subtitles.SyncedItem] {
+        return startingTimes.map { syncItem(at: $0) }
     }
     
     func getTestSubtitles() -> Subtitles {
@@ -73,11 +85,10 @@ class SubtitlesIteratorTests: XCTestCase {
             
             let result = sut.move(to: timeMark)
             
-            indexSequence.fulfill(with: result.sentence?.index)
+            indexSequence.fulfill(with: result.sentence)
         }
         
         indexSequence.wait(timeout: 3, enforceOrder: true)
-        sentenceSequence.wait(timeout: 3, enforceOrder: true)
     }
     
     func testMoveToTheMostRecentWordNotSyncSentence() async throws {
@@ -93,13 +104,13 @@ class SubtitlesIteratorTests: XCTestCase {
         
         let sut = createSUT(subtitles: subtitles)
         
-        let result1 = sut.move(to: sentence.startTime - 1.0, in: sentenceIndex)
+        let result1 = sut.move(to: sentence.startTime - 1.0)
         XCTAssertNil(result1.word)
         
-        let result2 = sut.move(to: sentence.startTime, in: sentenceIndex)
+        let result2 = sut.move(to: sentence.startTime)
         XCTAssertNil(result2.word)
         
-        let result3 = sut.move(to: sentence.startTime + 1, in: sentenceIndex)
+        let result3 = sut.move(to: sentence.startTime + 1)
         XCTAssertNil(result3.word)
     }
     
@@ -110,69 +121,94 @@ class SubtitlesIteratorTests: XCTestCase {
             Subtitles.Sentence(
                 startTime: 1.0,
                 duration: 0,
-                text: .synced(items: [
-                    Subtitles.SyncedItem(
-                        startTime: 1.1,
-                        duration: 0,
-                        text: ""
-                    ),
-                    Subtitles.SyncedItem(
-                        startTime: 1.2,
-                        duration: 0,
-                        text: ""
-                    ),
-                    Subtitles.SyncedItem(
-                        startTime: 1.3,
-                        duration: 0,
-                        text: ""
-                    ),
-                ])
+                text: .synced(items: syncItems([1.1, 1.2]))
             ),
             notSyncedSentence(at: 2.0),
         ])
         
         let sentenceIndex = 1
-        let sentence = subtitles.sentences[sentenceIndex]
+        let targetSentence = subtitles.sentences[sentenceIndex]
         
         let sut = createSUT(subtitles: subtitles)
         
-        let result1 = sut.move(to: sentence.startTime - 1, in: sentenceIndex)
+        let result1 = sut.move(to: targetSentence.startTime - 0.5)
+        XCTAssertEqual(result1.sentence, 0)
         XCTAssertNil(result1.word)
         
-        let result2 = sut.move(to: sentence.startTime, in: sentenceIndex)
+        let result2 = sut.move(to: targetSentence.startTime)
+        XCTAssertEqual(result2.sentence, 1)
         XCTAssertNil(result2.word)
         
-        let result3 = sut.move(to: sentence.startTime + 0.1, in: sentenceIndex)
-        XCTAssertEqual(result3.word?.index, 0)
+        let result3 = sut.move(to: targetSentence.startTime + 0.1)
+        XCTAssertEqual(result3.sentence, 1)
+        XCTAssertEqual(result3.word, 0)
         
-        let result4 = sut.move(to: sentence.startTime + 0.15, in: sentenceIndex)
-        XCTAssertEqual(result4.word?.index, 0)
+        let result4 = sut.move(to: targetSentence.startTime + 0.15)
+        XCTAssertEqual(result4.sentence, 1)
+        XCTAssertEqual(result4.word, 0)
         
-        let result5 = sut.move(to: sentence.startTime + 0.2, in: sentenceIndex)
-        XCTAssertEqual(result5.word?.index, 1)
+        let result5 = sut.move(to: targetSentence.startTime + 0.2)
+        XCTAssertEqual(result5.sentence, 1)
+        XCTAssertEqual(result5.word, 1)
+        
+        let result6 = sut.move(to: targetSentence.startTime + 100)
+        XCTAssertEqual(result6.sentence, 3)
+        XCTAssertEqual(result6.word, nil)
     }
-//    
-//    func testGetNextInEmptyList() async throws {
-// 
-//        let subtitles = Subtitles(sentences: [])
-//        let sut = createSUT(subtitles: subtitles)
-//        
-//        let result = sut.getNext(from: 10)
-//        XCTAssertNil(result)
-//    }
-//    
-//    func testGetNextNotEmptyList() async throws {
-// 
-//        let subtitles = Subtitles(sentences: [
-//            notSyncedSentence(at: 0),
-//            notSyncedSentence(at: 1)
-//        ])
-//        let sut = createSUT(subtitles: subtitles)
-//        
-//        let result1 = sut.getNextSentence(from: 0)
-//        XCTAssertEqual(result1?.index, 1)
-//        
-//        let result2 = sut.getNextSentence(from: 1)
-//        XCTAssertNil(result2?.index)
-//    }
+    
+    func testGetNextInEmptyList() async throws {
+ 
+        let subtitles = Subtitles(sentences: [])
+        let sut = createSUT(subtitles: subtitles)
+        
+        let result = sut.getNext(from: 10)
+        XCTAssertNil(result)
+    }
+    
+    func testGetNextNotEmptyList() async throws {
+ 
+        let subtitles = Subtitles(sentences: [
+            notSyncedSentence(at: 0),
+            notSyncedSentence(at: 1),
+            Subtitles.Sentence(
+                startTime: 2,
+                duration: 0,
+                text: .synced(items: syncItems([2.1, 2.2, 2.3]))
+            ),
+            Subtitles.Sentence(
+                startTime: 3,
+                duration: 0,
+                text: .synced(items: syncItems([3, 3.1, 3.2]))
+            )
+        ])
+        
+        let sut = createSUT(subtitles: subtitles)
+        
+        let sequence = expectSequence([
+            [0, nil],
+            [1, nil],
+            [2, nil],
+            [2, 0],
+            [2, 1],
+            [2, 2],
+            [3, 0],
+            [3, 1],
+            [3, 2],
+            nil
+        ])
+        
+        while true {
+            
+            let result = sut.getNext()
+            
+            guard let result = result else {
+                sequence.fulfill(with: result)
+                break
+            }
+
+            sequence.fulfill(with: [result.sentence, result.word])
+        }
+
+        sequence.wait(timeout: 1, enforceOrder: true)
+    }
 }
