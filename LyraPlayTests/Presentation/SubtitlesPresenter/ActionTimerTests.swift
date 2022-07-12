@@ -13,17 +13,17 @@ class DefaultActionTimerTests: XCTestCase {
     
     typealias SUT = ActionTimer
     
-    func createSUT(speed: Double) -> SUT {
+    func createSUT() -> SUT {
         
-        let timer = DefaultActionTimer.create(speed: speed)
-        detectMemoryLeak(instance: timer as! DefaultActionTimer)
+        let timer = DefaultActionTimer()
+        detectMemoryLeak(instance: timer)
         
         return timer
     }
     
     func testTrigger() async throws {
         
-        let sut = createSUT(speed: 1.0)
+        let sut = createSUT()
         
         let sequence = expectSequence([true])
         let startTime = Date.now
@@ -43,7 +43,7 @@ class DefaultActionTimerTests: XCTestCase {
     
     func testCancel() async throws {
 
-        let sut = createSUT(speed: 1.0)
+        let sut = createSUT()
 
         let expectation = expectation(description: "Don't execute")
         expectation.isInverted = true

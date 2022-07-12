@@ -11,8 +11,6 @@ import Foundation
 
 public protocol ActionTimer {
     
-    static func create(speed: Double) -> ActionTimer
-    
     func executeAfter(_ interval: TimeInterval, block: @escaping () async -> Void)
     
     func cancel()
@@ -23,11 +21,7 @@ public final class DefaultActionTimer: ActionTimer {
     private let queue = DispatchQueue(label: "lyraplay.timer", qos: .userInteractive)
     private var workItem: DispatchWorkItem?
     
-    private init() {}
-    
-    public static func create(speed: Double) -> ActionTimer {
-        return DefaultActionTimer()
-    }
+    public init() {}
     
     public func executeAfter(_ interval: TimeInterval, block: @escaping () async -> Void) {
         
@@ -54,7 +48,8 @@ public final class DefaultActionTimer: ActionTimer {
             
             self.workItem = workItem
             
-            DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: .now() + interval, execute: workItem)
+            DispatchQueue.global(qos: .userInteractive)
+                .asyncAfter(deadline: .now() + interval, execute: workItem)
         }
     }
     
