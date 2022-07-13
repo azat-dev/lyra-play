@@ -9,17 +9,6 @@ import Foundation
 
 // MARK: - Interfaces
 
-public struct SubtitlesPosition {
-    
-    public var sentence: Int
-    public var word: Int?
-    
-    public init(sentence: Int, word: Int? = nil) {
-        
-        self.sentence = sentence
-        self.word = word
-    }
-}
 
 public struct SubtitlesItem {
     

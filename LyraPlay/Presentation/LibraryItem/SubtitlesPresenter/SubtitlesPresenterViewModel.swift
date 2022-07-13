@@ -37,13 +37,13 @@ public struct SentencePresentation: Equatable {
     }
 }
 
-public struct CurrentSubtitlePosition {
+public struct SubtitlesPosition {
     
-    public var sentence: Int?
+    public var sentence: Int
     public var word: Int?
     
-    public init(sentence: Int? = nil, word: Int? = nil) {
-
+    public init(sentence: Int, word: Int? = nil) {
+        
         self.sentence = sentence
         self.word = word
     }
@@ -52,14 +52,18 @@ public struct CurrentSubtitlePosition {
 public protocol SubtitlesPresenterViewModelOutput {
 
     var sentences: Observable<[SentencePresentation]?> { get }
-    var currentPosition: Observable<CurrentSubtitlePosition> { get }
+    var currentPosition: Observable<SubtitlesPosition?> { get }
 }
 
 public protocol SubtitlesPresenterViewModelInput {
 
     func load() async
     
-//    func play(at: TimeInterval, speed: Double) async
+    func play(at: TimeInterval) async
+    
+    func pause() async
+    
+    func stop() async
 }
 
 public protocol SubtitlesPresenterViewModel: SubtitlesPresenterViewModelOutput, SubtitlesPresenterViewModelInput {
@@ -72,19 +76,25 @@ public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewMod
     private let subtitles: Subtitles
 
     public let sentences: Observable<[SentencePresentation]?> = Observable(nil)
-    public let currentPosition: Observable<CurrentSubtitlePosition> = Observable(.init())
+    public let currentPosition: Observable<SubtitlesPosition?> = Observable(nil)
     public let subtitlesIterator: SubtitlesIterator
 
     private var sentenceTimer: ActionTimer? = nil
     private var wordTimer: ActionTimer? = nil
     private var currentSpeed: Double = 1.0
+    private var scheduler: Scheduler
     
     public init(
-        subtitles: Subtitles
+        subtitles: Subtitles,
+        scheduler: Scheduler
     ) {
         
         self.subtitles = subtitles
         self.subtitlesIterator = DefaultSubtitlesIterator(subtitles: subtitles)
+        self.scheduler = DefaultScheduler(
+            timeMarksIterator: subtitlesIterator,
+            actionTimerFactory: DefaultActionTimerFactory()
+        )
     }
 }
 
@@ -214,41 +224,25 @@ extension DefaultSubtitlesPresenterViewModel {
         self.sentences.value = await Self.parse(subtitles: subtitles)
     }
     
-//    private func scheduleNextWord(from: TimeInterval) {
-//
-//        let currentPosition = currentPosition.value
-//
-//
-//        let index = subtitlesIterator.getNextWord()
-//        let sentenceTimer = TimeoutTimer.create()
-//        sentenceTimer.execute(in: <#T##TimeInterval#>, block: <#T##() async -> Void#>)
-//
-//
-//    }
-//
-//
-//    public func play(at time: TimeInterval, speed: Double) async {
-//
-//        currentSpeed = speed
-//        wordTimer?.cancel()
-//        sentenceTimer?.cancel()
-//
-//        let recentSentenceResult = subtitlesIterator.searchRecentSentence(at: time)
-//
-//        var recentWordIndex: Int? = nil
-//
-//        if recentSentenceResult != nil {
-//
-//            let result = subtitlesIterator.searchRecentWord(at: time, in: recentSentenceResult!.index)
-//            recentWordIndex = result?.index
-//        }
-//
-//        let position = CurrentSubtitlePosition(
-//            sentence: recentSentenceResult?.index,
-//            word: recentWordIndex
-//        )
-//
-//        scheduleNextWord()
-//        currentPosition.value = position
-//    }
+    public func play(at time: TimeInterval) async {
+        
+        scheduler.start(at: time) { [weak self] time in
+            
+            guard let self = self else {
+                return
+            }
+            
+            self.currentPosition.value = self.subtitlesIterator.currentPosition
+        }
+    }
+    
+    public func pause() async {
+        
+        scheduler.pause()
+    }
+    
+    public func stop() async {
+        
+        scheduler.stop()
+    }
 }

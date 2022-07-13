@@ -55,8 +55,6 @@ extension DefaultScheduler: Scheduler {
                 return
             }
             
-            sleep(1)
-            
             let timeDelta = Date.now.timeIntervalSince(triggerTime) * -1
             
             let _ = self.timeMarksIterator.next()

@@ -12,7 +12,7 @@ import LyraPlay
 class SubtitlesPresenterViewModelTests: XCTestCase {
 
     typealias SUT = (
-        viewModel: SubtitlesPresenterViewModel
+        viewModel: SubtitlesPresenterViewModel,
         scheduler: Scheduler
     )
     
@@ -33,7 +33,6 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
             scheduler
         )
     }
-    
     
     func testSplitNotSyncSentences() async throws {
         
@@ -209,10 +208,8 @@ fileprivate final class SchedulerMock: Scheduler {
     }
     
     func stop() {
-        <#code#>
     }
     
     func pause() {
-        <#code#>
     }
 }
