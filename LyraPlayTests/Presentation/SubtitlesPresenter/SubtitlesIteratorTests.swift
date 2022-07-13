@@ -69,7 +69,7 @@ class SubtitlesIteratorTests: XCTestCase {
         let subtitles = Subtitles(sentences: [])
         let sut = createSUT(subtitles: subtitles)
         
-        let result = sut.move(to: 10)
+        let result = sut.move(at: 10)
         XCTAssertNil(result)
     }
     
@@ -83,9 +83,10 @@ class SubtitlesIteratorTests: XCTestCase {
         
         for timeMark in timeMarks {
             
-            let result = sut.move(to: timeMark)
+            let success = sut.move(at: timeMark)
+            XCTAssertNotNil(success)
             
-            indexSequence.fulfill(with: result?.sentence)
+            indexSequence.fulfill(with: sut.currentPosition?.sentence)
         }
         
         indexSequence.wait(timeout: 3, enforceOrder: true)
@@ -104,14 +105,14 @@ class SubtitlesIteratorTests: XCTestCase {
         
         let sut = createSUT(subtitles: subtitles)
         
-        let result1 = sut.move(to: sentence.startTime - 1.0)
-        XCTAssertNil(result1?.word)
+        let _ = sut.move(at: sentence.startTime - 1.0)
+        XCTAssertNil(sut.currentPosition?.word)
         
-        let result2 = sut.move(to: sentence.startTime)
-        XCTAssertNil(result2?.word)
+        let _ = sut.move(at: sentence.startTime)
+        XCTAssertNil(sut.currentPosition?.word)
         
-        let result3 = sut.move(to: sentence.startTime + 1)
-        XCTAssertNil(result3?.word)
+        let _ = sut.move(at: sentence.startTime + 1)
+        XCTAssertNil(sut.currentPosition?.word)
     }
     
     func testMoveToTheMostRecentWordSyncSentence() async throws {
@@ -131,29 +132,29 @@ class SubtitlesIteratorTests: XCTestCase {
         
         let sut = createSUT(subtitles: subtitles)
         
-        let result1 = sut.move(to: targetSentence.startTime - 0.5)
-        XCTAssertEqual(result1?.sentence, 0)
-        XCTAssertNil(result1?.word)
+        let _ = sut.move(at: targetSentence.startTime - 0.5)
+        XCTAssertEqual(sut.currentPosition?.sentence, 0)
+        XCTAssertNil(sut.currentPosition?.word)
         
-        let result2 = sut.move(to: targetSentence.startTime)
-        XCTAssertEqual(result2?.sentence, 1)
-        XCTAssertNil(result2?.word)
+        let _ = sut.move(at: targetSentence.startTime)
+        XCTAssertEqual(sut.currentPosition?.sentence, 1)
+        XCTAssertNil(sut.currentPosition?.word)
         
-        let result3 = sut.move(to: targetSentence.startTime + 0.1)
-        XCTAssertEqual(result3?.sentence, 1)
-        XCTAssertEqual(result3?.word, 0)
+        let _ = sut.move(at: targetSentence.startTime + 0.1)
+        XCTAssertEqual(sut.currentPosition?.sentence, 1)
+        XCTAssertEqual(sut.currentPosition?.word, 0)
         
-        let result4 = sut.move(to: targetSentence.startTime + 0.15)
-        XCTAssertEqual(result4?.sentence, 1)
-        XCTAssertEqual(result4?.word, 0)
+        let _ = sut.move(at: targetSentence.startTime + 0.15)
+        XCTAssertEqual(sut.currentPosition?.sentence, 1)
+        XCTAssertEqual(sut.currentPosition?.word, 0)
         
-        let result5 = sut.move(to: targetSentence.startTime + 0.2)
-        XCTAssertEqual(result5?.sentence, 1)
-        XCTAssertEqual(result5?.word, 1)
+        let _ = sut.move(at: targetSentence.startTime + 0.2)
+        XCTAssertEqual(sut.currentPosition?.sentence, 1)
+        XCTAssertEqual(sut.currentPosition?.word, 1)
         
-        let result6 = sut.move(to: targetSentence.startTime + 100)
-        XCTAssertEqual(result6?.sentence, 2)
-        XCTAssertEqual(result6?.word, nil)
+        let _ = sut.move(at: targetSentence.startTime + 100)
+        XCTAssertEqual(sut.currentPosition?.sentence, 2)
+        XCTAssertEqual(sut.currentPosition?.word, nil)
     }
     
     func test_getNext_InEmptyList() async throws {
@@ -186,23 +187,25 @@ class SubtitlesIteratorTests: XCTestCase {
         let sut = createSUT(subtitles: subtitles)
         
         let sequence = expectSequence([
-            [0, nil],
-            [1, nil],
-            [2, nil],
-            [3, nil],
+            [0.0, 0, nil],
+            [1, 1, nil],
+            [2.0, 2, nil],
+            [3.0, 3, nil],
             nil
         ])
 
         while !sequence.isCompleted {
             
-            let result = sut.next()
-            
-            guard let result = result else {
+            guard let time = sut.next() else {
                 sequence.fulfill(with: nil)
                 break
             }
 
-            sequence.fulfill(with: [result.sentence, result.word])
+            sequence.fulfill(with: [
+                time,
+                sut.currentPosition?.sentence.double,
+                sut.currentPosition?.word?.double
+            ])
         }
 
         sequence.wait(timeout: 1, enforceOrder: true)
@@ -221,21 +224,23 @@ class SubtitlesIteratorTests: XCTestCase {
         let sut = createSUT(subtitles: subtitles)
         
         let sequence = expectSequence([
-            [0, nil],
-            [0, 0],
+            [0.0, 0, nil],
+            [1.0, 0, 0],
             nil
         ])
 
         while !sequence.isCompleted {
             
-            let result = sut.next()
-            
-            guard let result = result else {
+            guard let time = sut.next() else {
                 sequence.fulfill(with: nil)
                 break
             }
 
-            sequence.fulfill(with: [result.sentence, result.word])
+            sequence.fulfill(with: [
+                time,
+                sut.currentPosition?.sentence.double,
+                sut.currentPosition?.word?.double
+            ])
         }
 
         sequence.wait(timeout: 1, enforceOrder: true)
@@ -254,20 +259,22 @@ class SubtitlesIteratorTests: XCTestCase {
         let sut = createSUT(subtitles: subtitles)
         
         let sequence = expectSequence([
-            [0, 0] as [Int?],
+            [1.0, 0, 0] as [Double?],
             nil
         ])
 
         while !sequence.isCompleted {
             
-            let result = sut.next()
-            
-            guard let result = result else {
+            guard let time = sut.next() else {
                 sequence.fulfill(with: nil)
                 break
             }
 
-            sequence.fulfill(with: [result.sentence, result.word])
+            sequence.fulfill(with: [
+                time,
+                sut.currentPosition?.sentence.double,
+                sut.currentPosition?.word?.double
+            ])
         }
 
         sequence.wait(timeout: 1, enforceOrder: true)
@@ -279,7 +286,7 @@ class SubtitlesIteratorTests: XCTestCase {
             Subtitles.Sentence(
                 startTime: 1,
                 duration: 0,
-                text: .synced(items: syncItems([1, 2]))
+                text: .synced(items: syncItems([1, 1.5]))
             ),
             Subtitles.Sentence(
                 startTime: 2,
@@ -291,23 +298,25 @@ class SubtitlesIteratorTests: XCTestCase {
         let sut = createSUT(subtitles: subtitles)
         
         let sequence = expectSequence([
-            [0, 0],
-            [0, 1],
-            [1, nil],
-            [1, 0],
+            [1.0, 0, 0],
+            [1.5, 0, 1],
+            [2.0, 1, nil],
+            [2.1, 1, 0],
             nil
         ])
 
         while !sequence.isCompleted {
             
-            let result = sut.next()
-            
-            guard let result = result else {
+            guard let time = sut.next() else {
                 sequence.fulfill(with: nil)
                 break
             }
 
-            sequence.fulfill(with: [result.sentence, result.word])
+            sequence.fulfill(with: [
+                time,
+                sut.currentPosition?.sentence.double,
+                sut.currentPosition?.word?.double
+            ])
         }
 
         sequence.wait(timeout: 1, enforceOrder: true)

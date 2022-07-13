@@ -9,22 +9,46 @@ import Foundation
 
 // MARK: - Interfaces
 
-public typealias SubtitlesIteratorPosition = (sentence: Int, word: Int?)
+public struct SubtitlesPosition {
+    
+    public var sentence: Int
+    public var word: Int?
+    
+    public init(sentence: Int, word: Int? = nil) {
+        
+        self.sentence = sentence
+        self.word = word
+    }
+}
 
-public protocol SubtitlesIterator {
+public struct SubtitlesItem {
     
-    func move(to: TimeInterval) -> SubtitlesIteratorPosition?
+    public var sentence: Subtitles.Sentence
+    public var word: Subtitles.SyncedItem?
     
-    func getNext() -> SubtitlesIteratorPosition?
+    public init(sentence: Subtitles.Sentence, word: Subtitles.SyncedItem? = nil) {
+        
+        self.sentence = sentence
+        self.word = word
+    }
+}
+
+public protocol SubtitlesIterator: TimeMarksIterator {
     
-    func next() -> SubtitlesIteratorPosition?
-    
-    var position: SubtitlesIteratorPosition? { get }
+    var currentPosition: SubtitlesPosition? { get }
+
+    var currentItem: SubtitlesItem? { get }
 }
 
 // MARK: - Implementations
 
 public final class DefaultSubtitlesIterator: SubtitlesIterator {
+    
+    public var currentPosition: SubtitlesPosition?
+
+    public var currentTime: TimeInterval? { getTime(item: currentItem) }
+    
+    public var currentItem: SubtitlesItem? { getItem(position: currentPosition) }
     
     private let subtitles: Subtitles
     
@@ -34,21 +58,54 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         sentences.map { $0.startTime }
     } ()
     
-    private var currentPosition: SubtitlesIteratorPosition? = nil
-    
-    public var position: SubtitlesIteratorPosition? { currentPosition }
-    
     public init(subtitles: Subtitles) {
         
         self.subtitles = subtitles
     }
+    
+    private func getItem(position: SubtitlesPosition?) -> SubtitlesItem? {
+        
+        guard let position = position else {
+            return nil
+        }
+
+        let sentence = sentences[position.sentence]
+        
+        guard
+            let wordIndex = position.word,
+            let words = getWords(sentence: sentence)
+        else {
+            return .init(sentence: sentence)
+        }
+        
+        guard wordIndex < words.count else {
+            return nil
+        }
+        
+        return .init(
+            sentence: sentence,
+            word: words[wordIndex]
+        )
+    }
+    
+    private func getTime(item: SubtitlesItem?) -> TimeInterval? {
+        
+        return item?.word?.startTime ?? item?.sentence.startTime
+    }
+    
+    private func getTime(position: SubtitlesPosition?) -> TimeInterval? {
+        
+        return getTime(item: getItem(position: position))
+    }
+}
+
+extension DefaultSubtitlesIterator {
     
     private static func searchRecentItem(items: [TimeInterval], time: TimeInterval) -> Int? {
         
         let lastIndex = items.lastIndex { $0 <= time }
         return lastIndex
     }
-    
     
     private func searchRecentSentence(at time: TimeInterval) -> Int? {
         
@@ -78,18 +135,22 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         }
     }
     
-    public func move(to time: TimeInterval) -> SubtitlesIteratorPosition? {
+    public func move(at time: TimeInterval) -> TimeInterval? {
         
         guard
             let recentSentence = searchRecentSentence(at: time)
         else {
-            return nil
+            currentPosition = nil
+            return currentTime
         }
         
         let recentWord = searchRecentWord(at: time, in: recentSentence)
-        currentPosition = (recentSentence, recentWord)
+        currentPosition = .init(
+            sentence: recentSentence,
+            word: recentWord
+        )
         
-        return currentPosition
+        return currentTime
     }
     
 
@@ -104,7 +165,7 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         }
     }
     
-    public func getNext() -> SubtitlesIteratorPosition? {
+    public func getNextPosition() -> SubtitlesPosition? {
         
         guard let currentPosition = currentPosition else {
         
@@ -115,10 +176,10 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
                     let firstWord = words.first,
                     firstWord.startTime == firstSentence.startTime
                 else {
-                    return (sentence: 0, word: nil)
+                    return .init(sentence: 0, word: nil)
                 }
 
-                return (sentence: 0, word: 0)
+                return .init(sentence: 0, word: 0)
             }
             
             return nil
@@ -133,7 +194,7 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
             
             guard let currentWordIndex = currentPosition.word else {
 
-                return (
+                return .init(
                     sentence: currentPosition.sentence,
                     word: 0
                 )
@@ -141,7 +202,7 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
             
             let nextWordIndex = currentWordIndex + 1
             if nextWordIndex < words.count {
-                return (
+                return .init(
                     sentence: currentPosition.sentence,
                     word: nextWordIndex
                 )
@@ -160,23 +221,29 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         guard
             let firstWordOfNextSentence = nextSentenceWords?.first
         else {
-            return (
+            return .init(
                 sentence: nextSentenceIndex,
                 word: nil
             )
         }
-
-        return (
+        
+        return .init(
             sentence: nextSentenceIndex,
             word: firstWordOfNextSentence.startTime == nextSentence.startTime ? 0 : nil
         )
     }
     
-    public func next() -> SubtitlesIteratorPosition? {
+    public func getNext() -> TimeInterval? {
         
-        let nextPosition = getNext()
+        let nextPosition = getNextPosition()
+        return getTime(position: nextPosition)
+    }
+    
+    public func next() -> TimeInterval? {
+        
+        let nextPosition = getNextPosition()
         currentPosition = nextPosition
         
-        return nextPosition
+        return currentTime
     }
 }
