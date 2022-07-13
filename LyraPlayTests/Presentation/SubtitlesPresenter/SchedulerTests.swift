@@ -13,17 +13,18 @@ class SchedulerTests: XCTestCase {
     
     typealias SUT = (
         scheduler: Scheduler,
-        iterator: TimeMarksIterator,
+        iterator: TimeMarksIteratorMock,
         timerFactory: ActionTimerFactory
     )
     
     func createSUT() -> SUT {
         
         let timerFactory = ActionTimerFactoryMock()
+        let iterator = TimeMarksIteratorMock()
         
         let scheduler = DefaultScheduler(
-            iterator: iterator,
-            timerFactory: timerFactory
+            timeMarksIterator: iterator,
+            actionTimerFactory: timerFactory
         )
         
         detectMemoryLeak(instance: scheduler)
@@ -31,7 +32,7 @@ class SchedulerTests: XCTestCase {
         return (
             scheduler,
             iterator,
-            timer
+            timerFactory
         )
     }
     
@@ -41,10 +42,9 @@ class SchedulerTests: XCTestCase {
         expectation.isInverted = true
         
         let sut = createSUT()
-        let iteratorData = [(0.0, 0.0)]
 
         sut.iterator.timeMarks = []
-        sut.scheduler.start(at: 0.0) {
+        sut.scheduler.start(at: 0.0) { _ in
             expectation.fulfill()
         }
         
@@ -55,18 +55,14 @@ class SchedulerTests: XCTestCase {
         
         let sut = createSUT()
         
-        let iteratorData = [(0.0, 0), (0.1, 1), (0.2, 2)]
+        let timeMarks = [0.0, 0.1, 0.2]
         
-        let sequence = expectSequence([
-            [0, 0.0, 0],
-            [0, 0.1, 1],
-            [0, 0.2, 2],
-        ])
+        let sequence = expectSequence(timeMarks)
         
-        sut.iterator.timeMarks = [0.0, 0.1, 0.2]
-        sut.scheduler.start(at: 0.0) { index, time, data in
+        sut.iterator.timeMarks = timeMarks
+        sut.scheduler.start(at: 0.0) { time in
             
-            sequence.fulfill(with: [index, time, data])
+            sequence.fulfill(with: time)
         }
         
         sequence.wait(timeout: 1, enforceOrder: true)
@@ -74,21 +70,17 @@ class SchedulerTests: XCTestCase {
     
     func testStartAtOffset() async throws {
         
+
         let sut = createSUT()
+
+        let timeMarks = [0.0, 0.1, 0.2]
+        let sequence = expectSequence([0.1, 0.2])
         
-        let iteratorData = [(0.0, 0), (0.1, 1), (0.2, 2)]
+        sut.iterator.timeMarks = timeMarks
         
-        let sequence = expectSequence([
-            [0, 0.0, 0],
-            [0, 0.1, 1],
-            [0, 0.2, 2],
-        ])
-        
-        sut.iterator.timeMarks = [1]
-        
-        sut.scheduler.start(at: 0.1) { index, time, data in
+        sut.scheduler.start(at: 0.1) { time in
             
-            sequence.fulfill(with: [index, time, data])
+            sequence.fulfill(with: time)
         }
         
         sequence.wait(timeout: 1, enforceOrder: true)
@@ -101,7 +93,9 @@ class SchedulerTests: XCTestCase {
         let expectation = expectation(description: "Don't call")
         expectation.isInverted = true
         
-        sut.scheduler.start(at: 0.0)
+        sut.scheduler.start(at: 0.0) { _ in
+            expectation.fulfill()
+        }
         sut.scheduler.stop()
         
         wait(for: [expectation], timeout: 1)
@@ -115,7 +109,9 @@ class SchedulerTests: XCTestCase {
         let expectation = expectation(description: "Don't call")
         expectation.isInverted = true
         
-        sut.scheduler.start(at: 0.0)
+        sut.scheduler.start(at: 0.0) { _ in
+            expectation.fulfill()
+        }
         sut.scheduler.stop()
         
         wait(for: [expectation], timeout: 1)
@@ -168,11 +164,13 @@ final class TimeMarksIteratorMock: TimeMarksIterator {
     
     func getNext() -> TimeInterval? {
         
-        guard currentIndex < timeMarks.count else {
+        let nextIndex = currentIndex + 1
+        
+        guard nextIndex < timeMarks.count else {
             return nil
         }
         
-        return timeMarks[currentIndex]
+        return timeMarks[nextIndex]
     }
     
     func next() -> TimeInterval? {
