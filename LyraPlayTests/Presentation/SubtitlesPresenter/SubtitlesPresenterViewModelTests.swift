@@ -11,17 +11,27 @@ import LyraPlay
 
 class SubtitlesPresenterViewModelTests: XCTestCase {
 
-    typealias SUT = SubtitlesPresenterViewModel
+    typealias SUT = (
+        viewModel: SubtitlesPresenterViewModel
+        scheduler: Scheduler
+    )
+    
     private let specialCharacters = "\"!@#$^&%*()+=-[]\\/{}|:<>?,._"
     
     func createSUT(subtitles: Subtitles) -> SUT {
+
+        let scheduler = SchedulerMock()
         
         let presenterViewModel = DefaultSubtitlesPresenterViewModel(
-            subtitles: subtitles
+            subtitles: subtitles,
+            scheduler: scheduler
         )
-        detectMemoryLeak(instance: presenterViewModel)
+        detectMemoryLeak(instance: viewModel)
         
-        return presenterViewModel
+        return (
+            viewModel,
+            scheduler
+        )
     }
     
     
@@ -75,7 +85,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         
         let itemsSequence = expectSequence(expectedItems.flatMap({ $0.items }))
         
-        sut.sentences.observe(on: self) { sentences in
+        sut.viewModel.sentences.observe(on: self) { sentences in
             guard let sentences = sentences else {
                 return
             }
@@ -88,29 +98,28 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
             }
         }
         
-        await sut.load()
+        await sut.viewModel.load()
 
         itemsSequence.wait(timeout: 3, enforceOrder: true)
     }
     
-//    func testPlayEmpty() async throws {
-//
-//        let subtitles = Subtitles(sentences: [])
-//        let sut = createSUT(subtitles: subtitles)
-//        
-//        await sut.load()
-//        
-//        let sentenceSequence = expectSequence([nil])
-//        sentenceSequence.observe(sut.currentSentenceIndex)
-//        
-//        let wordSequence = expectSequence([nil])
-//        wordSequence.observe(sut.currentWordIndex)
-//        
-//        await sut.play(at: 10.0, speed: 1.0)
-//        
-//        sentenceSequence.wait(timeout: 10, enforceOrder: true)
-//    }
-//    
+    func testPlayEmpty() async throws {
+
+        let subtitles = Subtitles(sentences: [])
+        let sut = createSUT(subtitles: subtitles)
+        
+        await sut.viewModel.load()
+        
+        let expectation = expectation(description: "Don't call")
+        expectation.isInverted = true
+
+        sut.viewModel.currentPosition.observe(on: self) { _ in
+            expectation.fulfill()
+        }
+        
+        await sut.viewModel.play(at: 10.0, speed: 1.0)
+    }
+    
 //    func testPlayFromBegining() async throws {
 //
 //        let subtitles = Subtitles(sentences: [
@@ -189,4 +198,21 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
 //        
 //        sentenceSequence.wait(timeout: 10, enforceOrder: true)
 //    }
+}
+
+// MARK: - Mocks
+
+fileprivate final class SchedulerMock: Scheduler {
+
+    func start(at: TimeInterval, block: @escaping (TimeInterval) -> Void) {
+        
+    }
+    
+    func stop() {
+        <#code#>
+    }
+    
+    func pause() {
+        <#code#>
+    }
 }
