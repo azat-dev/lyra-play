@@ -20,6 +20,11 @@
 		AA0F69B2287EE64300BD13DB /* Int+Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69B1287EE64300BD13DB /* Int+Double.swift */; };
 		AA0F69B4287EEFF500BD13DB /* SchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69B3287EEFF500BD13DB /* SchedulerTests.swift */; };
 		AA0F69B6287EF74500BD13DB /* Scheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69B5287EF74500BD13DB /* Scheduler.swift */; };
+		AA0F69BC287F4F0D00BD13DB /* SubtitlesPresenterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69BB287F4F0D00BD13DB /* SubtitlesPresenterView.swift */; };
+		AA0F69BF287F58A600BD13DB /* WordCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69BE287F58A600BD13DB /* WordCell.swift */; };
+		AA0F69C1287F5CD900BD13DB /* WordCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69C0287F5CD900BD13DB /* WordCellViewModel.swift */; };
+		AA0F69C3287F5E8600BD13DB /* WordCell+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69C2287F5E8600BD13DB /* WordCell+Styles.swift */; };
+		AA0F69C5287F608B00BD13DB /* UIView+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69C4287F608B00BD13DB /* UIView+Layout.swift */; };
 		AA190E6F287ABC9C000514AB /* SubtitlesPresenterViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA190E6E287ABC9C000514AB /* SubtitlesPresenterViewModelTests.swift */; };
 		AA190E72287AC6AC000514AB /* SubtitlesPresenterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA190E71287AC6AC000514AB /* SubtitlesPresenterViewModel.swift */; };
 		AA1ACC222862FE7E000EEDD5 /* DefaultTagsParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1ACC212862FE7E000EEDD5 /* DefaultTagsParserTests.swift */; };
@@ -175,6 +180,11 @@
 		AA0F69B1287EE64300BD13DB /* Int+Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Double.swift"; sourceTree = "<group>"; };
 		AA0F69B3287EEFF500BD13DB /* SchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerTests.swift; sourceTree = "<group>"; };
 		AA0F69B5287EF74500BD13DB /* Scheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scheduler.swift; sourceTree = "<group>"; };
+		AA0F69BB287F4F0D00BD13DB /* SubtitlesPresenterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterView.swift; sourceTree = "<group>"; };
+		AA0F69BE287F58A600BD13DB /* WordCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordCell.swift; sourceTree = "<group>"; };
+		AA0F69C0287F5CD900BD13DB /* WordCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordCellViewModel.swift; sourceTree = "<group>"; };
+		AA0F69C2287F5E8600BD13DB /* WordCell+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WordCell+Styles.swift"; sourceTree = "<group>"; };
+		AA0F69C4287F608B00BD13DB /* UIView+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Layout.swift"; sourceTree = "<group>"; };
 		AA190E6E287ABC9C000514AB /* SubtitlesPresenterViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterViewModelTests.swift; sourceTree = "<group>"; };
 		AA190E71287AC6AC000514AB /* SubtitlesPresenterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterViewModel.swift; sourceTree = "<group>"; };
 		AA1ACC212862FE7E000EEDD5 /* DefaultTagsParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTagsParserTests.swift; sourceTree = "<group>"; };
@@ -335,10 +345,22 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		AA0F69BD287F587F00BD13DB /* SentenceCell */ = {
+			isa = PBXGroup;
+			children = (
+				AA0F69BE287F58A600BD13DB /* WordCell.swift */,
+				AA0F69C2287F5E8600BD13DB /* WordCell+Styles.swift */,
+				AA0F69C0287F5CD900BD13DB /* WordCellViewModel.swift */,
+			);
+			path = SentenceCell;
+			sourceTree = "<group>";
+		};
 		AA190E70287AC694000514AB /* SubtitlesPresenter */ = {
 			isa = PBXGroup;
 			children = (
+				AA0F69BD287F587F00BD13DB /* SentenceCell */,
 				AA190E71287AC6AC000514AB /* SubtitlesPresenterViewModel.swift */,
+				AA0F69BB287F4F0D00BD13DB /* SubtitlesPresenterView.swift */,
 				AA3166C9287C939B00348781 /* ActionTimer.swift */,
 				AA0F69B5287EF74500BD13DB /* Scheduler.swift */,
 				AAF2EEBF287DF83F00894F71 /* ActionTimerFactory.swift */,
@@ -813,6 +835,7 @@
 				AACEA3222869B14000111565 /* Observable.swift */,
 				AA7B0D7E28721B050067DDB5 /* UIFont+Utils.swift */,
 				AAFB979428759D45007A76A7 /* MessageChannel.swift */,
+				AA0F69C4287F608B00BD13DB /* UIView+Layout.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1047,10 +1070,12 @@
 				AA35E585286AA5E10086DB28 /* LocalFilesRepository.swift in Sources */,
 				AA7B0D5028719AE20067DDB5 /* LibraryItemViewController.swift in Sources */,
 				AA0D3F8328762698006717B9 /* SubtitlesRepository.swift in Sources */,
+				AA0F69BC287F4F0D00BD13DB /* SubtitlesPresenterView.swift in Sources */,
 				AACEA32B2869ED5800111565 /* AudioFilesBrowserCell.swift in Sources */,
 				AA2895A92876EAA100B168C4 /* LyraPlay.xcdatamodeld in Sources */,
 				AACEA31C2869ABEB00111565 /* AudioFilesBrowserViewModel.swift in Sources */,
 				AA7B0D562871A7390067DDB5 /* LibraryItemViewControllerFactory.swift in Sources */,
+				AA0F69C5287F608B00BD13DB /* UIView+Layout.swift in Sources */,
 				AAFB979528759D45007A76A7 /* MessageChannel.swift in Sources */,
 				AA731CC828707EE50044412F /* Result+Utils.swift in Sources */,
 				AA0D3F85287626D1006717B9 /* SubtitlesInfo.swift in Sources */,
@@ -1059,6 +1084,7 @@
 				AAFB97A12875D0FD007A76A7 /* LyricsParser.swift in Sources */,
 				AACEA3232869B14000111565 /* Observable.swift in Sources */,
 				AA0F69B0287EDF7A00BD13DB /* TimeMarksIterator.swift in Sources */,
+				AA0F69BF287F58A600BD13DB /* WordCell.swift in Sources */,
 				AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */,
 				AAF2CFE82876CC650003FCF7 /* CoreDataSubtitlesRepository.swift in Sources */,
 				AA3BAB1B286C7225005EE01E /* PlayerState.swift in Sources */,
@@ -1067,11 +1093,13 @@
 				AA0930C4287349DA00E62DB3 /* CurrentPlayerStateUseCase.swift in Sources */,
 				AA1D7E802876E71F0095E490 /* ManagedSubtitles+CoreDataClass.swift in Sources */,
 				AACEA32D2869EDE400111565 /* AudioFilesBrowserCellViewModel.swift in Sources */,
+				AA0F69C3287F5E8600BD13DB /* WordCell+Styles.swift in Sources */,
 				AACEA3172869A5C800111565 /* BrowseAudioLibraryUseCase.swift in Sources */,
 				AAF2CFE42876CA370003FCF7 /* ManagedSubtitles+Mapping.swift in Sources */,
 				AA598D1F2868D435001F3DE1 /* ManagedAudioFile+Mapping.swift in Sources */,
 				AA4F9705286E32C10087F45A /* PlayerViewModel.swift in Sources */,
 				AA7B0D542871A70F0067DDB5 /* LibraryItemViewController+Styles.swift in Sources */,
+				AA0F69C1287F5CD900BD13DB /* WordCellViewModel.swift in Sources */,
 				AA35E582286AA3D90086DB28 /* FilesRepository.swift in Sources */,
 				AA2895AD287742FC00B168C4 /* ImportSubtitlesUseCase.swift in Sources */,
 				AA2BE88B2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift in Sources */,

@@ -30,6 +30,18 @@ public struct SentencePresentation: Equatable {
         case space(position: Position, text: String)
         case word(position: Position, text: String)
         case specialCharacter(position: Position, text: String)
+        
+        public func getText() -> String {
+            
+            switch self {
+            case let .space(position: _, text: text):
+                return text
+            case let .word(position: _, text: text):
+                return text
+            case let .specialCharacter(position: _, text: text):
+                return text
+            }
+        }
     }
     
     public init(items: [SentencePresentation.Item]) {
@@ -85,8 +97,7 @@ public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewMod
     private var scheduler: Scheduler
     
     public init(
-        subtitles: Subtitles,
-        scheduler: Scheduler
+        subtitles: Subtitles
     ) {
         
         self.subtitles = subtitles

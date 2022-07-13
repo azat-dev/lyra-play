@@ -22,9 +22,8 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
 
         let scheduler = SchedulerMock()
         
-        let presenterViewModel = DefaultSubtitlesPresenterViewModel(
-            subtitles: subtitles,
-            scheduler: scheduler
+        let viewModel = DefaultSubtitlesPresenterViewModel(
+            subtitles: subtitles
         )
         detectMemoryLeak(instance: viewModel)
         
@@ -116,7 +115,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
             expectation.fulfill()
         }
         
-        await sut.viewModel.play(at: 10.0, speed: 1.0)
+        await sut.viewModel.play(at: 10.0)
     }
     
 //    func testPlayFromBegining() async throws {
