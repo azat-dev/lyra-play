@@ -35,12 +35,16 @@ class LocalFilesRepositoryTests: XCTestCase {
         }
     }
     
+    private func anyTestFileData() -> Data {
+        return UUID().uuidString.data(using: .utf8)!
+    }
+    
     func testPutGetFile() async throws {
         
         let sut1 = createSUT()
         
-        let file1 = "file1".data(using: .utf8)!
-        let file2 = "file2".data(using: .utf8)!
+        let file1 = anyTestFileData()
+        let file2 = anyTestFileData()
         let updatedFile1 = "file1-updated".data(using: .utf8)!
         
         let result1 = await sut1.putFile(name: "file1.txt", data: file1)
@@ -72,8 +76,8 @@ class LocalFilesRepositoryTests: XCTestCase {
         
         let filesRepository = createSUT()
         
-        let file1 = "file1".data(using: .utf8)!
-        let file2 = "file2".data(using: .utf8)!
+        let file1 = anyTestFileData()
+        let file2 = anyTestFileData()
         
         let result1 = await filesRepository.putFile(name: "file1.txt", data: file1)
         try AssertResultSucceded(result1)
@@ -119,8 +123,8 @@ class LocalFilesRepositoryTests: XCTestCase {
         
         let testFileName = "test.txt"
         
-        let testData1 = "test1".data(using: .utf8)!
-        let testData2 = "test2".data(using: .utf8)!
+        let testData1 = anyTestFileData()
+        let testData2 = anyTestFileData()
         
         let _ = await sut1.putFile(name: testFileName, data: testData1)
         let _ = await sut2.putFile(name: testFileName, data: testData2)
@@ -133,7 +137,7 @@ class LocalFilesRepositoryTests: XCTestCase {
         let getResult2 = await sut2.getFile(name: testFileName)
         let data2 = try AssertResultSucceded(getResult2)
         
-        XCTAssertEqual(data2, testData1)
+        XCTAssertEqual(data2, testData2)
     }
     
     func testDeleteSeparationByBaseDirectories() async throws {
@@ -143,8 +147,8 @@ class LocalFilesRepositoryTests: XCTestCase {
         
         let testFileName = "test.txt"
         
-        let testData1 = "test1".data(using: .utf8)!
-        let testData2 = "test2".data(using: .utf8)!
+        let testData1 = anyTestFileData()
+        let testData2 = anyTestFileData()
         
         let _ = await sut1.putFile(name: testFileName, data: testData1)
         let _ = await sut2.putFile(name: testFileName, data: testData2)
@@ -162,6 +166,71 @@ class LocalFilesRepositoryTests: XCTestCase {
         let getResult2 = await sut2.getFile(name: testFileName)
         let data2 = try AssertResultSucceded(getResult2)
         
-        XCTAssertEqual(data2, testData1)
+        XCTAssertEqual(data2, testData2)
+    }
+    
+    func testPutGetWithIntemediateDirectories() async throws {
+        
+        let sut = createSUT()
+        
+        let testFileName1 = "directory1/test.txt"
+        let testFileName2 = "directory2/test.txt"
+        
+        let testData1 = anyTestFileData()
+        let testData2 = anyTestFileData()
+        
+        let _ = await sut.putFile(name: testFileName1, data: testData1)
+        let _ = await sut.putFile(name: testFileName2, data: testData2)
+        
+        let getResult1 = await sut.getFile(name: testFileName1)
+        let file1 = try AssertResultSucceded(getResult1)
+        
+        XCTAssertEqual(file1, testData1)
+        
+        let getResult2 = await sut.getFile(name: testFileName2)
+        let data2 = try AssertResultSucceded(getResult2)
+        
+        XCTAssertEqual(data2, testData2)
+    }
+    
+    func testDeleteWithIntemediateDirectories() async throws {
+        
+        let sut = createSUT()
+        
+        let testFileName1 = "directory1/test.txt"
+        let testFileName2 = "directory2/test.txt"
+        
+        let testData1 = anyTestFileData()
+        let testData2 = anyTestFileData()
+        
+        let _ = await sut.putFile(name: testFileName1, data: testData1)
+        let _ = await sut.putFile(name: testFileName2, data: testData2)
+        
+        let deleteResult = await sut.deleteFile(name: testFileName1)
+        try AssertResultSucceded(deleteResult)
+        
+        let getResult1 = await sut.getFile(name: testFileName1)
+        let error = try AssertResultFailed(getResult1)
+        
+        guard case .fileNotFound = error else {
+            XCTFail("Wrong error: \(error)")
+            return
+        }
+        
+        let getResult2 = await sut.getFile(name: testFileName2)
+        let data2 = try AssertResultSucceded(getResult2)
+        
+        XCTAssertEqual(data2, testData2)
+        
+        let deleteResult2 = await sut.deleteFile(name: "directory1")
+        try AssertResultSucceded(deleteResult2)
+        
+        let getResult3 = await sut.getFile(name: testFileName2)
+        let error2 = try AssertResultFailed(getResult3)
+        
+        guard case .fileNotFound = error2 else {
+            XCTFail("Wrong error: \(error2)")
+            return
+        }
     }
 }
