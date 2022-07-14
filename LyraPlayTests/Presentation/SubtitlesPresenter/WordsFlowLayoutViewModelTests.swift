@@ -13,39 +13,41 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
     
     typealias SUT = (
         viewModel: WordsFlowLayoutViewModel,
-        itemSizesProvider: ItemsSizesProvider
+        itemsSizesProvider: ItemsSizesProviderMock
     )
     
     func createSUT() -> SUT {
         
         let itemsSizesProvider = ItemsSizesProviderMock()
-        let interItemSpace = 0
-        let spaceBetweenLines = 0
+        let interItemSpace = 0.0
+        let spaceBetweenLines = 0.0
         
         let viewModel = WordsFlowLayoutViewModel(
-            itemsSizesProvider: itemsSizesProvider,
+            sizesProvider: itemsSizesProvider,
             interItemSpace: interItemSpace,
             spaceBetweenLines: spaceBetweenLines
         )
         
         detectMemoryLeak(instance: viewModel)
         
-        return viewModel
+        return (
+            viewModel,
+            itemsSizesProvider
+        )
     }
     
     func testEachSectionFromNewLine() {
         
-        let testWidth = 1
-        let itemSize = CGSize(width: 1, height: 1)
+        let itemSize = Size(width: 1, height: 1)
         let interItemSpace = 0
         let spaceBetweenLines = 0
         
-        let testContainerSize = CGSize(width: 10, height: 10)
+        let testContainerSize = Size(width: 10, height: 10)
         let sut = createSUT()
         
         let numberOfSections = 3
         
-        sut.itemSizesProvider.sizes = (0..<numberOfSections).map { _ in [itemSize] }
+        sut.itemsSizesProvider.sizes = (0..<numberOfSections).map { _ in [itemSize] }
         
         sut.viewModel.prepare(containerSize: testContainerSize)
 
@@ -53,7 +55,7 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         
         for section in 0..<numberOfSections {
             
-            let (position, size) = sut.viewModel.getAttributes(section: section, item: 0)
+            let (position, size, path) = sut.viewModel.getAttributes(section: section, item: 0)
             
             XCTAssertEqual(position.y, prevOffsetY + itemSize.height)
             prevOffsetY = position.y
@@ -63,18 +65,9 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
 
 // MARK: - Mocks
 
-protocol ItemsSizesProvider {
-    
-    func getItemSize(section: Int, item: Int) -> CGSize
-    
-    var numberOfSections: Int { get }
-    
-    func numberOfItems(section: Int) -> Int
-}
-
 final class ItemsSizesProviderMock: ItemsSizesProvider {
     
-    public var sizes = [[CGSize]]()
+    public var sizes = [[Size]]()
     
     var numberOfSections: Int {
         return sizes.count
@@ -84,7 +77,7 @@ final class ItemsSizesProviderMock: ItemsSizesProvider {
         return sizes[section].count
     }
     
-    func getItemSize(section: Int, item: Int) -> CGSize {
+    func getItemSize(section: Int, item: Int) -> Size {
         return sizes[section][item]
     }
 }

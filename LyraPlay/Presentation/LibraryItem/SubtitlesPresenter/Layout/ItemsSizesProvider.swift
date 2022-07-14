@@ -9,9 +9,9 @@ import Foundation
 
 // MARK: - Interfaces
 
-protocol ItemsSizesProvider {
+public protocol ItemsSizesProvider {
     
-    func getItemSize(section: Int, item: Int) -> (width: Double, height: Double)
+    func getItemSize(section: Int, item: Int) -> Size
     
     var numberOfSections: Int { get }
     
