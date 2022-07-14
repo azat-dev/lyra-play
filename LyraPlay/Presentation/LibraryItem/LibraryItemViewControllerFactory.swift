@@ -14,13 +14,15 @@ public final class LibraryItemViewControllerFactory {
     private var currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput
     private var playerControlUseCase: PlayerControlUseCase
     private var importSubtitlesUseCase: ImportSubtitlesUseCase
+    private var loadSubtitlesUseCase: LoadSubtitlesUseCase
     
     init(
         coordnator: LibraryItemCoordinator,
         showMediaInfoUseCase: ShowMediaInfoUseCase,
         currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput,
         playerControlUseCase: PlayerControlUseCase,
-        importSubtitlesUseCase: ImportSubtitlesUseCase
+        importSubtitlesUseCase: ImportSubtitlesUseCase,
+        loadSubtitlesUseCase: LoadSubtitlesUseCase
     ) {
         
         self.coordinator = coordnator
@@ -28,6 +30,7 @@ public final class LibraryItemViewControllerFactory {
         self.currentPlayerStateUseCase = currentPlayerStateUseCase
         self.playerControlUseCase = playerControlUseCase
         self.importSubtitlesUseCase = importSubtitlesUseCase
+        self.loadSubtitlesUseCase = loadSubtitlesUseCase
     }
     
     public func build(with trackId: UUID) -> LibraryItemViewController {
@@ -38,7 +41,8 @@ public final class LibraryItemViewControllerFactory {
             showMediaInfoUseCase: showMediaInfoUseCase,
             currentPlayerStateUseCase: currentPlayerStateUseCase,
             playerControlUseCase: playerControlUseCase,
-            importSubtitlesUseCase: importSubtitlesUseCase
+            importSubtitlesUseCase: importSubtitlesUseCase,
+            loadSubtitlesUseCase: loadSubtitlesUseCase
         )
         
         return LibraryItemViewController(viewModel: viewModel)

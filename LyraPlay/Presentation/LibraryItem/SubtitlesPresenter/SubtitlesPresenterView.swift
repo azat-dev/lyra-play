@@ -11,9 +11,35 @@ import UIKit
 final class SubtitlesPresenterView: UIView {
     
     private var collectionView: UICollectionView!
-    private var viewModel: SubtitlesPresenterViewModel!
+    
+    public var viewModel: SubtitlesPresenterViewModel? {
+        
+        didSet {
+            guard let viewModel = viewModel else {
+                return
+            }
+
+            bind(to: viewModel)
+        }
+    }
+    
     private var prevPosition: SubtitlesPosition?
     
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setup()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup()
+    }
+    
+    private func setup() {
+        
+        setupViews()
+        layout()
+    }
 }
 
 // MARK: - Bind viewModel
@@ -23,11 +49,11 @@ extension SubtitlesPresenterView {
     
     private func bind(to viewModel: SubtitlesPresenterViewModel) {
 
-        viewModel.sentences.observe(on: self) { [weak self] sentences in
+        viewModel.sentences.observe(on: self, queue: .main) { [weak self] sentences in
             self?.collectionView.reloadData()
         }
         
-        viewModel.currentPosition.observe(on: self) { [weak self] position in
+        viewModel.currentPosition.observe(on: self, queue: .main) { [weak self] position in
             
             guard let self = self else {
                 return
@@ -37,9 +63,8 @@ extension SubtitlesPresenterView {
                 return
             }
             
-            
             self.collectionView.scrollToItem(
-                at: IndexPath(row: sentencePosition, section: 0),
+                at: IndexPath(row: position?.word ?? 0, section: sentencePosition),
                 at: .top,
                 animated: true
             )
@@ -53,9 +78,18 @@ extension SubtitlesPresenterView {
     
     private func setupViews() {
         
+        let collectionViewLayout = UICollectionViewFlowLayout()
+        collectionViewLayout.scrollDirection = .vertical
+        collectionViewLayout.minimumInteritemSpacing = 0
+        collectionViewLayout.minimumLineSpacing = 0
+        collectionViewLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+
+        collectionViewLayout.sectionInset = .init(top: 0, left: 0, bottom: 30, right: 0)
+        
         collectionView = UICollectionView(
             frame: self.frame,
-            collectionViewLayout: UICollectionViewFlowLayout()
+            collectionViewLayout: collectionViewLayout
+//            collectionViewLayout: UICollectionViewLayout.fixedSpacedFlowLayout()
         )
         
         collectionView.register(
@@ -73,12 +107,12 @@ extension SubtitlesPresenterView {
 extension SubtitlesPresenterView: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return viewModel.sentences.value?.count ?? 0
+        return viewModel?.sentences.value?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        guard let sentences = viewModel.sentences.value else {
+        guard let sentences = viewModel?.sentences.value else {
             return 0
         }
         
@@ -100,7 +134,7 @@ extension SubtitlesPresenterView: UICollectionViewDataSource {
         let wordIndex = indexPath.item
         
         guard
-            let sentences = viewModel.sentences.value,
+            let sentences = viewModel?.sentences.value,
             sectionIndex < sentences.count
         else {
             fatalError("Inconsistent state")
@@ -128,6 +162,6 @@ extension SubtitlesPresenterView {
     
     private func layout() {
         
-        
+        collectionView.constraintTo(view: self)
     }
 }

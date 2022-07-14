@@ -58,6 +58,8 @@ public final class DefaultImportSubtitlesUseCase: ImportSubtitlesUseCase {
         
         let fileName = "\(trackId)/\(language).lrc"
         
+        print(fileName)
+        
         let resultSaveFile = await subtitlesFilesRepository.putFile(
             name: fileName,
             data: data

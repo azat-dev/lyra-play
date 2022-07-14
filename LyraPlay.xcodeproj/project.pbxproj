@@ -345,20 +345,20 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
-		AA0F69BD287F587F00BD13DB /* SentenceCell */ = {
+		AA0F69BD287F587F00BD13DB /* WordCell */ = {
 			isa = PBXGroup;
 			children = (
 				AA0F69BE287F58A600BD13DB /* WordCell.swift */,
 				AA0F69C2287F5E8600BD13DB /* WordCell+Styles.swift */,
 				AA0F69C0287F5CD900BD13DB /* WordCellViewModel.swift */,
 			);
-			path = SentenceCell;
+			path = WordCell;
 			sourceTree = "<group>";
 		};
 		AA190E70287AC694000514AB /* SubtitlesPresenter */ = {
 			isa = PBXGroup;
 			children = (
-				AA0F69BD287F587F00BD13DB /* SentenceCell */,
+				AA0F69BD287F587F00BD13DB /* WordCell */,
 				AA190E71287AC6AC000514AB /* SubtitlesPresenterViewModel.swift */,
 				AA0F69BB287F4F0D00BD13DB /* SubtitlesPresenterView.swift */,
 				AA3166C9287C939B00348781 /* ActionTimer.swift */,

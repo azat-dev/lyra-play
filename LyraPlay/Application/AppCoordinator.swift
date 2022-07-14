@@ -165,12 +165,24 @@ final class DefaultAppCoordinator: AppCoordinator {
         return CoreDataSubtitlesRepository(coreDataStore: coreDataStore)
     } ()
     
+    private lazy var subtitlesParser: SubtitlesParser = {
+        return LyricsParser()
+    } ()
+    
     private lazy var importSubtitlesUseCase = {
         
         return DefaultImportSubtitlesUseCase(
             subtitlesRepository: subtitlesRepository,
-            subtitlesParser: LyricsParser(),
+            subtitlesParser: subtitlesParser,
             subtitlesFilesRepository: subtitlesFilesRepository
+        )
+    } ()
+    
+    private lazy var loadSubtitlesUseCase: LoadSubtitlesUseCase = {
+        return DefaultLoadSubtitlesUseCase(
+            subtitlesRepository: subtitlesRepository,
+            subtitlesFiles: subtitlesFilesRepository,
+            subtitlesParser: subtitlesParser
         )
     } ()
     
@@ -253,7 +265,8 @@ extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
             showMediaInfoUseCase: showMediaInfoUseCase,
             currentPlayerStateUseCase: currentPlayerStateUseCase,
             playerControlUseCase: playerControlUseCase,
-            importSubtitlesUseCase: importSubtitlesUseCase
+            importSubtitlesUseCase: importSubtitlesUseCase,
+            loadSubtitlesUseCase: loadSubtitlesUseCase
         )
         
         let vc = factory.build(with: trackId)

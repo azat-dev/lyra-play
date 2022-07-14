@@ -74,6 +74,9 @@ public final class CoreDataSubtitlesRepository: SubtitlesRepository {
     
     public func fetch(mediaFileId: UUID, language: String) async -> Result<SubtitlesInfo, SubtitlesRepositoryError> {
         
+        let items = await list()
+        print(items)
+        
         do {
             
             let item = try await getManagedItem(mediaFileId: mediaFileId, language: language)

@@ -14,10 +14,11 @@ extension WordCell {
         
         static func apply(label: UILabel) {
             
+            label.textColor = .white
         }
         
         static func apply(activeLabel: UILabel) {
-            
+            activeLabel.textColor = .white
         }
     }
 }

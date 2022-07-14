@@ -243,6 +243,7 @@ extension DefaultSubtitlesPresenterViewModel {
                 return
             }
             
+            print(self.subtitlesIterator.currentPosition)
             self.currentPosition.value = self.subtitlesIterator.currentPosition
         }
     }

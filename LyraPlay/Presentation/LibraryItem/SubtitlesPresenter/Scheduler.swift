@@ -73,6 +73,7 @@ extension DefaultScheduler: Scheduler {
         timer.cancel()
 
         guard let currentTimeMark = timeMarksIterator.move(at: time) else {
+            setNextTimer(block: block)
             return
         }
         

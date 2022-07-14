@@ -26,7 +26,10 @@ public protocol LibraryItemCoordinator {
 public protocol LibraryItemViewModelOutput {
 
     var isPlaying: Observable<Bool> { get }
+    
     var info: Observable<LibraryItemInfoPresentation?> { get }
+    
+    var subtitlesPresenterViewModel: Observable<SubtitlesPresenterViewModel?> { get }
 }
 
 public protocol LibraryItemViewModelInput {
@@ -51,9 +54,11 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
     private let playerControlUseCase: PlayerControlUseCase
     private let currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput
     private let importSubtitlesUseCase: ImportSubtitlesUseCase
+    private let loadSubtitlesUseCase: LoadSubtitlesUseCase
     
     public var isPlaying: Observable<Bool> = Observable(false)
     public var info: Observable<LibraryItemInfoPresentation?> = Observable(nil)
+    public var subtitlesPresenterViewModel: Observable<SubtitlesPresenterViewModel?> = Observable(nil)
     
     public init(
         trackId: UUID,
@@ -61,7 +66,8 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
         showMediaInfoUseCase: ShowMediaInfoUseCase,
         currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput,
         playerControlUseCase: PlayerControlUseCase,
-        importSubtitlesUseCase: ImportSubtitlesUseCase
+        importSubtitlesUseCase: ImportSubtitlesUseCase,
+        loadSubtitlesUseCase: LoadSubtitlesUseCase
     ) {
         
         self.trackId = trackId
@@ -70,6 +76,7 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
         self.playerControlUseCase = playerControlUseCase
         self.currentPlayerStateUseCase = currentPlayerStateUseCase
         self.importSubtitlesUseCase = importSubtitlesUseCase
+        self.loadSubtitlesUseCase = loadSubtitlesUseCase
         
         bind(to: currentPlayerStateUseCase)
     }
@@ -118,6 +125,22 @@ extension DefaultLibraryItemViewModel {
         )
     }
     
+    private func loadSubtitles() async {
+
+        let result = await loadSubtitlesUseCase.load(for: trackId, language: "English")
+
+        let subtitles = try! result.get()
+
+        let subtitlesViewModel = DefaultSubtitlesPresenterViewModel(subtitles: subtitles)
+        
+        Task {
+            
+            await subtitlesViewModel.load()
+            await subtitlesViewModel.play(at: 0.0)
+        }
+        subtitlesPresenterViewModel.value = subtitlesViewModel
+    }
+    
     public func load() async {
         
         let resultMediaInfo = await showMediaInfoUseCase.fetchInfo(trackId: trackId)
@@ -127,6 +150,7 @@ extension DefaultLibraryItemViewModel {
         }
         
         self.info.value = mapInfo(mediaInfo)
+        await loadSubtitles()
     }
     
     public func togglePlay() async {

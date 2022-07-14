@@ -21,6 +21,7 @@ public final class LibraryItemViewController: UIViewController {
     private var addSubtitlesButton = UIButton()
     
     private var mainGroup = UIView()
+    private var subtitlesPresenter = SubtitlesPresenterView()
     
     init(viewModel: LibraryItemViewModel) {
         
@@ -69,6 +70,15 @@ extension LibraryItemViewController {
         mainGroup.isHidden = isLoading
         activityIndicator.isHidden = !isLoading
     }
+    
+    private func showSubtitles() {
+        
+        subtitlesPresenter.viewModel = viewModel.subtitlesPresenterViewModel.value
+    }
+    
+    private func hideSubtitles() {
+        
+    }
 
     private func bind(to viewModel: LibraryItemViewModel) {
         
@@ -102,6 +112,16 @@ extension LibraryItemViewController {
             }
             
             Styles.apply(pauseButton: self.playButton)
+        }
+        
+        viewModel.subtitlesPresenterViewModel.observe(on: self, queue: .main) { [weak self] model in
+            
+            guard let model = model else {
+                self?.hideSubtitles()
+                return
+            }
+            
+            self?.showSubtitles()
         }
     }
 }
@@ -138,6 +158,8 @@ extension LibraryItemViewController {
         view.addSubview(activityIndicator)
         view.addSubview(mainGroup)
         
+        view.addSubview(subtitlesPresenter)
+        
         playButton.addTarget(
             self,
             action: #selector(Self.didTogglePlay),
@@ -168,6 +190,8 @@ extension LibraryItemViewController {
             playButton: playButton,
             attachSubtitlesButton: addSubtitlesButton
         )
+        
+        subtitlesPresenter.constraintTo(view: view)
     }
 }
 
