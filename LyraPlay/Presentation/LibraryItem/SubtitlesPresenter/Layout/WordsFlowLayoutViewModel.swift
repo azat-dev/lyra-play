@@ -37,6 +37,8 @@ public final class WordsFlowLayoutViewModel {
         }
     }
     
+    public var contentSize = Size.zero
+    
     private let sizesProvider: ItemsSizesProvider
     private let config: Config
     
@@ -69,15 +71,16 @@ public final class WordsFlowLayoutViewModel {
         containerSize: Size,
         offsetX: Double,
         offsetY: Double,
-        rowHeight: Double
+        rowHeight: Double,
+        sectionInsets: Insets
     ) -> (attributes: ItemAttributes, isNewLine: Bool) {
         
         var position: Point
-        let shouldWrap = (offsetX + itemSize.width) > containerSize.width
+        let shouldWrap = (offsetX + itemSize.width) > (containerSize.width - sectionInsets.right)
         
         if shouldWrap {
             
-            position = .init(x: 0, y: offsetY + rowHeight)
+            position = .init(x: sectionInsets.left, y: offsetY + rowHeight)
             
         } else {
             position = .init(x: offsetX, y: offsetY)
@@ -95,6 +98,8 @@ public final class WordsFlowLayoutViewModel {
     public func prepare(containerSize: Size) {
         
         var newCachedAttributes: [ItemAttributes] = []
+        var newContentSize = Size.zero
+        
         let numberOfSections = sizesProvider.numberOfSections
 
         var offsetX = config.sectionsInsets.left
@@ -115,7 +120,8 @@ public final class WordsFlowLayoutViewModel {
                     containerSize: containerSize,
                     offsetX: offsetX,
                     offsetY: offsetY,
-                    rowHeight: rowHeight
+                    rowHeight: rowHeight,
+                    sectionInsets: config.sectionsInsets
                 )
                 
                 newCachedAttributes.append(attributes)
@@ -130,6 +136,10 @@ public final class WordsFlowLayoutViewModel {
                 }
                 
                 offsetX += attributes.size.width
+                newContentSize = Size(
+                    width: max(newContentSize.width, offsetX + config.sectionsInsets.right),
+                    height: 0
+                )
             }
             
             offsetX = config.sectionsInsets.left
@@ -137,7 +147,9 @@ public final class WordsFlowLayoutViewModel {
             rowHeight = 0
         }
         
+        
         cachedAttributes = newCachedAttributes
+        contentSize = newContentSize
     }
     
     public func getAttributes(section: Int, item: Int) -> ItemAttributes {

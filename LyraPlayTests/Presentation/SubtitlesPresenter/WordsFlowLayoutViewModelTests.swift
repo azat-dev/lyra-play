@@ -142,6 +142,44 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         XCTAssertEqual(result11.position.y, result00.position.y + result00.size.height + sectionInset.bottom + sectionInset.top)
     }
     
+    func testWrapItemsWithSectionsInsets() {
+        
+        let testContainerSize = Size(width: 10, height: 10)
+        let sectionsInsets = Insets(top: 0, bottom: 0, left: 1, right: 2)
+        
+        let sut = createSUT(config: .init(sectionsInsets: sectionsInsets))
+        
+        let halfWidth = (testContainerSize.width - sectionsInsets.left - sectionsInsets.right) / 2
+        
+        let sizes: [[Size]] = [
+            [
+                .init(width: halfWidth, height: 1),
+                .init(width: halfWidth, height: 1),
+            ],
+            [
+                .init(width: halfWidth, height: 1),
+                .init(width: halfWidth + 1, height: 1),
+            ],
+        ]
+        
+        sut.itemsSizesProvider.sizes = sizes
+        
+        sut.viewModel.prepare(containerSize: testContainerSize)
+
+        let result00 = sut.viewModel.getAttributes(section: 0, item: 0)
+        let result01 = sut.viewModel.getAttributes(section: 0, item: 1)
+        let result10 = sut.viewModel.getAttributes(section: 1, item: 0)
+        let result11 = sut.viewModel.getAttributes(section: 1, item: 1)
+        
+        XCTAssertEqual(result00.position.x, sectionsInsets.left)
+        XCTAssertEqual(result01.position.x, result00.position.x + result00.size.width)
+        XCTAssertEqual(result00.position.y, result01.position.y)
+        
+        XCTAssertEqual(result10.position.x, sectionsInsets.left)
+        XCTAssertEqual(result11.position.y, result10.position.y + result10.size.height + sectionsInsets.bottom + sectionsInsets.top)
+        XCTAssertEqual(result11.position.x, sectionsInsets.left)
+    }
+    
     func testContentSize() {
         
         let itemSize = Size(width: 1, height: 1)
@@ -176,7 +214,7 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
             height: itemSize.height * 2 + (sectionInset.top + sectionInset.bottom) * 2
         )
         
-//        XCTAssertEqual(sut.viewModel.contentSize, expectedContentSize)
+        XCTAssertEqual(sut.viewModel.contentSize, expectedContentSize)
     }
 }
 
