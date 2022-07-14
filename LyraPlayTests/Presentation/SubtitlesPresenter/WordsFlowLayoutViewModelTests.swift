@@ -16,11 +16,9 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         itemsSizesProvider: ItemsSizesProviderMock
     )
     
-    func createSUT() -> SUT {
+    func createSUT(interItemSpace: Double, spaceBetweenLines: Double) -> SUT {
         
         let itemsSizesProvider = ItemsSizesProviderMock()
-        let interItemSpace = 0.0
-        let spaceBetweenLines = 0.0
         
         let viewModel = WordsFlowLayoutViewModel(
             sizesProvider: itemsSizesProvider,
@@ -39,11 +37,12 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
     func testEachSectionFromNewLine() {
         
         let itemSize = Size(width: 1, height: 1)
-        let interItemSpace = 0
-        let spaceBetweenLines = 0
         
         let testContainerSize = Size(width: 10, height: 10)
-        let sut = createSUT()
+        let sut = createSUT(
+            interItemSpace: 0,
+            spaceBetweenLines: 0
+        )
         
         let numberOfSections = 3
         
@@ -58,8 +57,47 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
             let (position, size, path) = sut.viewModel.getAttributes(section: section, item: 0)
             
             XCTAssertEqual(position.y, prevOffsetY + itemSize.height)
+            XCTAssertEqual(size, itemSize)
+            XCTAssertEqual(path, .init(section: section, item: 0))
             prevOffsetY = position.y
         }
+    }
+    
+    func testWrapItems() {
+        
+        let testContainerSize = Size(width: 10, height: 10)
+        let sut = createSUT(
+            interItemSpace: 0,
+            spaceBetweenLines: 0
+        )
+        
+        let sizes: [[Size]] = [
+            [
+                .init(width: testContainerSize.width / 2, height: 1),
+                .init(width: testContainerSize.width / 2, height: 1),
+            ],
+            [
+                .init(width: testContainerSize.width / 2, height: 1),
+                .init(width: testContainerSize.width / 2 + 1, height: 1),
+            ],
+        ]
+        
+        sut.itemsSizesProvider.sizes = sizes
+        
+        sut.viewModel.prepare(containerSize: testContainerSize)
+
+        let result00 = sut.viewModel.getAttributes(section: 0, item: 0)
+        let result01 = sut.viewModel.getAttributes(section: 0, item: 1)
+        let result10 = sut.viewModel.getAttributes(section: 1, item: 0)
+        let result11 = sut.viewModel.getAttributes(section: 1, item: 1)
+        
+        XCTAssertEqual(result00.position.x, 0)
+        XCTAssertEqual(result01.position.x, result00.position.x + result00.size.width)
+        XCTAssertEqual(result00.position.y, result01.position.y)
+        
+        XCTAssertEqual(result10.position.x, 0.0)
+        XCTAssertEqual(result11.position.y, result10.position.y + result10.size.height)
+        XCTAssertEqual(result11.position.x, 0.0)
     }
 }
 
