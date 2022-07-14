@@ -16,14 +16,19 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         itemsSizesProvider: ItemsSizesProviderMock
     )
     
-    func createSUT(interItemSpace: Double, spaceBetweenLines: Double) -> SUT {
+    func createSUT(
+        interItemSpace: Double,
+        spaceBetweenLines: Double,
+        sectionsInsets: Insets = .zero
+    ) -> SUT {
         
         let itemsSizesProvider = ItemsSizesProviderMock()
         
         let viewModel = WordsFlowLayoutViewModel(
             sizesProvider: itemsSizesProvider,
             interItemSpace: interItemSpace,
-            spaceBetweenLines: spaceBetweenLines
+            spaceBetweenLines: spaceBetweenLines,
+            sectionsInsets: sectionsInsets
         )
         
         detectMemoryLeak(instance: viewModel)
@@ -41,8 +46,7 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         let testContainerSize = Size(width: 10, height: 10)
         let sut = createSUT(
             interItemSpace: 0,
-            spaceBetweenLines: 0,
-            spaceBetweenSections: 0
+            spaceBetweenLines: 0
         )
         
         let numberOfSections = 3
@@ -116,7 +120,7 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
             ],
         ]
 
-        let sectionInset = Inset(
+        let sectionInset = Insets(
             top: 1.0,
             bottom: 2.0,
             left: 3.0,
@@ -130,8 +134,7 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
             sectionsInsets: sectionInset
         )
 
-        let numberOfSections = 2
-        sut.itemsSizesProvider.sizes = (0..<numberOfSections).map { _ in [itemSize] }
+        sut.itemsSizesProvider.sizes = sizes
         
         sut.viewModel.prepare(containerSize: testContainerSize)
 
@@ -155,14 +158,6 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
 }
 
 // MARK: - Mocks
-
-struct Inset {
-    
-    var top: Double
-    var bottom: Double
-    var left: Double
-    var right: Double
-}
 
 final class ItemsSizesProviderMock: ItemsSizesProvider {
     

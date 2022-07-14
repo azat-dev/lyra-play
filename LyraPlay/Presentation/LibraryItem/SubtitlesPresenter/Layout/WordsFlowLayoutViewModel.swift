@@ -26,6 +26,7 @@ public final class WordsFlowLayoutViewModel {
     private let sizesProvider: ItemsSizesProvider
     private let interItemSpace: Double
     private let spaceBetweenLines: Double
+    private let sectionsInsets: Insets
     
     private var cachedAttributes: [ItemAttributes] = [] {
 
@@ -44,12 +45,14 @@ public final class WordsFlowLayoutViewModel {
     public init(
         sizesProvider: ItemsSizesProvider,
         interItemSpace: Double,
-        spaceBetweenLines: Double
+        spaceBetweenLines: Double,
+        sectionsInsets: Insets
     ) {
         
         self.sizesProvider = sizesProvider
         self.interItemSpace = interItemSpace
         self.spaceBetweenLines = spaceBetweenLines
+        self.sectionsInsets = sectionsInsets
     }
     
     private func getItemAttributes(
@@ -86,8 +89,8 @@ public final class WordsFlowLayoutViewModel {
         var newCachedAttributes: [ItemAttributes] = []
         let numberOfSections = sizesProvider.numberOfSections
 
-        var offsetX = 0.0
-        var offsetY = 0.0
+        var offsetX = sectionsInsets.left
+        var offsetY = sectionsInsets.top
         var rowHeight = 0.0
         
         for section in 0..<numberOfSections {
@@ -121,8 +124,8 @@ public final class WordsFlowLayoutViewModel {
                 offsetX += attributes.size.width
             }
             
-            offsetX = 0
-            offsetY += rowHeight
+            offsetX = sectionsInsets.left
+            offsetY += rowHeight + sectionsInsets.bottom + sectionsInsets.top
             rowHeight = 0
         }
         
