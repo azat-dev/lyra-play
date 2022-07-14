@@ -179,6 +179,18 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         XCTAssertEqual(result11.position.y, result10.position.y + result10.size.height + sectionsInsets.bottom + sectionsInsets.top)
         XCTAssertEqual(result11.position.x, sectionsInsets.left)
     }
+
+    func testEmptyContentSize() {
+        
+        let testContainerSize = Size(width: 10000, height: 10000)
+        let sut = createSUT()
+
+        sut.itemsSizesProvider.sizes = []
+        
+        sut.viewModel.prepare(containerSize: testContainerSize)
+
+        XCTAssertEqual(sut.viewModel.contentSize, .zero)
+    }
     
     func testContentSize() {
         

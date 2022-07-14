@@ -98,13 +98,15 @@ public final class WordsFlowLayoutViewModel {
     public func prepare(containerSize: Size) {
         
         var newCachedAttributes: [ItemAttributes] = []
-        var newContentSize = Size.zero
         
         let numberOfSections = sizesProvider.numberOfSections
 
         var offsetX = config.sectionsInsets.left
         var offsetY = config.sectionsInsets.top
         var rowHeight = 0.0
+        
+        var maxRightBoundary = 0.0
+        var maxBottomBoundary = 0.0
         
         for section in 0..<numberOfSections {
         
@@ -126,6 +128,7 @@ public final class WordsFlowLayoutViewModel {
                 
                 newCachedAttributes.append(attributes)
                 rowHeight = max(rowHeight, itemSize.height)
+                maxRightBoundary = max(maxRightBoundary, attributes.position.x + itemSize.width + config.sectionsInsets.right)
                 
                 if isNewLine {
                     
@@ -136,20 +139,22 @@ public final class WordsFlowLayoutViewModel {
                 }
                 
                 offsetX += attributes.size.width
-                newContentSize = Size(
-                    width: max(newContentSize.width, offsetX + config.sectionsInsets.right),
-                    height: 0
-                )
             }
             
+            let bottomOfSection = offsetY + rowHeight + config.sectionsInsets.bottom
+            maxBottomBoundary = bottomOfSection
+            
             offsetX = config.sectionsInsets.left
-            offsetY += rowHeight + config.sectionsInsets.bottom + config.sectionsInsets.top
+            offsetY = bottomOfSection + config.sectionsInsets.top
             rowHeight = 0
         }
         
         
         cachedAttributes = newCachedAttributes
-        contentSize = newContentSize
+        contentSize = Size(
+            width: maxRightBoundary,
+            height: maxBottomBoundary
+        )
     }
     
     public func getAttributes(section: Int, item: Int) -> ItemAttributes {
