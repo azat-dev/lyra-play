@@ -21,12 +21,24 @@ public struct ItemPath: Hashable {
 
 public typealias ItemAttributes = (position: Point, size: Size, path: ItemPath)
 
+
+
 public final class WordsFlowLayoutViewModel {
     
+    public struct Config {
+        
+        public let sectionsInsets: Insets
+
+        public init(
+            sectionsInsets: Insets = .zero
+        ) {
+            
+            self.sectionsInsets = sectionsInsets
+        }
+    }
+    
     private let sizesProvider: ItemsSizesProvider
-    private let interItemSpace: Double
-    private let spaceBetweenLines: Double
-    private let sectionsInsets: Insets
+    private let config: Config
     
     private var cachedAttributes: [ItemAttributes] = [] {
 
@@ -44,15 +56,11 @@ public final class WordsFlowLayoutViewModel {
     
     public init(
         sizesProvider: ItemsSizesProvider,
-        interItemSpace: Double,
-        spaceBetweenLines: Double,
-        sectionsInsets: Insets
+        config: Config? = nil
     ) {
         
         self.sizesProvider = sizesProvider
-        self.interItemSpace = interItemSpace
-        self.spaceBetweenLines = spaceBetweenLines
-        self.sectionsInsets = sectionsInsets
+        self.config = config ?? Config()
     }
     
     private func getItemAttributes(
@@ -89,8 +97,8 @@ public final class WordsFlowLayoutViewModel {
         var newCachedAttributes: [ItemAttributes] = []
         let numberOfSections = sizesProvider.numberOfSections
 
-        var offsetX = sectionsInsets.left
-        var offsetY = sectionsInsets.top
+        var offsetX = config.sectionsInsets.left
+        var offsetY = config.sectionsInsets.top
         var rowHeight = 0.0
         
         for section in 0..<numberOfSections {
@@ -124,8 +132,8 @@ public final class WordsFlowLayoutViewModel {
                 offsetX += attributes.size.width
             }
             
-            offsetX = sectionsInsets.left
-            offsetY += rowHeight + sectionsInsets.bottom + sectionsInsets.top
+            offsetX = config.sectionsInsets.left
+            offsetY += rowHeight + config.sectionsInsets.bottom + config.sectionsInsets.top
             rowHeight = 0
         }
         
