@@ -222,7 +222,7 @@ class LocalFilesRepositoryTests: XCTestCase {
         
         XCTAssertEqual(data2, testData2)
         
-        let deleteResult2 = await sut.deleteFile(name: "directory1")
+        let deleteResult2 = await sut.deleteFile(name: "directory2")
         try AssertResultSucceded(deleteResult2)
         
         let getResult3 = await sut.getFile(name: testFileName2)

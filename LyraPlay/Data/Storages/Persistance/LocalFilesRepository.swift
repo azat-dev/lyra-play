@@ -24,19 +24,24 @@ public final class LocalFilesRepository: FilesRepository {
         }
     }
     
+    
     public func getFileUrl(name: String) -> URL {
         return baseDirectory.appendingPathComponent(name, isDirectory: false)
     }
     
     public func putFile(name: String, data: Data) async -> Result<Void, FilesRepositoryError> {
         
-        let url = baseDirectory.appendingPathComponent(name, isDirectory: false)
+        let url = getFileUrl(name: name)
         let tempUrl = fileManager.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: false)
-        
-        fileManager.createFile(atPath: tempUrl.path, contents: data, attributes: nil)
         
         do {
             
+            try fileManager.createDirectory(
+                at: url.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+            
+            fileManager.createFile(atPath: tempUrl.path, contents: data, attributes: nil)
             let _ = try fileManager.replaceItemAt(url, withItemAt: tempUrl)
         } catch {
             return .failure(.internalError(error))
