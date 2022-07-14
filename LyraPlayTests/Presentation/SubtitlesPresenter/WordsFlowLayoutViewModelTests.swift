@@ -41,7 +41,8 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         let testContainerSize = Size(width: 10, height: 10)
         let sut = createSUT(
             interItemSpace: 0,
-            spaceBetweenLines: 0
+            spaceBetweenLines: 0,
+            spaceBetweenSections: 0
         )
         
         let numberOfSections = 3
@@ -99,9 +100,69 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         XCTAssertEqual(result11.position.y, result10.position.y + result10.size.height)
         XCTAssertEqual(result11.position.x, 0.0)
     }
+    
+    func testSectionInsets() {
+        
+        let itemSize = Size(width: 1, height: 1)
+        
+        let sizes: [[Size]] = [
+            [
+                itemSize,
+                itemSize,
+            ],
+            [
+                itemSize,
+                itemSize
+            ],
+        ]
+
+        let sectionInset = Inset(
+            top: 1.0,
+            bottom: 2.0,
+            left: 3.0,
+            right: 4.0
+        )
+        
+        let testContainerSize = Size(width: 10000, height: 10000)
+        let sut = createSUT(
+            interItemSpace: 0,
+            spaceBetweenLines: 0,
+            sectionsInsets: sectionInset
+        )
+
+        let numberOfSections = 2
+        sut.itemsSizesProvider.sizes = (0..<numberOfSections).map { _ in [itemSize] }
+        
+        sut.viewModel.prepare(containerSize: testContainerSize)
+
+        let result00 = sut.viewModel.getAttributes(section: 0, item: 0)
+        let result01 = sut.viewModel.getAttributes(section: 0, item: 1)
+        let result10 = sut.viewModel.getAttributes(section: 1, item: 0)
+        let result11 = sut.viewModel.getAttributes(section: 1, item: 1)
+        
+        XCTAssertEqual(result00.position.x, sectionInset.left)
+        XCTAssertEqual(result00.position.y, sectionInset.top)
+        
+        XCTAssertEqual(result01.position.x, sectionInset.left + result00.size.width)
+        XCTAssertEqual(result01.position.y, sectionInset.top)
+        
+        XCTAssertEqual(result10.position.x, sectionInset.left)
+        XCTAssertEqual(result10.position.y, result00.position.y + result00.size.height + sectionInset.bottom + sectionInset.top)
+        
+        XCTAssertEqual(result01.position.x, sectionInset.left + result00.size.width)
+        XCTAssertEqual(result11.position.y, result00.position.y + result00.size.height + sectionInset.bottom + sectionInset.top)
+    }
 }
 
 // MARK: - Mocks
+
+struct Inset {
+    
+    var top: Double
+    var bottom: Double
+    var left: Double
+    var right: Double
+}
 
 final class ItemsSizesProviderMock: ItemsSizesProvider {
     
