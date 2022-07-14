@@ -61,9 +61,22 @@ public final class WordsFlowLayoutViewModel {
         rowHeight: Double
     ) -> (attributes: ItemAttributes, isNewLine: Bool) {
         
-        let shouldWrap = false
-        var position = Point(x: offsetX, y: offsetY)
-        var attributes = (position, itemSize, path)
+        var position: Point
+        let shouldWrap = (offsetX + itemSize.width) > containerSize.width
+        
+        if shouldWrap {
+            
+            position = .init(x: 0, y: offsetY + rowHeight)
+            
+        } else {
+            position = .init(x: offsetX, y: offsetY)
+        }
+        
+        let attributes = (
+            position,
+            itemSize,
+            path
+        )
         
         return (attributes, shouldWrap)
     }
@@ -96,6 +109,16 @@ public final class WordsFlowLayoutViewModel {
                 
                 newCachedAttributes.append(attributes)
                 rowHeight = max(rowHeight, itemSize.height)
+                
+                if isNewLine {
+                    
+                    offsetX = attributes.position.x
+                    offsetY = attributes.position.y
+                } else {
+                    
+                }
+                
+                offsetX += attributes.size.width
             }
             
             offsetX = 0
