@@ -6,36 +6,25 @@
 //
 
 import Foundation
+import UIKit
 
-public struct ItemPath: Hashable {
-    
-    public var section: Int
-    public var item: Int
-    
-    public init(section: Int, item: Int) {
-        
-        self.section = section
-        self.item = item
-    }
-}
-
-public typealias ItemAttributes = (position: Point, size: Size, path: ItemPath)
+public typealias ItemAttributes = (position: CGPoint, size: CGSize, path: IndexPath)
 
 public final class WordsFlowLayoutViewModel {
     
     public struct Config {
         
-        public let sectionsInsets: Insets
+        public let sectionsInsets: UIEdgeInsets
 
         public init(
-            sectionsInsets: Insets = .zero
+            sectionsInsets: UIEdgeInsets = .zero
         ) {
             
             self.sectionsInsets = sectionsInsets
         }
     }
     
-    public var contentSize = Size.zero
+    public var contentSize = CGSize.zero
     
     private let sizesProvider: ItemsSizesProvider
     private let config: Config
@@ -44,6 +33,7 @@ public final class WordsFlowLayoutViewModel {
 
         didSet {
             cachedAttributesDict.removeAll()
+            cachedAttributesDict.reserveCapacity(cachedAttributes.count)
             
             for item in cachedAttributes {
                 
@@ -52,7 +42,7 @@ public final class WordsFlowLayoutViewModel {
         }
     }
     
-    private var cachedAttributesDict = [ItemPath: ItemAttributes]()
+    private var cachedAttributesDict = [IndexPath: ItemAttributes]()
     
     public init(
         sizesProvider: ItemsSizesProvider,
@@ -64,16 +54,16 @@ public final class WordsFlowLayoutViewModel {
     }
     
     private func getItemAttributes(
-        path: ItemPath,
-        itemSize: Size,
-        containerSize: Size,
-        offsetX: Double,
-        offsetY: Double,
-        rowHeight: Double,
-        sectionInsets: Insets
+        path: IndexPath,
+        itemSize: CGSize,
+        containerSize: CGSize,
+        offsetX: CGFloat,
+        offsetY: CGFloat,
+        rowHeight: CGFloat,
+        sectionInsets: UIEdgeInsets
     ) -> (attributes: ItemAttributes, isNewLine: Bool) {
         
-        var position: Point
+        var position: CGPoint
         let shouldWrap = (offsetX + itemSize.width) > (containerSize.width - sectionInsets.right)
         
         if shouldWrap {
@@ -93,7 +83,7 @@ public final class WordsFlowLayoutViewModel {
         return (attributes, shouldWrap)
     }
     
-    public func prepare(containerSize: Size) {
+    public func prepare(containerSize: CGSize) {
         
         var newCachedAttributes: [ItemAttributes] = []
         
@@ -115,7 +105,7 @@ public final class WordsFlowLayoutViewModel {
                 let itemSize = sizesProvider.getItemSize(section: section, item: item)
                 
                 let (attributes, isNewLine) = getItemAttributes(
-                    path: ItemPath(section: section, item: item),
+                    path: IndexPath(item: item, section: section),
                     itemSize: itemSize,
                     containerSize: containerSize,
                     offsetX: offsetX,
@@ -149,7 +139,7 @@ public final class WordsFlowLayoutViewModel {
         
         
         cachedAttributes = newCachedAttributes
-        contentSize = Size(
+        contentSize = CGSize(
             width: maxRightBoundary,
             height: maxBottomBoundary
         )
@@ -157,30 +147,11 @@ public final class WordsFlowLayoutViewModel {
     
     public func getAttributes(section: Int, item: Int) -> ItemAttributes {
         
-        let path = ItemPath(section: section, item: item)
+        let path = IndexPath(item: item, section: section)
         return cachedAttributesDict[path]!
     }
-}
-
-extension WordsFlowLayoutViewModel {
     
-    private func binarySearch(_ rect: CGRect, start: Int, end: Int) -> Int? {
-        
-        if end < start {
-            return nil
-        }
-        
-        let mid = (start + end) / 2
-        let attr = cachedAttributes[mid]
-        
-        if attr.frame.intersects(rect) {
-            return mid
-        }
-        
-        if attr.frame.maxY < rect.minY {
-            return binarySearch(rect, start: (mid + 1), end: end)
-        }
-        
-        return binarySearch(rect, start: start, end: (mid - 1))
+    public func getAttributesOfItems(at: CGRect) -> [ItemAttributes] {
+        return []
     }
 }

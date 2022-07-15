@@ -6,12 +6,13 @@
 //
 
 import Foundation
+import UIKit
 
 // MARK: - Interfaces
 
 public protocol ItemsSizesProvider {
     
-    func getItemSize(section: Int, item: Int) -> Size
+    func getItemSize(section: Int, item: Int) -> CGSize
     
     var numberOfSections: Int { get }
     
