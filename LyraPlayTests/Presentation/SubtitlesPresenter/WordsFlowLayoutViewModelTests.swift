@@ -52,12 +52,12 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         
         for section in 0..<numberOfSections {
             
-            let (position, size, path) = sut.viewModel.getAttributes(section: section, item: 0)
+            let (frame, path) = sut.viewModel.getAttributes(section: section, item: 0)
             
-            XCTAssertEqual(position.y, prevOffsetY + itemSize.height)
-            XCTAssertEqual(size, itemSize)
+            XCTAssertEqual(frame.minY, prevOffsetY + itemSize.height)
+            XCTAssertEqual(frame.size, itemSize)
             XCTAssertEqual(path, .init(item: 0, section: section))
-            prevOffsetY = position.y
+            prevOffsetY = frame.minY
         }
     }
     
@@ -86,13 +86,13 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         let result10 = sut.viewModel.getAttributes(section: 1, item: 0)
         let result11 = sut.viewModel.getAttributes(section: 1, item: 1)
         
-        XCTAssertEqual(result00.position.x, 0)
-        XCTAssertEqual(result01.position.x, result00.position.x + result00.size.width)
-        XCTAssertEqual(result00.position.y, result01.position.y)
+        XCTAssertEqual(result00.frame.origin.x, 0)
+        XCTAssertEqual(result01.frame.origin.x, result00.frame.origin.x + result00.frame.size.width)
+        XCTAssertEqual(result00.frame.origin.y, result01.frame.origin.y)
         
-        XCTAssertEqual(result10.position.x, 0.0)
-        XCTAssertEqual(result11.position.y, result10.position.y + result10.size.height)
-        XCTAssertEqual(result11.position.x, 0.0)
+        XCTAssertEqual(result10.frame.origin.x, 0.0)
+        XCTAssertEqual(result11.frame.origin.y, result10.frame.origin.y + result10.frame.size.height)
+        XCTAssertEqual(result11.frame.origin.x, 0.0)
     }
     
     func testSectionInsets() {
@@ -129,17 +129,17 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         let result10 = sut.viewModel.getAttributes(section: 1, item: 0)
         let result11 = sut.viewModel.getAttributes(section: 1, item: 1)
         
-        XCTAssertEqual(result00.position.x, sectionInset.left)
-        XCTAssertEqual(result00.position.y, sectionInset.top)
+        XCTAssertEqual(result00.frame.origin.x, sectionInset.left)
+        XCTAssertEqual(result00.frame.origin.y, sectionInset.top)
         
-        XCTAssertEqual(result01.position.x, sectionInset.left + result00.size.width)
-        XCTAssertEqual(result01.position.y, sectionInset.top)
+        XCTAssertEqual(result01.frame.origin.x, sectionInset.left + result00.frame.size.width)
+        XCTAssertEqual(result01.frame.origin.y, sectionInset.top)
         
-        XCTAssertEqual(result10.position.x, sectionInset.left)
-        XCTAssertEqual(result10.position.y, result00.position.y + result00.size.height + sectionInset.bottom + sectionInset.top)
+        XCTAssertEqual(result10.frame.origin.x, sectionInset.left)
+        XCTAssertEqual(result10.frame.origin.y, result00.frame.origin.y + result00.frame.size.height + sectionInset.bottom + sectionInset.top)
         
-        XCTAssertEqual(result01.position.x, sectionInset.left + result00.size.width)
-        XCTAssertEqual(result11.position.y, result00.position.y + result00.size.height + sectionInset.bottom + sectionInset.top)
+        XCTAssertEqual(result01.frame.origin.x, sectionInset.left + result00.frame.size.width)
+        XCTAssertEqual(result11.frame.origin.y, result00.frame.origin.y + result00.frame.size.height + sectionInset.bottom + sectionInset.top)
     }
     
     func testWrapItemsWithSectionsInsets() {
@@ -171,13 +171,13 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         let result10 = sut.viewModel.getAttributes(section: 1, item: 0)
         let result11 = sut.viewModel.getAttributes(section: 1, item: 1)
         
-        XCTAssertEqual(result00.position.x, sectionsInsets.left)
-        XCTAssertEqual(result01.position.x, result00.position.x + result00.size.width)
-        XCTAssertEqual(result00.position.y, result01.position.y)
+        XCTAssertEqual(result00.frame.origin.x, sectionsInsets.left)
+        XCTAssertEqual(result01.frame.origin.x, result00.frame.origin.x + result00.frame.size.width)
+        XCTAssertEqual(result00.frame.origin.y, result01.frame.origin.y)
         
-        XCTAssertEqual(result10.position.x, sectionsInsets.left)
-        XCTAssertEqual(result11.position.y, result10.position.y + result10.size.height + sectionsInsets.bottom + sectionsInsets.top)
-        XCTAssertEqual(result11.position.x, sectionsInsets.left)
+        XCTAssertEqual(result10.frame.origin.x, sectionsInsets.left)
+        XCTAssertEqual(result11.frame.origin.y, result10.frame.origin.y + result10.frame.size.height + sectionsInsets.bottom + sectionsInsets.top)
+        XCTAssertEqual(result11.frame.origin.x, sectionsInsets.left)
     }
 
     func testEmptyContentCGSize() {
@@ -249,7 +249,7 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
             for item in 0..<itemsSizes.count {
                 
                 let itemAttributes = sut.viewModel.getAttributes(section: section, item: item)
-                let itemRect = CGRect(origin: itemAttributes.position, size: itemAttributes.size)
+                let itemRect = itemAttributes.frame
                 let foundItemAttributes = attributes.filter { $0.path == itemAttributes.path }
                 
                 guard itemRect.intersects(rect) else {
@@ -261,8 +261,7 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
                         file: file,
                         line: line
                     )
-                    fatalError()
-                    continue
+                    break
                 }
                 
                 XCTAssertEqual(
@@ -272,7 +271,10 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
                     file: file,
                     line: line
                 )
-                fatalError()
+                
+                if foundItemAttributes.isEmpty {
+                    break
+                }
             }
         }
     }

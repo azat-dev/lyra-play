@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public typealias ItemAttributes = (position: CGPoint, size: CGSize, path: IndexPath)
+public typealias ItemAttributes = (frame: CGRect, path: IndexPath)
 
 public final class WordsFlowLayoutViewModel {
     
@@ -75,8 +75,7 @@ public final class WordsFlowLayoutViewModel {
         }
         
         let attributes = (
-            position,
-            itemSize,
+            CGRect(origin: position, size: itemSize),
             path
         )
         
@@ -116,17 +115,17 @@ public final class WordsFlowLayoutViewModel {
                 
                 newCachedAttributes.append(attributes)
                 rowHeight = max(rowHeight, itemSize.height)
-                maxRightBoundary = max(maxRightBoundary, attributes.position.x + itemSize.width + config.sectionsInsets.right)
+                maxRightBoundary = max(maxRightBoundary, attributes.frame.minX + itemSize.width + config.sectionsInsets.right)
                 
                 if isNewLine {
                     
-                    offsetX = attributes.position.x
-                    offsetY = attributes.position.y
+                    offsetX = attributes.frame.minX
+                    offsetY = attributes.frame.minY
                 } else {
                     
                 }
                 
-                offsetX += attributes.size.width
+                offsetX += attributes.frame.width
             }
             
             let bottomOfSection = offsetY + rowHeight + config.sectionsInsets.bottom
