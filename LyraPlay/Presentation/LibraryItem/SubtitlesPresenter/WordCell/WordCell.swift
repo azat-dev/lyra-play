@@ -35,6 +35,17 @@ final class WordCell: UICollectionViewCell {
         label.text = viewModel.text
         style(with: viewModel)
     }
+    
+    public static func getSize(text: String) -> CGSize {
+        
+        let label = UILabel()
+        label.text = text
+        label.layoutSubviews()
+        
+        Styles.apply(label: label)
+        
+        return label.intrinsicContentSize
+    }
 }
 
 // MARK: - Setup Views

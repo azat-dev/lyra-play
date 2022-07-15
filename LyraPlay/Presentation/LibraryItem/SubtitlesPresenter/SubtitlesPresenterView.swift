@@ -8,7 +8,14 @@
 import Foundation
 import UIKit
 
-final class SubtitlesPresenterView: UIView {
+public protocol WordCellsDataSource {
+    
+    func getItem(at: IndexPath) -> WordCellViewModel?
+    
+    func getItemSize(at: IndexPath) -> CGSize?
+}
+
+public final class SubtitlesPresenterView: UIView {
     
     private var collectionView: UICollectionView!
     
@@ -63,8 +70,12 @@ extension SubtitlesPresenterView {
                 return
             }
             
+            let indexPath = IndexPath(row: position?.word ?? 0, section: sentencePosition)
+            
+            self.collectionView.reloadItems(at: [indexPath])
+            
             self.collectionView.scrollToItem(
-                at: IndexPath(row: position?.word ?? 0, section: sentencePosition),
+                at: indexPath,
                 at: .top,
                 animated: true
             )
@@ -74,22 +85,32 @@ extension SubtitlesPresenterView {
 
 // MARK: - Setup Views
 
-extension SubtitlesPresenterView {
+extension SubtitlesPresenterView: ItemsSizesProvider {
+    
+    private func createCollectionViewLayout() -> UICollectionViewLayout {
+        
+        let config = WordsFlowLayoutViewModel.Config(
+            sectionsInsets: .init(
+                top: 30,
+                left: 5,
+                bottom: 30,
+                right: 5
+            )
+        )
+        
+        let layoutViewModel = WordsFlowLayoutViewModel(
+            sizesProvider: self,
+            config: config
+        )
+    
+        return SubtitlesPresenterCollectionLayout(viewModel: layoutViewModel)
+    }
     
     private func setupViews() {
         
-        let collectionViewLayout = UICollectionViewFlowLayout()
-        collectionViewLayout.scrollDirection = .vertical
-        collectionViewLayout.minimumInteritemSpacing = 0
-        collectionViewLayout.minimumLineSpacing = 0
-        collectionViewLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-
-        collectionViewLayout.sectionInset = .init(top: 0, left: 0, bottom: 30, right: 0)
-        
         collectionView = UICollectionView(
             frame: self.frame,
-            collectionViewLayout: collectionViewLayout
-//            collectionViewLayout: UICollectionViewLayout.fixedSpacedFlowLayout()
+            collectionViewLayout: createCollectionViewLayout()
         )
         
         collectionView.register(
@@ -101,34 +122,26 @@ extension SubtitlesPresenterView {
         
         addSubview(collectionView)
     }
+    
+    public func getItemSize(section: Int, item: Int) -> CGSize {
+        
+        return getItemSize(at: IndexPath(item: item, section: section))!
+    }
+    
+    public func numberOfItems(section: Int) -> Int {
+        return viewModel?.sentences.value?[section].items.count ?? 0
+    }
+    
+    public var numberOfSections: Int {
+        return viewModel?.sentences.value?.count ??  0
+    }
 }
 
-// MARK: - Data Source
-extension SubtitlesPresenterView: UICollectionViewDataSource {
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return viewModel?.sentences.value?.count ?? 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        guard let sentences = viewModel?.sentences.value else {
-            return 0
-        }
-        
-        return sentences[section].items.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+// MARK: - Word Cells Data Source
 
-        let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: WordCell.reuseIdentifier,
-            for: indexPath
-        )
-        
-        guard let cell = cell as? WordCell else {
-            fatalError("Can't dequee a cell")
-        }
+extension SubtitlesPresenterView: WordCellsDataSource {
+    
+    public func getItem(at indexPath: IndexPath) -> WordCellViewModel? {
         
         let sectionIndex = indexPath.section
         let wordIndex = indexPath.item
@@ -148,12 +161,57 @@ extension SubtitlesPresenterView: UICollectionViewDataSource {
 
         let item = sentence.items[wordIndex]
         
-        let cellViewModel = WordCellViewModel(isActive: false, text: item.getText())
+        return WordCellViewModel(
+            isActive: false,
+            text: item.getText()
+        )
+    }
+    
+    public func getItemSize(at indexPath: IndexPath) -> CGSize? {
+        
+        guard let item = getItem(at: indexPath) else {
+            return nil
+        }
+
+        return WordCell.getSize(text: item.text)
+    }
+}
+
+// MARK: - Data Source
+
+extension SubtitlesPresenterView: UICollectionViewDataSource {
+    
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return viewModel?.sentences.value?.count ?? 0
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        guard let sentences = viewModel?.sentences.value else {
+            return 0
+        }
+        
+        return sentences[section].items.count
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: WordCell.reuseIdentifier,
+            for: indexPath
+        )
+        
+        guard
+            let cell = cell as? WordCell,
+            let cellViewModel = getItem(at: indexPath)
+        else {
+            fatalError("Can't dequee a cell")
+        }
         
         cell.configure(with: cellViewModel)
         
         return cell
-    }    
+    }
 }
 
 // MARK: - Layout
