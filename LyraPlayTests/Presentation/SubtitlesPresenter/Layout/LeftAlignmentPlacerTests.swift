@@ -19,7 +19,7 @@ class LeftAlignmentPlacerTests: XCTestCase {
     func createSUT() -> SUT {
         
         let availableItemsSizesProvider = AvailableItemsSizesProviderMock()
-        let placer = LeadingAlignmentPlacer(availableItemsSizesProvider: availableItemsSizesProvider)
+        let placer = LeftAlignmentPlacerTests(availableItemsSizesProvider: availableItemsSizesProvider)
         
         detectMemoryLeak(instance: placer)
         
@@ -144,17 +144,6 @@ class LeftAlignmentPlacerTests: XCTestCase {
     }
 }
 
-typealias DirectionSize = CGFloat
-
-protocol AvailableItemsSizesProvider {
-    
-    func getSize(index: Int, availableSpace: DirectionSize) -> DirectionSize?
-}
-
-protocol ItemsPlacer {
-    
-    func fillDirection(limit: DirectionSize) -> [DirectionSize]
-}
 
 final class AvailableItemsSizesProviderMock: AvailableItemsSizesProvider {
     
