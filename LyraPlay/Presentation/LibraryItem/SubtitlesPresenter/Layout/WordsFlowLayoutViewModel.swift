@@ -172,7 +172,6 @@ public final class WordsFlowLayoutViewModel {
                 continue
             }
 
-            let cellOrigin = cellAttributes.frame.origin
             if cellAttributes.frame.minY > rect.maxY {
                 break
             }
@@ -188,13 +187,45 @@ public final class WordsFlowLayoutViewModel {
                 continue
             }
             
-            let cellOrigin = cellAttributes.frame.origin
             if cellAttributes.frame.maxY < rect.minY {
                 break
             }
         }
 
         return result
+    }
+    
+    public func getSectionAttributes(section: Int) -> ItemAttributes? {
+
+        guard section < sizesProvider.numberOfSections else {
+            return nil
+        }
+        
+        let numberOfItems = sizesProvider.numberOfItems(section: section)
+        if numberOfItems == 0 {
+            return nil
+        }
+        
+        var rectOfSectionItems = CGRect.zero
+        
+        for item in 0..<numberOfItems {
+
+            let indexPath = IndexPath(item: item, section: section)
+            guard let itemAttributes = cachedAttributesDict[indexPath] else {
+                return nil
+            }
+
+            rectOfSectionItems = rectOfSectionItems.union(itemAttributes.frame)
+        }
+        
+        let frame = CGRect(
+            x: rectOfSectionItems.minX - config.sectionsInsets.left,
+            y: rectOfSectionItems.minY - config.sectionsInsets.top,
+            width: rectOfSectionItems.maxX + config.sectionsInsets.right,
+            height: rectOfSectionItems.maxY + config.sectionsInsets.bottom
+        )
+        
+        return (frame, IndexPath(item: 0, section: section))
     }
 }
 

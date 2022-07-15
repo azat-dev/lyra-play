@@ -313,6 +313,7 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         let containerSize = CGSize(
             width: itemSize.width * 2 + sectionInset.left + sectionInset.right + 1,
             height: (itemSize.height + sectionInset.top + sectionInset.bottom) * 2 + 1)
+        
         let sut = createSUT(config: .init(sectionsInsets: sectionInset))
 
         sut.itemsSizesProvider.sizes = sizes
@@ -362,6 +363,61 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
 
         let attributes = sut.viewModel.getSectionAttributes(section: 10)
         XCTAssertNil(attributes)
+    }
+    
+    func testGetSectionAttributes() async throws {
+
+        let containerSize = CGSize(width: 10, height: 10)
+        let halfWidth = containerSize.width / 2
+        
+        let itemSize00 = CGSize(width: halfWidth, height: 1)
+        let itemSize01 = itemSize00
+        let itemSize10 = itemSize00
+        
+        let itemSize11 = CGSize(width: halfWidth + 1, height: itemSize00.height + 1)
+        
+        let sizes: [[CGSize]] = [
+            [
+                itemSize00,
+                itemSize01,
+            ],
+            [
+                itemSize10,
+                itemSize11
+            ],
+        ]
+
+        let sectionInset = UIEdgeInsets(
+            top: 1.0,
+            left: 3.0,
+            bottom: 2.0,
+            right: 4.0
+        )
+        
+        let sut = createSUT(config: .init(sectionsInsets: sectionInset))
+
+        sut.itemsSizesProvider.sizes = sizes
+        sut.viewModel.prepare(containerSize: containerSize)
+
+        let attributes = sut.viewModel.getSectionAttributes(section: 1)
+        
+        guard let attributes = attributes else {
+            XCTAssertNotNil(attributes)
+            return
+        }
+        
+        let item10Attributes = sut.viewModel.getAttributes(section: 1, item: 0)
+        let item11Attributes = sut.viewModel.getAttributes(section: 1, item: 1)
+        
+        let sectionItemsFrame = item10Attributes.frame.union(item11Attributes.frame)
+        let expectedFrame = CGRect(
+            x: sectionItemsFrame.origin.x - sectionInset.left,
+            y: sectionItemsFrame.origin.y - sectionInset.top,
+            width: containerSize.width,
+            height: sectionItemsFrame.height + sectionInset.top + sectionInset.bottom
+        )
+        
+        XCTAssertEqual(attributes.frame, expectedFrame)
     }
 }
 
