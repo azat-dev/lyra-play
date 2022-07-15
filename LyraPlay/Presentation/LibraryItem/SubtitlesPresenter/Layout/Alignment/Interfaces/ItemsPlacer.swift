@@ -10,4 +10,6 @@ import Foundation
 public protocol ItemsPlacer {
     
     func fillDirection(limit: DirectionSize) -> [DirectionSize]
+    
+    func fillDirection(limit: DirectionSize, spacing: DirectionSize) -> [DirectionSize]
 }

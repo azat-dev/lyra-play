@@ -19,7 +19,7 @@ class LeftAlignmentPlacerTests: XCTestCase {
     func createSUT() -> SUT {
         
         let availableItemsSizesProvider = AvailableItemsSizesProviderMock()
-        let placer = LeftAlignmentPlacerTests(availableItemsSizesProvider: availableItemsSizesProvider)
+        let placer = LeftAlignmentPlacer(availableItemsSizesProvider: availableItemsSizesProvider)
         
         detectMemoryLeak(instance: placer)
         
@@ -62,6 +62,7 @@ class LeftAlignmentPlacerTests: XCTestCase {
         let items: [DirectionSize] = [width, width]
         
         sut.availableItemsSizesProvider.resolveSize = { index, _ in items[index] }
+        
         let offsets = sut.placer.fillDirection(limit: width)
         
         let expectedOffsets: [DirectionSize] = [0]
@@ -108,7 +109,7 @@ class LeftAlignmentPlacerTests: XCTestCase {
         let items: [DirectionSize] = [width / 2, width / 2]
         
         sut.availableItemsSizesProvider.resolveSize = { index, _ in items[index] }
-        let offsets = sut.placer.fillDirection(limit: width)
+        let offsets = sut.placer.fillDirection(limit: width, spacing: spacing)
         
         let expectedOffsets: [DirectionSize] = [0]
         XCTAssertEqual(expectedOffsets, offsets)
@@ -132,14 +133,16 @@ class LeftAlignmentPlacerTests: XCTestCase {
         
         let sut = createSUT()
         
-        let spacing: DirectionSize = 100
+        let spacing: DirectionSize = 10
         let width: DirectionSize = 100
-        let items: [DirectionSize] = [width / 2 - spacing / 2, width / 2 - spacing / 2]
+        
+        let itemWidth = (width - spacing) / 2
+        let items: [DirectionSize] = [itemWidth, itemWidth]
         
         sut.availableItemsSizesProvider.resolveSize = { index, _ in items[index] }
-        let offsets = sut.placer.fillDirection(limit: width)
+        let offsets = sut.placer.fillDirection(limit: width, spacing: spacing)
         
-        let expectedOffsets: [DirectionSize] = [0, width / 2 + spacing]
+        let expectedOffsets: [DirectionSize] = [0, itemWidth + spacing]
         XCTAssertEqual(expectedOffsets, offsets)
     }
 }

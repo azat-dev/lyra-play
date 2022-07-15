@@ -95,54 +95,6 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         XCTAssertEqual(result11.frame.origin.x, 0.0)
     }
     
-    func testInsets() {
-        
-        let itemSize = CGSize(width: 1, height: 1)
-        
-        let sizes: [[CGSize]] = [
-            [
-                itemSize,
-                itemSize,
-            ],
-            [
-                itemSize,
-                itemSize
-            ],
-        ]
-
-        let insets = UIEdgeInsets(
-            top: 1.0,
-            left: 3.0,
-            bottom: 2.0,
-            right: 4.0
-        )
-        
-        let testContainerSize = CGSize(width: 10000, height: 10000)
-        let sut = createSUT(config: .init(
-            insets: insets
-        ))
-
-        sut.itemsSizesProvider.sizes = sizes
-        
-        sut.viewModel.prepare(containerSize: testContainerSize)
-
-        let result00 = sut.viewModel.getAttributes(section: 0, item: 0)
-        let result01 = sut.viewModel.getAttributes(section: 0, item: 1)
-        let result10 = sut.viewModel.getAttributes(section: 1, item: 0)
-        let result11 = sut.viewModel.getAttributes(section: 1, item: 1)
-        
-        XCTAssertEqual(result00.frame.origin.x, insets.left)
-        XCTAssertEqual(result00.frame.origin.y, insets.top)
-        
-        XCTAssertEqual(result01.frame.origin.x, sectionInset.left + result00.frame.size.width)
-        XCTAssertEqual(result01.frame.origin.y, sectionInset.top)
-        
-        XCTAssertEqual(result10.frame.origin.x, sectionInset.left)
-        XCTAssertEqual(result10.frame.origin.y, result00.frame.origin.y + result00.frame.size.height + sectionInset.bottom + sectionInset.top)
-        
-        XCTAssertEqual(result01.frame.origin.x, sectionInset.left + result00.frame.size.width)
-        XCTAssertEqual(result11.frame.origin.y, result00.frame.origin.y + result00.frame.size.height + sectionInset.bottom + sectionInset.top)
-    }
     
     func testSectionInsets() {
         
