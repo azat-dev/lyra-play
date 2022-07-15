@@ -15,7 +15,7 @@ public final class WordsFlowLayoutViewModel {
     public struct Config {
         
         public let sectionsInsets: UIEdgeInsets
-
+        
         public init(
             sectionsInsets: UIEdgeInsets = .zero
         ) {
@@ -30,7 +30,7 @@ public final class WordsFlowLayoutViewModel {
     private let config: Config
     
     private var cachedAttributes: [ItemAttributes] = [] {
-
+        
         didSet {
             cachedAttributesDict.removeAll()
             cachedAttributesDict.reserveCapacity(cachedAttributes.count)
@@ -87,7 +87,7 @@ public final class WordsFlowLayoutViewModel {
         var newCachedAttributes: [ItemAttributes] = []
         
         let numberOfSections = sizesProvider.numberOfSections
-
+        
         var offsetX = config.sectionsInsets.left
         var offsetY = config.sectionsInsets.top
         var rowHeight = 0.0
@@ -96,7 +96,7 @@ public final class WordsFlowLayoutViewModel {
         var maxBottomBoundary = 0.0
         
         for section in 0..<numberOfSections {
-        
+            
             let numberOfItems = sizesProvider.numberOfItems(section: section)
             
             for item in 0..<numberOfItems {
@@ -152,7 +152,75 @@ public final class WordsFlowLayoutViewModel {
     
     public func getAttributesOfItems(at rect: CGRect) -> [ItemAttributes] {
         
+        var result = [ItemAttributes]()
+        let lastIndex = cachedAttributes.count - 1
+
+        guard
+            let firstMatchIndex = binarySearch(rect, start: 0, end: lastIndex)
+        else {
+            return result
+        }
+
         
-        return []
+        for index in firstMatchIndex...lastIndex {
+
+            let cellAttributes = cachedAttributes[index]
+
+            if rect.intersects(cellAttributes.frame) {
+                
+                result.append(cellAttributes)
+                continue
+            }
+
+            let cellOrigin = cellAttributes.frame.origin
+            if cellAttributes.frame.minY > rect.maxY {
+                break
+            }
+        }
+
+        for index in stride(from: firstMatchIndex - 1, through: 0, by: -1) {
+
+            let cellAttributes = cachedAttributes[index]
+
+            if rect.intersects(cellAttributes.frame) {
+                
+                result.insert(cellAttributes, at: 0)
+                continue
+            }
+            
+            let cellOrigin = cellAttributes.frame.origin
+            if cellAttributes.frame.maxY < rect.minY {
+                break
+            }
+        }
+
+        return result
+    }
+}
+
+extension WordsFlowLayoutViewModel {
+    
+    private func binarySearch(_ rect: CGRect, start: Int, end: Int) -> Int? {
+        
+        if end < start {
+            return nil
+        }
+        
+        let mid = (start + end) / 2
+        let attr = cachedAttributes[mid]
+        
+        let itemFrame = attr.frame
+        let itemYRange = (itemFrame.minY...itemFrame.maxY)
+        let rectYRange = (rect.minY...rect.maxY)
+        
+        if itemYRange.overlaps(rectYRange) {
+            return mid
+        }
+        
+        if rect.minY < itemFrame.maxY  {
+            return binarySearch(rect, start: start, end: (mid - 1))
+        }
+        
+        return binarySearch(rect, start: (mid + 1), end: end)
     }
 }

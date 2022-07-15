@@ -252,27 +252,32 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
                 let itemRect = itemAttributes.frame
                 let foundItemAttributes = attributes.filter { $0.path == itemAttributes.path }
                 
-                guard itemRect.intersects(rect) else {
+                if itemRect.intersects(rect) {
                     
                     XCTAssertEqual(
                         foundItemAttributes.count,
-                        0,
-                        "Found attribute which must not exist at \(itemAttributes.path)",
+                        1,
+                        "Item at \(itemAttributes.path) is not found for rect = \(rect)",
                         file: file,
                         line: line
                     )
-                    break
+                    
+                    if foundItemAttributes.isEmpty {
+                        break
+                    }
+                    
+                    continue
                 }
                 
                 XCTAssertEqual(
                     foundItemAttributes.count,
-                    1,
-                    "Attribute at \(itemAttributes.path) is not found",
+                    0,
+                    "Found item which must not exist at \(itemAttributes.path)",
                     file: file,
                     line: line
                 )
                 
-                if foundItemAttributes.isEmpty {
+                if !foundItemAttributes.isEmpty {
                     break
                 }
             }
