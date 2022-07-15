@@ -355,6 +355,14 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
             )
         }
     }
+    
+    func testGetSectionAttributesEmptyList() async throws {
+        
+        let sut = createSUT()
+
+        let attributes = sut.viewModel.getSectionAttributes(section: 10)
+        XCTAssertNil(attributes)
+    }
 }
 
 // MARK: - Mocks
