@@ -21,8 +21,6 @@ public struct ItemPath: Hashable {
 
 public typealias ItemAttributes = (position: Point, size: Size, path: ItemPath)
 
-
-
 public final class WordsFlowLayoutViewModel {
     
     public struct Config {
@@ -161,5 +159,28 @@ public final class WordsFlowLayoutViewModel {
         
         let path = ItemPath(section: section, item: item)
         return cachedAttributesDict[path]!
+    }
+}
+
+extension WordsFlowLayoutViewModel {
+    
+    private func binarySearch(_ rect: CGRect, start: Int, end: Int) -> Int? {
+        
+        if end < start {
+            return nil
+        }
+        
+        let mid = (start + end) / 2
+        let attr = cachedAttributes[mid]
+        
+        if attr.frame.intersects(rect) {
+            return mid
+        }
+        
+        if attr.frame.maxY < rect.minY {
+            return binarySearch(rect, start: (mid + 1), end: end)
+        }
+        
+        return binarySearch(rect, start: start, end: (mid - 1))
     }
 }

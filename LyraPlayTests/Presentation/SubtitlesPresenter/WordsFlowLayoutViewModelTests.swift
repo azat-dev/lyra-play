@@ -228,6 +228,18 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         
         XCTAssertEqual(sut.viewModel.contentSize, expectedContentSize)
     }
+    
+    func testGetAttributesOfItemsInEmptyRect() {
+        
+        let sut = createSUT()
+        
+        let attributes = sut.viewModel.getAttributes(
+            at: .init(x: 0, y: 0),
+            withSize: .init(width: 0, height: 0)
+        )
+        
+        XCTAssertTrue(attributes.isEmpty)
+    }
 }
 
 // MARK: - Mocks
