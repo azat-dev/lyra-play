@@ -151,7 +151,9 @@ public final class WordsFlowLayoutViewModel {
         return cachedAttributesDict[path]!
     }
     
-    public func getAttributesOfItems(at: CGRect) -> [ItemAttributes] {
+    public func getAttributesOfItems(at rect: CGRect) -> [ItemAttributes] {
+        
+        
         return []
     }
 }

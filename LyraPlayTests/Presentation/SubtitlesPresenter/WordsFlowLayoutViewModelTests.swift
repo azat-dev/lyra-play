@@ -231,14 +231,122 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
     
     func testGetAttributesOfItemsInEmptyRect() {
         
-//        let sut = createSUT()
-//
-//        let attributes = sut.viewModel.getAttributes(
-//            at: .init(x: 0, y: 0),
-//            withSize: .init(width: 0, height: 0)
-//        )
-//
-//        XCTAssertTrue(attributes.isEmpty)
+        let sut = createSUT()
+
+        let attributes = sut.viewModel.getAttributesOfItems(at: .zero)
+
+        XCTAssertTrue(attributes.isEmpty)
+    }
+    
+    private func assertAttributes(sut: SUT, rect: CGRect, attributes: [ItemAttributes], file: StaticString = #filePath, line: UInt = #line) {
+        
+        let sizes = sut.itemsSizesProvider.sizes
+
+        for section in 0..<sizes.count {
+            
+            let itemsSizes = sizes[section]
+            
+            for item in 0..<itemsSizes.count {
+                
+                let itemAttributes = sut.viewModel.getAttributes(section: section, item: item)
+                let itemRect = CGRect(origin: itemAttributes.position, size: itemAttributes.size)
+                let foundItemAttributes = attributes.filter { $0.path == itemAttributes.path }
+                
+                guard itemRect.intersects(rect) else {
+                    
+                    XCTAssertEqual(
+                        foundItemAttributes.count,
+                        0,
+                        "Found attribute which must not exist at \(itemAttributes.path)",
+                        file: file,
+                        line: line
+                    )
+                    fatalError()
+                    continue
+                }
+                
+                XCTAssertEqual(
+                    foundItemAttributes.count,
+                    1,
+                    "Attribute at \(itemAttributes.path) is not found",
+                    file: file,
+                    line: line
+                )
+                fatalError()
+            }
+        }
+    }
+    
+    func testGetAttributesOfItemsInRect() {
+        
+        let itemSize = CGSize(width: 2, height: 2)
+        
+        let sizes: [[CGSize]] = [
+            [
+                itemSize,
+                itemSize,
+            ],
+            [
+                itemSize,
+                itemSize
+            ],
+            [
+                itemSize,
+                itemSize
+            ],
+        ]
+
+        let sectionInset = UIEdgeInsets(
+            top: 1.0,
+            left: 3.0,
+            bottom: 2.0,
+            right: 4.0
+        )
+        
+        let containerSize = CGSize(
+            width: itemSize.width * 2 + sectionInset.left + sectionInset.right + 1,
+            height: (itemSize.height + sectionInset.top + sectionInset.bottom) * 2 + 1)
+        let sut = createSUT(config: .init(sectionsInsets: sectionInset))
+
+        sut.itemsSizesProvider.sizes = sizes
+        
+        sut.viewModel.prepare(containerSize: containerSize)
+        
+        var rectSize = CGSize.zero
+        
+        while rectSize.width < containerSize.width || rectSize.height < containerSize.height {
+
+            for offsetX in stride(from: 0, through: containerSize.width, by: 1) {
+
+                // Move from the left to the right
+                let rectX = CGRect(origin: .init(x: offsetX, y: 0), size: rectSize)
+
+                let attributesX = sut.viewModel.getAttributesOfItems(at: rectX)
+                assertAttributes(sut: sut, rect: rectX, attributes: attributesX)
+
+                for offsetY in stride(from: 0, through: containerSize.height, by: 1) {
+
+                    // Move from the top to the bottom
+                    let rectY = CGRect(origin: .init(x: 0, y: offsetY), size: rectSize)
+
+                    let attributesY = sut.viewModel.getAttributesOfItems(at: rectY)
+
+                    assertAttributes(sut: sut, rect: rectY, attributes: attributesY)
+
+                    // Move from the top-left corner to the bottom-right corner
+                    let rectXY = CGRect(origin: .init(x: offsetX, y: offsetY), size: rectSize)
+                    let attributesXY = sut.viewModel.getAttributesOfItems(at: rectXY)
+
+                    assertAttributes(sut: sut, rect: rectXY, attributes: attributesXY)
+                }
+
+            }
+
+            rectSize = CGSize(
+                width: rectSize.width + 1,
+                height: rectSize.height + 1
+            )
+        }
     }
 }
 
