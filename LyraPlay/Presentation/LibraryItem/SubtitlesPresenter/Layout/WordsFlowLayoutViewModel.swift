@@ -15,12 +15,15 @@ public final class WordsFlowLayoutViewModel {
     public struct Config {
         
         public let sectionsInsets: UIEdgeInsets
+        public let sectionFitsToContainer: Bool
         
         public init(
-            sectionsInsets: UIEdgeInsets = .zero
+            sectionsInsets: UIEdgeInsets = .zero,
+            sectionFitsToContainer: Bool = true
         ) {
             
             self.sectionsInsets = sectionsInsets
+            self.sectionFitsToContainer = sectionFitsToContainer
         }
     }
     
@@ -43,6 +46,7 @@ public final class WordsFlowLayoutViewModel {
     }
     
     private var cachedAttributesDict = [IndexPath: ItemAttributes]()
+    private var cachedSectionAttributesDict = [Int: ItemAttributes]()
     
     public init(
         sizesProvider: ItemsSizesProvider,
@@ -85,6 +89,7 @@ public final class WordsFlowLayoutViewModel {
     public func prepare(containerSize: CGSize) {
         
         var newCachedAttributes: [ItemAttributes] = []
+        var newCachedSectionAttributes = [Int: ItemAttributes]()
         
         let numberOfSections = sizesProvider.numberOfSections
         
@@ -98,6 +103,7 @@ public final class WordsFlowLayoutViewModel {
         for section in 0..<numberOfSections {
             
             let numberOfItems = sizesProvider.numberOfItems(section: section)
+            var rectOfSectionItems: CGRect? = nil
             
             for item in 0..<numberOfItems {
                 
@@ -121,11 +127,16 @@ public final class WordsFlowLayoutViewModel {
                     
                     offsetX = attributes.frame.minX
                     offsetY = attributes.frame.minY
-                } else {
-                    
                 }
                 
                 offsetX += attributes.frame.width
+                
+                if let rectOfSectionItemsUnwrapped = rectOfSectionItems {
+                    
+                    rectOfSectionItems = rectOfSectionItemsUnwrapped.union(attributes.frame)
+                } else {
+                    rectOfSectionItems = attributes.frame
+                }
             }
             
             let bottomOfSection = offsetY + rowHeight + config.sectionsInsets.bottom
@@ -134,10 +145,24 @@ public final class WordsFlowLayoutViewModel {
             offsetX = config.sectionsInsets.left
             offsetY = bottomOfSection + config.sectionsInsets.top
             rowHeight = 0
+            
+            if let rectOfSectionItems = rectOfSectionItems {
+
+                let sectionAttributes = calculateSectionAttributes(
+                    section: section,
+                    numberOfItems: numberOfItems,
+                    rectOfSectionItems: rectOfSectionItems,
+                    containerSize: containerSize
+                )
+
+                if let sectionAttributes = sectionAttributes {
+                    newCachedSectionAttributes[section] = sectionAttributes
+                }
+            }
         }
         
-        
         cachedAttributes = newCachedAttributes
+        cachedSectionAttributesDict = newCachedSectionAttributes
         contentSize = CGSize(
             width: maxRightBoundary,
             height: maxBottomBoundary
@@ -161,7 +186,6 @@ public final class WordsFlowLayoutViewModel {
             return result
         }
 
-        
         for index in firstMatchIndex...lastIndex {
 
             let cellAttributes = cachedAttributes[index]
@@ -195,37 +219,40 @@ public final class WordsFlowLayoutViewModel {
         return result
     }
     
-    public func getSectionAttributes(section: Int) -> ItemAttributes? {
-
-        guard section < sizesProvider.numberOfSections else {
-            return nil
-        }
+    private func calculateSectionAttributes(
+        section: Int,
+        numberOfItems: Int,
+        rectOfSectionItems: CGRect,
+        containerSize: CGSize
+    ) -> ItemAttributes? {
         
-        let numberOfItems = sizesProvider.numberOfItems(section: section)
         if numberOfItems == 0 {
             return nil
         }
         
-        var rectOfSectionItems = CGRect.zero
+        var width: CGFloat
         
-        for item in 0..<numberOfItems {
-
-            let indexPath = IndexPath(item: item, section: section)
-            guard let itemAttributes = cachedAttributesDict[indexPath] else {
-                return nil
-            }
-
-            rectOfSectionItems = rectOfSectionItems.union(itemAttributes.frame)
+        if config.sectionFitsToContainer {
+            
+            width = containerSize.width
+        } else {
+            
+            width = rectOfSectionItems.width + config.sectionsInsets.left + config.sectionsInsets.right
         }
         
         let frame = CGRect(
             x: rectOfSectionItems.minX - config.sectionsInsets.left,
             y: rectOfSectionItems.minY - config.sectionsInsets.top,
-            width: rectOfSectionItems.maxX + config.sectionsInsets.right,
-            height: rectOfSectionItems.maxY + config.sectionsInsets.bottom
+            width: width,
+            height: rectOfSectionItems.height + config.sectionsInsets.top + config.sectionsInsets.bottom
         )
         
         return (frame, IndexPath(item: 0, section: section))
+    }
+    
+    public func getSectionAttributes(section: Int) -> ItemAttributes? {
+
+        return cachedSectionAttributesDict[section]
     }
 }
 

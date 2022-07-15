@@ -65,10 +65,8 @@ extension WordCell {
     private func style(with viewModel: WordCellViewModel) {
     
         if viewModel.isActive {
-            backgroundColor = .red
             Styles.apply(activeLabel: label)
         } else {
-            backgroundColor = .black
             Styles.apply(label: label)
         }
     }

@@ -107,17 +107,23 @@ extension SubtitlesPresenterView: ItemsSizesProvider {
     }
     
     private func setupViews() {
+
+        let collectionViewLayout = createCollectionViewLayout()
+        collectionViewLayout.register(
+            SectionBackgroundView.self,
+            forDecorationViewOfKind: SubtitlesPresenterCollectionLayout.sectionBackgroundDecoration
+        )
         
         collectionView = UICollectionView(
             frame: self.frame,
-            collectionViewLayout: createCollectionViewLayout()
+            collectionViewLayout: collectionViewLayout
         )
         
         collectionView.register(
             WordCell.self,
             forCellWithReuseIdentifier: WordCell.reuseIdentifier
         )
-        
+
         collectionView.dataSource = self
         
         addSubview(collectionView)

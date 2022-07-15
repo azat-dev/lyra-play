@@ -365,7 +365,7 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
         XCTAssertNil(attributes)
     }
     
-    func testGetSectionAttributes() async throws {
+    func testGetSectionAttributesFitsContainer() async throws {
 
         let containerSize = CGSize(width: 10, height: 10)
         let halfWidth = containerSize.width / 2
@@ -394,7 +394,12 @@ class WordsFlowLayoutViewModelTests: XCTestCase {
             right: 4.0
         )
         
-        let sut = createSUT(config: .init(sectionsInsets: sectionInset))
+        let sut = createSUT(
+            config: .init(
+                sectionsInsets: sectionInset,
+                sectionFitsToContainer: true
+            )
+        )
 
         sut.itemsSizesProvider.sizes = sizes
         sut.viewModel.prepare(containerSize: containerSize)
