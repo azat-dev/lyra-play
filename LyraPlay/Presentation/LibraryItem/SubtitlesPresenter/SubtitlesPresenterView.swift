@@ -60,16 +60,27 @@ extension SubtitlesPresenterView {
                 return
             }
             
+            defer { self.prevPosition = position }
+            
             guard let sentencePosition = position?.sentence else {
                 return
             }
             
-            let indexPath = IndexPath(item: sentencePosition, section: 0)
+            let currentRowIndexPath = IndexPath(item: sentencePosition, section: 0)
+            var pathsToReload: [IndexPath] = [
+                currentRowIndexPath
+            ]
             
-            self.tableView.reloadRows(at: [indexPath], with: .none)
+            if let prevPosition = self.prevPosition {
+                
+                let prevPositionPath = IndexPath(item: prevPosition.sentence, section: 0)
+                pathsToReload.append(prevPositionPath)
+            }
+            
+            self.tableView.reloadRows(at: pathsToReload, with: .none)
             self.tableView.scrollToRow(
-                at: indexPath,
-                at: .middle,
+                at: currentRowIndexPath,
+                at: .top,
                 animated: true
             )
         }
