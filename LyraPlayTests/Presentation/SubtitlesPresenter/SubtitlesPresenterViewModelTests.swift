@@ -35,16 +35,19 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     
     func testSplitNotSyncSentences() async throws {
         
+        let text1 = "Word1, word2 word3."
+        let text2 = "Word1,word2,word3.Word4 Word5-Word6 -Word7"
+        
         let testSubtitles = Subtitles(sentences: [
             .init(
                 startTime: 0.1,
                 duration: 0,
-                text: .notSynced(text: "Word1, word2 word3.")
+                text: .notSynced(text: text1)
             ),
             .init(
                 startTime: 0.2,
                 duration: 0,
-                text: .notSynced(text: "Word1,word2,word3.Word4 Word5-Word6 -Word7")
+                text: .notSynced(text: text2)
             )
         ])
         
@@ -52,6 +55,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         
         let expectedItems: [SentencePresentation] = [
             SentencePresentation(
+                text: text1,
                 items: [
                     
                     .word(position: .init(itemIndex: 0, startsAt: 0), text: "Word1"),
@@ -64,6 +68,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
                 ]
             ),
             SentencePresentation(
+                text: text2,
                 items: [
                     .word(position: .init(itemIndex: 0, startsAt: 0), text: "Word1"),
                     .specialCharacter(position: .init(itemIndex: 0, startsAt: 5), text: ","),

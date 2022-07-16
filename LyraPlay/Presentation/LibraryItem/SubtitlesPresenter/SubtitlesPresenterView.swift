@@ -8,16 +8,9 @@
 import Foundation
 import UIKit
 
-public protocol WordCellsDataSource {
-    
-    func getItem(at: IndexPath) -> WordCellViewModel?
-    
-    func getItemSize(at: IndexPath) -> CGSize?
-}
-
 public final class SubtitlesPresenterView: UIView {
     
-    private var collectionView: UICollectionView!
+    private var tableView: UITableView!
     
     public var viewModel: SubtitlesPresenterViewModel? {
         
@@ -46,6 +39,7 @@ public final class SubtitlesPresenterView: UIView {
         
         setupViews()
         layout()
+        style()
     }
 }
 
@@ -57,7 +51,7 @@ extension SubtitlesPresenterView {
     private func bind(to viewModel: SubtitlesPresenterViewModel) {
 
         viewModel.sentences.observe(on: self, queue: .main) { [weak self] sentences in
-            self?.collectionView.reloadData()
+            self?.tableView.reloadData()
         }
         
         viewModel.currentPosition.observe(on: self, queue: .main) { [weak self] position in
@@ -70,13 +64,12 @@ extension SubtitlesPresenterView {
                 return
             }
             
-            let indexPath = IndexPath(row: position?.word ?? 0, section: sentencePosition)
+            let indexPath = IndexPath(item: sentencePosition, section: 0)
             
-            self.collectionView.reloadItems(at: [indexPath])
-            
-            self.collectionView.scrollToItem(
+            self.tableView.reloadRows(at: [indexPath], with: .none)
+            self.tableView.scrollToRow(
                 at: indexPath,
-                at: .top,
+                at: .middle,
                 animated: true
             )
         }
@@ -85,138 +78,23 @@ extension SubtitlesPresenterView {
 
 // MARK: - Setup Views
 
-extension SubtitlesPresenterView: ItemsSizesProvider {
-    
-    private func createCollectionViewLayout() -> UICollectionViewLayout {
-        
-        let config = WordsFlowLayoutViewModel.Config(
-            sectionsInsets: .init(
-                top: 30,
-                left: 5,
-                bottom: 30,
-                right: 5
-            )
-        )
-        
-        let layoutViewModel = WordsFlowLayoutViewModel(
-            sizesProvider: self,
-            config: config
-        )
-    
-        return SubtitlesPresenterCollectionLayout(viewModel: layoutViewModel)
-    }
+extension SubtitlesPresenterView {
     
     private func setupViews() {
 
-        let collectionViewLayout = createCollectionViewLayout()
-        collectionViewLayout.register(
-            SectionBackgroundView.self,
-            forDecorationViewOfKind: SubtitlesPresenterCollectionLayout.sectionBackgroundDecoration
-        )
-        
-        collectionView = UICollectionView(
-            frame: self.frame,
-            collectionViewLayout: collectionViewLayout
-        )
-        
-        collectionView.register(
-            WordCell.self,
-            forCellWithReuseIdentifier: WordCell.reuseIdentifier
+        tableView = UITableView(
+            frame: frame,
+            style: .plain
         )
 
-        collectionView.dataSource = self
-        
-        addSubview(collectionView)
-    }
-    
-    public func getItemSize(section: Int, item: Int) -> CGSize {
-        
-        return getItemSize(at: IndexPath(item: item, section: section))!
-    }
-    
-    public func numberOfItems(section: Int) -> Int {
-        return viewModel?.sentences.value?[section].items.count ?? 0
-    }
-    
-    public var numberOfSections: Int {
-        return viewModel?.sentences.value?.count ??  0
-    }
-}
-
-// MARK: - Word Cells Data Source
-
-extension SubtitlesPresenterView: WordCellsDataSource {
-    
-    public func getItem(at indexPath: IndexPath) -> WordCellViewModel? {
-        
-        let sectionIndex = indexPath.section
-        let wordIndex = indexPath.item
-        
-        guard
-            let sentences = viewModel?.sentences.value,
-            sectionIndex < sentences.count
-        else {
-            fatalError("Inconsistent state")
-        }
-        
-        let sentence = sentences[sectionIndex]
-        
-        guard wordIndex < sentence.items.count else {
-            fatalError("Inconsistent state")
-        }
-
-        let item = sentence.items[wordIndex]
-        
-        return WordCellViewModel(
-            isActive: false,
-            text: item.getText()
+        tableView.register(
+            RowCell.self,
+            forCellReuseIdentifier: RowCell.reuseIdentifier
         )
-    }
-    
-    public func getItemSize(at indexPath: IndexPath) -> CGSize? {
-        
-        guard let item = getItem(at: indexPath) else {
-            return nil
-        }
 
-        return WordCell.getSize(text: item.text)
-    }
-}
-
-// MARK: - Data Source
-
-extension SubtitlesPresenterView: UICollectionViewDataSource {
-    
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return viewModel?.sentences.value?.count ?? 0
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        tableView.dataSource = self
         
-        guard let sentences = viewModel?.sentences.value else {
-            return 0
-        }
-        
-        return sentences[section].items.count
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
-        let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: WordCell.reuseIdentifier,
-            for: indexPath
-        )
-        
-        guard
-            let cell = cell as? WordCell,
-            let cellViewModel = getItem(at: indexPath)
-        else {
-            fatalError("Can't dequee a cell")
-        }
-        
-        cell.configure(with: cellViewModel)
-        
-        return cell
+        addSubview(tableView)
     }
 }
 
@@ -226,6 +104,79 @@ extension SubtitlesPresenterView {
     
     private func layout() {
         
-        collectionView.constraintTo(view: self)
+        Layout.apply(
+            view: self,
+            tableView: tableView
+        )
+    }
+}
+
+// MARK: - Style
+
+extension SubtitlesPresenterView {
+    
+    private func style() {
+        
+        Styles.apply(tableView: tableView)
+    }
+}
+
+extension SubtitlesPresenterView {
+    
+    public func getItem(at indexPath: IndexPath) -> RowCellViewModel? {
+        
+        let sentenceIndex = indexPath.item
+        
+        guard
+            let sentences = viewModel?.sentences.value,
+            sentenceIndex < sentences.count
+        else {
+            fatalError("Inconsistent state")
+        }
+        
+        let sentence = sentences[sentenceIndex]
+        
+        var isActive = false
+        
+        if let currentSentenceIndex = viewModel?.currentPosition.value?.sentence {
+            
+            isActive = currentSentenceIndex == sentenceIndex
+        }
+        
+        return RowCellViewModel(
+            isActive: isActive,
+            text: sentence.text
+        )
+    }
+}
+
+// MARK: - Data Source
+
+extension SubtitlesPresenterView: UITableViewDataSource {
+    
+    public func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return viewModel?.sentences.value?.count ?? 0
+    }
+
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: RowCell.reuseIdentifier,
+            for: indexPath
+        )
+        
+        guard
+            let cell = cell as? RowCell,
+            let cellViewModel = getItem(at: indexPath)
+        else {
+            fatalError("Can't dequee a cell")
+        }
+        
+        cell.configure(with: cellViewModel)
+        return cell
     }
 }

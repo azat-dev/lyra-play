@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct WordCellViewModel {
+public struct RowCellViewModel {
     
     public var isActive: Bool
     

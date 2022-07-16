@@ -12,6 +12,7 @@ import Foundation
 
 public struct SentencePresentation: Equatable {
 
+    public var text: String
     public var items: [Item]
     
     public enum Item: Equatable {
@@ -44,7 +45,9 @@ public struct SentencePresentation: Equatable {
         }
     }
     
-    public init(items: [SentencePresentation.Item]) {
+    public init(text: String, items: [SentencePresentation.Item]) {
+        
+        self.text = text
         self.items = items
     }
 }
@@ -218,7 +221,10 @@ extension DefaultSubtitlesPresenterViewModel {
             
             switch subtitlesSentence.text {
             case .notSynced(text: let text):
-                let sentence = SentencePresentation(items: Self.splitNotSyncedSentence(text: text))
+                let sentence = SentencePresentation(
+                    text: text,
+                    items: Self.splitNotSyncedSentence(text: text)
+                )
                 result.append(sentence)
                 break
                 
