@@ -39,7 +39,6 @@ public final class DefaultScheduler {
 
 extension DefaultScheduler: Scheduler {
     
-    
     private func setNextTimer(block: @escaping (TimeInterval) -> Void, lastTimeMark: TimeInterval = 0, delta: TimeInterval = 0) {
 
         guard let nextTimeMark = timeMarksIterator.getNext() else {
@@ -47,7 +46,7 @@ extension DefaultScheduler: Scheduler {
         }
         
         let triggerTime = Date.now
-        let timeOffset = nextTimeMark - lastTimeMark + delta
+        let timeOffset = nextTimeMark - lastTimeMark - delta
         
         timer.executeAfter(timeOffset) { [weak self] in
             
@@ -55,7 +54,7 @@ extension DefaultScheduler: Scheduler {
                 return
             }
             
-            let timeDelta = Date.now.timeIntervalSince(triggerTime) * -1
+            let timeDelta = Date.now.timeIntervalSince(triggerTime) - timeOffset
             
             let _ = self.timeMarksIterator.next()
             

@@ -42,7 +42,6 @@ public final class DefaultActionTimer: ActionTimer {
                     self.queue.sync {
                         self.workItem = nil
                     }
-
                 }
             }
             
