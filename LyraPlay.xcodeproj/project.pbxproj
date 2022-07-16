@@ -376,17 +376,13 @@
 		AA190E70287AC694000514AB /* SubtitlesPresenter */ = {
 			isa = PBXGroup;
 			children = (
+				AAF3E35628831E8300ECBFA3 /* Timeline */,
 				AAF089A82880A69E0020F47A /* Layout */,
 				AA0F69BD287F587F00BD13DB /* WordCell */,
 				AA190E71287AC6AC000514AB /* SubtitlesPresenterViewModel.swift */,
 				AA0F69BB287F4F0D00BD13DB /* SubtitlesPresenterView.swift */,
 				AA3B232528819776003E63D5 /* SectionBackgroundView.swift */,
 				AA4281C62880475400F2F028 /* SubtitlesPresenterCollectionLayout.swift */,
-				AA3166C9287C939B00348781 /* ActionTimer.swift */,
-				AA0F69B5287EF74500BD13DB /* Scheduler.swift */,
-				AAF2EEBF287DF83F00894F71 /* ActionTimerFactory.swift */,
-				AA3166C7287C066000348781 /* SubtitlesIterator.swift */,
-				AA0F69AF287EDF7A00BD13DB /* TimeMarksIterator.swift */,
 			);
 			path = SubtitlesPresenter;
 			sourceTree = "<group>";
@@ -926,6 +922,18 @@
 				AAF089A92880A6D40020F47A /* ItemsSizesProvider.swift */,
 			);
 			path = Layout;
+			sourceTree = "<group>";
+		};
+		AAF3E35628831E8300ECBFA3 /* Timeline */ = {
+			isa = PBXGroup;
+			children = (
+				AA0F69B5287EF74500BD13DB /* Scheduler.swift */,
+				AA3166C9287C939B00348781 /* ActionTimer.swift */,
+				AAF2EEBF287DF83F00894F71 /* ActionTimerFactory.swift */,
+				AA3166C7287C066000348781 /* SubtitlesIterator.swift */,
+				AA0F69AF287EDF7A00BD13DB /* TimeMarksIterator.swift */,
+			);
+			path = Timeline;
 			sourceTree = "<group>";
 		};
 		AAFB97982875C5D1007A76A7 /* Utils */ = {
