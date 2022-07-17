@@ -14,7 +14,6 @@ final class RowCell: UITableViewCell {
     
     private var textView = UITextView()
 
-
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -41,9 +40,23 @@ final class RowCell: UITableViewCell {
 // MARK: - Setup Views
 
 extension RowCell {
+
+    @objc
+    private func didTap(gesture: UITapGestureRecognizer) {
+        
+        let point = gesture.location(in: textView)
+        let range = textView.characterRange(at: point)
+        
+        print(range)
+    }
     
     private func setupViews() {
 
+        let tapGestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(didTap(gesture:)))
+        
+        textView.addGestureRecognizer(tapGestureRecognizer)
         contentView.addSubview(textView)
     }
 }

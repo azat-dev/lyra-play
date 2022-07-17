@@ -19,6 +19,7 @@ extension RowCell {
             textView.font = font
             textView.isScrollEnabled = false
             textView.isEditable = false
+            textView.isSelectable = false
         }
         
         static func apply(textView: UITextView) {
