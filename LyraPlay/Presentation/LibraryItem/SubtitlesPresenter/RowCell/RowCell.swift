@@ -13,6 +13,16 @@ final class RowCell: UITableViewCell {
     public static let reuseIdentifier = "RowCell"
     
     private var textView = UITextView()
+    public var viewModel: RowCellViewModel? {
+
+        didSet {
+            guard let viewModel = viewModel else {
+                return
+            }
+
+            configure(with: viewModel)
+        }
+    }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         
@@ -30,7 +40,7 @@ final class RowCell: UITableViewCell {
         layout()
     }
     
-    public func configure(with viewModel: RowCellViewModel) {
+    private func configure(with viewModel: RowCellViewModel) {
         
         textView.text = viewModel.text
         style(with: viewModel)
@@ -40,14 +50,49 @@ final class RowCell: UITableViewCell {
 // MARK: - Setup Views
 
 extension RowCell {
+    
+    private func didTap(range: UITextRange) {
+
+        guard let viewModel = viewModel else {
+            return
+        }
+        
+        let nsRange = range.toNSRange(textView: textView)
+        guard let range = Range(nsRange, in: viewModel.text) else {
+            return
+        }
+        
+        viewModel.toggleWord(viewModel.id, range)
+    }
 
     @objc
     private func didTap(gesture: UITapGestureRecognizer) {
         
         let point = gesture.location(in: textView)
-        let range = textView.characterRange(at: point)
         
-        print(range)
+        textView.layoutManager.enumerateLineFragments(forGlyphRange: textView.textRange) {
+            [weak self] (rect, usedRect, textContainer, glyphRange, stop) in
+        
+            guard let self = self else {
+                return
+            }
+            
+            let placedInLine = usedRect.contains(point)
+            guard placedInLine else {
+                
+                stop.pointee = true
+                return
+            }
+
+            
+            let tapRange = self.textView.characterRange(at: point)
+            
+            guard let tapRange = tapRange else {
+                return
+            }
+            
+            self.didTap(range: tapRange)
+        }
     }
     
     private func setupViews() {

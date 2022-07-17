@@ -74,10 +74,11 @@ extension LibraryItemViewController {
     private func showSubtitles() {
         
         subtitlesPresenter.viewModel = viewModel.subtitlesPresenterViewModel.value
+        subtitlesPresenter.isHidden = false
     }
     
     private func hideSubtitles() {
-        
+        subtitlesPresenter.isHidden = true
     }
 
     private func bind(to viewModel: LibraryItemViewModel) {
@@ -108,6 +109,7 @@ extension LibraryItemViewController {
             
             guard isPlaying else {
                 Styles.apply(playButton: self.playButton)
+                self.showSubtitles()
                 return
             }
             

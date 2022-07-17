@@ -150,7 +150,6 @@ extension DefaultLibraryItemViewModel {
         }
         
         self.info.value = mapInfo(mediaInfo)
-        await loadSubtitles()
     }
     
     public func togglePlay() async {
@@ -162,6 +161,7 @@ extension DefaultLibraryItemViewModel {
         }
         
         let _ = await playerControlUseCase.play(trackId: trackId)
+        await loadSubtitles()
     }
     
     

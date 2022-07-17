@@ -47,7 +47,6 @@ public final class SubtitlesPresenterView: UIView {
 
 extension SubtitlesPresenterView {
     
-    
     private func bind(to viewModel: SubtitlesPresenterViewModel) {
 
         viewModel.sentences.observe(on: self, queue: .main) { [weak self] sentences in
@@ -154,10 +153,17 @@ extension SubtitlesPresenterView {
             isActive = currentSentenceIndex == sentenceIndex
         }
         
-        return RowCellViewModel(
+        let factory = RowCellViewModelFactory()
+        return factory.create(
+            id: sentenceIndex,
             isActive: isActive,
-            text: sentence.text
+            text: sentence.text,
+            toggleWord: { rowId, range in
+                
+            },
+            activeRange: nil
         )
+        
     }
 }
 
@@ -187,7 +193,7 @@ extension SubtitlesPresenterView: UITableViewDataSource {
             fatalError("Can't dequee a cell")
         }
         
-        cell.configure(with: cellViewModel)
+        cell.viewModel = cellViewModel
         return cell
     }
 }
