@@ -52,6 +52,8 @@
 		AA369E9F2884291500FDAD27 /* UITextView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA369E9E2884291500FDAD27 /* UITextView+Utils.swift */; };
 		AA369EA1288458A800FDAD27 /* RowCellViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA369EA0288458A800FDAD27 /* RowCellViewModelFactory.swift */; };
 		AA369EA428845F2700FDAD27 /* TextSplitterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA369EA328845F2700FDAD27 /* TextSplitterTests.swift */; };
+		AA369EA72884646200FDAD27 /* TextSplitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA369EA62884646200FDAD27 /* TextSplitter.swift */; };
+		AA369EA9288464BA00FDAD27 /* TextComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA369EA8288464BA00FDAD27 /* TextComponent.swift */; };
 		AA3BAB17286B67B5005EE01E /* PlayerControlUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB16286B67B5005EE01E /* PlayerControlUseCaseTests.swift */; };
 		AA3BAB19286C6883005EE01E /* PlayerControlUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB18286C6883005EE01E /* PlayerControlUseCase.swift */; };
 		AA3BAB1B286C7225005EE01E /* PlayerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB1A286C7225005EE01E /* PlayerState.swift */; };
@@ -217,6 +219,8 @@
 		AA369E9E2884291500FDAD27 /* UITextView+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Utils.swift"; sourceTree = "<group>"; };
 		AA369EA0288458A800FDAD27 /* RowCellViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowCellViewModelFactory.swift; sourceTree = "<group>"; };
 		AA369EA328845F2700FDAD27 /* TextSplitterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextSplitterTests.swift; sourceTree = "<group>"; };
+		AA369EA62884646200FDAD27 /* TextSplitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextSplitter.swift; sourceTree = "<group>"; };
+		AA369EA8288464BA00FDAD27 /* TextComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextComponent.swift; sourceTree = "<group>"; };
 		AA3BAB16286B67B5005EE01E /* PlayerControlUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlUseCaseTests.swift; sourceTree = "<group>"; };
 		AA3BAB18286C6883005EE01E /* PlayerControlUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlUseCase.swift; sourceTree = "<group>"; };
 		AA3BAB1A286C7225005EE01E /* PlayerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerState.swift; sourceTree = "<group>"; };
@@ -369,6 +373,7 @@
 		AA190E70287AC694000514AB /* SubtitlesPresenter */ = {
 			isa = PBXGroup;
 			children = (
+				AA369EA52884645000FDAD27 /* TextUtils */,
 				AAF3E35628831E8300ECBFA3 /* Timeline */,
 				AA0F69BD287F587F00BD13DB /* RowCell */,
 				AA190E71287AC6AC000514AB /* SubtitlesPresenterViewModel.swift */,
@@ -476,6 +481,15 @@
 				AA3166C5287C016800348781 /* SubtitlesIteratorTests.swift */,
 			);
 			path = Timeline;
+			sourceTree = "<group>";
+		};
+		AA369EA52884645000FDAD27 /* TextUtils */ = {
+			isa = PBXGroup;
+			children = (
+				AA369EA62884646200FDAD27 /* TextSplitter.swift */,
+				AA369EA8288464BA00FDAD27 /* TextComponent.swift */,
+			);
+			path = TextUtils;
 			sourceTree = "<group>";
 		};
 		AA3BAB23286C7EB9005EE01E /* Stores */ = {
@@ -1135,10 +1149,12 @@
 				AA7B0D542871A70F0067DDB5 /* LibraryItemViewController+Styles.swift in Sources */,
 				AA0F69C1287F5CD900BD13DB /* RowCellViewModel.swift in Sources */,
 				AA35E582286AA3D90086DB28 /* FilesRepository.swift in Sources */,
+				AA369EA72884646200FDAD27 /* TextSplitter.swift in Sources */,
 				AA2895AD287742FC00B168C4 /* ImportSubtitlesUseCase.swift in Sources */,
 				AA2BE88B2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift in Sources */,
 				AA8BF78228567C410010FA1E /* AppCoordinator.swift in Sources */,
 				AA3BAB1D286C728B005EE01E /* PlayerStateRepository.swift in Sources */,
+				AA369EA9288464BA00FDAD27 /* TextComponent.swift in Sources */,
 				AA7B0D7D28721A5E0067DDB5 /* Fonts.swift in Sources */,
 				AA3BAB22286C7D32005EE01E /* KeyValueStore.swift in Sources */,
 				AAFB97972875BCAD007A76A7 /* Subtitles.swift in Sources */,

@@ -15,53 +15,63 @@ class TextSplitterTests: XCTestCase {
     
     func createSUT() -> SUT {
         
-        let textSplitter = DefaultTextSplitter(
-            sentence
-        )
+        let textSplitter = DefaultTextSplitter()
         detectMemoryLeak(instance: textSplitter)
         
         return textSplitter
     }
     
-    func testSplitEmptyText() async throws {
+    func testSplitEmptyText() throws {
         
         let sut = createSUT()
-        let result = await sut.split(text: "")
+        let result = sut.split(text: "")
         XCTAssertEqual(result, [])
     }
     
-    func testSplitText() async throws {
+    func testSplitText() throws {
         
         let text = """
         Word1,word2,word3.Word4 Word5-Word6 -Word7
         word8
         """
         
+        let dummyIndex = (text.startIndex...text.startIndex)
+
         let expectedItems: [TextComponent] = [
-            .word(range: (text.startIndex...text.startIndex), text: "Word1"),
-            .specialCharacter(range: (text.startIndex...text.startIndex), text: ","),
-            .word(range: (text.startIndex...text.startIndex), text: "word2"),
-            .specialCharacter(range: (text.startIndex...text.startIndex), text: ","),
-            .word(range: (text.startIndex...text.startIndex), text: "word3"),
-            .specialCharacter(range: (text.startIndex...text.startIndex), text: "."),
-            .word(range: (text.startIndex...text.startIndex), text: "Word4"),
-            .space(range: (text.startIndex...text.startIndex), text: " "),
-            .word(range: (text.startIndex...text.startIndex), text: "Word5-Word6"),
-            .space(range: (text.startIndex...text.startIndex), text: " "),
-            .specialCharacter(range: (text.startIndex...text.startIndex), text: "-"),
-            .word(range: (text.startIndex...text.startIndex), text: "Word7")
+            .init(type: .word, range: dummyIndex, text: "Word1"),
+            .init(type: .specialCharacter, range: dummyIndex, text: ","),
+            .init(type: .word, range: dummyIndex, text: "word2"),
+            .init(type: .specialCharacter, range: dummyIndex, text: ","),
+            .init(type: .word, range: dummyIndex, text: "word3"),
+            .init(type: .specialCharacter, range: dummyIndex, text: "."),
+            .init(type: .word, range: dummyIndex, text: "Word4"),
+            .init(type: .space, range: dummyIndex, text: " "),
+            .init(type: .word, range: dummyIndex, text: "Word5-Word6"),
+            .init(type: .space, range: dummyIndex, text: " "),
+            .init(type: .specialCharacter, range: dummyIndex, text: "-"),
+            .init(type: .word, range: dummyIndex, text: "Word7"),
+            .init(type: .newLine, range: dummyIndex, text: "\n"),
+            .init(type: .word, range: dummyIndex, text: "word8")
         ]
 
         let sut = createSUT()
         let result = sut.split(text: text)
         
-        XCTAssertEqual(result, expectedItems)
+        XCTAssertEqual(result.count, expectedItems.count)
+        
+        for (index, expectedItem) in expectedItems.enumerated() {
+            
+            guard index < result.count else {
+                break
+            }
+            
+            let item = result[index]
+            
+            XCTAssertEqual(item.type, expectedItem.type)
+            XCTAssertEqual(item.text, expectedItem.text)
+            
+            let rangeText = text[item.range]
+            XCTAssertEqual(String(rangeText), expectedItem.text)
+        }
     }
-}
-
-public enum TextComponent: Equatable {
-    
-    case space(range: ClosedRange<String.Index>, text: String)
-    case word(range: ClosedRange<String.Index>, text: String)
-    case specialCharacter(range: ClosedRange<String.Index>, text: String)
 }
