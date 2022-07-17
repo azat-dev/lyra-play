@@ -33,7 +33,29 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         )
     }
     
-    func testSplitNotSyncSentences() async throws {
+    func testSplitEmptySentences() async {
+        
+        let testSubtitles = Subtitles(sentences: [])
+        
+        let sut = createSUT(subtitles: testSubtitles)
+        
+        let itemsSequence = expectSequence([nil, 0])
+        
+        sut.viewModel.sentences.observe(on: self) { sentences in
+            guard let sentences = sentences else {
+                itemsSequence.fulfill(with: nil)
+                return
+            }
+            
+            itemsSequence.fulfill(with: sentences.count)
+        }
+        
+        await sut.viewModel.load()
+
+        itemsSequence.wait(timeout: 3, enforceOrder: true)
+    }
+    
+    func testSplitSentences() async throws {
         
         let text1 = "Word1, word2 word3."
         let text2 = "Word1,word2,word3.Word4 Word5-Word6 -Word7"
@@ -53,40 +75,9 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         
         let sut = createSUT(subtitles: testSubtitles)
         
-        let expectedItems: [SentencePresentation] = [
-            SentencePresentation(
-                text: text1,
-                items: [
-                    
-                    .word(position: .init(itemIndex: 0, startsAt: 0), text: "Word1"),
-                    .specialCharacter(position: .init(itemIndex: 0, startsAt: 5), text: ","),
-                    .space(position: .init(itemIndex: 0, startsAt: 6), text: " "),
-                    .word(position: .init(itemIndex: 0, startsAt: 7), text: "word2"),
-                    .space(position: .init(itemIndex: 0, startsAt: 12), text: " "),
-                    .word(position: .init(itemIndex: 0, startsAt: 13), text: "word3"),
-                    .specialCharacter(position: .init(itemIndex: 0, startsAt: 18), text: ".")
-                ]
-            ),
-            SentencePresentation(
-                text: text2,
-                items: [
-                    .word(position: .init(itemIndex: 0, startsAt: 0), text: "Word1"),
-                    .specialCharacter(position: .init(itemIndex: 0, startsAt: 5), text: ","),
-                    .word(position: .init(itemIndex: 0, startsAt: 6), text: "word2"),
-                    .specialCharacter(position: .init(itemIndex: 0, startsAt: 11), text: ","),
-                    .word(position: .init(itemIndex: 0, startsAt: 12), text: "word3"),
-                    .specialCharacter(position: .init(itemIndex: 0, startsAt: 17), text: "."),
-                    .word(position: .init(itemIndex: 0, startsAt: 18), text: "Word4"),
-                    .space(position: .init(itemIndex: 0, startsAt: 23), text: " "),
-                    .word(position: .init(itemIndex: 0, startsAt: 24), text: "Word5-Word6"),
-                    .space(position: .init(itemIndex: 0, startsAt: 35), text: " "),
-                    .specialCharacter(position: .init(itemIndex: 0, startsAt: 36), text: "-"),
-                    .word(position: .init(itemIndex: 0, startsAt: 37), text: "Word7")
-                ]
-            )
-        ]
-        
-        let itemsSequence = expectSequence(expectedItems.flatMap({ $0.items }))
+
+        let itemsIdSequence = expectSequence([nil, 0, 1])
+        let itemsActiveSequence = expectSequence([nil, false, false])
         
         sut.viewModel.sentences.observe(on: self) { sentences in
             guard let sentences = sentences else {
@@ -94,16 +85,16 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
             }
             
             sentences.forEach { sentence in
-                sentence.items.forEach { item in
-                    
-                    itemsSequence.fulfill(with: item)
-                }
+                
+                itemsIdSequence.fulfill(with: sentence.id)
+                itemsActiveSequence.fulfill(with: sentence.isActive)
             }
         }
         
         await sut.viewModel.load()
 
-        itemsSequence.wait(timeout: 3, enforceOrder: true)
+        itemsIdSequence.wait(timeout: 3, enforceOrder: true)
+        itemsActiveSequence.wait(timeout: 3, enforceOrder: true)
     }
     
     func testPlayEmpty() async throws {
