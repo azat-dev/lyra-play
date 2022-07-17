@@ -51,6 +51,7 @@
 		AA35E585286AA5E10086DB28 /* LocalFilesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA35E584286AA5E10086DB28 /* LocalFilesRepository.swift */; };
 		AA369E9F2884291500FDAD27 /* UITextView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA369E9E2884291500FDAD27 /* UITextView+Utils.swift */; };
 		AA369EA1288458A800FDAD27 /* RowCellViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA369EA0288458A800FDAD27 /* RowCellViewModelFactory.swift */; };
+		AA369EA428845F2700FDAD27 /* TextSplitterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA369EA328845F2700FDAD27 /* TextSplitterTests.swift */; };
 		AA3BAB17286B67B5005EE01E /* PlayerControlUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB16286B67B5005EE01E /* PlayerControlUseCaseTests.swift */; };
 		AA3BAB19286C6883005EE01E /* PlayerControlUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB18286C6883005EE01E /* PlayerControlUseCase.swift */; };
 		AA3BAB1B286C7225005EE01E /* PlayerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB1A286C7225005EE01E /* PlayerState.swift */; };
@@ -215,6 +216,7 @@
 		AA35E584286AA5E10086DB28 /* LocalFilesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFilesRepository.swift; sourceTree = "<group>"; };
 		AA369E9E2884291500FDAD27 /* UITextView+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Utils.swift"; sourceTree = "<group>"; };
 		AA369EA0288458A800FDAD27 /* RowCellViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowCellViewModelFactory.swift; sourceTree = "<group>"; };
+		AA369EA328845F2700FDAD27 /* TextSplitterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextSplitterTests.swift; sourceTree = "<group>"; };
 		AA3BAB16286B67B5005EE01E /* PlayerControlUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlUseCaseTests.swift; sourceTree = "<group>"; };
 		AA3BAB18286C6883005EE01E /* PlayerControlUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlUseCase.swift; sourceTree = "<group>"; };
 		AA3BAB1A286C7225005EE01E /* PlayerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerState.swift; sourceTree = "<group>"; };
@@ -448,6 +450,7 @@
 			children = (
 				AA369EA228845EB800FDAD27 /* Timeline */,
 				AA190E6E287ABC9C000514AB /* SubtitlesPresenterViewModelTests.swift */,
+				AA369EA328845F2700FDAD27 /* TextSplitterTests.swift */,
 			);
 			path = SubtitlesPresenter;
 			sourceTree = "<group>";
@@ -1176,6 +1179,7 @@
 				AA0930CA28739BD900E62DB3 /* ShowMediaInfoUseCaseMock.swift in Sources */,
 				AAFB979328759C45007A76A7 /* MessageChannelTests.swift in Sources */,
 				AAF2EEB8287DC3EA00894F71 /* ActionTimerTests.swift in Sources */,
+				AA369EA428845F2700FDAD27 /* TextSplitterTests.swift in Sources */,
 				AA0930C628739B2000E62DB3 /* AssertSequence.swift in Sources */,
 				AA731CC328706CBB0044412F /* ShowMediaInfoUseCaseTests.swift in Sources */,
 				AA0F69B2287EE64300BD13DB /* Int+Double.swift in Sources */,
