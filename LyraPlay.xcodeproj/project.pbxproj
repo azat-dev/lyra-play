@@ -446,11 +446,8 @@
 		AA3166C4287C015200348781 /* SubtitlesPresenter */ = {
 			isa = PBXGroup;
 			children = (
+				AA369EA228845EB800FDAD27 /* Timeline */,
 				AA190E6E287ABC9C000514AB /* SubtitlesPresenterViewModelTests.swift */,
-				AA3166C5287C016800348781 /* SubtitlesIteratorTests.swift */,
-				AAF2EEB7287DC3EA00894F71 /* ActionTimerTests.swift */,
-				AA0F69B3287EEFF500BD13DB /* SchedulerTests.swift */,
-				AAF2EEBD287DF75700894F71 /* ActionTimerFactoryTests.swift */,
 			);
 			path = SubtitlesPresenter;
 			sourceTree = "<group>";
@@ -465,6 +462,17 @@
 				AA2895A72876EAA100B168C4 /* LyraPlay.xcdatamodeld */,
 			);
 			path = CoreData;
+			sourceTree = "<group>";
+		};
+		AA369EA228845EB800FDAD27 /* Timeline */ = {
+			isa = PBXGroup;
+			children = (
+				AAF2EEB7287DC3EA00894F71 /* ActionTimerTests.swift */,
+				AA0F69B3287EEFF500BD13DB /* SchedulerTests.swift */,
+				AAF2EEBD287DF75700894F71 /* ActionTimerFactoryTests.swift */,
+				AA3166C5287C016800348781 /* SubtitlesIteratorTests.swift */,
+			);
+			path = Timeline;
 			sourceTree = "<group>";
 		};
 		AA3BAB23286C7EB9005EE01E /* Stores */ = {
