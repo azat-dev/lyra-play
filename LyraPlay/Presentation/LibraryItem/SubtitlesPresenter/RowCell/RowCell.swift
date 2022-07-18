@@ -8,11 +8,13 @@
 import Foundation
 import UIKit
 
-final class RowCell: UITableViewCell {
+final class RowCell: UITableViewCell, NSLayoutManagerDelegate {
     
     public static let reuseIdentifier = "RowCell"
     
-    private var textView = UITextView()
+    private var textView: UITextView!
+    private var textLayoutManager = HighlightWordsLayoutManager()
+    
     public var viewModel: SentenceViewModel! {
 
         didSet {
@@ -53,11 +55,34 @@ extension RowCell {
     
     func bind(to viewModel: SentenceViewModel) {
         
+        let wordHighlightId = "wordHighlight"
+        
         textView.text = viewModel.text
         
-        viewModel.isActive.observe(on: self) { [weak self] isActive in
+        viewModel.isActive.observe(on: self, queue: .main) { [weak self] isActive in
 
             self?.updateActive(isActive)
+        }
+        
+        viewModel.selectedWordRange.observe(on: self, queue: .main) { [weak self] activeRange in
+            
+            guard let self = self else {
+                return
+            }
+            
+            guard let activeRange = activeRange else {
+                self.textLayoutManager.removeHighlight(id: wordHighlightId)
+                return
+            }
+
+            
+            self.textLayoutManager.putHighlight(
+                highlight: .init(
+                    id: wordHighlightId,
+                    range: NSRange(activeRange, in: viewModel.text),
+                    color: .red
+                )
+            )
         }
     }
 }
@@ -116,7 +141,17 @@ extension RowCell {
             target: self,
             action: #selector(didTap(gesture:)))
         
+        let textStorage = NSTextStorage()
+        let textContainer = NSTextContainer(size: .zero)
+        
+        textStorage.addLayoutManager(self.textLayoutManager)
+        
+        textLayoutManager.addTextContainer(textContainer)
+        textLayoutManager.delegate = self
+        
+        textView = UITextView(frame: contentView.frame, textContainer: textContainer)
         textView.addGestureRecognizer(tapGestureRecognizer)
+        
         contentView.addSubview(textView)
     }
 }
