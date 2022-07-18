@@ -9,6 +9,31 @@ import Foundation
 import XCTest
 import LyraPlay
 
+private struct SubtitlesPresentationStateEquatable: Equatable {
+    
+    var isNil: Bool
+    var numberOfSentences: Int?
+    var activeSentenceIndex: Int?
+
+    init(
+        isNil: Bool,
+        numberOfSentences: Int? = nil,
+        activeSentenceIndex: Int? = nil
+    ) {
+        
+        self.isNil = isNil
+        self.numberOfSentences = numberOfSentences
+        self.activeSentenceIndex = activeSentenceIndex
+    }
+
+    init(from state: SubtitlesPresentationState?) {
+        
+        isNil = (state == nil)
+        numberOfSentences = state?.numberOfSentences
+        activeSentenceIndex = state?.activeSentenceIndex
+    }
+}
+
 class SubtitlesPresenterViewModelTests: XCTestCase {
 
     typealias SUT = (
@@ -33,27 +58,41 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         )
     }
     
-    func testLoadEmpty() async throws {
+    private func loadAndObserve(
+        subtitles: Subtitles,
+        expectedStates: [SubtitlesPresentationStateEquatable],
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async -> (SUT, AssertSequence<SubtitlesPresentationStateEquatable>)  {
 
-        let subtitles = Subtitles(sentences: [])
         let sut = createSUT(subtitles: subtitles)
 
-        let stateSequence = expectSequence([false, true])
-        let numberOfSentencesSequence = expectSequence([nil, 0])
-        let activeSentenceIndexSequence = expectSequence([nil, nil] as [Int?])
+        let stateSequence = expectSequence(expectedStates)
 
-        sut.viewModel.state.observe(on: self) { state in
-            
-            stateSequence.fulfill(with: state != nil)
-            numberOfSentencesSequence.fulfill(with: state?.numberOfSentences)
-            activeSentenceIndexSequence.fulfill(with: state?.activeSentenceIndex)
-        }
-        
+        stateSequence.observe(
+            sut.viewModel.state,
+            mapper: { .init(from: $0) },
+            file: file,
+            line: line
+        )
         await sut.viewModel.load()
+
+        return (sut, stateSequence)
+    }
+
+    func testLoadEmpty() async throws {
         
+        let subtitles = Subtitles(sentences: [])
+        
+        let (_, stateSequence) = await loadAndObserve(
+            subtitles: subtitles,
+            expectedStates: [
+                .init(isNil: true),
+                .init(isNil: false, numberOfSentences: 0)
+            ]
+        )
+
         stateSequence.wait(timeout: 3, enforceOrder: true)
-        numberOfSentencesSequence.wait(timeout: 3, enforceOrder: true)
-        activeSentenceIndexSequence.wait(timeout: 3, enforceOrder: true)
     }
     
     func testLoad() async throws {
@@ -61,75 +100,54 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         let subtitles = Subtitles(sentences: [
             .init(startTime: 0, duration: 0, text: .notSynced(text: ""))
         ])
-        let sut = createSUT(subtitles: subtitles)
+        
+        let (_, stateSequence) = await loadAndObserve(
+            subtitles: subtitles,
+            expectedStates: [
+                .init(isNil: true),
+                .init(isNil: false, numberOfSentences: 0),
+                .init(isNil: false, numberOfSentences: 1)
+            ]
+        )
 
-        let stateSequence = expectSequence([false, true])
-        let numberOfSentencesSequence = expectSequence([nil, 1])
-        let activeSentenceIndexSequence = expectSequence([nil, nil] as [Int?])
-        
-        sut.viewModel.state.observe(on: self) { state in
-            
-            stateSequence.fulfill(with: state != nil)
-            numberOfSentencesSequence.fulfill(with: state?.numberOfSentences)
-            activeSentenceIndexSequence.fulfill(with: state?.activeSentenceIndex)
-        }
-        
-        await sut.viewModel.load()
-        
         stateSequence.wait(timeout: 3, enforceOrder: true)
-        numberOfSentencesSequence.wait(timeout: 3, enforceOrder: true)
-        activeSentenceIndexSequence.wait(timeout: 3, enforceOrder: true)
     }
     
     func testPlayEmpty() async throws {
-
+        
         let subtitles = Subtitles(sentences: [])
-        let sut = createSUT(subtitles: subtitles)
+        
+        let (sut, stateSequence) = await loadAndObserve(
+            subtitles: subtitles,
+            expectedStates: [
+                .init(isNil: true),
+                .init(isNil: false, numberOfSentences: 0)
+            ]
+        )
 
-        let stateSequence = expectSequence([false, true])
-        let numberOfSentencesSequence = expectSequence([nil, 0])
-        let activeSentenceIndexSequence = expectSequence([nil, nil] as [Int?])
-        
-        sut.viewModel.state.observe(on: self) { state in
-            
-            stateSequence.fulfill(with: state != nil)
-            numberOfSentencesSequence.fulfill(with: state?.numberOfSentences)
-            activeSentenceIndexSequence.fulfill(with: state?.activeSentenceIndex)
-        }
-        
-        await sut.viewModel.load()
         await sut.viewModel.play(at: 0.0)
-        
         stateSequence.wait(timeout: 3, enforceOrder: true)
-        numberOfSentencesSequence.wait(timeout: 3, enforceOrder: true)
-        activeSentenceIndexSequence.wait(timeout: 3, enforceOrder: true)
     }
     
     func testPlaySentences() async throws {
-
+        
         let subtitles = Subtitles(sentences: [
             .init(startTime: 0, duration: 0, text: .notSynced(text: "")),
             .init(startTime: 0.1, duration: 0, text: .notSynced(text: ""))
         ])
-        let sut = createSUT(subtitles: subtitles)
+        
+        let (sut, stateSequence) = await loadAndObserve(
+            subtitles: subtitles,
+            expectedStates: [
+                .init(isNil: true),
+                .init(isNil: false, numberOfSentences: 2),
+                .init(isNil: false, numberOfSentences: 2, activeSentenceIndex: 0),
+                .init(isNil: false, numberOfSentences: 2, activeSentenceIndex: 1)
+            ]
+        )
 
-        let stateSequence = expectSequence([false, true, true, true])
-        let numberOfSentencesSequence = expectSequence([nil, 2, 2, 2])
-        let activeSentenceIndexSequence = expectSequence([nil, nil, 0, 1] as [Int?])
-        
-        sut.viewModel.state.observe(on: self) { state in
-            
-            stateSequence.fulfill(with: state != nil)
-            numberOfSentencesSequence.fulfill(with: state?.numberOfSentences)
-            activeSentenceIndexSequence.fulfill(with: state?.activeSentenceIndex)
-        }
-        
-        await sut.viewModel.load()
         await sut.viewModel.play(at: 0.0)
-        
         stateSequence.wait(timeout: 3, enforceOrder: true)
-        numberOfSentencesSequence.wait(timeout: 3, enforceOrder: true)
-        activeSentenceIndexSequence.wait(timeout: 3, enforceOrder: true)
     }
     
 //    func testPlayFromBegining() async throws {
