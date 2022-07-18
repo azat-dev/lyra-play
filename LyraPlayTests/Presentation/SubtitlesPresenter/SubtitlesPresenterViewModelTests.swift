@@ -187,6 +187,32 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         stateSequence.wait(timeout: 3, enforceOrder: true)
         sut.viewModel.state.remove(observer: self)
     }
+    
+    func testTapWord() async throws {
+        
+        let text2 = "Word3 word4"
+        
+        let subtitles = Subtitles(sentences: [
+            .init(startTime: 0, duration: 0, text: .notSynced(text: "Word1 word2")),
+            .init(startTime: 0.1, duration: 0, text: .notSynced(text: text2))
+        ])
+        
+        let (sut, stateSequence) = await loadAndObserve(
+            subtitles: subtitles,
+            expectedStates: [
+                .init(isNil: true),
+                .init(isNil: false, numberOfSentences: 2),
+            ]
+        )
+        
+        let sentenceViewModel = sut.viewModel.getSentenceViewModel(at: 1)
+
+        let sequence = expectSequence([nil, text2.range(of: "Word3"), nil])
+        
+        sequence.observe(sentenceViewModel.selectedWordRange)
+        sentenceViewModel?.toggleWord(1, text2.rangeOfComposedCharacterSequence(at: text2.startIndex))
+        
+    }
 }
 
 // MARK: - Mocks
