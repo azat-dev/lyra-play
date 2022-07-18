@@ -38,6 +38,16 @@ public struct Subtitles: Equatable {
         
         case notSynced(text: String)
         case synced(items: [SyncedItem])
+        
+        func getText() -> String {
+            
+            switch self {
+            case .notSynced(let text):
+                return text
+            case .synced(let items):
+                return items.map { $0.text }.joined(separator: "")
+            }
+        }
     }
     
     public struct SyncedItem: Equatable {

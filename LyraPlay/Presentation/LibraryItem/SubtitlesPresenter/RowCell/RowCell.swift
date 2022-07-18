@@ -13,14 +13,10 @@ final class RowCell: UITableViewCell {
     public static let reuseIdentifier = "RowCell"
     
     private var textView = UITextView()
-    public var viewModel: RowCellViewModel? {
+    public var viewModel: SentenceViewModel! {
 
         didSet {
-            guard let viewModel = viewModel else {
-                return
-            }
-
-            configure(with: viewModel)
+            bind(to: viewModel)
         }
     }
 
@@ -39,11 +35,30 @@ final class RowCell: UITableViewCell {
         setupViews()
         layout()
     }
+}
+
+// MARK: - Bind to ViewModel
+
+extension RowCell {
     
-    private func configure(with viewModel: RowCellViewModel) {
+    private func updateActive(_ isActive: Bool) {
+        
+        if isActive {
+            Styles.apply(activeTextView: self.textView)
+        } else {
+            
+            Styles.apply(textView: self.textView)
+        }
+    }
+    
+    func bind(to viewModel: SentenceViewModel) {
         
         textView.text = viewModel.text
-        style(with: viewModel)
+        
+        viewModel.isActive.observe(on: self) { [weak self] isActive in
+
+            self?.updateActive(isActive)
+        }
     }
 }
 
@@ -103,22 +118,6 @@ extension RowCell {
         
         textView.addGestureRecognizer(tapGestureRecognizer)
         contentView.addSubview(textView)
-    }
-}
-
-// MARK: - Styles
-
-extension RowCell {
-    
-    private func style(with viewModel: RowCellViewModel) {
-    
-        if viewModel.isActive {
-    
-            Styles.apply(activeTextView: textView)
-        } else {
-            
-            Styles.apply(textView: textView)
-        }
     }
 }
 

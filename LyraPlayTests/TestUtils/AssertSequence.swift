@@ -12,13 +12,13 @@ import LyraPlay
 class AssertSequence<T: Equatable> {
     
     private unowned var testCase: XCTestCase
-    private var expectedValues: [T] = [] {
+    private(set) var expectedValues: [T] = [] {
         didSet {
             expectation.expectedFulfillmentCount = expectedValues.count
         }
     }
     
-    private var receivedValues = [T]()
+    private(set) var receivedValues = [T]()
     private var expectation = XCTestExpectation()
     
     public var isCompleted: Bool {

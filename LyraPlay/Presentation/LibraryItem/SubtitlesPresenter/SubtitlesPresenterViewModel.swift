@@ -9,47 +9,10 @@ import Foundation
 
 // MARK: - Interfaces
 
-
-public struct SentencePresentation: Equatable {
-
-    public var text: String
-    public var items: [Item]
+public struct SubtitlesPresentationState {
     
-    public enum Item: Equatable {
-        
-        public struct Position: Equatable {
-            
-            public var itemIndex: Int
-            public var startsAt: Int
-            
-            public init(itemIndex: Int, startsAt: Int) {
-                self.itemIndex = itemIndex
-                self.startsAt = startsAt
-            }
-        }
-        
-        case space(position: Position, text: String)
-        case word(position: Position, text: String)
-        case specialCharacter(position: Position, text: String)
-        
-        public func getText() -> String {
-            
-            switch self {
-            case let .space(position: _, text: text):
-                return text
-            case let .word(position: _, text: text):
-                return text
-            case let .specialCharacter(position: _, text: text):
-                return text
-            }
-        }
-    }
-    
-    public init(text: String, items: [SentencePresentation.Item]) {
-        
-        self.text = text
-        self.items = items
-    }
+    public var numberOfSentences: Int
+    public var activeSentenceIndex: Int?
 }
 
 public struct SubtitlesPosition {
@@ -66,8 +29,9 @@ public struct SubtitlesPosition {
 
 public protocol SubtitlesPresenterViewModelOutput {
 
-    var sentences: Observable<[SentencePresentation]?> { get }
-    var currentPosition: Observable<SubtitlesPosition?> { get }
+    var state: Observable<SubtitlesPresentationState?> { get }
+    
+    func getSentenceViewModel(at index: Int) -> SentenceViewModel?
 }
 
 public protocol SubtitlesPresenterViewModelInput {
@@ -89,15 +53,15 @@ public protocol SubtitlesPresenterViewModel: SubtitlesPresenterViewModelOutput, 
 public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewModel {
 
     private let subtitles: Subtitles
-
-    public let sentences: Observable<[SentencePresentation]?> = Observable(nil)
-    public let currentPosition: Observable<SubtitlesPosition?> = Observable(nil)
     public let subtitlesIterator: SubtitlesIterator
 
     private var sentenceTimer: ActionTimer? = nil
     private var wordTimer: ActionTimer? = nil
     private var currentSpeed: Double = 1.0
     private var scheduler: Scheduler
+    
+    private var items: [DefaultSentenceViewModel] = []
+    public let state: Observable<SubtitlesPresentationState?> = Observable(nil)
     
     public init(
         subtitles: Subtitles
@@ -116,129 +80,72 @@ public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewMod
 
 extension DefaultSubtitlesPresenterViewModel {
 
-    private static func splitNotSyncedSentence(text: String) -> [SentencePresentation.Item] {
-        
-        var items = [SentencePresentation.Item]()
-
-        var currentWord = ""
-        var currentWordStart: Int? = nil
-        
-        let appendCurrentWord = { () -> Void in
-            
-            guard currentWordStart != nil else {
-                return
-            }
-            
-            let word = SentencePresentation.Item.word(
-                position: .init(
-                    itemIndex: 0,
-                    startsAt: currentWordStart!
-                ),
-                text: currentWord
-            )
-            
-            items.append(word)
-            currentWordStart = nil
-            currentWord = ""
-        }
-        
-        for (index, stringIndex) in text.indices.enumerated() {
-
-            let character = text[stringIndex]
-            
-            if character.isNewline || character.isWhitespace {
-                
-                appendCurrentWord()
-                
-                let space = SentencePresentation.Item.space(
-                    position: .init(
-                        itemIndex: 0,
-                        startsAt: index
-                    ),
-                    text: String(character)
-                )
-                
-                items.append(space)
-                continue
-            }
-            
-            if character == "," {
-                
-                appendCurrentWord()
-                
-                let specialCharacter = SentencePresentation.Item.specialCharacter(
-                    position: .init(
-                        itemIndex: 0,
-                        startsAt: index
-                    ),
-                    text: String(character)
-                )
-                
-                items.append(specialCharacter)
-                continue
-            }
-            
-            
-            if character == "-" && currentWordStart != nil {
-                
-                currentWord.append(character)
-                continue
-            }
-            
-            if !(character.isLetter || character.isNumber) {
-                
-                appendCurrentWord()
-                
-                let specialCharacter = SentencePresentation.Item.specialCharacter(
-                    position: .init(
-                        itemIndex: 0,
-                        startsAt: index
-                    ),
-                    text: String(character)
-                )
-                items.append(specialCharacter)
-                continue
-            }
-            
-            if currentWordStart == nil {
-                currentWordStart = index
-                currentWord = ""
-            }
-            
-            currentWord.append(character)
-        }
-        
-        appendCurrentWord()
-        
-        return items
-    }
-    
-    private static func parse(subtitles: Subtitles) async -> [SentencePresentation] {
-        
-        var result = [SentencePresentation]()
-        
-        for subtitlesSentence in subtitles.sentences {
-            
-            switch subtitlesSentence.text {
-            case .notSynced(text: let text):
-                let sentence = SentencePresentation(
-                    text: text,
-                    items: Self.splitNotSyncedSentence(text: text)
-                )
-                result.append(sentence)
-                break
-                
-            default:
-                fatalError()
-            }
-        }
-        
-        return result
-    }
-    
     public func load() async {
         
-        self.sentences.value = await Self.parse(subtitles: subtitles)
+        var models: [DefaultSentenceViewModel] = []
+        let sentences = subtitles.sentences
+        let numberOfSentences = sentences.count
+        
+        let toggleWord: ToggleWordCallback = { [weak self] index, range in
+            self?.toggleWord(index, range)
+        }
+        
+        for index in 0..<numberOfSentences {
+            
+            let sentence = sentences[index]
+            
+            models.append(
+                .init(
+                    id: index,
+                    text: sentence.text.getText(),
+                    toggleWord: toggleWord
+                )
+            )
+        }
+        
+        DispatchQueue.main.sync { [models] in
+            
+            self.items = models
+            self.state.value = .init(
+                numberOfSentences: self.items.count
+            )
+        }
+        
+    }
+    
+    private func updatePrevPosition() {
+
+        guard let prevActiveSentence = self.state.value?.activeSentenceIndex else {
+            return
+        }
+        
+        let sentenceModel = getSentenceViewModel(at: prevActiveSentence)
+        sentenceModel?.isActive.value = false
+    }
+    
+    private func updateCurrentPosition(sentence: Int) {
+        
+        let sentenceModel = getSentenceViewModel(at: sentence)
+        sentenceModel?.isActive.value = true
+    }
+    
+    private func updatePosition() {
+        
+        let currentPosition = subtitlesIterator.currentPosition
+        
+        DispatchQueue.main.async {
+        
+            self.updatePrevPosition()
+            
+            if let currentSentence = currentPosition?.sentence {
+                self.updateCurrentPosition(sentence: currentSentence)
+            }
+
+            var newState = self.state.value
+            newState?.activeSentenceIndex = currentPosition?.sentence
+            
+            self.state.value = newState
+        }
     }
     
     public func play(at time: TimeInterval) async {
@@ -248,9 +155,8 @@ extension DefaultSubtitlesPresenterViewModel {
             guard let self = self else {
                 return
             }
-            
-            print(self.subtitlesIterator.currentPosition)
-            self.currentPosition.value = self.subtitlesIterator.currentPosition
+
+            self.updatePosition()
         }
     }
     
@@ -262,5 +168,19 @@ extension DefaultSubtitlesPresenterViewModel {
     public func stop() async {
         
         scheduler.stop()
+    }
+    
+    private func toggleWord(_ sentenceIndex: Int, _ tapRange: Range<String.Index>) {
+        
+    }
+    
+    public func getSentenceViewModel(at index: Int) -> SentenceViewModel? {
+    
+        
+        guard index < items.count else {
+            return nil
+        }
+        
+        return items[index]
     }
 }
