@@ -31,27 +31,31 @@ class TextSplitterTests: XCTestCase {
     func testSplitText() throws {
         
         let text = """
-        Word1,word2,word3.Word4 Word5-Word6 -Word7
-        word8
+        Is this project long-term?
+        "Hello, Mike!"
         """
         
         let dummyIndex = (text.startIndex..<text.endIndex)
 
         let expectedItems: [TextComponent] = [
-            .init(type: .word, range: dummyIndex, text: "Word1"),
-            .init(type: .specialCharacter, range: dummyIndex, text: ","),
-            .init(type: .word, range: dummyIndex, text: "word2"),
-            .init(type: .specialCharacter, range: dummyIndex, text: ","),
-            .init(type: .word, range: dummyIndex, text: "word3"),
-            .init(type: .specialCharacter, range: dummyIndex, text: "."),
-            .init(type: .word, range: dummyIndex, text: "Word4"),
+            .init(type: .word, range: dummyIndex, text: "Is"),
             .init(type: .space, range: dummyIndex, text: " "),
-            .init(type: .word, range: dummyIndex, text: "Word5-Word6"),
+            .init(type: .word, range: dummyIndex, text: "this"),
             .init(type: .space, range: dummyIndex, text: " "),
+            .init(type: .word, range: dummyIndex, text: "project"),
+            .init(type: .space, range: dummyIndex, text: " "),
+            .init(type: .word, range: dummyIndex, text: "long"),
             .init(type: .specialCharacter, range: dummyIndex, text: "-"),
-            .init(type: .word, range: dummyIndex, text: "Word7"),
-            .init(type: .newLine, range: dummyIndex, text: "\n"),
-            .init(type: .word, range: dummyIndex, text: "word8")
+            .init(type: .word, range: dummyIndex, text: "term"),
+            .init(type: .specialCharacter, range: dummyIndex, text: "?"),
+            .init(type: .space, range: dummyIndex, text: "\n"),
+            .init(type: .specialCharacter, range: dummyIndex, text: "\""),
+            .init(type: .word, range: dummyIndex, text: "Hello"),
+            .init(type: .specialCharacter, range: dummyIndex, text: ","),
+            .init(type: .space, range: dummyIndex, text: " "),
+            .init(type: .word, range: dummyIndex, text: "Mike"),
+            .init(type: .specialCharacter, range: dummyIndex, text: "!"),
+            .init(type: .specialCharacter, range: dummyIndex, text: "\""),
         ]
 
         let sut = createSUT()

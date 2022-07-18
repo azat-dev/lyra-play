@@ -12,7 +12,6 @@ public struct TextComponent: Equatable {
     public enum ComponentType: Equatable {
         
         case space
-        case newLine
         case word
         case specialCharacter
     }
