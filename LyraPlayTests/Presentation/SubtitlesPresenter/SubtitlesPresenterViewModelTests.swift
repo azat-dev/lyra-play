@@ -9,56 +9,13 @@ import Foundation
 import XCTest
 import LyraPlay
 
-struct SubtitlesPresentationStateEquatable: Equatable {
-    
-    var isNil: Bool
-    var numberOfSentences: Int?
-    var activeSentenceIndex: Int?
-
-    init(
-        isNil: Bool,
-        numberOfSentences: Int? = nil,
-        activeSentenceIndex: Int? = nil
-    ) {
-        
-        self.isNil = isNil
-        self.numberOfSentences = numberOfSentences
-        self.activeSentenceIndex = activeSentenceIndex
-    }
-
-    init(from state: SubtitlesPresentationState?) {
-        
-        isNil = (state == nil)
-        numberOfSentences = state?.numberOfSentences
-        activeSentenceIndex = state?.activeSentenceIndex
-    }
-}
-
-struct SentenceViewModelEquatable: Equatable {
-    
-    var isNil: Bool
-    var isActive: Bool?
-    var text: String?
-    
-    init(isNil: Bool, isActive: Bool?, text: String?) {
-        self.isNil = false
-        self.isActive = isActive
-        self.text = text
-    }
-
-    init(from model: SentenceViewModel?) {
-        
-        self.isNil = (model == nil)
-        self.isActive = model?.isActive.value
-        self.text = model?.text
-    }
-}
 
 class SubtitlesPresenterViewModelTests: XCTestCase {
 
     typealias SUT = (
         viewModel: SubtitlesPresenterViewModel,
-        scheduler: Scheduler
+        scheduler: Scheduler,
+        textSplitter: TextSplitterMock
     )
     
     private let specialCharacters = "\"!@#$^&%*()+=-[]\\/{}|:<>?,._"
@@ -66,15 +23,19 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     func createSUT(subtitles: Subtitles) -> SUT {
 
         let scheduler = SchedulerMock()
+        let textSplitter = TextSplitterMock()
+        
         
         let viewModel = DefaultSubtitlesPresenterViewModel(
-            subtitles: subtitles
+            subtitles: subtitles,
+            textSplitter: textSplitter
         )
         detectMemoryLeak(instance: viewModel)
         
         return (
             viewModel,
-            scheduler
+            scheduler,
+            textSplitter
         )
     }
     
@@ -190,28 +151,47 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     
     func testTapWord() async throws {
         
+        let text1 = "Word1"
         let text2 = "Word3 word4"
         
+        let range1 = text2.range(of: "Word3")!
+        let range2 = text2.range(of: " ")!
+        let range3 = text2.range(of: "word4")!
+        
+        
         let subtitles = Subtitles(sentences: [
-            .init(startTime: 0, duration: 0, text: .notSynced(text: "Word1 word2")),
+            .init(startTime: 0, duration: 0, text: .notSynced(text: text1)),
             .init(startTime: 0.1, duration: 0, text: .notSynced(text: text2))
         ])
         
-        let (sut, stateSequence) = await loadAndObserve(
-            subtitles: subtitles,
-            expectedStates: [
-                .init(isNil: true),
-                .init(isNil: false, numberOfSentences: 2),
-            ]
-        )
+        let sut = createSUT(subtitles: subtitles)
+        sut.textSplitter.words = [
+            .init(type: .word, range: range1, text: String(text2[range1])),
+            .init(type: .space, range: range2, text: String(text2[range2])),
+            .init(type: .word, range: range3, text: String(text2[range3])),
+        ]
+        
+        await sut.viewModel.load()
         
         let sentenceViewModel = sut.viewModel.getSentenceViewModel(at: 1)
+        
+        let sentenceModel = try XCTUnwrap(sentenceViewModel)
 
-        let sequence = expectSequence([nil, text2.range(of: "Word3"), nil])
+        let sequence = expectSequence([nil, range1, nil, range1, nil, range1, range3])
         
-        sequence.observe(sentenceViewModel.selectedWordRange)
-        sentenceViewModel?.toggleWord(1, text2.rangeOfComposedCharacterSequence(at: text2.startIndex))
+        sequence.observe(sentenceModel.selectedWordRange)
         
+        sentenceModel.toggleWord(1, range1)
+        sentenceModel.toggleWord(1, range1)
+        sentenceModel.toggleWord(1, range1)
+        sentenceModel.toggleWord(1, range2)
+        sentenceModel.toggleWord(1, range1)
+        sentenceModel.toggleWord(1, range3)
+        
+        sequence.wait(timeout: 3, enforceOrder: true)
+        
+        sut.viewModel.state.remove(observer: self)
+        sentenceModel.selectedWordRange.remove(observer: self)
     }
 }
 
@@ -227,5 +207,63 @@ fileprivate final class SchedulerMock: Scheduler {
     }
     
     func pause() {
+    }
+}
+
+
+final class TextSplitterMock: TextSplitter {
+    
+    var words = [TextComponent]()
+    
+    func split(text: String) -> [TextComponent] {
+    
+        return words
+    }
+}
+
+// MARK: - Helper Types
+
+struct SubtitlesPresentationStateEquatable: Equatable {
+    
+    var isNil: Bool
+    var numberOfSentences: Int?
+    var activeSentenceIndex: Int?
+
+    init(
+        isNil: Bool,
+        numberOfSentences: Int? = nil,
+        activeSentenceIndex: Int? = nil
+    ) {
+        
+        self.isNil = isNil
+        self.numberOfSentences = numberOfSentences
+        self.activeSentenceIndex = activeSentenceIndex
+    }
+
+    init(from state: SubtitlesPresentationState?) {
+        
+        isNil = (state == nil)
+        numberOfSentences = state?.numberOfSentences
+        activeSentenceIndex = state?.activeSentenceIndex
+    }
+}
+
+struct SentenceViewModelEquatable: Equatable {
+    
+    var isNil: Bool
+    var isActive: Bool?
+    var text: String?
+    
+    init(isNil: Bool, isActive: Bool?, text: String?) {
+        self.isNil = false
+        self.isActive = isActive
+        self.text = text
+    }
+
+    init(from model: SentenceViewModel?) {
+        
+        self.isNil = (model == nil)
+        self.isActive = model?.isActive.value
+        self.text = model?.text
     }
 }

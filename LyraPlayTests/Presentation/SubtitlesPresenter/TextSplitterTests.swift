@@ -35,7 +35,7 @@ class TextSplitterTests: XCTestCase {
         word8
         """
         
-        let dummyIndex = (text.startIndex...text.startIndex)
+        let dummyIndex = (text.startIndex..<text.endIndex)
 
         let expectedItems: [TextComponent] = [
             .init(type: .word, range: dummyIndex, text: "Word1"),

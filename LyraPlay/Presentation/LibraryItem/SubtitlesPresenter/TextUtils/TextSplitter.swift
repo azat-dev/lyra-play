@@ -36,7 +36,7 @@ public final class DefaultTextSplitter: TextSplitter {
             
             let word = TextComponent(
                 type: .word,
-                range: (wordStart...lastIndex),
+                range: (wordStart..<lastIndex),
                 text: currentWord
             )
             
@@ -55,7 +55,7 @@ public final class DefaultTextSplitter: TextSplitter {
                 
                 let space = TextComponent(
                     type: .newLine,
-                    range: (index...index),
+                    range: (index...index).relative(to: text),
                     text: String(character)
                 )
                 
@@ -69,7 +69,7 @@ public final class DefaultTextSplitter: TextSplitter {
                 
                 let space = TextComponent(
                     type: .space,
-                    range: (index...index),
+                    range: (index...index).relative(to: text),
                     text: String(character)
                 )
                 
@@ -83,7 +83,7 @@ public final class DefaultTextSplitter: TextSplitter {
                 
                 let specialCharacter = TextComponent(
                     type: .specialCharacter,
-                    range: (index...index),
+                    range: (index...index).relative(to: text),
                     text: String(character)
                 )
                 
@@ -104,7 +104,7 @@ public final class DefaultTextSplitter: TextSplitter {
                 
                 let specialCharacter = TextComponent(
                     type: .specialCharacter,
-                    range: index...index,
+                    range: (index...index).relative(to: text),
                     text: String(character)
                 )
                 items.append(specialCharacter)

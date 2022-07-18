@@ -22,6 +22,8 @@ public protocol SentenceViewModel {
     var text: String { get }
     
     var toggleWord: ToggleWordCallback { get }
+    
+    var selectedWordRange: Observable<Range<String.Index>?> { get }
 }
 
 // MARK: - Implementations
@@ -35,4 +37,8 @@ public struct DefaultSentenceViewModel: SentenceViewModel {
     public var text: String
     
     public var toggleWord: ToggleWordCallback
+    
+    public var selectedWordRange: Observable<Range<String.Index>?> = Observable(nil)
+    
+    public var textComponents: [TextComponent] = []
 }

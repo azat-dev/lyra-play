@@ -50,6 +50,11 @@ public protocol SubtitlesPresenterViewModel: SubtitlesPresenterViewModelOutput, 
 
 // MARK: - Implementations
 
+extension DefaultSentenceViewModel {
+    
+    
+}
+
 public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewModel {
 
     private let subtitles: Subtitles
@@ -59,15 +64,19 @@ public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewMod
     private var wordTimer: ActionTimer? = nil
     private var currentSpeed: Double = 1.0
     private var scheduler: Scheduler
+    private var textSplitter: TextSplitter
     
     private var items: [DefaultSentenceViewModel] = []
     public let state: Observable<SubtitlesPresentationState?> = Observable(nil)
     
     public init(
-        subtitles: Subtitles
+        subtitles: Subtitles,
+        textSplitter: TextSplitter
     ) {
         
         self.subtitles = subtitles
+        self.textSplitter = textSplitter
+        
         self.subtitlesIterator = DefaultSubtitlesIterator(subtitles: subtitles)
         self.scheduler = DefaultScheduler(
             timeMarksIterator: subtitlesIterator,
@@ -93,13 +102,19 @@ extension DefaultSubtitlesPresenterViewModel {
         for index in 0..<numberOfSentences {
             
             let sentence = sentences[index]
+
+            let text = sentence.text.getText()
             
+            var sentenceModel = DefaultSentenceViewModel(
+                id: index,
+                text: text,
+                toggleWord: toggleWord
+            )
+            
+            sentenceModel.textComponents = textSplitter.split(text: text)
+
             models.append(
-                .init(
-                    id: index,
-                    text: sentence.text.getText(),
-                    toggleWord: toggleWord
-                )
+                sentenceModel
             )
         }
         
@@ -171,6 +186,34 @@ extension DefaultSubtitlesPresenterViewModel {
     }
     
     private func toggleWord(_ sentenceIndex: Int, _ tapRange: Range<String.Index>) {
+        
+        DispatchQueue.main.async {
+            
+            guard sentenceIndex < self.items.count else {
+                return
+            }
+            
+            let item = self.items[sentenceIndex]
+            let selectedComponent = item.textComponents.first { item in item.range.overlaps(tapRange) }
+            
+            guard
+                let selectedType = selectedComponent?.type,
+                selectedType == .word
+            else {
+                item.selectedWordRange.value = nil
+                return
+            }
+            
+            let selectedWordRange = selectedComponent?.range
+            let currentRange = item.selectedWordRange.value
+            
+            guard  selectedWordRange != currentRange else {
+                item.selectedWordRange.value = nil
+                return
+            }
+            
+            item.selectedWordRange.value = selectedWordRange
+        }
         
     }
     
