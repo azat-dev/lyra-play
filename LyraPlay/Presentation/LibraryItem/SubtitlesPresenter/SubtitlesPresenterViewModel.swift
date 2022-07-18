@@ -175,7 +175,6 @@ extension DefaultSubtitlesPresenterViewModel {
     }
     
     public func getSentenceViewModel(at index: Int) -> SentenceViewModel? {
-    
         
         guard index < items.count else {
             return nil

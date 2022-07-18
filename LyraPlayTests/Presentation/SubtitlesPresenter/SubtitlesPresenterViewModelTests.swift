@@ -34,6 +34,26 @@ struct SubtitlesPresentationStateEquatable: Equatable {
     }
 }
 
+struct SentenceViewModelEquatable: Equatable {
+    
+    var isNil: Bool
+    var isActive: Bool?
+    var text: String?
+    
+    init(isNil: Bool, isActive: Bool?, text: String?) {
+        self.isNil = false
+        self.isActive = isActive
+        self.text = text
+    }
+
+    init(from model: SentenceViewModel?) {
+        
+        self.isNil = (model == nil)
+        self.isActive = model?.isActive.value
+        self.text = model?.text
+    }
+}
+
 class SubtitlesPresenterViewModelTests: XCTestCase {
 
     typealias SUT = (
@@ -142,9 +162,30 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
                 .init(isNil: false, numberOfSentences: 2, activeSentenceIndex: 1)
             ]
         )
+
+        let sequenceOnylOneActiveSentenceAtTime = expectSequence([[], [0], [1]])
         
+        let viewModel = sut.viewModel
+        
+        sut.viewModel.state.observe(on: self) { state in
+            guard
+                let state = state
+            else {
+                return
+            }
+
+            let indexes = (0..<state.numberOfSentences).filter { index in
+
+                let model = viewModel.getSentenceViewModel(at: index)
+                return model?.isActive.value ?? false
+            }
+            
+            sequenceOnylOneActiveSentenceAtTime.fulfill(with: indexes)
+        }
         await sut.viewModel.play(at: 0.0)
+        
         stateSequence.wait(timeout: 3, enforceOrder: true)
+        sut.viewModel.state.remove(observer: self)
     }
 }
 
