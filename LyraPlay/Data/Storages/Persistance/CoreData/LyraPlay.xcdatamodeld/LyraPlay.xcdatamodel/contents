@@ -2,9 +2,6 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="ManagedAudioFile" representedClassName=".ManagedAudioFile" syncable="YES">
         <attribute name="artist" optional="YES" attributeType="String"/>
-        <attribute name="attribute" optional="YES"/>
-        <attribute name="attribute1" optional="YES"/>
-        <attribute name="attribute2" optional="YES"/>
         <attribute name="audioFile" attributeType="String"/>
         <attribute name="coverImage" optional="YES" attributeType="String"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
@@ -47,7 +44,7 @@
         </uniquenessConstraints>
     </entity>
     <elements>
-        <element name="ManagedAudioFile" positionX="-63" positionY="-18" width="128" height="209"/>
+        <element name="ManagedAudioFile" positionX="-63" positionY="-18" width="128" height="164"/>
         <element name="ManagedSubtitles" positionX="-63" positionY="54" width="128" height="74"/>
         <element name="ManagedDictionaryItem" positionX="-63" positionY="54" width="128" height="104"/>
     </elements>
