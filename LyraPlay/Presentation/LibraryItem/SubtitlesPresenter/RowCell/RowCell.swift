@@ -91,6 +91,15 @@ extension RowCell {
 
 extension RowCell {
     
+    private func didTapOutside() {
+
+        guard let viewModel = viewModel else {
+            return
+        }
+        
+        viewModel.toggleWord(viewModel.id, nil)
+    }
+    
     private func didTap(range: UITextRange) {
 
         guard let viewModel = viewModel else {
@@ -109,6 +118,7 @@ extension RowCell {
     private func didTap(gesture: UITapGestureRecognizer) {
         
         let point = gesture.location(in: textView)
+        var isPlacedInLine = false
         
         textView.layoutManager.enumerateLineFragments(forGlyphRange: textView.textRange) {
             [weak self] (rect, usedRect, textContainer, glyphRange, stop) in
@@ -119,19 +129,22 @@ extension RowCell {
             
             let placedInLine = usedRect.contains(point)
             guard placedInLine else {
-                
-                stop.pointee = true
                 return
             }
+            
 
-            
             let tapRange = self.textView.characterRange(at: point)
-            
             guard let tapRange = tapRange else {
                 return
             }
             
+            stop.pointee = true
+            isPlacedInLine = true
             self.didTap(range: tapRange)
+        }
+        
+        if !isPlacedInLine {
+            didTapOutside()
         }
     }
     

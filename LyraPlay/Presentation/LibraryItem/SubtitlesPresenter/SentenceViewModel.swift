@@ -9,7 +9,7 @@ import Foundation
 
 public typealias RowId = Int
 
-public typealias ToggleWordCallback = (_ rowId: RowId, _ range: Range<String.Index>) -> Void
+public typealias ToggleWordCallback = (_ rowId: RowId, _ range: Range<String.Index>?) -> Void
 
 // MARK: - Interfaces
 

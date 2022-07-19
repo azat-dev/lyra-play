@@ -197,12 +197,20 @@ extension DefaultSubtitlesPresenterViewModel {
         
         item.selectedWordRange.value = nil
     }
-    
-    private func toggleWord(_ sentenceIndex: Int, _ tapRange: Range<String.Index>) {
+
+    private func toggleWord(_ sentenceIndex: Int, _ tapRange: Range<String.Index>?) {
         
         DispatchQueue.main.async {
             
             guard sentenceIndex < self.items.count else {
+                return
+            }
+            
+            guard let tapRange = tapRange else {
+                
+                if let currentSentenceIndex = self.currentSentenceWithSelectedWord {
+                    self.deactivateWord(atSentence: currentSentenceIndex)
+                }
                 return
             }
             
@@ -213,7 +221,6 @@ extension DefaultSubtitlesPresenterViewModel {
                 
                 self.deactivateWord(atSentence: currentSentenceIndex)
             }
-            
             
             let item = self.items[sentenceIndex]
             let selectedComponent = item.textComponents.first { item in item.range.overlaps(tapRange) }
