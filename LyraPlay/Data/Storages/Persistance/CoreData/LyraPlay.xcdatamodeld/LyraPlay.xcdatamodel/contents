@@ -2,6 +2,9 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="ManagedAudioFile" representedClassName=".ManagedAudioFile" syncable="YES">
         <attribute name="artist" optional="YES" attributeType="String"/>
+        <attribute name="attribute" optional="YES"/>
+        <attribute name="attribute1" optional="YES"/>
+        <attribute name="attribute2" optional="YES"/>
         <attribute name="audioFile" attributeType="String"/>
         <attribute name="coverImage" optional="YES" attributeType="String"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
@@ -16,10 +19,26 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="ManagedDictionaryItem" representedClassName="ManagedDictionaryItem" syncable="YES">
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="language" attributeType="String"/>
+        <attribute name="originalText" attributeType="String"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+            <uniquenessConstraint>
+                <constraint value="originalText"/>
+                <constraint value="language"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="ManagedSubtitles" representedClassName=".ManagedSubtitles" syncable="YES">
-        <attribute name="mediaFileId" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="file" attributeType="String"/>
         <attribute name="language" attributeType="String"/>
+        <attribute name="mediaFileId" attributeType="UUID" usesScalarValueType="NO"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="mediaFileId"/>
@@ -28,7 +47,8 @@
         </uniquenessConstraints>
     </entity>
     <elements>
-        <element name="ManagedAudioFile" positionX="-63" positionY="-18" width="128" height="164"/>
+        <element name="ManagedAudioFile" positionX="-63" positionY="-18" width="128" height="209"/>
         <element name="ManagedSubtitles" positionX="-63" positionY="54" width="128" height="74"/>
+        <element name="ManagedDictionaryItem" positionX="-63" positionY="54" width="128" height="104"/>
     </elements>
 </model>
