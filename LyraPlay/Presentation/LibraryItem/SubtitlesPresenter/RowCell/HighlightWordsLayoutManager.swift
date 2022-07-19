@@ -81,7 +81,10 @@ public final class HighlightWordsLayoutManager: NSLayoutManager {
                     in: container
                 )
                 
-                self.drawRect(color: highlight.color, rect: rect)
+                let rectWithInsets = rect.offsetBy(dx: origin.x, dy: origin.y)
+                    .inset(by: .init(top: 0, left: -2, bottom: 0, right: -2))
+                
+                self.drawRect(color: highlight.color, rect: rectWithInsets)
             }
         }
     }
@@ -97,7 +100,7 @@ public final class HighlightWordsLayoutManager: NSLayoutManager {
         let path = UIBezierPath(
             roundedRect: rect,
             byRoundingCorners: .allCorners,
-            cornerRadii: .init(width: 0, height: 0)
+            cornerRadii: .init(width: 5, height: 5)
         )
         
         context.addPath(path.cgPath)
