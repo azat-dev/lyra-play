@@ -36,6 +36,7 @@ public struct DictionaryItem {
 public enum DictionaryRepositoryError: Error {
     
     case itemNotFound
+    case itemMustBeUnique
     case internalError(Error)
 }
 

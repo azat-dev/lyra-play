@@ -78,7 +78,7 @@ public final class CoreDataDictionaryRepository: DictionaryRepository {
             }
         }
         
-        let updatedItem = try! coreDataStore.performSync { context -> ManagedDictionaryItem in
+        let action: CoreDataStore.ActionCallBack = { context -> ManagedDictionaryItem in
             
             if let existingItem = existingItem {
                 
@@ -87,18 +87,44 @@ public final class CoreDataDictionaryRepository: DictionaryRepository {
                 existingItem.fillFields(from: item)
                 existingItem.updatedAt = .now
                 existingItem.createdAt = createdAt
-                try! context.save()
                 
+                try context.save()
+
                 return existingItem
             }
             
             let newItem = ManagedDictionaryItem.create(context, from: item)
             newItem.createdAt = .now
             try context.save()
+            
             return newItem
         }
         
-        return .success(updatedItem.toDomain())
+        do {
+            
+            let updatedItem = try coreDataStore.performSync(action)
+            return .success(updatedItem.toDomain())
+
+        } catch {
+
+            
+            guard
+                let conflictList = (error as NSError).userInfo["conflictList"] as? [NSConstraintConflict]
+            else {
+                return .failure(.internalError(error))
+            }
+            
+            let isConflict = conflictList.contains { item in
+                item.constraint.contains(#keyPath(ManagedDictionaryItem.originalText)) &&
+                item.constraint.contains(#keyPath(ManagedDictionaryItem.language))
+            }
+            
+            if isConflict {
+                return .failure(.itemMustBeUnique)
+            }
+            
+            return .failure(.internalError(error))
+        }
     }
     
     public func getItem(id: UUID) async -> Result<DictionaryItem, DictionaryRepositoryError> {

@@ -10,6 +10,8 @@ import CoreData
 
 public class CoreDataStore {
     
+    public typealias ActionCallBack<R> = (_ context: NSManagedObjectContext) throws -> R
+    
     private static let modelName = "LyraPlay"
     private static let model = NSManagedObjectModel.with(name: modelName, in: Bundle(for: CoreDataStore.self))
     
@@ -35,7 +37,7 @@ public class CoreDataStore {
         }
     }
     
-    func performSync<R>(_ action: (NSManagedObjectContext) throws -> R) throws -> R {
+    func performSync<R>(_ action: ActionCallBack<R>) throws -> R {
 
         let context = self.context
         var result: Result<R, Error>!
