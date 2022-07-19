@@ -43,10 +43,10 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
         let itemId = savedItem.id!
         
-        let getResult = await sut.get(id: itemIdl!)
+        let getResult = await sut.getItem(id: itemId)
         let receivedItem = try AssertResultSucceded(getResult)
         
-        XCTAssertNotNil(receivedItem.id, itemId)
+        XCTAssertEqual(receivedItem.id, itemId)
         XCTAssertEqual(receivedItem.createdAt, savedItem.createdAt)
         XCTAssertNil(receivedItem.updatedAt)
         XCTAssertEqual(receivedItem.originalText, item.originalText)
@@ -83,18 +83,18 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         )
         
         let putResult = await sut.putItem(item)
-        var savedItem = try AssertResultSucceded(putResult)
+        let savedItem = try AssertResultSucceded(putResult)
         
         let itemId = savedItem.id!
 
         var updatedItemData = item
-        item.id = itemId
+        updatedItemData.id = itemId
         updatedItemData.originalText = "updatedText"
         updatedItemData.language = "Japanese"
         
         
         let updatedItemResult = await sut.putItem(updatedItemData)
-        let updatedItem = try AssertResultSucceded(getResult)
+        let updatedItem = try AssertResultSucceded(updatedItemResult)
         
         XCTAssertEqual(updatedItem.id, itemId)
         XCTAssertEqual(updatedItem.createdAt, savedItem.createdAt)

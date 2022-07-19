@@ -23,7 +23,6 @@ extension ManagedDictionaryItem {
     
     func fillFields(from source: DictionaryItem) {
 
-        id = source.id
         createdAt = source.createdAt
         updatedAt = source.updatedAt
         originalText = source.originalText
@@ -34,8 +33,8 @@ extension ManagedDictionaryItem {
 
         let item = ManagedDictionaryItem(context: context)
         
-        item.id = UUID()
         item.fillFields(from: domain)
+        item.id = UUID()
         
         return item
     }
