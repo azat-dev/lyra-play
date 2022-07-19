@@ -9,7 +9,6 @@ import Foundation
 import XCTest
 import LyraPlay
 
-
 class SubtitlesPresenterViewModelTests: XCTestCase {
 
     typealias SUT = (
@@ -149,49 +148,96 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         sut.viewModel.state.remove(observer: self)
     }
     
+    private func getTestText() -> (text: String, components: [TextComponent]){
+        
+        let text = "Good morning!"
+        
+        return (
+            text,
+            [
+                .init(type: .word, range: text.range(of: "Good")!, text: "Good"),
+                .init(type: .space, range: text.range(of: " ")!, text: " "),
+                .init(type: .word, range: text.range(of: "morning")!, text: "morning"),
+                .init(type: .specialCharacter, range: text.range(of: "!")!, text: "!"),
+            ]
+        )
+    }
+    
     func testTapWord() async throws {
-        
-        let text1 = "Word1"
-        let text2 = "Word3 word4"
-        
-        let range1 = text2.range(of: "Word3")!
-        let range2 = text2.range(of: " ")!
-        let range3 = text2.range(of: "word4")!
-        
+
+        let (text, components) = getTestText()
         
         let subtitles = Subtitles(sentences: [
-            .init(startTime: 0, duration: 0, text: .notSynced(text: text1)),
-            .init(startTime: 0.1, duration: 0, text: .notSynced(text: text2))
+            .init(startTime: 0, duration: 0, text: .notSynced(text: text)),
+            .init(startTime: 0.1, duration: 0, text: .notSynced(text: text))
         ])
         
         let sut = createSUT(subtitles: subtitles)
-        sut.textSplitter.words = [
-            .init(type: .word, range: range1, text: String(text2[range1])),
-            .init(type: .space, range: range2, text: String(text2[range2])),
-            .init(type: .word, range: range3, text: String(text2[range3])),
-        ]
+        sut.textSplitter.words = components
         
         await sut.viewModel.load()
         
-        let sentenceViewModel = sut.viewModel.getSentenceViewModel(at: 1)
+        let sentence0 = sut.viewModel.getSentenceViewModel(at: 0)
+        let sentenceModel0 = try XCTUnwrap(sentence0)
         
-        let sentenceModel = try XCTUnwrap(sentenceViewModel)
+        let sentence1 = sut.viewModel.getSentenceViewModel(at: 1)
+        let sentenceModel1 = try XCTUnwrap(sentence1)
 
-        let sequence = expectSequence([nil, range1, nil, range1, nil, range1, range3])
+        let sequenceSentence0 = expectSequence([
+            // Begining
+            nil,
+            
+            // Toggle same word
+            components[0].range,
+            nil,
+            
+            // Toggle space after word
+            components[0].range,
+            nil,
+            
+            // Toggle different word
+            components[0].range,
+            components[2].range,
+
+            // Toggle next line, only one active word
+            nil
+        ])
         
-        sequence.observe(sentenceModel.selectedWordRange)
+        let sequenceSentence1 = expectSequence([
+            nil,
+            components[2].range,
+        ])
         
-        sentenceModel.toggleWord(1, range1)
-        sentenceModel.toggleWord(1, range1)
-        sentenceModel.toggleWord(1, range1)
-        sentenceModel.toggleWord(1, range2)
-        sentenceModel.toggleWord(1, range1)
-        sentenceModel.toggleWord(1, range3)
+        sequenceSentence0.observe(sentenceModel0.selectedWordRange)
+        sequenceSentence1.observe(sentenceModel1.selectedWordRange)
         
-        sequence.wait(timeout: 3, enforceOrder: true)
+        // Toggle same word
+        sentenceModel0.toggleWord(sentenceModel0.id, components[0].range)
+        sentenceModel0.toggleWord(sentenceModel0.id, components[0].range)
+        
+        // Toggle space after word
+        sentenceModel0.toggleWord(sentenceModel0.id, components[0].range)
+        sentenceModel0.toggleWord(sentenceModel0.id, components[1].range)
+        
+        // Toggle only space
+        sentenceModel0.toggleWord(sentenceModel0.id, components[1].range)
+
+        // Toggle different word
+        sentenceModel0.toggleWord(sentenceModel0.id, components[0].range)
+        sentenceModel0.toggleWord(sentenceModel0.id, components[2].range)
+
+        // Toggle next line, only one active word
+        sentenceModel1.toggleWord(sentenceModel1.id, components[2].range)
+        
+        sequenceSentence0.wait(timeout: 3, enforceOrder: true)
+        sequenceSentence1.wait(timeout: 3, enforceOrder: true)
         
         sut.viewModel.state.remove(observer: self)
-        sentenceModel.selectedWordRange.remove(observer: self)
+        sentenceModel0.selectedWordRange.remove(observer: self)
+        sentenceModel1.selectedWordRange.remove(observer: self)
+    }
+    
+    func testOnlyOneActiveWord() async throws {
     }
 }
 

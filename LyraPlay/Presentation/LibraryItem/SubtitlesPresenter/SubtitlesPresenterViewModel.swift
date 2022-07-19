@@ -67,6 +67,7 @@ public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewMod
     private var textSplitter: TextSplitter
     
     private var items: [DefaultSentenceViewModel] = []
+    private var currentSentenceWithSelectedWord: Int?
     public let state: Observable<SubtitlesPresentationState?> = Observable(nil)
     
     public init(
@@ -185,6 +186,18 @@ extension DefaultSubtitlesPresenterViewModel {
         scheduler.stop()
     }
     
+    private func deactivateWord(atSentence index: Int) {
+        
+        let item = items[index]
+        let currentValue = item.selectedWordRange.value
+        
+        guard currentValue != nil else {
+            return
+        }
+        
+        item.selectedWordRange.value = nil
+    }
+    
     private func toggleWord(_ sentenceIndex: Int, _ tapRange: Range<String.Index>) {
         
         DispatchQueue.main.async {
@@ -193,28 +206,39 @@ extension DefaultSubtitlesPresenterViewModel {
                 return
             }
             
+            if
+                let currentSentenceIndex = self.currentSentenceWithSelectedWord,
+                currentSentenceIndex != sentenceIndex
+            {
+                
+                self.deactivateWord(atSentence: currentSentenceIndex)
+            }
+            
+            
             let item = self.items[sentenceIndex]
             let selectedComponent = item.textComponents.first { item in item.range.overlaps(tapRange) }
+            let currentRange = item.selectedWordRange.value
             
             guard
                 let selectedType = selectedComponent?.type,
                 selectedType == .word
             else {
-                item.selectedWordRange.value = nil
+                
+                self.deactivateWord(atSentence: sentenceIndex)
                 return
             }
             
             let selectedWordRange = selectedComponent?.range
-            let currentRange = item.selectedWordRange.value
             
-            guard  selectedWordRange != currentRange else {
-                item.selectedWordRange.value = nil
+            guard selectedWordRange != currentRange else {
+                
+                self.deactivateWord(atSentence: sentenceIndex)
                 return
             }
             
             item.selectedWordRange.value = selectedWordRange
+            self.currentSentenceWithSelectedWord = sentenceIndex
         }
-        
     }
     
     public func getSentenceViewModel(at index: Int) -> SentenceViewModel? {
