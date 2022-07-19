@@ -89,7 +89,7 @@ public final class HighlightWordsLayoutManager: NSLayoutManager {
         }
     }
     
-    private func drawRect(color: UIColor, rect: CGRect) {
+    public func drawRect(color: UIColor, rect: CGRect) {
         
         guard let context = UIGraphicsGetCurrentContext() else {
             return

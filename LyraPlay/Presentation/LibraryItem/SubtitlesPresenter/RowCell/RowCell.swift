@@ -122,16 +122,29 @@ extension RowCell {
         
         textView.layoutManager.enumerateLineFragments(forGlyphRange: textView.textRange) {
             [weak self] (rect, usedRect, textContainer, glyphRange, stop) in
-        
+            
             guard let self = self else {
                 return
             }
+
+            let textContainerInset = self.textView.textContainerInset
             
-            let placedInLine = usedRect.contains(point)
+            let usedRectWithInsets = usedRect.offsetBy(
+                dx: textContainerInset.left,
+                dy: textContainerInset.top
+            ).inset(
+                by: .init(
+                    top: 0,
+                    left: 0,
+                    bottom: -2,
+                    right: 0
+                )
+            )
+            
+            let placedInLine = usedRectWithInsets.contains(point)
             guard placedInLine else {
                 return
             }
-            
 
             let tapRange = self.textView.characterRange(at: point)
             guard let tapRange = tapRange else {
