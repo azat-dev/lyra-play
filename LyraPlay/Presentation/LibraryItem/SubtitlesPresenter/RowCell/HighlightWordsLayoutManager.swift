@@ -42,12 +42,13 @@ public final class HighlightWordsLayoutManager: NSLayoutManager {
                 return
             }
             
-            invalidateDisplay(forCharacterRange: prevRange)
+            invalidateDisplay(forGlyphRange: prevRange)
+            invalidateDisplay(forGlyphRange: highlight.range)
             return
         }
         
         highlights.append(highlight)
-        invalidateDisplay(forCharacterRange: highlight.range)
+        invalidateDisplay(forGlyphRange: highlight.range)
     }
     
     public func removeHighlight(id: String) {
@@ -62,7 +63,7 @@ public final class HighlightWordsLayoutManager: NSLayoutManager {
         
         let item = highlights[index]
         highlights.remove(at: index)
-        invalidateDisplay(forCharacterRange: item.range)
+        invalidateDisplay(forGlyphRange: item.range)
     }
     
     public override func drawBackground(forGlyphRange glyphsToShow: NSRange, at origin: CGPoint) {
