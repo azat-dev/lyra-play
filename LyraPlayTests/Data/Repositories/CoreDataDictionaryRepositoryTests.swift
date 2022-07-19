@@ -72,7 +72,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         }
     }
     
-    func testUpdatetExistingItem() async throws {
+    func testUpdateExistingItem() async throws {
         
         let sut = createSUT()
         
@@ -103,6 +103,30 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         XCTAssertEqual(updatedItem.language, updatedItemData.language)
     }
     
+    func testOnlyOneItemWithTextLanguagePair() async throws {
+        
+        let sut = createSUT()
+        
+        let item = DictionaryItem(
+            id: nil,
+            originalText: "originalText",
+            language: "English"
+        )
+        
+        let putResult = await sut.putItem(item)
+        try AssertResultSucceded(putResult)
+        
+        let putResult2 = await sut.putItem(item)
+        let error = try AssertResultFailed(putResult2)
+        
+        guard case .itemMustBeUnique = error else {
+            
+            XCTFail("Wrong error type \(error)")
+            return
+        }
+        
+    }
+    
     func testDeleteNotExistingItem() async throws {
         
         let sut = createSUT()
@@ -111,6 +135,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         let error = try AssertResultFailed(deleteResult)
 
         guard case .itemNotFound = error else {
+            
             XCTFail("Wrong error type \(error)")
             return
         }
