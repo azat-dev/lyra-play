@@ -200,12 +200,17 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
             components[2].range,
 
             // Toggle next line, only one active word
-            nil
+            nil,
+            
+            // Toggle space on different line to reset word
         ])
         
         let sequenceSentence1 = expectSequence([
             nil,
             components[2].range,
+            
+            // Toggle space on different line to reset word
+            nil
         ])
         
         sequenceSentence0.observe(sentenceModel0.selectedWordRange)
@@ -228,6 +233,9 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
 
         // Toggle next line, only one active word
         sentenceModel1.toggleWord(sentenceModel1.id, components[2].range)
+        
+        // Toggle space on different line to reset word
+        sentenceModel1.toggleWord(sentenceModel0.id, components[1].range)
         
         sequenceSentence0.wait(timeout: 3, enforceOrder: true)
         sequenceSentence1.wait(timeout: 3, enforceOrder: true)
