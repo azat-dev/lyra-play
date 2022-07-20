@@ -14,13 +14,15 @@ public struct DictionaryItem {
     public var updatedAt: Date?
     public var originalText: String
     public var language: String
+    public var translations: [TranslationItem]
 
     public init(
         id: UUID? = nil,
         createdAt: Date? = nil,
         updatedAt: Date? = nil,
         originalText: String,
-        language: String
+        language: String,
+        translations: [TranslationItem]
     ) {
         
         self.id = id
@@ -28,5 +30,6 @@ public struct DictionaryItem {
         self.updatedAt = updatedAt
         self.originalText = originalText
         self.language = language
+        self.translations = translations
     }
 }
