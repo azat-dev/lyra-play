@@ -136,6 +136,7 @@
 		AA9BEB062865D78C0028DF8E /* AudioLibraryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB052865D78C0028DF8E /* AudioLibraryRepository.swift */; };
 		AA9BEB0B28661DCE0028DF8E /* CoreDataAudioLibraryRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB0A28661DCE0028DF8E /* CoreDataAudioLibraryRepositoryTests.swift */; };
 		AAC8D1D3287B26AA00FAB35E /* LoadSubtitlesUseCaseMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC8D1D2287B26AA00FAB35E /* LoadSubtitlesUseCaseMock.swift */; };
+		AACCE801288814F8002EA7C5 /* TranslationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACCE800288814F8002EA7C5 /* TranslationItem.swift */; };
 		AACEA31228699F5500111565 /* BrowseAudioFilesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA31128699F5500111565 /* BrowseAudioFilesUseCaseTests.swift */; };
 		AACEA3152869A32A00111565 /* AudioLibraryRepositoryMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA3142869A32A00111565 /* AudioLibraryRepositoryMock.swift */; };
 		AACEA3172869A5C800111565 /* BrowseAudioLibraryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA3162869A5C800111565 /* BrowseAudioLibraryUseCase.swift */; };
@@ -313,6 +314,7 @@
 		AA9BEB052865D78C0028DF8E /* AudioLibraryRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioLibraryRepository.swift; sourceTree = "<group>"; };
 		AA9BEB0A28661DCE0028DF8E /* CoreDataAudioLibraryRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataAudioLibraryRepositoryTests.swift; sourceTree = "<group>"; };
 		AAC8D1D2287B26AA00FAB35E /* LoadSubtitlesUseCaseMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadSubtitlesUseCaseMock.swift; sourceTree = "<group>"; };
+		AACCE800288814F8002EA7C5 /* TranslationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationItem.swift; sourceTree = "<group>"; };
 		AACEA31128699F5500111565 /* BrowseAudioFilesUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseAudioFilesUseCaseTests.swift; sourceTree = "<group>"; };
 		AACEA3142869A32A00111565 /* AudioLibraryRepositoryMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioLibraryRepositoryMock.swift; sourceTree = "<group>"; };
 		AACEA3162869A5C800111565 /* BrowseAudioLibraryUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseAudioLibraryUseCase.swift; sourceTree = "<group>"; };
@@ -400,6 +402,7 @@
 			isa = PBXGroup;
 			children = (
 				AA9BEB012865D5BB0028DF8E /* AudioFileInfo.swift */,
+				AACCE800288814F8002EA7C5 /* TranslationItem.swift */,
 				AA3BAB1A286C7225005EE01E /* PlayerState.swift */,
 				AAFB97962875BCAD007A76A7 /* Subtitles.swift */,
 				AA0D3F84287626D1006717B9 /* SubtitlesInfo.swift */,
@@ -1186,6 +1189,7 @@
 				AA9BEB022865D5BB0028DF8E /* AudioFileInfo.swift in Sources */,
 				AA7B0D522871A6E00067DDB5 /* LibraryItemViewController+Layout.swift in Sources */,
 				AA731CBD2870395B0044412F /* NowPlayingInfoService.swift in Sources */,
+				AACCE801288814F8002EA7C5 /* TranslationItem.swift in Sources */,
 				AA1D7E812876E71F0095E490 /* ManagedSubtitles+CoreDataProperties.swift in Sources */,
 				AACEA3282869E9C500111565 /* AudioFilesBrowserViewControllerFactory.swift in Sources */,
 				AA2BE88D2866EF35005C1AAD /* CoreDataStore.swift in Sources */,

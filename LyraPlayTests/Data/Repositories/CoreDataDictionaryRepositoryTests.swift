@@ -185,25 +185,3 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         }
     }
 }
-
-// MARK: - Helpers
-
-struct TranslationItem: Equatable {
-
-    var text: String
-    var mediaId: UUID?
-    var timeMark: UUID?
-    var position: String?
-    
-    public init(
-        text: String,
-        mediaId: UUID? = nil,
-        timeMark: UUID? = nil,
-        position: String? = nil
-    ) {
-        self.text = text
-        self.mediaId = mediaId
-        self.timeMark = timeMark
-        self.position = position
-    }
-}
