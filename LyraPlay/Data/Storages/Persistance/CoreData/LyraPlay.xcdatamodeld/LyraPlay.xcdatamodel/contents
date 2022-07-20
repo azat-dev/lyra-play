@@ -22,6 +22,7 @@
         <attribute name="language" attributeType="String"/>
         <attribute name="originalText" attributeType="String"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="translations" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ManagedTranslationItem"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
@@ -43,9 +44,27 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="ManagedTranslationItem" representedClassName="ManagedTranslationItem" syncable="YES">
+        <attribute name="context" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dictionaryItemId" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="mediaId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="subtitlesPosition" optional="YES" attributeType="String"/>
+        <attribute name="timeMark" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="translation" attributeType="String"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="relationship" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ManagedDictionaryItem"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <elements>
         <element name="ManagedAudioFile" positionX="-63" positionY="-18" width="128" height="164"/>
+        <element name="ManagedDictionaryItem" positionX="-63" positionY="54" width="128" height="119"/>
         <element name="ManagedSubtitles" positionX="-63" positionY="54" width="128" height="74"/>
-        <element name="ManagedDictionaryItem" positionX="-63" positionY="54" width="128" height="104"/>
+        <element name="ManagedTranslationItem" positionX="-54" positionY="63" width="128" height="179"/>
     </elements>
 </model>

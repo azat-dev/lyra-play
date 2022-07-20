@@ -22,15 +22,38 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         return repository
     }
     
+    func anyTranslation(text: String = "translation") -> TranslationItem {
+        return TranslationItem(
+            text: text
+        )
+    }
+    
+    private func anyNewDictionaryItem() -> DictionaryItem {
+        
+        return DictionaryItem(
+            id: nil,
+            originalText: "originalText",
+            language: "English",
+            translations: [
+                anyTranslation(text: "text1"),
+                anyTranslation(text: "text2")
+            ]
+        )
+    }
+    
+    private func anyExistingDictonaryItem() -> DictionaryItem {
+        
+        var item = anyNewDictionaryItem()
+        item.id = UUID()
+        
+        return item
+    }
+    
     func testPutGetNewItem() async throws {
         
         let sut = createSUT()
         
-        let item = DictionaryItem(
-            id: nil,
-            originalText: "originalText",
-            language: "English"
-        )
+        let item = anyNewDictionaryItem()
         
         let putResult = await sut.putItem(item)
         let savedItem = try AssertResultSucceded(putResult)
@@ -40,6 +63,8 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         XCTAssertNil(savedItem.updatedAt)
         XCTAssertEqual(savedItem.originalText, item.originalText)
         XCTAssertEqual(savedItem.language, item.language)
+        XCTAssertEqual(item.translations.count, item.translations.count)
+        XCTAssertEqual(item.translations, item.translations)
         
         let itemId = savedItem.id!
         
@@ -51,17 +76,15 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         XCTAssertNil(receivedItem.updatedAt)
         XCTAssertEqual(receivedItem.originalText, item.originalText)
         XCTAssertEqual(receivedItem.language, item.language)
+        XCTAssertEqual(receivedItem.translations.count, item.translations.count)
+        XCTAssertEqual(receivedItem.translations, item.translations)
     }
     
     func testUpdateNotExistingItem() async throws {
         
         let sut = createSUT()
         
-        let item = DictionaryItem(
-            id: UUID(),
-            originalText: "originalText",
-            language: "English"
-        )
+        let item = anyExistingDictonaryItem()
         
         let putResult = await sut.putItem(item)
         let error = try AssertResultFailed(putResult)
@@ -76,11 +99,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
         let sut = createSUT()
         
-        let item = DictionaryItem(
-            id: nil,
-            originalText: "originalText",
-            language: "English"
-        )
+        let item = anyNewDictionaryItem()
         
         let putResult = await sut.putItem(item)
         let savedItem = try AssertResultSucceded(putResult)
@@ -91,6 +110,10 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         updatedItemData.id = itemId
         updatedItemData.originalText = "updatedText"
         updatedItemData.language = "Japanese"
+        updatedItemData.translations = [
+            anyTranslation(text: "1"),
+            anyTranslation(text: "2"),
+        ]
         
         
         let updatedItemResult = await sut.putItem(updatedItemData)
@@ -101,17 +124,15 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         XCTAssertNotNil(updatedItem.updatedAt)
         XCTAssertEqual(updatedItem.originalText, updatedItemData.originalText)
         XCTAssertEqual(updatedItem.language, updatedItemData.language)
+        XCTAssertEqual(updatedItem.translations.count, updatedItemData.translations.count)
+        XCTAssertEqual(updatedItem.translations, updatedItemData.translations)
     }
     
     func testOnlyOneItemWithTextLanguagePair() async throws {
         
         let sut = createSUT()
         
-        let item = DictionaryItem(
-            id: nil,
-            originalText: "originalText",
-            language: "English"
-        )
+        let item = anyNewDictionaryItem()
         
         let putResult = await sut.putItem(item)
         try AssertResultSucceded(putResult)
@@ -145,11 +166,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
         let sut = createSUT()
         
-        let item = DictionaryItem(
-            id: nil,
-            originalText: "originalText",
-            language: "English"
-        )
+        let item = anyNewDictionaryItem()
         
         let putResult = await sut.putItem(item)
         let savedItem = try AssertResultSucceded(putResult)
@@ -166,5 +183,27 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
             XCTFail("Wrong error type \(error)")
             return
         }
+    }
+}
+
+// MARK: - Helpers
+
+struct TranslationItem: Equatable {
+
+    var text: String
+    var mediaId: UUID?
+    var timeMark: UUID?
+    var position: String?
+    
+    public init(
+        text: String,
+        mediaId: UUID? = nil,
+        timeMark: UUID? = nil,
+        position: String? = nil
+    ) {
+        self.text = text
+        self.mediaId = mediaId
+        self.timeMark = timeMark
+        self.position = position
     }
 }
