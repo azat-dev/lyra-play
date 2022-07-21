@@ -166,7 +166,9 @@ final class DefaultAppCoordinator: AppCoordinator {
     } ()
     
     private lazy var subtitlesParser: SubtitlesParser = {
-        return LyricsParser()
+        
+        let textSplitter = DefaultTextSplitter()
+        return LyricsParser(textSplitter: textSplitter)
     } ()
     
     private lazy var importSubtitlesUseCase = {

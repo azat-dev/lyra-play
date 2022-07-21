@@ -8,106 +8,32 @@
 import XCTest
 import LyraPlay
 
-
-// MARK: - Helpers
-
-struct ExpectedSubtitles {
-
-    var sentences: [ExpectedSentence]
-
-    init(sentences: [ExpectedSentence]) {
-        self.sentences = sentences
-    }
-    
-    init(from subtitles: Subtitles) {
-        
-        self.sentences = subtitles.sentences.map { .init(from: $0) }
-    }
-}
-
-struct ExpectedSentence: Equatable {
-    
-    var startTime: TimeInterval
-    var duration: TimeInterval?
-    var text: String
-    var timeMarks: [ExpectedTimeMark]?
-    
-    init(
-        startTime: TimeInterval,
-        duration: TimeInterval? = nil,
-        text: String,
-        timeMarks: [ExpectedTimeMark]? = nil
-    ) {
-        
-        self.startTime = startTime
-        self.text = text
-        self.duration = duration
-        self.timeMarks = timeMarks
-    }
-
-    init(from sentence: Subtitles.Sentence) {
-     
-        startTime = sentence.startTime
-        duration = sentence.duration
-        text = sentence.text
-        timeMarks = sentence.timeMarks?.map { ExpectedTimeMark(from: $0, text: sentence.text) }
-    }
-}
-
-struct ExpectedTimeMark: Equatable {
-    
-    var startTime: TimeInterval?
-    var duration: TimeInterval?
-    var text: String?
-    
-    init(
-        startTime: TimeInterval? = nil,
-        duration: TimeInterval? = nil,
-        text: String? = nil
-    ) {
-        
-        self.startTime = startTime
-        self.duration = duration
-        self.text = text
-    }
-
-    init(from timeMark: Subtitles.TimeMark, text: String) {
-        
-        self.startTime = timeMark.startTime
-        self.duration = timeMark.duration
-        
-        let text1 = "text1"
-        let text2 = "text2"
-        
-        for index in text1.indices {
-            text2[index]
-        }
-        
-        print(NSRange(timeMark.range, in: text))
-        self.text = String(text[timeMark.range])
-    }
-}
-
-
 class LyricsParserTests: XCTestCase {
 
-    typealias SUT = SubtitlesParser
+    typealias SUT = (
+        parser: SubtitlesParser,
+        textSplitter: TextSplitterMock
+    )
     
     func createSUT() -> SUT {
         
-        let parser = LyricsParser()
+        let textSplitter = TextSplitterMock()
+        let parser = LyricsParser(textSplitter: textSplitter)
         detectMemoryLeak(instance: parser)
         
-        return parser
+        return (
+            parser,
+            textSplitter
+        )
     }
     
     func testParseEmptyLyrics() async throws {
         
-        let parser = createSUT()
+        let sut = createSUT()
         
         let text = ""
         
-        let result = await parser.parse(text)
+        let result = await sut.parser.parse(text)
         let parsedSubtitles = try AssertResultSucceded(result)
         
         XCTAssertEqual(parsedSubtitles.sentences.count, 0)
@@ -115,7 +41,7 @@ class LyricsParserTests: XCTestCase {
     
     func testParseNormalLyrics() async throws {
         
-        let parser = createSUT()
+        let sut = createSUT()
         
         let text = """
         
@@ -131,7 +57,7 @@ class LyricsParserTests: XCTestCase {
         [00:21.10]Line 3 lyrics
         """
         
-        let result = await parser.parse(text)
+        let result = await sut.parser.parse(text)
         let subtitlesResult = try AssertResultSucceded(result)
         let parsedSubtitles = ExpectedSubtitles(from: subtitlesResult)
         
@@ -165,7 +91,7 @@ class LyricsParserTests: XCTestCase {
     
     func testParseEnhancedLyrics() async throws {
         
-        let parser = createSUT()
+        let sut = createSUT()
         
         let line1 = " <00:00.04> Word11 <00:00.16> Word12 <00:00.82> Word13"
         let line2 = " <00:07.67> Word21 <00:07.94> Word22"
@@ -189,7 +115,7 @@ class LyricsParserTests: XCTestCase {
 
         """
         
-        let result = await parser.parse(text)
+        let result = await sut.parser.parse(text)
         let subtitlesResult = try AssertResultSucceded(result)
         let parsedSubtitles = ExpectedSubtitles(from: subtitlesResult)
         
@@ -258,3 +184,75 @@ class LyricsParserTests: XCTestCase {
     }
 }
 
+
+// MARK: - Helpers
+
+struct ExpectedSubtitles {
+
+    var sentences: [ExpectedSentence]
+
+    init(sentences: [ExpectedSentence]) {
+        self.sentences = sentences
+    }
+    
+    init(from subtitles: Subtitles) {
+        
+        self.sentences = subtitles.sentences.map { .init(from: $0) }
+    }
+}
+
+struct ExpectedSentence: Equatable {
+    
+    var startTime: TimeInterval
+    var duration: TimeInterval?
+    var text: String
+    var timeMarks: [ExpectedTimeMark]?
+    
+    init(
+        startTime: TimeInterval,
+        duration: TimeInterval? = nil,
+        text: String,
+        timeMarks: [ExpectedTimeMark]? = nil
+    ) {
+        
+        self.startTime = startTime
+        self.text = text
+        self.duration = duration
+        self.timeMarks = timeMarks
+    }
+
+    init(from sentence: Subtitles.Sentence) {
+     
+        startTime = sentence.startTime
+        duration = sentence.duration
+        text = sentence.text
+        timeMarks = sentence.timeMarks?.map { ExpectedTimeMark(from: $0, text: sentence.text) }
+    }
+}
+
+struct ExpectedTimeMark: Equatable {
+    
+    var startTime: TimeInterval?
+    var duration: TimeInterval?
+    var text: String?
+    
+    init(
+        startTime: TimeInterval? = nil,
+        duration: TimeInterval? = nil,
+        text: String? = nil
+    ) {
+        
+        self.startTime = startTime
+        self.duration = duration
+        self.text = text
+    }
+
+    init(from timeMark: Subtitles.TimeMark, text: String) {
+        
+        self.startTime = timeMark.startTime
+        self.duration = timeMark.duration
+        
+        print(NSRange(timeMark.range, in: text))
+        self.text = String(text[timeMark.range])
+    }
+}

@@ -40,18 +40,21 @@ public struct Subtitles: Equatable {
         public var duration: Double?
         public var text: String
         public var timeMarks: [TimeMark]?
+        public var components: [TextComponent]
         
         public init(
             startTime: Double,
             duration: Double? = nil,
             text: String,
-            timeMarks: [TimeMark]? = nil
+            timeMarks: [TimeMark]? = nil,
+            components: [TextComponent]
         ) {
             
             self.startTime = startTime
             self.duration = duration
             self.text = text
             self.timeMarks = timeMarks
+            self.components = components
         }
     }
 }

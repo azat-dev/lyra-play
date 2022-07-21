@@ -13,8 +13,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
 
     typealias SUT = (
         viewModel: SubtitlesPresenterViewModel,
-        scheduler: Scheduler,
-        textSplitter: TextSplitterMock
+        scheduler: Scheduler
     )
     
     private let specialCharacters = "\"!@#$^&%*()+=-[]\\/{}|:<>?,._"
@@ -22,19 +21,15 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     func createSUT(subtitles: Subtitles) -> SUT {
 
         let scheduler = SchedulerMock()
-        let textSplitter = TextSplitterMock()
-        
         
         let viewModel = DefaultSubtitlesPresenterViewModel(
-            subtitles: subtitles,
-            textSplitter: textSplitter
+            subtitles: subtitles
         )
         detectMemoryLeak(instance: viewModel)
         
         return (
             viewModel,
-            scheduler,
-            textSplitter
+            scheduler
         )
     }
     
@@ -76,7 +71,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     func testLoad() async throws {
 
         let subtitles = Subtitles(sentences: [
-            .init(startTime: 0, duration: nil, text: "")
+            .init(startTime: 0, duration: nil, text: "", components: [])
         ])
         
         let (_, stateSequence) = await loadAndObserve(
@@ -109,8 +104,8 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     func testPlaySentences() async throws {
         
         let subtitles = Subtitles(sentences: [
-            .init(startTime: 0, duration: nil, text: ""),
-            .init(startTime: 0.1, duration: nil, text: "")
+            .init(startTime: 0, duration: nil, text: "", components: []),
+            .init(startTime: 0.1, duration: nil, text: "", components: [])
         ])
         
         let (sut, stateSequence) = await loadAndObserve(
@@ -168,12 +163,11 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         let (text, components) = getTestText()
         
         let subtitles = Subtitles(sentences: [
-            .init(startTime: 0, duration: nil, text: text),
-            .init(startTime: 0.1, duration: nil, text: text)
+            .init(startTime: 0, duration: nil, text: text, components: components),
+            .init(startTime: 0.1, duration: nil, text: text, components: components)
         ])
         
         let sut = createSUT(subtitles: subtitles)
-        sut.textSplitter.words = components
         
         await sut.viewModel.load()
         
@@ -261,17 +255,6 @@ fileprivate final class SchedulerMock: Scheduler {
     }
     
     func pause() {
-    }
-}
-
-
-final class TextSplitterMock: TextSplitter {
-    
-    var words = [TextComponent]()
-    
-    func split(text: String) -> [TextComponent] {
-    
-        return words
     }
 }
 

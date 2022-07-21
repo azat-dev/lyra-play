@@ -64,19 +64,14 @@ public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewMod
     private var wordTimer: ActionTimer? = nil
     private var currentSpeed: Double = 1.0
     private var scheduler: Scheduler
-    private var textSplitter: TextSplitter
     
     private var items: [DefaultSentenceViewModel] = []
     private var currentSentenceWithSelectedWord: Int?
     public let state: Observable<SubtitlesPresentationState?> = Observable(nil)
     
-    public init(
-        subtitles: Subtitles,
-        textSplitter: TextSplitter
-    ) {
+    public init(subtitles: Subtitles) {
         
         self.subtitles = subtitles
-        self.textSplitter = textSplitter
         
         self.subtitlesIterator = DefaultSubtitlesIterator(subtitles: subtitles)
         self.scheduler = DefaultScheduler(
@@ -112,7 +107,7 @@ extension DefaultSubtitlesPresenterViewModel {
                 toggleWord: toggleWord
             )
             
-            sentenceModel.textComponents = textSplitter.split(text: text)
+            sentenceModel.textComponents = sentence.components
 
             models.append(
                 sentenceModel

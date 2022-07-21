@@ -132,8 +132,7 @@ extension DefaultLibraryItemViewModel {
         let subtitles = try! result.get()
 
         let subtitlesViewModel = DefaultSubtitlesPresenterViewModel(
-            subtitles: subtitles,
-            textSplitter: DefaultTextSplitter()
+            subtitles: subtitles
         )
         
         Task {

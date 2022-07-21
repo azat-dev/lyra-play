@@ -34,7 +34,12 @@ public class LyricsParser: SubtitlesParser {
         var followingTextRange: Range<String.Index>
     }
     
-    public init() {}
+    private var textSplitter: TextSplitter
+    
+    public init(textSplitter: TextSplitter) {
+        
+        self.textSplitter = textSplitter
+    }
     
     private static func parseTimeMarksTags(text: String) -> [ParsedTimeMarkTag] {
         
@@ -166,17 +171,7 @@ public class LyricsParser: SubtitlesParser {
         return (cleanedText, timeMarks)
     }
     
-    private static func normalizeText(_ line: String) -> String {
-        
-        return line.replacingOccurrences(
-            of: "\\s+",
-            with: " ",
-            options: .regularExpression,
-            range: nil
-        )
-    }
-    
-    private static func parseLine(_ line: String) async -> ParsedLine {
+    private func parseLine(_ line: String) async -> ParsedLine {
         
         let range = NSRange((line.startIndex..<line.endIndex), in: line)
         
@@ -195,7 +190,6 @@ public class LyricsParser: SubtitlesParser {
             return .empty
         }
         
-        
         let durationText = String(durationSubstring)
         let parser = DurationParser()
         
@@ -212,7 +206,7 @@ public class LyricsParser: SubtitlesParser {
             text = String(textSubstring)
         }
         
-        let (cleanedText, timeMarks) = parseLineText(text: text)
+        let (cleanedText, timeMarks) = Self.parseLineText(text: text)
         
         if cleanedText.isEmpty {
             return .empty
@@ -223,7 +217,8 @@ public class LyricsParser: SubtitlesParser {
                 startTime: startTime,
                 duration: nil,
                 text: cleanedText,
-                timeMarks: timeMarks.isEmpty ? nil : timeMarks
+                timeMarks: timeMarks.isEmpty ? nil : timeMarks,
+                components: textSplitter.split(text: cleanedText)
             )
         )
     }
@@ -235,7 +230,7 @@ public class LyricsParser: SubtitlesParser {
         
         for line in splittedText {
             
-            let parsedLine = await Self.parseLine(String(line))
+            let parsedLine = await parseLine(String(line))
             
             switch parsedLine {
             case .sentence(let sentence):
