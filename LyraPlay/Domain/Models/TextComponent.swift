@@ -18,12 +18,10 @@ public struct TextComponent: Equatable {
     
     public var type: ComponentType
     public var range: Range<String.Index>
-    public var text: String
     
-    public init(type: ComponentType, range: Range<String.Index>, text: String) {
+    public init(type: ComponentType, range: Range<String.Index>) {
         
         self.type = type
         self.range = range
-        self.text = text
     }
 }

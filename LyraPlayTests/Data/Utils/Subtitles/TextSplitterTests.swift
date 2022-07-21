@@ -28,6 +28,11 @@ class TextSplitterTests: XCTestCase {
         XCTAssertEqual(result, [])
     }
     
+    func item(type: TextComponent.ComponentType, text: String, component: String) -> TextComponent {
+        
+        return .init(type: type, range: text.range(of: component)!)
+    }
+    
     func testSplitText() throws {
         
         let text = """
@@ -35,31 +40,30 @@ class TextSplitterTests: XCTestCase {
         "Hello, Mike!"
         """
         
-        let dummyIndex = (text.startIndex..<text.endIndex)
-
-        let expectedItems: [TextComponent] = [
-            .init(type: .word, range: dummyIndex, text: "Is"),
-            .init(type: .space, range: dummyIndex, text: " "),
-            .init(type: .word, range: dummyIndex, text: "this"),
-            .init(type: .space, range: dummyIndex, text: " "),
-            .init(type: .word, range: dummyIndex, text: "project"),
-            .init(type: .space, range: dummyIndex, text: " "),
-            .init(type: .word, range: dummyIndex, text: "long"),
-            .init(type: .specialCharacter, range: dummyIndex, text: "-"),
-            .init(type: .word, range: dummyIndex, text: "term"),
-            .init(type: .specialCharacter, range: dummyIndex, text: "?"),
-            .init(type: .space, range: dummyIndex, text: "\n"),
-            .init(type: .specialCharacter, range: dummyIndex, text: "\""),
-            .init(type: .word, range: dummyIndex, text: "Hello"),
-            .init(type: .specialCharacter, range: dummyIndex, text: ","),
-            .init(type: .space, range: dummyIndex, text: " "),
-            .init(type: .word, range: dummyIndex, text: "Mike"),
-            .init(type: .specialCharacter, range: dummyIndex, text: "!"),
-            .init(type: .specialCharacter, range: dummyIndex, text: "\""),
+        let expectedItems: [ExpectedTextComponent] = [
+            .init(type: .word, text: "Is"),
+            .init(type: .space, text: " "),
+            .init(type: .word, text: "this"),
+            .init(type: .space, text: " "),
+            .init(type: .word, text: "project"),
+            .init(type: .space, text: " "),
+            .init(type: .word, text: "long"),
+            .init(type: .specialCharacter, text: "-"),
+            .init(type: .word, text: "term"),
+            .init(type: .specialCharacter, text: "?"),
+            .init(type: .space, text: "\n"),
+            .init(type: .specialCharacter, text: "\""),
+            .init(type: .word, text: "Hello"),
+            .init(type: .specialCharacter, text: ","),
+            .init(type: .space, text: " "),
+            .init(type: .word, text: "Mike"),
+            .init(type: .specialCharacter, text: "!"),
+            .init(type: .specialCharacter, text: "\""),
         ]
 
         let sut = createSUT()
-        let result = sut.split(text: text)
+        let splitResult = sut.split(text: text)
+        let result = splitResult.map { ExpectedTextComponent(from: $0, text: text) }
         
         XCTAssertEqual(result.count, expectedItems.count)
         
@@ -71,11 +75,26 @@ class TextSplitterTests: XCTestCase {
             
             let item = result[index]
             
-            XCTAssertEqual(item.type, expectedItem.type)
-            XCTAssertEqual(item.text, expectedItem.text)
-            
-            let rangeText = text[item.range]
-            XCTAssertEqual(String(rangeText), expectedItem.text)
+            XCTAssertEqual(item, expectedItem)
         }
+    }
+}
+
+// MARK: - Helpers
+
+struct ExpectedTextComponent: Equatable {
+    
+    var type: TextComponent.ComponentType
+    var text: String
+    
+    internal init(type: TextComponent.ComponentType, text: String) {
+        self.type = type
+        self.text = text
+    }
+
+    init(from item: TextComponent, text: String) {
+        
+        self.type = item.type
+        self.text = String(text[item.range])
     }
 }

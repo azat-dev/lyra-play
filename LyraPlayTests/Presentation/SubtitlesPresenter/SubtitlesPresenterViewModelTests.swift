@@ -155,10 +155,10 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         return (
             text,
             [
-                .init(type: .word, range: text.range(of: "Good")!, text: "Good"),
-                .init(type: .space, range: text.range(of: " ")!, text: " "),
-                .init(type: .word, range: text.range(of: "morning")!, text: "morning"),
-                .init(type: .specialCharacter, range: text.range(of: "!")!, text: "!"),
+                .init(type: .word, range: text.range(of: "Good")!),
+                .init(type: .space, range: text.range(of: " ")!),
+                .init(type: .word, range: text.range(of: "morning")!),
+                .init(type: .specialCharacter, range: text.range(of: "!")!),
             ]
         )
     }

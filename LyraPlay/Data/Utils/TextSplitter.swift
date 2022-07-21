@@ -51,7 +51,12 @@ public final class DefaultTextSplitter: TextSplitter {
                 itemType = .specialCharacter
             }
             
-            result.append(.init(type: itemType, range: range, text: String(text[range])))
+            result.append(
+                .init(
+                    type: itemType,
+                    range: range
+                )
+            )
             return true
         }
         
