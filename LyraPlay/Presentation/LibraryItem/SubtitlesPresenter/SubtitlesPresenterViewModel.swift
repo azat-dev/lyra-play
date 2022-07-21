@@ -104,7 +104,7 @@ extension DefaultSubtitlesPresenterViewModel {
             
             let sentence = sentences[index]
 
-            let text = sentence.text.getText()
+            let text = sentence.text
             
             var sentenceModel = DefaultSentenceViewModel(
                 id: index,

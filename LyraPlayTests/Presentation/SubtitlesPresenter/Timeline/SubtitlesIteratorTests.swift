@@ -26,40 +26,44 @@ class SubtitlesIteratorTests: XCTestCase {
     private func notSyncedSentence(at: TimeInterval) -> Subtitles.Sentence {
         return Subtitles.Sentence(
             startTime: at,
-            duration: 0,
-            text: .notSynced(text: "")
-        )
-    }
-    
-    private func syncItem(at: TimeInterval) -> Subtitles.SyncedItem {
-        return .init(
-            startTime: at,
-            duration: 0,
+            duration: nil,
             text: ""
         )
     }
     
-    private func syncItems(_ startingTimes: [TimeInterval]) -> [Subtitles.SyncedItem] {
-        return startingTimes.map { syncItem(at: $0) }
+    private func timeMark(at: TimeInterval) -> Subtitles.TimeMark {
+        
+        let text = ""
+        let dummyRange = (text.startIndex..<text.endIndex)
+        
+        return .init(
+            startTime: at,
+            duration: nil,
+            range: dummyRange
+        )
     }
     
     func getTestSubtitles() -> Subtitles {
+        
+        let dummyText = ""
+        let dummyRange = (dummyText.startIndex..<dummyText.endIndex)
         
         return Subtitles(sentences: [
             notSyncedSentence(at: 0.0),
             notSyncedSentence(at: 1.0),
             Subtitles.Sentence(
                 startTime: 2.0,
-                duration: 0,
-                text: .synced(items: [
-                    Subtitles.SyncedItem(startTime: 2.0, duration: 0, text: ""),
-                    Subtitles.SyncedItem(startTime: 2.2, duration: 0, text: "")
-                ])
+                duration: nil,
+                text: "",
+                timeMarks: [
+                    .init(startTime: 2.0, range: dummyRange),
+                    .init(startTime: 2.2, range: dummyRange)
+                ]
             ),
             Subtitles.Sentence(
                 startTime: 3.0,
-                duration: 0,
-                text: .synced(items: [])
+                duration: nil,
+                text: ""
             )
         ])
     }
@@ -117,15 +121,21 @@ class SubtitlesIteratorTests: XCTestCase {
     
     func testMoveToTheMostRecentWordSyncSentence() async throws {
         
-        let subtitles = Subtitles(sentences: [
-            notSyncedSentence(at: 0.0),
-            Subtitles.Sentence(
+        let expectedSentences: [Subtitles.Sentence] = [
+            .init(startTime: 0.0, text: ""),
+            .init(
                 startTime: 1.0,
-                duration: 0,
-                text: .synced(items: syncItems([1.1, 1.2]))
+                duration: nil,
+                text: "",
+                timeMarks: [
+                    timeMark(at: 1.1),
+                    timeMark(at: 1.2)
+                ]
             ),
-            notSyncedSentence(at: 2.0),
-        ])
+            .init(startTime: 2.0, text: ""),
+        ]
+        
+        let subtitles = Subtitles(sentences: expectedSentences)
         
         let sentenceIndex = 1
         let targetSentence = subtitles.sentences[sentenceIndex]
@@ -168,20 +178,14 @@ class SubtitlesIteratorTests: XCTestCase {
     
     func test_getNext_returnNextSentenceIfNoWords() {
         
-        let subtitles = Subtitles(sentences: [
-            notSyncedSentence(at: 0),
-            notSyncedSentence(at: 1),
-            Subtitles.Sentence(
-                startTime: 2,
-                duration: 0,
-                text: .synced(items: [])
-            ),
-            Subtitles.Sentence(
-                startTime: 3,
-                duration: 0,
-                text: .synced(items: [])
-            )
-        ])
+        let expectedSentences: [Subtitles.Sentence] = [
+            .init(startTime: 0.0, text: ""),
+            .init(startTime: 1, text: ""),
+            .init(startTime: 2, text: "", timeMarks: []),
+            .init(startTime: 3, text: "", timeMarks: []),
+        ]
+        
+        let subtitles = Subtitles(sentences: expectedSentences)
         
         
         let sut = createSUT(subtitles: subtitles)
@@ -216,8 +220,11 @@ class SubtitlesIteratorTests: XCTestCase {
         let subtitles = Subtitles(sentences: [
             Subtitles.Sentence(
                 startTime: 0,
-                duration: 0,
-                text: .synced(items: syncItems([1]))
+                duration: nil,
+                text: "",
+                timeMarks: [
+                    timeMark(at: 1)
+                ]
             ),
         ])
         
@@ -251,8 +258,11 @@ class SubtitlesIteratorTests: XCTestCase {
         let subtitles = Subtitles(sentences: [
             Subtitles.Sentence(
                 startTime: 1,
-                duration: 0,
-                text: .synced(items: syncItems([1]))
+                duration: nil,
+                text: "",
+                timeMarks: [
+                    timeMark(at: 1)
+                ]
             ),
         ])
         
@@ -285,13 +295,20 @@ class SubtitlesIteratorTests: XCTestCase {
         let subtitles = Subtitles(sentences: [
             Subtitles.Sentence(
                 startTime: 1,
-                duration: 0,
-                text: .synced(items: syncItems([1, 1.5]))
+                duration: nil,
+                text: "",
+                timeMarks: [
+                    timeMark(at: 1),
+                    timeMark(at: 1.5),
+                ]
             ),
             Subtitles.Sentence(
                 startTime: 2,
-                duration: 0,
-                text: .synced(items: syncItems([2.1]))
+                duration: nil,
+                text: "",
+                timeMarks: [
+                    timeMark(at: 2.1)
+                ]
             ),
         ])
         

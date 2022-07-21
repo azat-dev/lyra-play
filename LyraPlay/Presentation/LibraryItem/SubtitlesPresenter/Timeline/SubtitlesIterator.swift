@@ -13,9 +13,9 @@ import Foundation
 public struct SubtitlesItem {
     
     public var sentence: Subtitles.Sentence
-    public var word: Subtitles.SyncedItem?
+    public var word: Subtitles.TimeMark?
     
-    public init(sentence: Subtitles.Sentence, word: Subtitles.SyncedItem? = nil) {
+    public init(sentence: Subtitles.Sentence, word: Subtitles.TimeMark? = nil) {
         
         self.sentence = sentence
         self.word = word
@@ -61,19 +61,19 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         let sentence = sentences[position.sentence]
         
         guard
-            let wordIndex = position.word,
-            let words = getWords(sentence: sentence)
+            let timeMarkIndex = position.word,
+            let timeMarks = sentence.timeMarks
         else {
             return .init(sentence: sentence)
         }
         
-        guard wordIndex < words.count else {
+        guard timeMarkIndex < timeMarks.count else {
             return nil
         }
         
         return .init(
             sentence: sentence,
-            word: words[wordIndex]
+            word: timeMarks[timeMarkIndex]
         )
     }
     
@@ -112,15 +112,18 @@ extension DefaultSubtitlesIterator {
         
         let sentence = sentences[sentenceIndex]
         
-        switch sentence.text {
-        case .notSynced:
-            return nil
-
-        case .synced(items: let words):
-            return Self.searchRecentItem(
-                items: words.map { $0.startTime },
-                time: time
-            )
+        return sentence.timeMarks?.lastIndex { timeMark in
+            
+            guard timeMark.startTime <= time else {
+                return false
+            }
+            
+            if let duration = timeMark.duration {
+                
+                return time < (timeMark.startTime + duration)
+            }
+            
+            return true
         }
     }
     
@@ -142,18 +145,6 @@ extension DefaultSubtitlesIterator {
         return currentTime
     }
     
-
-    private func getWords(sentence: Subtitles.Sentence) -> [Subtitles.SyncedItem]? {
-    
-        switch sentence.text {
-        case .notSynced:
-            return nil
-            
-        case .synced(items: let items):
-            return items
-        }
-    }
-    
     public func getNextPosition() -> SubtitlesPosition? {
         
         guard let currentPosition = currentPosition else {
@@ -161,9 +152,9 @@ extension DefaultSubtitlesIterator {
             if let firstSentence = sentences.first {
                 
                 guard
-                    let words = getWords(sentence: firstSentence),
-                    let firstWord = words.first,
-                    firstWord.startTime == firstSentence.startTime
+                    let timeMarks = firstSentence.timeMarks,
+                    let firstTimeMark = timeMarks.first,
+                    firstTimeMark.startTime == firstSentence.startTime
                 else {
                     return .init(sentence: 0, word: nil)
                 }
@@ -177,8 +168,8 @@ extension DefaultSubtitlesIterator {
         let sentence = sentences[currentPosition.sentence]
         
         if
-            let words = getWords(sentence: sentence),
-            !words.isEmpty
+            let timeMarks = sentence.timeMarks,
+            !timeMarks.isEmpty
         {
             
             guard let currentWordIndex = currentPosition.word else {
@@ -189,11 +180,11 @@ extension DefaultSubtitlesIterator {
                 )
             }
             
-            let nextWordIndex = currentWordIndex + 1
-            if nextWordIndex < words.count {
+            let nextTimeMarkIndex = currentWordIndex + 1
+            if nextTimeMarkIndex < timeMarks.count {
                 return .init(
                     sentence: currentPosition.sentence,
-                    word: nextWordIndex
+                    word: nextTimeMarkIndex
                 )
             }
         }
@@ -205,10 +196,9 @@ extension DefaultSubtitlesIterator {
         }
 
         let nextSentence = sentences[nextSentenceIndex]
-        let nextSentenceWords = getWords(sentence: nextSentence)
         
         guard
-            let firstWordOfNextSentence = nextSentenceWords?.first
+            let firstTimeMarkOfNextSentence = nextSentence.timeMarks?.first
         else {
             return .init(
                 sentence: nextSentenceIndex,
@@ -218,7 +208,7 @@ extension DefaultSubtitlesIterator {
         
         return .init(
             sentence: nextSentenceIndex,
-            word: firstWordOfNextSentence.startTime == nextSentence.startTime ? 0 : nil
+            word: firstTimeMarkOfNextSentence.startTime == nextSentence.startTime ? 0 : nil
         )
     }
     

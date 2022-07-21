@@ -76,7 +76,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     func testLoad() async throws {
 
         let subtitles = Subtitles(sentences: [
-            .init(startTime: 0, duration: 0, text: .notSynced(text: ""))
+            .init(startTime: 0, duration: nil, text: "")
         ])
         
         let (_, stateSequence) = await loadAndObserve(
@@ -109,8 +109,8 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     func testPlaySentences() async throws {
         
         let subtitles = Subtitles(sentences: [
-            .init(startTime: 0, duration: 0, text: .notSynced(text: "")),
-            .init(startTime: 0.1, duration: 0, text: .notSynced(text: ""))
+            .init(startTime: 0, duration: nil, text: ""),
+            .init(startTime: 0.1, duration: nil, text: "")
         ])
         
         let (sut, stateSequence) = await loadAndObserve(
@@ -168,8 +168,8 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         let (text, components) = getTestText()
         
         let subtitles = Subtitles(sentences: [
-            .init(startTime: 0, duration: 0, text: .notSynced(text: text)),
-            .init(startTime: 0.1, duration: 0, text: .notSynced(text: text))
+            .init(startTime: 0, duration: nil, text: text),
+            .init(startTime: 0.1, duration: nil, text: text)
         ])
         
         let sut = createSUT(subtitles: subtitles)

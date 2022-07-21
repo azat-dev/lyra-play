@@ -100,7 +100,7 @@ class LoadSubtitlesUseCaseTests: XCTestCase {
         let trackId = UUID()
 
         let expectedSubtitles = Subtitles(sentences: [
-            .init(startTime: 0, duration: 0, text: .notSynced(text: "Test"))
+            .init(startTime: 0, duration: nil, text: "Test")
         ])
 
         let _ = await sut.subtitlesRepository.put(

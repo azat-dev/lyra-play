@@ -66,8 +66,6 @@ final public class DurationParser {
         }
         
         
-        let result = seconds + (milliseconds / 1000)
-        print("Parsed \(durationText) = \(seconds) \(milliseconds) \(result)")
-        return result
+        return (seconds * 1000 + milliseconds) / 1000
     }
 }

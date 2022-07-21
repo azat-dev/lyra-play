@@ -16,56 +16,42 @@ public struct Subtitles: Equatable {
         self.sentences = sentences
     }
 
-    public struct Sentence: Equatable {
+    public struct TimeMark: Equatable {
         
-        public var startTime: Double
-        public var duration: Double
-        public var text: SentenceText
+        public var startTime: TimeInterval
+        public var duration: TimeInterval?
+        public var range: Range<String.Index>
         
         public init(
-            startTime: Double,
-            duration: Double,
-            text: SentenceText
+            startTime: TimeInterval,
+            duration: TimeInterval? = nil,
+            range: Range<String.Index>
         ) {
             
             self.startTime = startTime
             self.duration = duration
-            self.text = text
-        }
-    }
-
-    public enum SentenceText: Equatable {
-        
-        case notSynced(text: String)
-        case synced(items: [SyncedItem])
-        
-        func getText() -> String {
-            
-            switch self {
-            case .notSynced(let text):
-                return text
-            case .synced(let items):
-                return items.map { $0.text }.joined(separator: "")
-            }
+            self.range = range
         }
     }
     
-    public struct SyncedItem: Equatable {
+    public struct Sentence: Equatable {
         
         public var startTime: Double
-        public var duration: Double
+        public var duration: Double?
         public var text: String
+        public var timeMarks: [TimeMark]?
         
         public init(
             startTime: Double,
-            duration: Double,
-            text: String
+            duration: Double? = nil,
+            text: String,
+            timeMarks: [TimeMark]? = nil
         ) {
             
             self.startTime = startTime
             self.duration = duration
             self.text = text
+            self.timeMarks = timeMarks
         }
-
     }
 }
