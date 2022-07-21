@@ -152,6 +152,8 @@
 		AACEA32F286A418600111565 /* FilePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA32E286A418600111565 /* FilePickerViewController.swift */; };
 		AAEE8A142889B6C7007E41F3 /* TextSplitterMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE8A132889B6C7007E41F3 /* TextSplitterMock.swift */; };
 		AAEE8A162889C2C6007E41F3 /* ProvideTranslationsForSubtitlesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE8A152889C2C6007E41F3 /* ProvideTranslationsForSubtitlesUseCaseTests.swift */; };
+		AAF0E8B32889EFF600A19E90 /* ProvideTranslationsForSubtitlesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF0E8B22889EFF600A19E90 /* ProvideTranslationsForSubtitlesUseCase.swift */; };
+		AAF0E8B52889F0A800A19E90 /* SubtitlesTranslation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF0E8B42889F0A800A19E90 /* SubtitlesTranslation.swift */; };
 		AAF2CFE42876CA370003FCF7 /* ManagedSubtitles+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF2CFE32876CA370003FCF7 /* ManagedSubtitles+Mapping.swift */; };
 		AAF2CFE82876CC650003FCF7 /* CoreDataSubtitlesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF2CFE72876CC650003FCF7 /* CoreDataSubtitlesRepository.swift */; };
 		AAF2EEB8287DC3EA00894F71 /* ActionTimerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF2EEB7287DC3EA00894F71 /* ActionTimerTests.swift */; };
@@ -333,6 +335,8 @@
 		AACEA32E286A418600111565 /* FilePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePickerViewController.swift; sourceTree = "<group>"; };
 		AAEE8A132889B6C7007E41F3 /* TextSplitterMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextSplitterMock.swift; sourceTree = "<group>"; };
 		AAEE8A152889C2C6007E41F3 /* ProvideTranslationsForSubtitlesUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvideTranslationsForSubtitlesUseCaseTests.swift; sourceTree = "<group>"; };
+		AAF0E8B22889EFF600A19E90 /* ProvideTranslationsForSubtitlesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvideTranslationsForSubtitlesUseCase.swift; sourceTree = "<group>"; };
+		AAF0E8B42889F0A800A19E90 /* SubtitlesTranslation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesTranslation.swift; sourceTree = "<group>"; };
 		AAF2CFE32876CA370003FCF7 /* ManagedSubtitles+Mapping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ManagedSubtitles+Mapping.swift"; sourceTree = "<group>"; };
 		AAF2CFE72876CC650003FCF7 /* CoreDataSubtitlesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataSubtitlesRepository.swift; sourceTree = "<group>"; };
 		AAF2EEB7287DC3EA00894F71 /* ActionTimerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionTimerTests.swift; sourceTree = "<group>"; };
@@ -413,6 +417,7 @@
 				AA0D3F84287626D1006717B9 /* SubtitlesInfo.swift */,
 				AA369EA8288464BA00FDAD27 /* TextComponent.swift */,
 				AACCE800288814F8002EA7C5 /* TranslationItem.swift */,
+				AAF0E8B42889F0A800A19E90 /* SubtitlesTranslation.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -761,6 +766,7 @@
 				AA0930C3287349DA00E62DB3 /* CurrentPlayerStateUseCase.swift */,
 				AA2895AC287742FC00B168C4 /* ImportSubtitlesUseCase.swift */,
 				AA66FD2B287A0A07005AD524 /* LoadSubtitlesUseCase.swift */,
+				AAF0E8B22889EFF600A19E90 /* ProvideTranslationsForSubtitlesUseCase.swift */,
 			);
 			path = UseCases;
 			sourceTree = "<group>";
@@ -1143,6 +1149,7 @@
 				AA040E0128834F04000CFC26 /* SubtitlesPresenterView+Styles.swift in Sources */,
 				AA3BAB28286CC646005EE01E /* AudioPlayerService.swift in Sources */,
 				AA1ACC2C286317A2000EEDD5 /* TagsParser.swift in Sources */,
+				AAF0E8B32889EFF600A19E90 /* ProvideTranslationsForSubtitlesUseCase.swift in Sources */,
 				AA731CCC2870C2560044412F /* LoadTrackUseCase.swift in Sources */,
 				AA0F69B6287EF74500BD13DB /* Scheduler.swift in Sources */,
 				AA35E585286AA5E10086DB28 /* LocalFilesRepository.swift in Sources */,
@@ -1167,6 +1174,7 @@
 				AACCE80328881551002EA7C5 /* DictionaryItem.swift in Sources */,
 				AA0F69B0287EDF7A00BD13DB /* TimeMarksIterator.swift in Sources */,
 				AA0F69BF287F58A600BD13DB /* RowCell.swift in Sources */,
+				AAF0E8B52889F0A800A19E90 /* SubtitlesTranslation.swift in Sources */,
 				AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */,
 				AAF2CFE82876CC650003FCF7 /* CoreDataSubtitlesRepository.swift in Sources */,
 				AA3BAB1B286C7225005EE01E /* PlayerState.swift in Sources */,

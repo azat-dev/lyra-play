@@ -18,8 +18,11 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
     
     func createSUT() -> SUT {
         
-        let useCase = ProvideTranslationsForSubtitlesUseCase()
         let dictionaryRepository = DictionaryRepositoryMock()
+        
+        let useCase = DefaultProvideTranslationsForSubtitlesUseCase(
+            dictionaryRepository: dictionaryRepository
+        )
         
         detectMemoryLeak(instance: useCase)
         
@@ -36,7 +39,8 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         let mediaId = UUID()
         
         let subtitles = Subtitles(sentences: [])
-        await sut.useCase.load(for: mediaId, subtitles: subtitles)
+        let resultPrepare = await sut.useCase.prepare(for: mediaId, subtitles: subtitles)
+        try AssertResultSucceded(resultPrepare)
         
         let resultTranslations = await sut.useCase.fetchTranslations(words: [])
         let items = try AssertResultSucceded(resultTranslations)
@@ -103,7 +107,8 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
             )
         ])
         
-        await sut.useCase.prepare(for: mediaId, subtitles: subtitles)
+        let resultPrepare = await sut.useCase.prepare(for: mediaId, subtitles: subtitles)
+        try AssertResultSucceded(resultPrepare)
         
         let resultTranslations = await sut.useCase.fetchTranslations(words: [])
         let items = try AssertResultSucceded(resultTranslations)
@@ -112,10 +117,10 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         
         for expectedTranslation in expectedTranslations {
             
-            let item = items[expectedTranslation.originalText, default: nil]
+            let item = items[expectedTranslation.originalText]
             
-            XCTAssertNotNil(item)
-            XCTAssertEqual(item, expectedTranslation)
+            let unwrappedItem = try XCTUnwrap(item)
+            XCTAssertEqual(.init(from: unwrappedItem), expectedTranslation)
         }
     }
 }
@@ -168,10 +173,31 @@ final class DictionaryRepositoryMock: DictionaryRepository {
 
 // MARK: - Helpers
 
-struct ExpectedTranslation {
+struct ExpectedTranslation: Equatable {
     
     var dictionaryItemId: UUID
     var originalText: String
     var generalizedText: String
     var translation: String
+    
+    init(
+        dictionaryItemId: UUID,
+        originalText: String,
+        generalizedText: String,
+        translation: String
+    ) {
+        
+        self.dictionaryItemId = dictionaryItemId
+        self.originalText = originalText
+        self.generalizedText = generalizedText
+        self.translation = translation
+    }
+
+    init(from item: SubtitlesTranslation) {
+        
+        self.dictionaryItemId = item.dictionaryItemId
+        self.originalText = item.originalText
+        self.generalizedText = item.generalizedText
+        self.translation = item.translation
+    }
 }
