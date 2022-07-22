@@ -135,6 +135,7 @@
 		AA9BEB0B28661DCE0028DF8E /* CoreDataAudioLibraryRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB0A28661DCE0028DF8E /* CoreDataAudioLibraryRepositoryTests.swift */; };
 		AAC8D1D3287B26AA00FAB35E /* LoadSubtitlesUseCaseMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC8D1D2287B26AA00FAB35E /* LoadSubtitlesUseCaseMock.swift */; };
 		AAC8E0F0288B10AF001A274A /* LemmatizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC8E0EF288B10AF001A274A /* LemmatizerTests.swift */; };
+		AAC8E0F3288B140A001A274A /* Lemmatizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC8E0F2288B140A001A274A /* Lemmatizer.swift */; };
 		AACCE801288814F8002EA7C5 /* TranslationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACCE800288814F8002EA7C5 /* TranslationItem.swift */; };
 		AACCE80328881551002EA7C5 /* DictionaryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACCE80228881551002EA7C5 /* DictionaryItem.swift */; };
 		AACCE806288815C0002EA7C5 /* ManagedDictionaryItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACCE804288815C0002EA7C5 /* ManagedDictionaryItem+CoreDataClass.swift */; };
@@ -319,6 +320,7 @@
 		AA9BEB0A28661DCE0028DF8E /* CoreDataAudioLibraryRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataAudioLibraryRepositoryTests.swift; sourceTree = "<group>"; };
 		AAC8D1D2287B26AA00FAB35E /* LoadSubtitlesUseCaseMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadSubtitlesUseCaseMock.swift; sourceTree = "<group>"; };
 		AAC8E0EF288B10AF001A274A /* LemmatizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LemmatizerTests.swift; sourceTree = "<group>"; };
+		AAC8E0F2288B140A001A274A /* Lemmatizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lemmatizer.swift; sourceTree = "<group>"; };
 		AACCE800288814F8002EA7C5 /* TranslationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationItem.swift; sourceTree = "<group>"; };
 		AACCE80228881551002EA7C5 /* DictionaryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryItem.swift; sourceTree = "<group>"; };
 		AACCE804288815C0002EA7C5 /* ManagedDictionaryItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedDictionaryItem+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -823,7 +825,7 @@
 		AA9BEB072865DBCD0028DF8E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				AA369EA62884646200FDAD27 /* TextSplitter.swift */,
+				AAC8E0F1288B13F8001A274A /* TextAnalyzer */,
 				AA1ACC2B286317A2000EEDD5 /* TagsParser.swift */,
 				AAFB979C2875CF58007A76A7 /* Subtitles */,
 			);
@@ -847,6 +849,15 @@
 				AA35E57F286AA07F0086DB28 /* LocalFilesRepositoryTests.swift */,
 			);
 			path = Repositories;
+			sourceTree = "<group>";
+		};
+		AAC8E0F1288B13F8001A274A /* TextAnalyzer */ = {
+			isa = PBXGroup;
+			children = (
+				AA369EA62884646200FDAD27 /* TextSplitter.swift */,
+				AAC8E0F2288B140A001A274A /* Lemmatizer.swift */,
+			);
+			path = TextAnalyzer;
 			sourceTree = "<group>";
 		};
 		AACEA3132869A31900111565 /* Mocks */ = {
@@ -1182,6 +1193,7 @@
 				AAF2CFE82876CC650003FCF7 /* CoreDataSubtitlesRepository.swift in Sources */,
 				AA3BAB1B286C7225005EE01E /* PlayerState.swift in Sources */,
 				AAFB979F2875CFA9007A76A7 /* SubtitlesParser.swift in Sources */,
+				AAC8E0F3288B140A001A274A /* Lemmatizer.swift in Sources */,
 				AA3166C8287C066000348781 /* SubtitlesIterator.swift in Sources */,
 				AA0930C4287349DA00E62DB3 /* CurrentPlayerStateUseCase.swift in Sources */,
 				AA1D7E802876E71F0095E490 /* ManagedSubtitles+CoreDataClass.swift in Sources */,

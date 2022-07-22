@@ -39,7 +39,19 @@ class LemmatizerTests: XCTestCase {
         
         let result = sut.lemmatize(text: text)
         
-        let expectedItems: [ExpectedLemma] = []
+        let expectedItems: [ExpectedLemma] = [
+            
+            .init(lemma: "what", text: "What"),
+            .init(lemma: "be", text: "is"),
+            .init(lemma: "she", text: "she"),
+            .init(lemma: "do", text: "doing"),
+            
+            .init(lemma: "she", text: "She"),
+            .init(lemma: "speak", text: "speaks"),
+            .init(lemma: "English", text: "English"),
+            .init(lemma: "very", text: "very"),
+            .init(lemma: "well", text: "well"),
+        ]
         
         XCTAssertEqual(result.map { .init(from: $0, text: text) }, expectedItems)
     }
@@ -61,6 +73,6 @@ struct ExpectedLemma: Equatable {
     init(from item: LemmaItem, text: String) {
         
         self.lemma = item.lemma
-        self.text = text[item.range]
+        self.text = String(text[item.range])
     }
 }
