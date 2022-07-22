@@ -63,6 +63,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         XCTAssertNotNil(savedItem.createdAt)
         XCTAssertNil(savedItem.updatedAt)
         XCTAssertEqual(savedItem.originalText, item.originalText)
+        XCTAssertEqual(savedItem.lemma, item.lemma)
         XCTAssertEqual(savedItem.language, item.language)
         XCTAssertEqual(item.translations.count, item.translations.count)
         XCTAssertEqual(item.translations, item.translations)
@@ -76,6 +77,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         XCTAssertEqual(receivedItem.createdAt, savedItem.createdAt)
         XCTAssertNil(receivedItem.updatedAt)
         XCTAssertEqual(receivedItem.originalText, item.originalText)
+        XCTAssertEqual(receivedItem.lemma, item.lemma)
         XCTAssertEqual(receivedItem.language, item.language)
         XCTAssertEqual(receivedItem.translations.count, item.translations.count)
         XCTAssertEqual(receivedItem.translations, item.translations)
@@ -100,21 +102,15 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
         let sut = createSUT()
         
-        let item = anyNewDictionaryItem()
+        let item = anyNewDictionaryItem(suffix: "1")
         
         let putResult = await sut.putItem(item)
         let savedItem = try AssertResultSucceded(putResult)
         
         let itemId = savedItem.id!
 
-        var updatedItemData = item
+        var updatedItemData = anyNewDictionaryItem(suffix: "2")
         updatedItemData.id = itemId
-        updatedItemData.originalText = "updatedText"
-        updatedItemData.language = "Japanese"
-        updatedItemData.translations = [
-            anyTranslation(text: "1"),
-            anyTranslation(text: "2"),
-        ]
         
         
         let updatedItemResult = await sut.putItem(updatedItemData)
@@ -195,7 +191,8 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
             .init(lemma: "you"),
         ]
         
-        let items = await sut.searchItems(with: itemsFilters)
+        let result = await sut.searchItems(with: itemsFilters)
+        let items = try AssertResultSucceded(result)
         
         XCTAssertTrue(items.isEmpty)
     }
@@ -204,12 +201,12 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
         let sut = createSUT()
         
-        let numberOfItems = 3
+        let numberOfItems = 10
         let expectedLemmas = ["lemma0", "lemma1"]
         
         let itemsFilters: [DictionaryItemFilter] = [
-            .init(lemma: "do"),
-            .init(lemma: "you"),
+            .init(lemma: "lemma0"),
+            .init(lemma: "lemma1"),
         ]
         
         for index in 0..<numberOfItems {
@@ -219,13 +216,12 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
             try AssertResultSucceded(putResult)
         }
         
-        
-        let searchResult = await sut.searchItems(lemmas: expectedLemmas)
+        let searchResult = await sut.searchItems(with: itemsFilters)
         let items = try AssertResultSucceded(searchResult)
         
-        XCTAssertEqual(items.count, expectedLemmas)
+        XCTAssertEqual(items.count, expectedLemmas.count)
         
-        let receivedLemmas = items.keys.map { $0.lemma }
-        XCTAssertEqual(receivedLemmas, expectedLemmas.sorted())
+        let receivedLemmas = items.map { $0.lemma }
+        XCTAssertEqual(receivedLemmas.sorted(), expectedLemmas.sorted())
     }
 }

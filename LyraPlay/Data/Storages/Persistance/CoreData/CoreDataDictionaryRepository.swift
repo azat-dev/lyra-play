@@ -165,4 +165,63 @@ public final class CoreDataDictionaryRepository: DictionaryRepository {
         
         return .success(())
     }
+    
+    private static func predicate(for itemsFilters: [DictionaryItemFilter]) -> NSPredicate {
+        
+        let predicates = itemsFilters.map { itemFilter -> NSPredicate in
+            
+            var arguments: [Any] = []
+            var template = ""
+            
+            let appendTemplate = {
+                
+                if !template.isEmpty {
+                    
+                    template += " AND "
+                }
+                
+                template += "%K = %@"
+            }
+            
+            if let lemma = itemFilter.lemma {
+
+                appendTemplate()
+                arguments.append(#keyPath(ManagedDictionaryItem.lemma))
+                arguments.append(lemma)
+            }
+            
+            return NSPredicate(format: "(\(template))", argumentArray: arguments)
+        }
+        
+        return NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
+    }
+    
+    public func searchItems(with itemsFilters: [DictionaryItemFilter]) async -> Result<[DictionaryItem], DictionaryRepositoryError> {
+        
+        let predicate = Self.predicate(for: itemsFilters)
+        
+        let action: CoreDataStore.ActionCallBack<[ManagedDictionaryItem]> = { context in
+            
+            let request = ManagedDictionaryItem.fetchRequest()
+            
+            request.fetchLimit = itemsFilters.count
+            request.predicate = predicate
+            request.resultType = .managedObjectResultType
+            
+            return try context.fetch(request)
+        }
+
+        var managedItems: [ManagedDictionaryItem]
+        
+        do {
+            
+            managedItems = try coreDataStore.performSync(action)
+            
+        } catch {
+            return .failure(.internalError(error))
+        }
+        
+        let items = managedItems.map { $0.toDomain() }
+        return .success(items)
+    }
 }
