@@ -12,19 +12,19 @@ public struct SubtitlesTranslation {
     
     public var dictionaryItemId: UUID
     public var originalText: String
-    public var generalizedText: String
+    public var lemma: String
     public var translation: String
     
     public init(
         dictionaryItemId: UUID,
         originalText: String,
-        generalizedText: String,
+        lemma: String,
         translation: String
     ) {
         
         self.dictionaryItemId = dictionaryItemId
         self.originalText = originalText
-        self.generalizedText = generalizedText
+        self.lemma = lemma
         self.translation = translation
     }
 }

@@ -76,7 +76,7 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
             return ExpectedTranslation(
                 dictionaryItemId: dictionaryIds[index],
                 originalText: "original\(index)",
-                generalizedText: "generalized\(index)",
+                lemma: "lemma\(index)",
                 translation: "translation\(index)"
             )
         }
@@ -178,19 +178,19 @@ struct ExpectedTranslation: Equatable {
     
     var dictionaryItemId: UUID
     var originalText: String
-    var generalizedText: String
+    var lemma: String
     var translation: String
     
     init(
         dictionaryItemId: UUID,
         originalText: String,
-        generalizedText: String,
+        lemma: String,
         translation: String
     ) {
         
         self.dictionaryItemId = dictionaryItemId
         self.originalText = originalText
-        self.generalizedText = generalizedText
+        self.lemma = lemma
         self.translation = translation
     }
 
@@ -198,7 +198,7 @@ struct ExpectedTranslation: Equatable {
         
         self.dictionaryItemId = item.dictionaryItemId
         self.originalText = item.originalText
-        self.generalizedText = item.generalizedText
+        self.lemma = item.lemma
         self.translation = item.translation
     }
 }
