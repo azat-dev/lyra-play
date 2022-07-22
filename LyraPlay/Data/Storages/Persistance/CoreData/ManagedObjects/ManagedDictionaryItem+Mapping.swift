@@ -78,6 +78,7 @@ extension ManagedDictionaryItem {
             createdAt: createdAt,
             updatedAt: updatedAt,
             originalText: originalText!,
+            lemma: lemma!,
             language: language!,
             translations: TranslationItemDTO.decode(from: translations)
         )
@@ -88,6 +89,7 @@ extension ManagedDictionaryItem {
         createdAt = source.createdAt
         updatedAt = source.updatedAt
         originalText = source.originalText
+        lemma = source.lemma
         language = source.language
         translations = TranslationItemDTO.encode(from: source.translations)
     }

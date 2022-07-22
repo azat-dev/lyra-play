@@ -20,6 +20,7 @@ extension ManagedDictionaryItem {
     @NSManaged public var id: UUID?
     @NSManaged public var language: String?
     @NSManaged public var originalText: String?
+    @NSManaged public var lemma: String?
     @NSManaged public var updatedAt: Date?
     @NSManaged public var translations: Data?
 

@@ -55,6 +55,7 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
             createdAt: nil,
             updatedAt: nil,
             originalText: originalText,
+            lemma: originalText,
             language: "",
             translations: [
                 TranslationItem(text: "translation")

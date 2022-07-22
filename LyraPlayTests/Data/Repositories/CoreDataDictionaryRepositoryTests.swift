@@ -33,6 +33,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         return DictionaryItem(
             id: nil,
             originalText: "originalText",
+            lemma: "lemma",
             language: "English",
             translations: [
                 anyTranslation(text: "text1"),
