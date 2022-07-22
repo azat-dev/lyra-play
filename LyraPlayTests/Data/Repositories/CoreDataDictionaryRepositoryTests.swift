@@ -28,16 +28,16 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         )
     }
     
-    private func anyNewDictionaryItem() -> DictionaryItem {
+    private func anyNewDictionaryItem(suffix: String = "") -> DictionaryItem {
         
         return DictionaryItem(
             id: nil,
-            originalText: "originalText",
-            lemma: "lemma",
-            language: "English",
+            originalText: "originalText" + suffix,
+            lemma: "lemma" + suffix,
+            language: "English" + suffix,
             translations: [
-                anyTranslation(text: "text1"),
-                anyTranslation(text: "text2")
+                anyTranslation(text: "text1" + suffix),
+                anyTranslation(text: "text2" + suffix)
             ]
         )
     }
@@ -184,5 +184,48 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
             XCTFail("Wrong error type \(error)")
             return
         }
+    }
+    
+    func testSearchNotExistingItems() async throws {
+        
+        let sut = createSUT()
+        
+        let itemsFilters: [DictionaryItemFilter] = [
+            .init(lemma: "do"),
+            .init(lemma: "you"),
+        ]
+        
+        let items = await sut.searchItems(with: itemsFilters)
+        
+        XCTAssertTrue(items.isEmpty)
+    }
+    
+    func testSearchItems() async throws {
+        
+        let sut = createSUT()
+        
+        let numberOfItems = 3
+        let expectedLemmas = ["lemma0", "lemma1"]
+        
+        let itemsFilters: [DictionaryItemFilter] = [
+            .init(lemma: "do"),
+            .init(lemma: "you"),
+        ]
+        
+        for index in 0..<numberOfItems {
+    
+            let dictionaryItem = anyNewDictionaryItem(suffix: String(index))
+            let putResult = await sut.putItem(dictionaryItem)
+            try AssertResultSucceded(putResult)
+        }
+        
+        
+        let searchResult = await sut.searchItems(lemmas: expectedLemmas)
+        let items = try AssertResultSucceded(searchResult)
+        
+        XCTAssertEqual(items.count, expectedLemmas)
+        
+        let receivedLemmas = items.keys.map { $0.lemma }
+        XCTAssertEqual(receivedLemmas, expectedLemmas.sorted())
     }
 }
