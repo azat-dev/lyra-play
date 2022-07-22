@@ -53,7 +53,7 @@
 		AA369EA428845F2700FDAD27 /* TextSplitterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA369EA328845F2700FDAD27 /* TextSplitterTests.swift */; };
 		AA369EA72884646200FDAD27 /* TextSplitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA369EA62884646200FDAD27 /* TextSplitter.swift */; };
 		AA369EA9288464BA00FDAD27 /* TextComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA369EA8288464BA00FDAD27 /* TextComponent.swift */; };
-		AA3785992885EFD300FF3B66 /* HighlightWordsLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3785982885EFD300FF3B66 /* HighlightWordsLayoutManager.swift */; };
+		AA3785992885EFD300FF3B66 /* EnhancedLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3785982885EFD300FF3B66 /* EnhancedLayoutManager.swift */; };
 		AA3B59C82886EA0700F68AF8 /* CoreDataDictionaryRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3B59C72886EA0700F68AF8 /* CoreDataDictionaryRepositoryTests.swift */; };
 		AA3B59CA2887011400F68AF8 /* DictionaryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3B59C92887011400F68AF8 /* DictionaryRepository.swift */; };
 		AA3B59D02887035900F68AF8 /* ManagedDictionaryItem+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3B59CF2887035900F68AF8 /* ManagedDictionaryItem+Mapping.swift */; };
@@ -232,7 +232,7 @@
 		AA369EA328845F2700FDAD27 /* TextSplitterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextSplitterTests.swift; sourceTree = "<group>"; };
 		AA369EA62884646200FDAD27 /* TextSplitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextSplitter.swift; sourceTree = "<group>"; };
 		AA369EA8288464BA00FDAD27 /* TextComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextComponent.swift; sourceTree = "<group>"; };
-		AA3785982885EFD300FF3B66 /* HighlightWordsLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightWordsLayoutManager.swift; sourceTree = "<group>"; };
+		AA3785982885EFD300FF3B66 /* EnhancedLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedLayoutManager.swift; sourceTree = "<group>"; };
 		AA3B59C72886EA0700F68AF8 /* CoreDataDictionaryRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataDictionaryRepositoryTests.swift; sourceTree = "<group>"; };
 		AA3B59C92887011400F68AF8 /* DictionaryRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryRepository.swift; sourceTree = "<group>"; };
 		AA3B59CF2887035900F68AF8 /* ManagedDictionaryItem+Mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedDictionaryItem+Mapping.swift"; sourceTree = "<group>"; };
@@ -388,7 +388,7 @@
 			children = (
 				AA0F69BE287F58A600BD13DB /* RowCell.swift */,
 				AA0F69C2287F5E8600BD13DB /* RowCell+Styles.swift */,
-				AA3785982885EFD300FF3B66 /* HighlightWordsLayoutManager.swift */,
+				AA3785982885EFD300FF3B66 /* EnhancedLayoutManager.swift */,
 			);
 			path = RowCell;
 			sourceTree = "<group>";
@@ -1214,7 +1214,7 @@
 				AA9BEB002865D4540028DF8E /* ImportAudioFileUseCase.swift in Sources */,
 				AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */,
 				AA4F9703286E32870087F45A /* PlayerViewControllerFactory.swift in Sources */,
-				AA3785992885EFD300FF3B66 /* HighlightWordsLayoutManager.swift in Sources */,
+				AA3785992885EFD300FF3B66 /* EnhancedLayoutManager.swift in Sources */,
 				AA41508E286B647D004549F4 /* AudioFilesBrowserCell+Layout.swift in Sources */,
 				AA3BAB2E286CC79F005EE01E /* DefaultAudioPlayerService.swift in Sources */,
 				AAF2EEC0287DF83F00894F71 /* ActionTimerFactory.swift in Sources */,

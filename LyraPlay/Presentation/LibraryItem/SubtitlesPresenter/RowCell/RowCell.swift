@@ -13,7 +13,8 @@ final class RowCell: UITableViewCell, NSLayoutManagerDelegate {
     public static let reuseIdentifier = "RowCell"
     
     private var textView: UITextView!
-    private var textLayoutManager = HighlightWordsLayoutManager()
+    private var textLayoutManager = EnhancedLayoutManager()
+    private var highlights: Observable<HighLights?> = Observable(nil)
     
     public var viewModel: SentenceViewModel! {
 
@@ -55,8 +56,6 @@ extension RowCell {
     
     func bind(to viewModel: SentenceViewModel) {
         
-        let wordHighlightId = "wordHighlight"
-        
         textView.text = viewModel.text
         
         viewModel.isActive.observe(on: self, queue: .main) { [weak self] isActive in
@@ -71,18 +70,12 @@ extension RowCell {
             }
             
             guard let activeRange = activeRange else {
-                self.textLayoutManager.removeHighlight(id: wordHighlightId)
+                self.highlights.value = nil
                 return
             }
-
             
-            self.textLayoutManager.putHighlight(
-                highlight: .init(
-                    id: wordHighlightId,
-                    range: NSRange(activeRange, in: viewModel.text),
-                    color: .red
-                )
-            )
+            let nsRange = NSRange(activeRange, in: viewModel.text)
+            self.highlights.value = [nsRange: UIColor.red]
         }
     }
 }
@@ -170,6 +163,7 @@ extension RowCell {
         let textStorage = NSTextStorage()
         let textContainer = NSTextContainer(size: .zero)
         
+        textLayoutManager.highlights = highlights
         textStorage.addLayoutManager(self.textLayoutManager)
         
         textLayoutManager.addTextContainer(textContainer)
