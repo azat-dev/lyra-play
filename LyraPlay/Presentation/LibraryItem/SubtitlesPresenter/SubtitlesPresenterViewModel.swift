@@ -20,9 +20,9 @@ public struct SubtitlesPosition {
     public var sentenceIndex: Int
     public var timeMarkIndex: Int?
     
-    public init(sentence: Int, timeMarkIndex: Int? = nil) {
+    public init(sentenceIndex: Int, timeMarkIndex: Int? = nil) {
         
-        self.sentenceIndex = sentence
+        self.sentenceIndex = sentenceIndex
         self.timeMarkIndex = timeMarkIndex
     }
 }
