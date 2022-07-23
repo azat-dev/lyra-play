@@ -17,13 +17,13 @@ public struct SubtitlesPresentationState {
 
 public struct SubtitlesPosition {
     
-    public var sentence: Int
-    public var word: Int?
+    public var sentenceIndex: Int
+    public var timeMarkIndex: Int?
     
-    public init(sentence: Int, word: Int? = nil) {
+    public init(sentence: Int, timeMarkIndex: Int? = nil) {
         
-        self.sentence = sentence
-        self.word = word
+        self.sentenceIndex = sentence
+        self.timeMarkIndex = timeMarkIndex
     }
 }
 
@@ -148,12 +148,12 @@ extension DefaultSubtitlesPresenterViewModel {
         
             self.updatePrevPosition()
             
-            if let currentSentence = currentPosition?.sentence {
+            if let currentSentence = currentPosition?.sentenceIndex {
                 self.updateCurrentPosition(sentence: currentSentence)
             }
 
             var newState = self.state.value
-            newState?.activeSentenceIndex = currentPosition?.sentence
+            newState?.activeSentenceIndex = currentPosition?.sentenceIndex
             
             self.state.value = newState
         }

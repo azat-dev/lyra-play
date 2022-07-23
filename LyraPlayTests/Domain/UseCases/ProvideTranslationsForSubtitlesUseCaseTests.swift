@@ -170,6 +170,11 @@ final class DictionaryRepositoryMock: DictionaryRepository {
         items.remove(at: index)
         return .success(())
     }
+    
+    func searchItems(with: [DictionaryItemFilter]) async -> Result<[DictionaryItem], DictionaryRepositoryError> {
+        
+        return .success([])
+    }
 }
 
 // MARK: - Helpers

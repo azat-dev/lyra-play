@@ -86,7 +86,7 @@ class SubtitlesIteratorTests: XCTestCase {
             let success = sut.move(at: timeMark)
             XCTAssertNotNil(success)
             
-            indexSequence.fulfill(with: sut.currentPosition?.sentence)
+            indexSequence.fulfill(with: sut.currentPosition?.sentenceIndex)
         }
         
         indexSequence.wait(timeout: 3, enforceOrder: true)
@@ -106,13 +106,13 @@ class SubtitlesIteratorTests: XCTestCase {
         let sut = createSUT(subtitles: subtitles)
         
         let _ = sut.move(at: sentence.startTime - 1.0)
-        XCTAssertNil(sut.currentPosition?.word)
+        XCTAssertNil(sut.currentPosition?.timeMarkIndex)
         
         let _ = sut.move(at: sentence.startTime)
-        XCTAssertNil(sut.currentPosition?.word)
+        XCTAssertNil(sut.currentPosition?.timeMarkIndex)
         
         let _ = sut.move(at: sentence.startTime + 1)
-        XCTAssertNil(sut.currentPosition?.word)
+        XCTAssertNil(sut.currentPosition?.timeMarkIndex)
     }
     
     func testMoveToTheMostRecentWordSyncSentence() async throws {
@@ -137,28 +137,28 @@ class SubtitlesIteratorTests: XCTestCase {
         let sut = createSUT(subtitles: subtitles)
         
         let _ = sut.move(at: targetSentence.startTime - 0.5)
-        XCTAssertEqual(sut.currentPosition?.sentence, 0)
-        XCTAssertNil(sut.currentPosition?.word)
+        XCTAssertEqual(sut.currentPosition?.sentenceIndex, 0)
+        XCTAssertNil(sut.currentPosition?.timeMarkIndex)
         
         let _ = sut.move(at: targetSentence.startTime)
-        XCTAssertEqual(sut.currentPosition?.sentence, 1)
-        XCTAssertNil(sut.currentPosition?.word)
+        XCTAssertEqual(sut.currentPosition?.sentenceIndex, 1)
+        XCTAssertNil(sut.currentPosition?.timeMarkIndex)
         
         let _ = sut.move(at: targetSentence.startTime + 0.1)
-        XCTAssertEqual(sut.currentPosition?.sentence, 1)
-        XCTAssertEqual(sut.currentPosition?.word, 0)
+        XCTAssertEqual(sut.currentPosition?.sentenceIndex, 1)
+        XCTAssertEqual(sut.currentPosition?.timeMarkIndex, 0)
         
         let _ = sut.move(at: targetSentence.startTime + 0.15)
-        XCTAssertEqual(sut.currentPosition?.sentence, 1)
-        XCTAssertEqual(sut.currentPosition?.word, 0)
+        XCTAssertEqual(sut.currentPosition?.sentenceIndex, 1)
+        XCTAssertEqual(sut.currentPosition?.timeMarkIndex, 0)
         
         let _ = sut.move(at: targetSentence.startTime + 0.2)
-        XCTAssertEqual(sut.currentPosition?.sentence, 1)
-        XCTAssertEqual(sut.currentPosition?.word, 1)
+        XCTAssertEqual(sut.currentPosition?.sentenceIndex, 1)
+        XCTAssertEqual(sut.currentPosition?.timeMarkIndex, 1)
         
         let _ = sut.move(at: targetSentence.startTime + 100)
-        XCTAssertEqual(sut.currentPosition?.sentence, 2)
-        XCTAssertEqual(sut.currentPosition?.word, nil)
+        XCTAssertEqual(sut.currentPosition?.sentenceIndex, 2)
+        XCTAssertEqual(sut.currentPosition?.timeMarkIndex, nil)
     }
     
     func test_getNext_InEmptyList() async throws {
@@ -201,8 +201,8 @@ class SubtitlesIteratorTests: XCTestCase {
 
             sequence.fulfill(with: [
                 time,
-                sut.currentPosition?.sentence.double,
-                sut.currentPosition?.word?.double
+                sut.currentPosition?.sentenceIndex.double,
+                sut.currentPosition?.timeMarkIndex?.double
             ])
         }
 
@@ -237,8 +237,8 @@ class SubtitlesIteratorTests: XCTestCase {
 
             sequence.fulfill(with: [
                 time,
-                sut.currentPosition?.sentence.double,
-                sut.currentPosition?.word?.double
+                sut.currentPosition?.sentenceIndex.double,
+                sut.currentPosition?.timeMarkIndex?.double
             ])
         }
 
@@ -272,8 +272,8 @@ class SubtitlesIteratorTests: XCTestCase {
 
             sequence.fulfill(with: [
                 time,
-                sut.currentPosition?.sentence.double,
-                sut.currentPosition?.word?.double
+                sut.currentPosition?.sentenceIndex.double,
+                sut.currentPosition?.timeMarkIndex?.double
             ])
         }
 
@@ -317,8 +317,8 @@ class SubtitlesIteratorTests: XCTestCase {
 
             sequence.fulfill(with: [
                 time,
-                sut.currentPosition?.sentence.double,
-                sut.currentPosition?.word?.double
+                sut.currentPosition?.sentenceIndex.double,
+                sut.currentPosition?.timeMarkIndex?.double
             ])
         }
 

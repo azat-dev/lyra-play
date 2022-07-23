@@ -9,16 +9,15 @@ import Foundation
 
 // MARK: - Interfaces
 
-
 public struct SubtitlesItem {
     
-    public var sentence: Subtitles.Sentence
-    public var word: Subtitles.TimeMark?
+    public var sentenceIndex: Subtitles.Sentence
+    public var timeMarkInsideSentence: Subtitles.TimeMark?
     
-    public init(sentence: Subtitles.Sentence, word: Subtitles.TimeMark? = nil) {
+    public init(sentence: Subtitles.Sentence, timeMarkInsideSentence: Subtitles.TimeMark? = nil) {
         
-        self.sentence = sentence
-        self.word = word
+        self.sentenceIndex = sentence
+        self.timeMarkInsideSentence = timeMarkInsideSentence
     }
 }
 
@@ -58,10 +57,10 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
             return nil
         }
 
-        let sentence = sentences[position.sentence]
+        let sentence = sentences[position.sentenceIndex]
         
         guard
-            let timeMarkIndex = position.word,
+            let timeMarkIndex = position.timeMarkIndex,
             let timeMarks = sentence.timeMarks
         else {
             return .init(sentence: sentence)
@@ -73,13 +72,13 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         
         return .init(
             sentence: sentence,
-            word: timeMarks[timeMarkIndex]
+            timeMarkInsideSentence: timeMarks[timeMarkIndex]
         )
     }
     
     private func getTime(item: SubtitlesItem?) -> TimeInterval? {
         
-        return item?.word?.startTime ?? item?.sentence.startTime
+        return item?.timeMarkInsideSentence?.startTime ?? item?.sentenceIndex.startTime
     }
     
     private func getTime(position: SubtitlesPosition?) -> TimeInterval? {
@@ -139,7 +138,7 @@ extension DefaultSubtitlesIterator {
         let recentWord = searchRecentWord(at: time, in: recentSentence)
         currentPosition = .init(
             sentence: recentSentence,
-            word: recentWord
+            timeMarkIndex: recentWord
         )
         
         return currentTime
@@ -156,40 +155,40 @@ extension DefaultSubtitlesIterator {
                     let firstTimeMark = timeMarks.first,
                     firstTimeMark.startTime == firstSentence.startTime
                 else {
-                    return .init(sentence: 0, word: nil)
+                    return .init(sentence: 0, timeMarkIndex: nil)
                 }
 
-                return .init(sentence: 0, word: 0)
+                return .init(sentence: 0, timeMarkIndex: 0)
             }
             
             return nil
         }
         
-        let sentence = sentences[currentPosition.sentence]
+        let sentence = sentences[currentPosition.sentenceIndex]
         
         if
             let timeMarks = sentence.timeMarks,
             !timeMarks.isEmpty
         {
             
-            guard let currentWordIndex = currentPosition.word else {
+            guard let currentWordIndex = currentPosition.timeMarkIndex else {
 
                 return .init(
-                    sentence: currentPosition.sentence,
-                    word: 0
+                    sentence: currentPosition.sentenceIndex,
+                    timeMarkIndex: 0
                 )
             }
             
             let nextTimeMarkIndex = currentWordIndex + 1
             if nextTimeMarkIndex < timeMarks.count {
                 return .init(
-                    sentence: currentPosition.sentence,
-                    word: nextTimeMarkIndex
+                    sentence: currentPosition.sentenceIndex,
+                    timeMarkIndex: nextTimeMarkIndex
                 )
             }
         }
         
-        let nextSentenceIndex = currentPosition.sentence + 1
+        let nextSentenceIndex = currentPosition.sentenceIndex + 1
         
         guard nextSentenceIndex < sentences.count else {
             return nil
@@ -202,13 +201,13 @@ extension DefaultSubtitlesIterator {
         else {
             return .init(
                 sentence: nextSentenceIndex,
-                word: nil
+                timeMarkIndex: nil
             )
         }
         
         return .init(
             sentence: nextSentenceIndex,
-            word: firstTimeMarkOfNextSentence.startTime == nextSentence.startTime ? 0 : nil
+            timeMarkIndex: firstTimeMarkOfNextSentence.startTime == nextSentence.startTime ? 0 : nil
         )
     }
     
