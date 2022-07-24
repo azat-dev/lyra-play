@@ -400,7 +400,6 @@
 		AA190E70287AC694000514AB /* SubtitlesPresenter */ = {
 			isa = PBXGroup;
 			children = (
-				AAF3E35628831E8300ECBFA3 /* Timeline */,
 				AA0F69BD287F587F00BD13DB /* RowCell */,
 				AA190E71287AC6AC000514AB /* SubtitlesPresenterViewModel.swift */,
 				AA0F69BB287F4F0D00BD13DB /* SubtitlesPresenterView.swift */,
@@ -825,9 +824,10 @@
 		AA9BEB072865DBCD0028DF8E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				AAC8E0F1288B13F8001A274A /* TextAnalyzer */,
-				AA1ACC2B286317A2000EEDD5 /* TagsParser.swift */,
 				AAFB979C2875CF58007A76A7 /* Subtitles */,
+				AA1ACC2B286317A2000EEDD5 /* TagsParser.swift */,
+				AAC8E0F1288B13F8001A274A /* TextAnalyzer */,
+				AAF3E35628831E8300ECBFA3 /* Timeline */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
