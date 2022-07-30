@@ -24,21 +24,17 @@ import LyraPlay
 
         let sut = createSUT()
 
-        let testState = CurrentSubtitlesState(
-            isPlaying: true,
-            position: .init(sentenceIndex: 1, timeMarkIndex: 2)
-        )
+        let testState = CurrentSubtitlesState(isPlaying: true, position: .init(sentenceIndex: 1, timeMarkIndex: 2))
 
         let expectedStateItems: [ExpectedCurrentSubtitlesState] = [
             .init(isNil: false, isPlaying: false, position: nil),
             .init(from: testState)
         ]
-        
         let stateSequence = self.expectSequence(expectedStateItems)
 
-        stateSequence.observe(sut.useCase.state)
+        stateSequence.observe(sut.state, mapper: { .init(from: $0) })
 
-        sut.useCase.updateState(state: testState)
+        sut.updateState(state: testState)
 
         stateSequence.wait(timeout: 5, enforceOrder: true)
     }
@@ -49,8 +45,8 @@ import LyraPlay
 struct ExpectedCurrentSubtitlesState: Equatable {
 
     var isNil: Bool
-    var isPlaying: Bool?
-    var position: ExpectedSubtitlesPosition?
+    var isPlaying: Bool? = nil
+    var position: ExpectedSubtitlesPosition? = nil
 
     init(
         isNil: Bool,
@@ -72,15 +68,18 @@ struct ExpectedCurrentSubtitlesState: Equatable {
         }
 
         self.isPlaying = source.isPlaying
-        self.position = ExpectedSubtitlesPosition(from: source.position)
+
+        if let position = source.position {
+            self.position = ExpectedSubtitlesPosition(from: position)
+        }
     }
 }
 
 struct ExpectedSubtitlesPosition: Equatable {
 
     var isNil: Bool
-    var sentenceIndex: Int?
-    var timeMarkIndex: Int?
+    var sentenceIndex: Int? = nil
+    var timeMarkIndex: Int? = nil
 
     init(
         isNil: Bool,
@@ -103,20 +102,5 @@ struct ExpectedSubtitlesPosition: Equatable {
 
         self.sentenceIndex = source.sentenceIndex
         self.timeMarkIndex = source.timeMarkIndex
-    }
-}
-
-public struct CurrentSubtitlesState {
-
-    public var isPlaying: Bool
-    public var position: SubtitlesPosition
-
-    public init(
-        isPlaying: Bool,
-        position: SubtitlesPosition
-    ) {
-
-        self.isPlaying = isPlaying
-        self.position = position
     }
 }

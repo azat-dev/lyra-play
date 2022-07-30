@@ -15,18 +15,6 @@ public struct SubtitlesPresentationState {
     public var activeSentenceIndex: Int?
 }
 
-public struct SubtitlesPosition {
-    
-    public var sentenceIndex: Int
-    public var timeMarkIndex: Int?
-    
-    public init(sentenceIndex: Int, timeMarkIndex: Int? = nil) {
-        
-        self.sentenceIndex = sentenceIndex
-        self.timeMarkIndex = timeMarkIndex
-    }
-}
-
 public protocol SubtitlesPresenterViewModelOutput {
 
     var state: Observable<SubtitlesPresentationState?> { get }
