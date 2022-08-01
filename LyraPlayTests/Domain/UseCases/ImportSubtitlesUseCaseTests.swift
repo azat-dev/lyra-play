@@ -58,7 +58,7 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         
         
         subtitlesParser.resolve = { _ in
-            return .success(.init(sentences: []))
+            return .success(.init(duration: 0, sentences: []))
         }
         
         let importResult = await useCase.importFile(
@@ -102,7 +102,7 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         let trackId = UUID()
         let testFileName = "test.lrc"
         
-        subtitlesParser.resolve = { _ in .success(.init(sentences: [])) }
+        subtitlesParser.resolve = { _ in .success(.init(duration: 0, sentences: [])) }
         
         let _ = await useCase.importFile(
             trackId: trackId,

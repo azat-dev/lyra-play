@@ -38,7 +38,7 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         
         let mediaId = UUID()
         
-        let subtitles = Subtitles(sentences: [])
+        let subtitles = Subtitles(duration: 0, sentences: [])
         let resultPrepare = await sut.useCase.prepare(for: mediaId, subtitles: subtitles)
         try AssertResultSucceded(resultPrepare)
         
@@ -100,13 +100,16 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
             TextComponent(type: .word, range: text.range(of: item.originalText)!)
         }
         
-        let subtitles = Subtitles(sentences: [
-            .init(
-                startTime: 0,
-                text: text,
-                components: components
-            )
-        ])
+        let subtitles = Subtitles(
+            duration: 0.1,
+            sentences: [
+                .init(
+                    startTime: 0,
+                    text: text,
+                    components: components
+                )
+            ]
+        )
         
         let resultPrepare = await sut.useCase.prepare(for: mediaId, subtitles: subtitles)
         try AssertResultSucceded(resultPrepare)

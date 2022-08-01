@@ -242,7 +242,7 @@ public class LyricsParser: SubtitlesParser {
             }
         }
         
-        let result = Subtitles(sentences: sentences)
+        let result = Subtitles(duration: 0, sentences: sentences)
         return .success(result)
     }
 }

@@ -55,7 +55,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
 
     func testLoadEmpty() async throws {
         
-        let subtitles = Subtitles(sentences: [])
+        let subtitles = Subtitles(duration: 0, sentences: [])
         
         let (_, stateSequence) = await loadAndObserve(
             subtitles: subtitles,
@@ -70,9 +70,12 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     
     func testLoad() async throws {
 
-        let subtitles = Subtitles(sentences: [
-            .init(startTime: 0, duration: nil, text: "", components: [])
-        ])
+        let subtitles = Subtitles(
+            duration: 1,
+            sentences: [
+                .init(startTime: 0, duration: nil, text: "", components: [])
+            ]
+        )
         
         let (_, stateSequence) = await loadAndObserve(
             subtitles: subtitles,
@@ -87,7 +90,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     
     func testPlayEmpty() async throws {
         
-        let subtitles = Subtitles(sentences: [])
+        let subtitles = Subtitles(duration: 0, sentences: [])
         
         let (sut, stateSequence) = await loadAndObserve(
             subtitles: subtitles,
@@ -103,10 +106,13 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     
     func testPlaySentences() async throws {
         
-        let subtitles = Subtitles(sentences: [
-            .init(startTime: 0, duration: nil, text: "", components: []),
-            .init(startTime: 0.1, duration: nil, text: "", components: [])
-        ])
+        let subtitles = Subtitles(
+            duration: 0.2,
+            sentences: [
+                .init(startTime: 0, duration: nil, text: "", components: []),
+                .init(startTime: 0.1, duration: nil, text: "", components: [])
+            ]
+        )
         
         let (sut, stateSequence) = await loadAndObserve(
             subtitles: subtitles,
@@ -162,10 +168,13 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
 
         let (text, components) = getTestText()
         
-        let subtitles = Subtitles(sentences: [
-            .init(startTime: 0, duration: nil, text: text, components: components),
-            .init(startTime: 0.1, duration: nil, text: text, components: components)
-        ])
+        let subtitles = Subtitles(
+            duration: 0.2,
+            sentences: [
+                .init(startTime: 0, duration: nil, text: text, components: components),
+                .init(startTime: 0.1, duration: nil, text: text, components: components)
+            ]
+        )
         
         let sut = createSUT(subtitles: subtitles)
         
