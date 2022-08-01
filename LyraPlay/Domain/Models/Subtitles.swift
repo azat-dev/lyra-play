@@ -10,9 +10,12 @@ import Foundation
 
 public struct Subtitles: Equatable {
 
+    public var duration: TimeInterval
     public var sentences: [Sentence]
     
-    public init(sentences: [Sentence]) {
+    public init(duration: TimeInterval, sentences: [Sentence]) {
+        
+        self.duration = duration
         self.sentences = sentences
     }
 
