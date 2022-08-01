@@ -9,6 +9,21 @@ import Foundation
 
 // MARK: - Interfaces
 
+public struct SubtitlesPosition {
+
+    public var sentenceIndex: Int
+    public var timeMarkIndex: Int?
+
+    public init(
+        sentenceIndex: Int,
+        timeMarkIndex: Int?
+    ) {
+
+        self.sentenceIndex = sentenceIndex
+        self.timeMarkIndex = timeMarkIndex
+    }
+}
+
 public struct SubtitlesPresentationState {
     
     public var numberOfSentences: Int

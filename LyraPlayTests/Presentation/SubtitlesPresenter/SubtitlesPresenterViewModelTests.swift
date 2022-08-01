@@ -245,7 +245,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
 
 // MARK: - Mocks
 
-fileprivate final class SchedulerMock: Scheduler {
+final class SchedulerMock: Scheduler {
 
     func start(at: TimeInterval, block: @escaping (TimeInterval) -> Void) {
         
