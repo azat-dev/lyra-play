@@ -36,7 +36,8 @@ class LyricsParserTests: XCTestCase {
         let result = await sut.parser.parse(text)
         let parsedSubtitles = try AssertResultSucceded(result)
         
-        XCTAssertEqual(parsedSubtitles.sentences.count, 0)
+        let expectedSubtitles = ExpectedSubtitles(duration: 0, sentences: [])
+        AssertEqualReadable(.init(from: parsedSubtitles), expectedSubtitles)
     }
     
     func testParseNormalLyrics() async throws {
@@ -62,6 +63,7 @@ class LyricsParserTests: XCTestCase {
         let parsedSubtitles = ExpectedSubtitles(from: subtitlesResult)
         
         let expecteSubtitles = ExpectedSubtitles(
+            duration: 2 * 60 + 58,
             sentences: [
                 .init(
                     startTime: 12,
@@ -81,12 +83,7 @@ class LyricsParserTests: XCTestCase {
             ]
         )
         
-        XCTAssertEqual(parsedSubtitles.sentences.count, expecteSubtitles.sentences.count)
-        
-        for (index, expectedSentence) in expecteSubtitles.sentences.enumerated() {
-            
-            XCTAssertEqual(parsedSubtitles.sentences[index], expectedSentence)
-        }
+        AssertEqualReadable(parsedSubtitles, expecteSubtitles)
     }
     
     func testParseEnhancedLyrics() async throws {
@@ -121,6 +118,7 @@ class LyricsParserTests: XCTestCase {
         
         
         let expecteSubtitles = ExpectedSubtitles(
+            duration: 2 * 60 + 58,
             sentences: [
                 .init(
                     startTime: 0,
@@ -187,16 +185,20 @@ class LyricsParserTests: XCTestCase {
 
 // MARK: - Helpers
 
-struct ExpectedSubtitles {
+struct ExpectedSubtitles: Equatable {
 
+    var duration: TimeInterval
     var sentences: [ExpectedSentence]
 
-    init(sentences: [ExpectedSentence]) {
+    init(duration: TimeInterval, sentences: [ExpectedSentence]) {
+        
+        self.duration = duration
         self.sentences = sentences
     }
     
     init(from subtitles: Subtitles) {
         
+        self.duration = subtitles.duration
         self.sentences = subtitles.sentences.map { .init(from: $0) }
     }
 }

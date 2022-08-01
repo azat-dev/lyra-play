@@ -22,7 +22,7 @@ public class LyricsParser: SubtitlesParser {
     private enum ParsedLine {
         
         case sentence(Subtitles.Sentence)
-        case tag
+        case lengthTag(duration: TimeInterval)
         case empty
     }
     
@@ -171,18 +171,9 @@ public class LyricsParser: SubtitlesParser {
         return (cleanedText, timeMarks)
     }
     
-    private func parseLine(_ line: String) async -> ParsedLine {
+    private func parseLineWithText(match: NSTextCheckingResult, line: String) async -> ParsedLine {
         
-        let range = NSRange((line.startIndex..<line.endIndex), in: line)
-        
-        let regex = try! NSRegularExpression(pattern: #"^\s*\[(?<duration>\d+:[0-5][0-9](\.(\d){1,3})?)\](?<text>.*)"#)
-        
-        let match = regex.firstMatch(in: line, range: range)
-        
-        guard let match = match else {
-            return .empty
-        }
-        
+
         let durationRange = match.range(withName: "duration")
         let textRange = match.range(withName: "text")
         
@@ -223,10 +214,61 @@ public class LyricsParser: SubtitlesParser {
         )
     }
     
+    private func parseTagLine(match: NSTextCheckingResult, line: String) async -> ParsedLine {
+        
+        let valueRange = match.range(withName: "tagText")
+        let tagNameRange = match.range(withName: "tagName")
+        
+        guard
+            let tagSubstring = line.substring(with: tagNameRange),
+            let valueSubstring = line.substring(with: valueRange)
+        else {
+            return .empty
+        }
+        
+        if tagSubstring == "length" {
+           
+            let parser = DurationParser()
+            
+            guard
+                let duration = parser.parse(String(valueSubstring))
+            else {
+                return .empty
+            }
+            
+            return .lengthTag(duration: duration)
+        }
+        
+        return .empty
+    }
+    
+    private func parseLine(_ line: String) async -> ParsedLine {
+        
+        let range = NSRange((line.startIndex..<line.endIndex), in: line)
+        
+        let tagRegex = try! NSRegularExpression(pattern: #"^\s*\[(?<tagName>[a-zA-Z][^:]*)\s*:\s*(?<tagText>.*)\s*\]"#)
+        
+        let textLineRegex = try! NSRegularExpression(pattern: #"^\s*\[(?<duration>\d+:[0-5][0-9](\.(\d){1,3})?)\](?<text>.*)"#)
+        
+        if let tagMatch = tagRegex.firstMatch(in: line, range: range) {
+            
+            return await parseTagLine(match: tagMatch, line: line)
+        }
+        
+        if let textMatch = textLineRegex.firstMatch(in: line, range: range) {
+            
+            return await parseLineWithText(match: textMatch, line: line)
+        }
+        
+        return .empty
+    }
+    
     public func parse(_ text: String) async -> Result<Subtitles, SubtitlesParserError> {
         
+        var duration: TimeInterval = 0.0
         var sentences = [Subtitles.Sentence]()
         let splittedText = text.split(separator: "\n")
+        
         
         for line in splittedText {
             
@@ -235,14 +277,15 @@ public class LyricsParser: SubtitlesParser {
             switch parsedLine {
             case .sentence(let sentence):
                 sentences.append(sentence)
-            case .tag:
+            case .lengthTag(duration: let durationFromTag):
+                duration = durationFromTag
                 break
             case .empty:
                 break
             }
         }
         
-        let result = Subtitles(duration: 0, sentences: sentences)
+        let result = Subtitles(duration: duration, sentences: sentences)
         return .success(result)
     }
 }

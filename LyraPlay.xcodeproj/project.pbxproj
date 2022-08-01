@@ -41,6 +41,7 @@
 		AA2895AB28772B0100B168C4 /* ImportSubtitlesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2895AA28772B0100B168C4 /* ImportSubtitlesUseCaseTests.swift */; };
 		AA2895AD287742FC00B168C4 /* ImportSubtitlesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2895AC287742FC00B168C4 /* ImportSubtitlesUseCase.swift */; };
 		AA2A6DDD2897C27200AE5E75 /* SubtitlesIteratorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2A6DDC2897C27200AE5E75 /* SubtitlesIteratorFactory.swift */; };
+		AA2A6DE128984A9200AE5E75 /* AssertEqualReadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2A6DE028984A9200AE5E75 /* AssertEqualReadable.swift */; };
 		AA2BE88B2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE88A2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift */; };
 		AA2BE88D2866EF35005C1AAD /* CoreDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE88C2866EF35005C1AAD /* CoreDataStore.swift */; };
 		AA3166C6287C016800348781 /* SubtitlesIteratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3166C5287C016800348781 /* SubtitlesIteratorTests.swift */; };
@@ -224,6 +225,7 @@
 		AA2895AA28772B0100B168C4 /* ImportSubtitlesUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportSubtitlesUseCaseTests.swift; sourceTree = "<group>"; };
 		AA2895AC287742FC00B168C4 /* ImportSubtitlesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportSubtitlesUseCase.swift; sourceTree = "<group>"; };
 		AA2A6DDC2897C27200AE5E75 /* SubtitlesIteratorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesIteratorFactory.swift; sourceTree = "<group>"; };
+		AA2A6DE028984A9200AE5E75 /* AssertEqualReadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssertEqualReadable.swift; sourceTree = "<group>"; };
 		AA2BE88A2866EE59005C1AAD /* CoreDataAudioFilesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataAudioFilesRepository.swift; sourceTree = "<group>"; };
 		AA2BE88C2866EF35005C1AAD /* CoreDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStore.swift; sourceTree = "<group>"; };
 		AA3166C5287C016800348781 /* SubtitlesIteratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesIteratorTests.swift; sourceTree = "<group>"; };
@@ -548,6 +550,7 @@
 			children = (
 				AA415083286B0987004549F4 /* AssertResult.swift */,
 				AA252C9B2874E302001B7AEE /* XCTestCase+MemoryLeakDetection.swift */,
+				AA2A6DE028984A9200AE5E75 /* AssertEqualReadable.swift */,
 				AA5802182879A53700655B4A /* XCTestCase+Sequence.swift */,
 				AA0F69B1287EE64300BD13DB /* Int+Double.swift */,
 				AA0930C528739B2000E62DB3 /* AssertSequence.swift */,
@@ -1272,6 +1275,7 @@
 				AA66FD2A287A089F005AD524 /* SubtitlesRepositoryMock.swift in Sources */,
 				AA252C9C2874E302001B7AEE /* XCTestCase+MemoryLeakDetection.swift in Sources */,
 				AA731CD22870D25C0044412F /* LibraryItemViewModelTests.swift in Sources */,
+				AA2A6DE128984A9200AE5E75 /* AssertEqualReadable.swift in Sources */,
 				AA252C9728744481001B7AEE /* LoadTrackUseCaseMock.swift in Sources */,
 				AA190E6F287ABC9C000514AB /* SubtitlesPresenterViewModelTests.swift in Sources */,
 				AA7B0D81287234F70067DDB5 /* CurrentPlayerStateUseCaseTests.swift in Sources */,
