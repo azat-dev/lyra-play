@@ -52,8 +52,7 @@ class AssertSequence<T: Equatable> {
         
         testCase.wait(for: [expectation], timeout: timeout, enforceOrder: enforceOrder)
         
-        XCTAssertEqual(receivedValues.count, expectedValues.count, file: file, line: line)
-        XCTAssertEqual(receivedValues, expectedValues, file: file, line: line)
+        AssertEqualReadable(receivedValues, expectedValues, file: file, line: line)
     }
     
     func fulfill(with value: T, file: StaticString = #filePath, line: UInt = #line) {

@@ -548,12 +548,12 @@
 		AA415082286B0979004549F4 /* TestUtils */ = {
 			isa = PBXGroup;
 			children = (
-				AA415083286B0987004549F4 /* AssertResult.swift */,
-				AA252C9B2874E302001B7AEE /* XCTestCase+MemoryLeakDetection.swift */,
 				AA2A6DE028984A9200AE5E75 /* AssertEqualReadable.swift */,
-				AA5802182879A53700655B4A /* XCTestCase+Sequence.swift */,
-				AA0F69B1287EE64300BD13DB /* Int+Double.swift */,
+				AA415083286B0987004549F4 /* AssertResult.swift */,
 				AA0930C528739B2000E62DB3 /* AssertSequence.swift */,
+				AA0F69B1287EE64300BD13DB /* Int+Double.swift */,
+				AA252C9B2874E302001B7AEE /* XCTestCase+MemoryLeakDetection.swift */,
+				AA5802182879A53700655B4A /* XCTestCase+Sequence.swift */,
 			);
 			path = TestUtils;
 			sourceTree = "<group>";
