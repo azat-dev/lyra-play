@@ -11,7 +11,7 @@ import Foundation
 
 public protocol SubtitlesIteratorFactory {
     
-    func create(for subtitles: Subtitles) -> SubtitlesIterator
+    func create(for subtitles: Subtitles) -> TimeMarksIterator
 }
 
 // MARK: - Implementations
