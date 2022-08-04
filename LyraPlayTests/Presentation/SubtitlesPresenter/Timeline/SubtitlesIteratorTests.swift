@@ -10,19 +10,19 @@ import XCTest
 import LyraPlay
 
 class SubtitlesIteratorTests: XCTestCase {
-    
+
     typealias SUT = SubtitlesIterator
-    
+
     func createSUT(subtitles: Subtitles) -> SUT {
-        
+
         let subtitlesIterator = DefaultSubtitlesIterator(
             subtitles: subtitles
         )
         detectMemoryLeak(instance: subtitlesIterator)
-        
+
         return subtitlesIterator
     }
-    
+
     private func anySentence(at: TimeInterval, timeMarks: [Subtitles.TimeMark]? = nil) -> Subtitles.Sentence {
         return Subtitles.Sentence(
             startTime: at,
@@ -32,311 +32,210 @@ class SubtitlesIteratorTests: XCTestCase {
             components: []
         )
     }
-    
+
     private func timeMark(at: TimeInterval) -> Subtitles.TimeMark {
-        
+
         let text = ""
         let dummyRange = (text.startIndex..<text.endIndex)
-        
+
         return .init(
             startTime: at,
             duration: nil,
             range: dummyRange
         )
     }
-    
+
     func getTestSubtitles() -> Subtitles {
-        
+
         let dummyText = ""
         let dummyRange = (dummyText.startIndex..<dummyText.endIndex)
-        
+
         return Subtitles(
             duration: 3.5,
             sentences: [
                 anySentence(at: 0.0),
-                anySentence(at: 1.0),
-                anySentence(
-                    at: 2.0,
-                    timeMarks: [
-                        .init(startTime: 2.0, range: dummyRange),
-                        .init(startTime: 2.2, range: dummyRange)
-                    ]
-                ),
-                anySentence(at: 3.0)
-            ]
-        )
-    }
-    
-    func testMoveToTheMostRecentPositionInEmptyList() async throws {
-        
-        let subtitles = Subtitles(duration: 0, sentences: [])
-        let sut = createSUT(subtitles: subtitles)
-        
-        let result = sut.move(at: 10)
-        XCTAssertNil(result)
-    }
-    
-    func testMoveToTheMostRecentSentenceNotEmptyList() async throws {
-        
-        let subtitles = getTestSubtitles()
-        let sut = createSUT(subtitles: subtitles)
-        
-        let timeMarks = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
-        let indexSequence = expectSequence([0, 0, 1, 1, 2, 2, 3, 3, 3] as [Int?])
-        
-        for timeMark in timeMarks {
-            
-            let success = sut.move(at: timeMark)
-            XCTAssertNotNil(success)
-            
-            indexSequence.fulfill(with: sut.currentPosition?.sentenceIndex)
-        }
-        
-        indexSequence.wait(timeout: 3, enforceOrder: true)
-    }
-    
-    func testMoveToTheMostRecentWordNotSyncSentence() async throws {
-        
-        let subtitles = Subtitles(
-            duration: 3.0,
-            sentences: [
-                anySentence(at: 0.0),
-                anySentence(at: 1.0),
                 anySentence(at: 2.0),
+                anySentence(
+                    at: 3.0,
+                    timeMarks: [
+                        .init(startTime: 3.0, range: dummyRange),
+                        .init(startTime: 3.2, range: dummyRange)
+                    ]
+                ),
+                anySentence(
+                    at: 3.0,
+                    timeMarks: [
+                        .init(startTime: 3.1, range: dummyRange)
+                    ]
+                )
             ]
         )
-        
-        let sentenceIndex = 1
-        let sentence = subtitles.sentences[sentenceIndex]
-        
-        let sut = createSUT(subtitles: subtitles)
-        
-        let _ = sut.move(at: sentence.startTime - 1.0)
-        XCTAssertNil(sut.currentPosition?.timeMarkIndex)
-        
-        let _ = sut.move(at: sentence.startTime)
-        XCTAssertNil(sut.currentPosition?.timeMarkIndex)
-        
-        let _ = sut.move(at: sentence.startTime + 1)
-        XCTAssertNil(sut.currentPosition?.timeMarkIndex)
     }
     
-    func testMoveToTheMostRecentWordSyncSentence() async throws {
-        
-        let expectedSentences: [Subtitles.Sentence] = [
-            anySentence(at: 0.0),
-            anySentence(
-                at: 1.0,
-                timeMarks: [
-                    timeMark(at: 1.1),
-                    timeMark(at: 1.2)
-                ]
-            ),
-            anySentence(at: 2.0)
-        ]
-        
-        let subtitles = Subtitles(duration: 3.0, sentences: expectedSentences)
-        
-        let sentenceIndex = 1
-        let targetSentence = subtitles.sentences[sentenceIndex]
-        
+    func test_getNext(
+        subtitles: Subtitles,
+        expectedItems: [TimeInterval?],
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+
         let sut = createSUT(subtitles: subtitles)
+        var receivedItems = [TimeInterval?]()
         
-        let _ = sut.move(at: targetSentence.startTime - 0.5)
-        XCTAssertEqual(sut.currentPosition?.sentenceIndex, 0)
-        XCTAssertNil(sut.currentPosition?.timeMarkIndex)
+        while true {
+            
+            let prevState = ExpectedSubtitlesIteratorOutput(from: sut)
+            let time = sut.getNext()
+            
+            AssertEqualReadable(.init(from: sut), prevState)
+            let _ = sut.next()
+            
+            
+            receivedItems.append(time)
+            
+            if time == nil {
+                break
+            }
+        }
         
-        let _ = sut.move(at: targetSentence.startTime)
-        XCTAssertEqual(sut.currentPosition?.sentenceIndex, 1)
-        XCTAssertNil(sut.currentPosition?.timeMarkIndex)
-        
-        let _ = sut.move(at: targetSentence.startTime + 0.1)
-        XCTAssertEqual(sut.currentPosition?.sentenceIndex, 1)
-        XCTAssertEqual(sut.currentPosition?.timeMarkIndex, 0)
-        
-        let _ = sut.move(at: targetSentence.startTime + 0.15)
-        XCTAssertEqual(sut.currentPosition?.sentenceIndex, 1)
-        XCTAssertEqual(sut.currentPosition?.timeMarkIndex, 0)
-        
-        let _ = sut.move(at: targetSentence.startTime + 0.2)
-        XCTAssertEqual(sut.currentPosition?.sentenceIndex, 1)
-        XCTAssertEqual(sut.currentPosition?.timeMarkIndex, 1)
-        
-        let _ = sut.move(at: targetSentence.startTime + 100)
-        XCTAssertEqual(sut.currentPosition?.sentenceIndex, 2)
-        XCTAssertEqual(sut.currentPosition?.timeMarkIndex, nil)
+        AssertEqualReadable(receivedItems, expectedItems, file: file, line: line)
     }
     
-    func test_getNext_InEmptyList() async throws {
- 
+    func test_getNext__with_empty_subtitle() async throws {
+
         let subtitles = Subtitles(duration: 0, sentences: [])
-        let sut = createSUT(subtitles: subtitles)
-        
-        let result = sut.getNext()
-        XCTAssertNil(result)
+        test_getNext(
+            subtitles: subtitles,
+            expectedItems: [
+                0,
+                nil
+            ]
+        )
     }
     
-    func test_getNext_returnNextSentenceIfNoWords() {
+    func test_getNext__receive_end_time_at_the_end() async throws {
         
-        let expectedSentences: [Subtitles.Sentence] = [
-            anySentence(at: 0.0),
+        let subtitles = Subtitles(duration: 10, sentences: [])
+        test_getNext(
+            subtitles: subtitles,
+            expectedItems: [
+                0,
+                10,
+                nil
+            ]
+        )
+    }
+    
+    func test_getNext__not_empty_subtitles() async throws {
+
+        let subtitles = Subtitles(duration: 10, sentences: [
             anySentence(at: 1),
-            anySentence(at: 2, timeMarks: []),
-            anySentence(at: 3, timeMarks: []),
-        ]
-        
-        let subtitles = Subtitles(duration: 4, sentences: expectedSentences)
-        
-        
-        let sut = createSUT(subtitles: subtitles)
-        
-        let sequence = expectSequence([
-            [0.0, 0, nil],
-            [1, 1, nil],
-            [2.0, 2, nil],
-            [3.0, 3, nil],
-            nil
         ])
+        let sut = createSUT(subtitles: subtitles)
 
-        while !sequence.isCompleted {
-            
-            guard let time = sut.next() else {
-                sequence.fulfill(with: nil)
-                break
-            }
-
-            sequence.fulfill(with: [
-                time,
-                sut.currentPosition?.sentenceIndex.double,
-                sut.currentPosition?.timeMarkIndex?.double
-            ])
-        }
-
-        sequence.wait(timeout: 1, enforceOrder: true)
+        let prevState = ExpectedSubtitlesIteratorOutput(from: sut)
+        let result = sut.getNext()
+        
+        XCTAssertEqual(result, 0)
+        AssertEqualReadable(.init(from: sut), prevState)
     }
     
-    func test_getNext_receiveEmptyFirstWordIfTimeDoesntMatch() {
-        
-        let subtitles = Subtitles(
-            duration: 2,
-            sentences: [
-                anySentence(
-                    at: 0,
-                    timeMarks: [
-                        timeMark(at: 1)
-                    ]
-                ),
-            ]
-        )
-        
-        let sut = createSUT(subtitles: subtitles)
-        
-        let sequence = expectSequence([
-            [0.0, 0, nil],
-            [1.0, 0, 0],
-            nil
-        ])
+    func test_next(
+        subtitles: Subtitles,
+        expectedItems: [ExpectedSubtitlesIteratorOutput],
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
 
-        while !sequence.isCompleted {
+        let sut = createSUT(subtitles: subtitles)
+        var receivedItems = [ExpectedSubtitlesIteratorOutput]()
+        
+        while true {
             
-            guard let time = sut.next() else {
-                sequence.fulfill(with: nil)
+            let item = sut.next()
+            receivedItems.append(.init(from: sut))
+            
+            if item == nil {
                 break
             }
-
-            sequence.fulfill(with: [
-                time,
-                sut.currentPosition?.sentenceIndex.double,
-                sut.currentPosition?.timeMarkIndex?.double
-            ])
         }
-
-        sequence.wait(timeout: 1, enforceOrder: true)
-    }
-
-    func test_getNext_receiveFirstWordIfTimeMatch() {
         
-        let subtitles = Subtitles(
-            duration: 2,
-            sentences: [
-                anySentence(
-                    at: 1,
-                    timeMarks: [
-                        timeMark(at: 1)
-                    ]
-                ),
-            ]
-        )
-        
-        let sut = createSUT(subtitles: subtitles)
-        
-        let sequence = expectSequence([
-            [1.0, 0, 0] as [Double?],
-            nil
-        ])
-
-        while !sequence.isCompleted {
-            
-            guard let time = sut.next() else {
-                sequence.fulfill(with: nil)
-                break
-            }
-
-            sequence.fulfill(with: [
-                time,
-                sut.currentPosition?.sentenceIndex.double,
-                sut.currentPosition?.timeMarkIndex?.double
-            ])
-        }
-
-        sequence.wait(timeout: 1, enforceOrder: true)
+        AssertEqualReadable(receivedItems, expectedItems, file: file, line: line)
     }
     
-    func test_getNext_IterateOverSyncedWords() {
-        
-        let subtitles = Subtitles(
-            duration: 3,
-            sentences: [
-                anySentence(
-                    at: 1,
-                    timeMarks: [
-                        timeMark(at: 1),
-                        timeMark(at: 1.5),
-                    ]
-                ),
-                anySentence(
-                    at: 2,
-                    timeMarks: [
-                        timeMark(at: 2.1)
-                    ]
-                ),
+    func test_next__with_empty_subtitles() async throws {
+
+        let subtitles = Subtitles(duration: 0, sentences: [])
+        test_next(
+            subtitles: subtitles,
+            expectedItems: [
+                .init(time: 0, timeRange: (0..<0)),
+                .init(time: nil)
             ]
         )
-            
-        let sut = createSUT(subtitles: subtitles)
-        
-        let sequence = expectSequence([
-            [1.0, 0, 0],
-            [1.5, 0, 1],
-            [2.0, 1, nil],
-            [2.1, 1, 0],
-            nil
+    }
+    
+    func test_next__with_simple_subtitles() async throws {
+
+        let subtitles = Subtitles(duration: 3, sentences: [
+            anySentence(at: 1),
+            anySentence(at: 2),
         ])
+        
+        test_next(
+            subtitles: subtitles,
+            expectedItems: [
+                .init(
+                    time: 0,
+                    timeRange: (0..<1),
+                    position: .init(isNil: true)
+                ),
+                .init(
+                    time: 1,
+                    timeRange: (1..<2),
+                    position: .init(
+                        isNil: false,
+                        sentenceIndex: 0
+                    )
+                ),
+                .init(
+                    time: 2,
+                    timeRange: (2..<3),
+                    position: .init(
+                        isNil: false,
+                        sentenceIndex: 1
+                    )
+                ),
+                .init(time: 3),
+                .init(time: nil)
+            ]
+        )
+    }
+}
 
-        while !sequence.isCompleted {
-            
-            guard let time = sut.next() else {
-                sequence.fulfill(with: nil)
-                break
-            }
+// MARK: - Helpers
 
-            sequence.fulfill(with: [
-                time,
-                sut.currentPosition?.sentenceIndex.double,
-                sut.currentPosition?.timeMarkIndex?.double
-            ])
-        }
+struct ExpectedSubtitlesIteratorOutput: Equatable {
+    
+    var time: TimeInterval?
+    var position: ExpectedSubtitlesPosition
+    var timeRange: Range<TimeInterval>?
+    
+    init(
+        time: TimeInterval?,
+        timeRange: Range<TimeInterval>? = nil,
+        position: ExpectedSubtitlesPosition = .init(isNil: true)
+    ) {
+        
+        self.time = time
+        self.timeRange = timeRange
+        self.position = position
+    }
+    
+    init(from iterator: SubtitlesIterator) {
 
-        sequence.wait(timeout: 1, enforceOrder: true)
+        time = iterator.currentTime
+        timeRange = iterator.currentTimeRange
+        position = .init(from: iterator.currentPosition)
     }
 }

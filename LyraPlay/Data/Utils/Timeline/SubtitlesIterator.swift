@@ -26,202 +26,151 @@ public protocol SubtitlesIterator: TimeMarksIterator {
     var currentPosition: SubtitlesPosition? { get }
 
     var currentItem: SubtitlesItem? { get }
+    
+    var currentTimeRange: Range<TimeInterval>? { get }
 }
 
 // MARK: - Implementations
 
 public final class DefaultSubtitlesIterator: SubtitlesIterator {
     
-    public var currentPosition: SubtitlesPosition?
-
-    public var currentTime: TimeInterval? { getTime(item: currentItem) }
+    private struct Item {
     
-    public var currentItem: SubtitlesItem? { getItem(position: currentPosition) }
+        var time: TimeInterval
+        var timeRange: Range<TimeInterval>? = nil
+        var position: SubtitlesPosition? = nil
+    }
+
+    
+    // MARK: - Properties
     
     private let subtitles: Subtitles
+
+    private var currentIndex: Int? = nil
+
+    private var items: [Item]
+    
+    private var currentIteratorItem: Item? {
+        
+        guard let currentIndex = currentIndex else {
+            return nil
+        }
+        
+        if currentIndex >=  items.count {
+            return nil
+        }
+
+        return items[currentIndex]
+    }
+    
+    public var currentTime: TimeInterval? { currentIteratorItem?.time }
+    
+    public var currentPosition: SubtitlesPosition? { currentIteratorItem?.position }
+    
+    public var currentTimeRange: Range<TimeInterval>? { currentIteratorItem?.timeRange }
+    
+    public var currentItem: SubtitlesItem? {
+        
+        guard let currentPosition = currentPosition else {
+            return nil
+        }
+
+        return positionsIterator.getItem(position: currentPosition)
+    }
+    
+    
+    private var positionsIterator: SubtitlesPositionsIterator
     
     private var sentences: [Subtitles.Sentence] { subtitles.sentences }
     
-    private lazy var sentencesStartTimes: [TimeInterval] = {
-        sentences.map { $0.startTime }
-    } ()
+    // MARK: - Initializers
     
     public init(subtitles: Subtitles) {
         
         self.subtitles = subtitles
+        self.positionsIterator = SubtitlesPositionsIterator(subtitles: subtitles)
+        self.items = Self.getItems(subtitles: subtitles)
     }
     
-    private func getItem(position: SubtitlesPosition?) -> SubtitlesItem? {
+    // MARK: - Methods
+    
+    private static func getItems(subtitles: Subtitles) -> [Item] {
         
-        guard let position = position else {
-            return nil
-        }
+        let parser = SubtitlesTimeSlotsParser()
+        let timeSlots = parser.parse(from: subtitles)
+        
+        var items = [Item]()
 
-        let sentence = sentences[position.sentenceIndex]
-        
-        guard
-            let timeMarkIndex = position.timeMarkIndex,
-            let timeMarks = sentence.timeMarks
-        else {
-            return .init(sentence: sentence)
-        }
-        
-        guard timeMarkIndex < timeMarks.count else {
-            return nil
-        }
-        
-        return .init(
-            sentence: sentence,
-            timeMarkInsideSentence: timeMarks[timeMarkIndex]
-        )
-    }
-    
-    private func getTime(item: SubtitlesItem?) -> TimeInterval? {
-        
-        return item?.timeMarkInsideSentence?.startTime ?? item?.sentenceIndex.startTime
-    }
-    
-    private func getTime(position: SubtitlesPosition?) -> TimeInterval? {
-        
-        return getTime(item: getItem(position: position))
-    }
-}
-
-extension DefaultSubtitlesIterator {
-    
-    private static func searchRecentItem(items: [TimeInterval], time: TimeInterval) -> Int? {
-        
-        let lastIndex = items.lastIndex { $0 <= time }
-        return lastIndex
-    }
-    
-    private func searchRecentSentence(at time: TimeInterval) -> Int? {
-        
-        return Self.searchRecentItem(
-            items: sentencesStartTimes,
-            time: time
-        )
-    }
-    
-    private func searchRecentWord(at time: TimeInterval, in sentenceIndex: Int) -> Int? {
-        
-        if sentenceIndex >= sentences.count {
-            return nil
-        }
-        
-        let sentence = sentences[sentenceIndex]
-        
-        return sentence.timeMarks?.lastIndex { timeMark in
+        timeSlots.forEach { slot in
             
-            guard timeMark.startTime <= time else {
-                return false
-            }
-            
-            if let duration = timeMark.duration {
-                
-                return time < (timeMark.startTime + duration)
-            }
-            
-            return true
-        }
-    }
-    
-    public func move(at time: TimeInterval) -> TimeInterval? {
-        
-        guard
-            let recentSentence = searchRecentSentence(at: time)
-        else {
-            currentPosition = nil
-            return currentTime
-        }
-        
-        let recentWord = searchRecentWord(at: time, in: recentSentence)
-        currentPosition = .init(
-            sentenceIndex: recentSentence,
-            timeMarkIndex: recentWord
-        )
-        
-        return currentTime
-    }
-    
-    public func getNextPosition() -> SubtitlesPosition? {
-        
-        guard let currentPosition = currentPosition else {
-        
-            if let firstSentence = sentences.first {
-                
-                guard
-                    let timeMarks = firstSentence.timeMarks,
-                    let firstTimeMark = timeMarks.first,
-                    firstTimeMark.startTime == firstSentence.startTime
-                else {
-                    return .init(sentenceIndex: 0, timeMarkIndex: nil)
-                }
-
-                return .init(sentenceIndex: 0, timeMarkIndex: 0)
-            }
-            
-            return nil
-        }
-        
-        let sentence = sentences[currentPosition.sentenceIndex]
-        
-        if
-            let timeMarks = sentence.timeMarks,
-            !timeMarks.isEmpty
-        {
-            
-            guard let currentWordIndex = currentPosition.timeMarkIndex else {
-
-                return .init(
-                    sentenceIndex: currentPosition.sentenceIndex,
-                    timeMarkIndex: 0
+            items.append(
+                .init(
+                    time: slot.timeRange.lowerBound,
+                    timeRange: slot.timeRange,
+                    position: slot.subtitlesPosition
                 )
-            }
-            
-            let nextTimeMarkIndex = currentWordIndex + 1
-            if nextTimeMarkIndex < timeMarks.count {
-                return .init(
-                    sentenceIndex: currentPosition.sentenceIndex,
-                    timeMarkIndex: nextTimeMarkIndex
-                )
-            }
-        }
-        
-        let nextSentenceIndex = currentPosition.sentenceIndex + 1
-        
-        guard nextSentenceIndex < sentences.count else {
-            return nil
-        }
-
-        let nextSentence = sentences[nextSentenceIndex]
-        
-        guard
-            let firstTimeMarkOfNextSentence = nextSentence.timeMarks?.first
-        else {
-            return .init(
-                sentenceIndex: nextSentenceIndex,
-                timeMarkIndex: nil
             )
         }
         
-        return .init(
-            sentenceIndex: nextSentenceIndex,
-            timeMarkIndex: firstTimeMarkOfNextSentence.startTime == nextSentence.startTime ? 0 : nil
-        )
+        if
+            let lastTimeSlot = timeSlots.last,
+            lastTimeSlot.timeRange.upperBound != lastTimeSlot.timeRange.lowerBound
+        {
+            
+            items.append(.init(time: lastTimeSlot.timeRange.upperBound))
+        }
+        
+        return items
+    }
+
+    public func move(at time: TimeInterval) -> TimeInterval? {
+
+        let numberOfItems = items.count
+        
+        for index in 0..<numberOfItems {
+            
+            let item = items[index]
+            
+            if
+                let timeRange = item.timeRange,
+                timeRange.contains(time)
+            {
+                currentIndex = index
+                return currentTime
+            }
+            
+            if item.time == time {
+                
+                currentIndex = index
+                return currentTime
+            }
+        }
+
+        currentIndex = nil
+        return nil
     }
     
     public func getNext() -> TimeInterval? {
         
-        let nextPosition = getNextPosition()
-        return getTime(position: nextPosition)
+        let nextIndex = (currentIndex ?? -1) + 1
+        
+        guard nextIndex < items.count else {
+            return nil
+        }
+        
+        return items[nextIndex].time
     }
     
     public func next() -> TimeInterval? {
         
-        let nextPosition = getNextPosition()
-        currentPosition = nextPosition
+        let nextIndex = (currentIndex ?? -1) + 1
         
-        return currentTime
+        guard nextIndex < items.count else {
+            currentIndex = nextIndex
+            return nil
+        }
+
+        currentIndex = nextIndex
+        return items[nextIndex].time
     }
 }

@@ -71,7 +71,7 @@ class AssertSequence<T: Equatable> {
             return
         }
         
-        XCTAssertEqual(
+        AssertEqualReadable(
             value,
             expectedValues[index],
             "Expected value at \(index), doesn't match received value",

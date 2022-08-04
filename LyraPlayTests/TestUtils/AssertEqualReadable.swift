@@ -31,7 +31,7 @@ public func AssertEqualReadable<T>(
         errorText = "\n\n"
     }
     
-    errorText += "Received: \(receivedValueDumped)"
+    errorText += "\n\nReceived: \(receivedValueDumped)"
     errorText += "\n\nExpected: \(expectedValueDumped)"
     
     XCTAssertEqual(

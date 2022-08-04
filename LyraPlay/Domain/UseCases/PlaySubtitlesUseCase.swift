@@ -16,7 +16,7 @@ public enum SubtitlesPlayingState {
     case stopped
 }
 
-public struct SubtitlesPosition {
+public struct SubtitlesPosition: Equatable {
 
     public var sentenceIndex: Int
     public var timeMarkIndex: Int?
