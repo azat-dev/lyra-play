@@ -11,9 +11,11 @@ import Foundation
 
 public enum SubtitlesPlayingState {
 
+    case initial
     case playing
     case paused
     case stopped
+    case finished
 }
 
 public struct SubtitlesPosition: Equatable {
@@ -74,7 +76,7 @@ public final class DefaultPlaySubtitlesUseCase: PlaySubtitlesUseCase {
 
     public let state: Observable<CurrentSubtitlesState> = Observable(
         .init(
-            state: .stopped,
+            state: .initial,
             position: nil
         )
     )
@@ -104,9 +106,11 @@ extension DefaultPlaySubtitlesUseCase {
             guard let self = self else {
                 return
             }
-
+            
+            let isLast = self.subtitlesIterator.getNext() == nil
+            
             self.state.value = .init(
-                state: .playing,
+                state: isLast ? .finished : .playing,
                 position: self.subtitlesIterator.currentPosition
             )
         }

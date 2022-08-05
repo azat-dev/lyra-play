@@ -20,7 +20,6 @@ public final class DefaultActionTimer: ActionTimer {
     
     private let queue = DispatchQueue(label: "lyraplay.timer", qos: .userInteractive)
     private var workItem: DispatchWorkItem?
-    
     public init() {}
     
     public func executeAfter(_ interval: TimeInterval, block: @escaping () async -> Void) {
@@ -38,6 +37,7 @@ public final class DefaultActionTimer: ActionTimer {
                 }
                 
                 Task {
+                    
                     await block()
                     self.queue.sync {
                         self.workItem = nil

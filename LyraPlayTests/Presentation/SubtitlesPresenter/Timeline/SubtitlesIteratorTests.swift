@@ -211,6 +211,91 @@ class SubtitlesIteratorTests: XCTestCase {
             ]
         )
     }
+    
+    func test_move__empty_subtitles() {
+        
+        let subtitles = Subtitles(duration: 0, sentences: [])
+        
+        let sut = createSUT(subtitles: subtitles)
+        let _ = sut.move(at: 0)
+        
+        let expectedResult = ExpectedSubtitlesIteratorOutput(time: 0, timeRange: (0..<0), position: .init(isNil: true))
+        AssertEqualReadable(.init(from: sut), expectedResult)
+    }
+    
+    func test_move__empty_subtitles_with_offset() {
+        
+        let subtitles = Subtitles(duration: 0, sentences: [])
+        
+        let sut = createSUT(subtitles: subtitles)
+        let _ = sut.move(at: 100)
+        
+        let expectedResult = ExpectedSubtitlesIteratorOutput(time: 0, timeRange: (0..<0), position: .init(isNil: true))
+        AssertEqualReadable(.init(from: sut), expectedResult)
+    }
+    
+    func test_move__not_empty_subtitles_exact_time_match() {
+        
+        let subtitles = Subtitles(duration: 10, sentences: [
+            anySentence(at: 0),
+            anySentence(at: 1),
+            anySentence(at: 2),
+        ])
+        
+        let sut = createSUT(subtitles: subtitles)
+        let _ = sut.move(at: 1.5)
+        
+        let expectedResult = ExpectedSubtitlesIteratorOutput(
+            time: 1,
+            timeRange: (1..<2),
+            position: .init(
+                isNil: false,
+                sentenceIndex: 1
+            )
+        )
+        AssertEqualReadable(.init(from: sut), expectedResult)
+    }
+    
+    func test_move__not_empty_subtitles_between() {
+        
+        let subtitles = Subtitles(duration: 10, sentences: [
+            anySentence(at: 0),
+            anySentence(at: 1),
+            anySentence(at: 2),
+        ])
+        
+        let sut = createSUT(subtitles: subtitles)
+        let _ = sut.move(at: 1.5)
+        
+        let expectedResult = ExpectedSubtitlesIteratorOutput(
+            time: 1,
+            timeRange: (1..<2),
+            position: .init(
+                isNil: false,
+                sentenceIndex: 1
+            )
+        )
+        AssertEqualReadable(.init(from: sut), expectedResult)
+    }
+    
+    func test_move__not_empty_subtitles_end() {
+        
+        let subtitles = Subtitles(duration: 10, sentences: [
+            anySentence(at: 0),
+            anySentence(at: 1),
+            anySentence(at: 2),
+        ])
+        
+        let sut = createSUT(subtitles: subtitles)
+        let _ = sut.move(at: 10)
+        
+        let expectedResult = ExpectedSubtitlesIteratorOutput(
+            time: 10,
+            timeRange: nil,
+            position: .init(isNil: true)
+        )
+        AssertEqualReadable(.init(from: sut), expectedResult)
+    }
 }
 
 // MARK: - Helpers

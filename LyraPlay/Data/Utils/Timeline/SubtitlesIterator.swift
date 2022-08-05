@@ -127,6 +127,13 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
 
         let numberOfItems = items.count
         
+        if let lastItem = items.last,
+           lastItem.time < time {
+            
+            currentIndex = items.count - 1
+            return lastItem.time
+        }
+        
         for index in 0..<numberOfItems {
             
             let item = items[index]
