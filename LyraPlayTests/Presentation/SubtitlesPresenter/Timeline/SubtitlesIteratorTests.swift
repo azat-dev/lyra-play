@@ -193,12 +193,12 @@ class SubtitlesIteratorTests: XCTestCase {
                 .init(
                     time: 1,
                     timeRange: (1..<2),
-                    position: .init(sentenceIndex: 0)
+                    position: .sentence(0)
                 ),
                 .init(
                     time: 2,
                     timeRange: (2..<3),
-                    position: .init(sentenceIndex: 1)
+                    position: .sentence(1)
                 ),
                 .init(time: 3),
                 .init(time: nil)
@@ -242,7 +242,7 @@ class SubtitlesIteratorTests: XCTestCase {
         let expectedResult = ExpectedSubtitlesIteratorOutput(
             time: 1,
             timeRange: (1..<2),
-            position: .init(sentenceIndex: 1)
+            position: .sentence(1)
         )
         AssertEqualReadable(.init(from: sut), expectedResult)
     }
@@ -261,7 +261,7 @@ class SubtitlesIteratorTests: XCTestCase {
         let expectedResult = ExpectedSubtitlesIteratorOutput(
             time: 1,
             timeRange: (1..<2),
-            position: .init(sentenceIndex: 1)
+            position: .sentence(1)
         )
         AssertEqualReadable(.init(from: sut), expectedResult)
     }

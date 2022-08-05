@@ -23,6 +23,10 @@ public struct SubtitlesPosition: Equatable {
     public var sentenceIndex: Int
     public var timeMarkIndex: Int?
 
+    public static func sentence(_ index: Int) -> Self {
+        return .init(sentenceIndex: index, timeMarkIndex: nil)
+    }
+    
     public init(
         sentenceIndex: Int,
         timeMarkIndex: Int?

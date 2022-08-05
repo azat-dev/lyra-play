@@ -89,8 +89,8 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
         testSubtitles(
             subtitles: subtitles,
             expectedItems: [
-                .init(sentenceIndex: 0),
-                .init(sentenceIndex: 1),
+                .sentence(0),
+                .sentence(1),
                 .nilValue()
             ]
         )

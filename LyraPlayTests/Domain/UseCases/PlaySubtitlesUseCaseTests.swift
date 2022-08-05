@@ -116,8 +116,8 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let expectedStateItems = [
             initialState(),
-            .init(state: .playing, position: .init(sentenceIndex: 0)),
-            .init(state: .playing, position: .init(sentenceIndex: 1)),
+            .init(state: .playing, position: .sentence(0)),
+            .init(state: .playing, position: .sentence(1)),
             finishedState(),
         ]
         
@@ -135,7 +135,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let expectedStateItems = [
             initialState(),
-            .init(state: .playing, position: .init(sentenceIndex: 1)),
+            .init(state: .playing, position: .sentence(1)),
             finishedState(),
         ]
         
@@ -153,8 +153,8 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let expectedStateItems = [
             initialState(),
-            .init(state: .playing, position: .init(sentenceIndex: 1)),
-            .init(state: .playing, position: .init(sentenceIndex: 1)),
+            .init(state: .playing, position: .sentence(1)),
+            .init(state: .playing, position: .sentence(1)),
             stoppedState(),
             .init(state: .paused, position: .nilValue())
         ]
@@ -186,7 +186,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
             initialState(),
             .init(
                 state: .playing,
-                position: .init(sentenceIndex: 0)
+                position: .sentence(0)
             ),
             .init(state: .paused, position: nil),
             stoppedState(),
@@ -235,7 +235,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
             initialState(),
             .init(
                 state: .playing,
-                position: .init(sentenceIndex: 0)
+                position: .sentence(0)
             ),
             stoppedState(),
         ]
@@ -264,7 +264,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
             initialState(),
             .init(
                 state: .playing,
-                position: .init(sentenceIndex: 0)
+                position: .sentence(0)
             ),
             .init(state: .paused),
             stoppedState(),
@@ -355,6 +355,9 @@ struct ExpectedSubtitlesPosition: Equatable {
         self.timeMarkIndex = timeMarkIndex
     }
     
+    static func sentence(_ index: Int) -> Self {
+        return .init(sentenceIndex: index)
+    }
     
     static func nilValue() -> Self {
         return .init(isNil: true)
