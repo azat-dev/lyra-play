@@ -7,24 +7,24 @@
 
 import Foundation
 
-public struct SubtitlesTranslation {
-    
-    
-    public var dictionaryItemId: UUID
-    public var originalText: String
-    public var lemma: String
-    public var translation: String
-    
-    public init(
-        dictionaryItemId: UUID,
-        originalText: String,
-        lemma: String,
-        translation: String
-    ) {
-        
-        self.dictionaryItemId = dictionaryItemId
-        self.originalText = originalText
-        self.lemma = lemma
-        self.translation = translation
-    }
-}
+//public struct SubtitlesTranslation {
+//    
+//    
+//    public var dictionaryItemId: UUID
+//    public var originalText: String
+//    public var lemma: String
+//    public var translation: String
+//    
+//    public init(
+//        dictionaryItemId: UUID,
+//        originalText: String,
+//        lemma: String,
+//        translation: String
+//    ) {
+//        
+//        self.dictionaryItemId = dictionaryItemId
+//        self.originalText = originalText
+//        self.lemma = lemma
+//        self.translation = translation
+//    }
+//}

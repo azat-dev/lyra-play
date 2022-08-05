@@ -2,10 +2,9 @@
 //  ProvideTranslationsForSubtitlesUseCaseTests.swift
 //  LyraPlayTests
 //
-//  Created by Azat Kaiumov on 21.07.22.
+//  Created by Azat Kaiumov on 05.08.2022.
 //
 
-import Foundation
 import XCTest
 import LyraPlay
 
@@ -13,200 +12,141 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
     
     typealias SUT = (
         useCase: ProvideTranslationsForSubtitlesUseCase,
-        dictionaryRepository: DictionaryRepositoryMock
+        dictionaryRepository: DictionaryRepository,
+        textSplitter: TextSplitterMock,
+        lemmatizer: Lemmatizer
     )
     
     func createSUT() -> SUT {
         
-        let dictionaryRepository = DictionaryRepositoryMock()
+        let storeURL = URL(fileURLWithPath: "/dev/null")
+        let coreDataStore = try! CoreDataStore(storeURL: storeURL)
+        
+        let dictionaryRepository = CoreDataDictionaryRepository(coreDataStore: coreDataStore)
+        
+        let textSplitter = TextSplitterMock()
+        let lemmatizer = DefaultLemmatizer()
         
         let useCase = DefaultProvideTranslationsForSubtitlesUseCase(
-            dictionaryRepository: dictionaryRepository
+            dictionaryRepository: dictionaryRepository,
+            textSplitter: textSplitter,
+            lemmatizer: lemmatizer
         )
-        
         detectMemoryLeak(instance: useCase)
         
         return (
             useCase,
-            dictionaryRepository
+            dictionaryRepository,
+            textSplitter,
+            lemmatizer
         )
     }
     
-    func testFetchTranslationsForEmptySubtitles() async throws {
-        
-        let sut = createSUT()
-        
-        let mediaId = UUID()
-        
-        let subtitles = Subtitles(duration: 0, sentences: [])
-        let resultPrepare = await sut.useCase.prepare(for: mediaId, subtitles: subtitles)
-        try AssertResultSucceded(resultPrepare)
-        
-        let resultTranslations = await sut.useCase.fetchTranslations(words: [])
-        let items = try AssertResultSucceded(resultTranslations)
-        
-        XCTAssertTrue(items.isEmpty)
+    func anyOptions(mediaId: UUID, subtitles: Subtitles) -> ProvideTranslationsForSubtitlesUseCaseOptions {
+        return .init(
+            mediaId: mediaId,
+            nativeLanguage: "",
+            learningLanguage: "",
+            subtitles: subtitles
+        )
     }
     
-    private func anyDictionaryItem(originalText: String, translation: String, id: UUID? = nil) -> DictionaryItem {
+    func anyMediaId() -> UUID {
+        return .init(uuidString: "00000000-0000-0000-0000-000000000000")!
+    }
+    
+    func anySentenceIndex() -> Int {
+        return .init()
+    }
+    
+    func emptySubtitles() -> Subtitles {
+        return .init(duration: 0, sentences: [])
+    }
+    
+    func anySubtitles(sentences: [String]) -> Subtitles {
         
         return .init(
-            id: id ?? UUID(),
-            createdAt: nil,
-            updatedAt: nil,
-            originalText: originalText,
-            lemma: originalText,
-            language: "",
-            translations: [
-                TranslationItem(text: "translation")
-            ]
+            duration: TimeInterval(sentences.count),
+            sentences: (0..<sentences.count).map {
+                return .init(startTime: TimeInterval($0), text: sentences[$0], components: [])
+            }
         )
     }
     
-    func testFetchGlobalTranslations() async throws {
+    func anyTranslationItem(text: String) -> TranslationItem {
         
-        let sut = createSUT()
-        let mediaId = UUID()
-        
-        let numberOfWords = 2
-        let dictionaryIds = (0..<numberOfWords).map { _ in UUID() }
-        
-        let expectedTranslations = (0..<numberOfWords).map { index in
-            
-            return ExpectedTranslation(
-                dictionaryItemId: dictionaryIds[index],
-                originalText: "original\(index)",
-                lemma: "lemma\(index)",
-                translation: "translation\(index)"
-            )
-        }
-        
-        sut.dictionaryRepository.items = (0..<numberOfWords).map { index in
-            
-            let id = dictionaryIds[index]
-            
-            return anyDictionaryItem(
-                originalText: "original\(index)",
-                translation: "translation\(index)",
-                id: id
-            )
-        }
-        
-        let text = expectedTranslations
-            .map { item in item.originalText }
-            .joined(separator: " ")
-        
-        let components = expectedTranslations.map { item in
-            TextComponent(type: .word, range: text.range(of: item.originalText)!)
-        }
-        
-        let subtitles = Subtitles(
-            duration: 0.1,
-            sentences: [
-                .init(
-                    startTime: 0,
-                    text: text,
-                    components: components
-                )
-            ]
+        return .init(
+            text: text,
+            mediaId: anyMediaId(),
+            timeMark: nil,
+            position: nil
         )
-        
-        let resultPrepare = await sut.useCase.prepare(for: mediaId, subtitles: subtitles)
-        try AssertResultSucceded(resultPrepare)
-        
-        let resultTranslations = await sut.useCase.fetchTranslations(words: [])
-        let items = try AssertResultSucceded(resultTranslations)
-        
-        XCTAssertEqual(items.count, numberOfWords)
-        
-        for expectedTranslation in expectedTranslations {
-            
-            let item = items[expectedTranslation.originalText]
-            
-            let unwrappedItem = try XCTUnwrap(item)
-            XCTAssertEqual(.init(from: unwrappedItem), expectedTranslation)
-        }
-    }
-}
-
-// MARK: - Mocks
-
-final class DictionaryRepositoryMock: DictionaryRepository {
-    
-    var items = [DictionaryItem]()
-    
-    func putItem(_ item: DictionaryItem) async -> Result<DictionaryItem, DictionaryRepositoryError> {
-        
-        let index = items.firstIndex { $0.id == item.id }
-        
-        guard let index = index else {
-            
-            items.append(item)
-            return .success(item)
-        }
-        
-        items[index] = item
-        return .success(item)
     }
     
-    func getItem(id: UUID) async -> Result<DictionaryItem, DictionaryRepositoryError> {
-        
-        let item = items.first { $0.id == id }
-        
-        guard let item = item else {
-            
-            return .failure(.itemNotFound)
-        }
-        
-        return .success(item)
-    }
-    
-    func deleteItem(id: UUID) async -> Result<Void, DictionaryRepositoryError> {
-        
-        let index = items.firstIndex { $0.id == id }
-        
-        guard let index = index else {
-            
-            return .failure(.itemNotFound)
-        }
-
-        items.remove(at: index)
-        return .success(())
-    }
-    
-    func searchItems(with: [DictionaryItemFilter]) async -> Result<[DictionaryItem], DictionaryRepositoryError> {
-        
-        return .success([])
-    }
-}
-
-// MARK: - Helpers
-
-struct ExpectedTranslation: Equatable {
-    
-    var dictionaryItemId: UUID
-    var originalText: String
-    var lemma: String
-    var translation: String
-    
-    init(
-        dictionaryItemId: UUID,
+    func anyDictionaryItem(
         originalText: String,
         lemma: String,
-        translation: String
-    ) {
+        translations: [TranslationItem]
+    ) -> DictionaryItem {
         
-        self.dictionaryItemId = dictionaryItemId
-        self.originalText = originalText
-        self.lemma = lemma
-        self.translation = translation
+        return .init(
+            originalText: originalText,
+            lemma: lemma,
+            language: "",
+            translations: translations
+        )
     }
-
-    init(from item: SubtitlesTranslation) {
+    
+    func test_prepare__empty_subtitles() async throws {
         
-        self.dictionaryItemId = item.dictionaryItemId
-        self.originalText = item.originalText
-        self.lemma = item.lemma
-        self.translation = item.translation
+        let sut = createSUT()
+        
+        let mediaId = anyMediaId()
+        let testOptions = anyOptions(mediaId: mediaId, subtitles: emptySubtitles())
+        
+        await sut.useCase.prepare(
+            options: testOptions
+        )
+    }
+    
+    func test_getTranslations() async throws {
+        
+        let sut = createSUT()
+        
+        let sentences = [
+            "Apple, pear",
+            "Banana"
+        ]
+        
+        let subtitles = anySubtitles(sentences: sentences)
+        
+        let putTranslationResult = await sut.dictionaryRepository.putItem(
+            anyDictionaryItem(
+                originalText: "apple",
+                lemma: "apple",
+                translations: [
+                anyTranslationItem(text: "translatedapple")
+            ])
+        )
+        
+        let savedDictionaryItem = try AssertResultSucceded(putTranslationResult)
+        
+        await sut.useCase.prepare(options: anyOptions(mediaId: anyMediaId(), subtitles: subtitles))
+        let receivedItems = await sut.useCase.getTranslations(
+            sentenceIndex: 0
+        )
+        
+        let expectedItems: [SubtitlesTranslation] = [
+            .init(
+                textRange: sentences[0].range(of: "Apple")!,
+                translation: .init(
+                    dictionaryItemId: savedDictionaryItem.id!,
+                    translationId: UUID(),
+                    originalText: savedDictionaryItem.originalText,
+                    translatedText: "translatedapple"
+                )
+            )
+        ]
+        AssertEqualReadable(receivedItems, expectedItems)
     }
 }
