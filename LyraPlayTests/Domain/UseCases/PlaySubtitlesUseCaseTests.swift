@@ -13,15 +13,18 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
     typealias SUT = (
         useCase: PlaySubtitlesUseCase,
         subtitlesIterator: SubtitlesIterator,
-        scheduler: Scheduler
+        scheduler: Scheduler,
+        timer: ActionTimerMock
     )
     
     func createSUT(subtitles: Subtitles) -> SUT {
         
         let subtitlesIterator = DefaultSubtitlesIterator(subtitles: subtitles)
+        let timer = ActionTimerMock()
+        
         let scheduler = DefaultScheduler(
             timeMarksIterator: subtitlesIterator,
-            actionTimerFactory: ActionTimerFactoryMock()
+            timer: timer
         )
         
         let useCase = DefaultPlaySubtitlesUseCase(
@@ -33,7 +36,8 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         return (
             useCase,
             subtitlesIterator,
-            scheduler
+            scheduler,
+            timer
         )
     }
     
@@ -64,16 +68,16 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         )
     }
     
-    func defaultState() -> ExpectedCurrentSubtitlesState {
-        return .init(isNil: false, state: .initial, position: nil)
+    func initialState() -> ExpectedCurrentSubtitlesState {
+        return .init(state: .initial, position: nil)
     }
     
     func stoppedState() -> ExpectedCurrentSubtitlesState {
-        return .init(isNil: false, state: .stopped, position: nil)
+        return .init(state: .stopped, position: nil)
     }
     
     func finishedState() -> ExpectedCurrentSubtitlesState {
-        return .init(isNil: false, state: .finished, position: nil)
+        return .init(state: .finished, position: nil)
     }
     
     
@@ -85,7 +89,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let sut = createSUT(subtitles: emptySubtitles())
         
-        let stateSequence = self.expectSequence([ defaultState(), finishedState() ])
+        let stateSequence = self.expectSequence([ initialState(), finishedState() ])
         stateSequence.observe(sut.useCase.state, mapper: { .init(from: $0) })
         sut.useCase.play(at: 0)
 
@@ -97,7 +101,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
 
         let sut = createSUT(subtitles: emptySubtitles())
         
-        let stateSequence = self.expectSequence([ defaultState() ])
+        let stateSequence = self.expectSequence([ initialState() ])
         stateSequence.observe(sut.useCase.state, mapper: { .init(from: $0) })
 
         sut.useCase.play(at: 100)
@@ -111,9 +115,9 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let sut = createSUT(subtitles: anySubtitles())
         
         let expectedStateItems = [
-            defaultState(),
-            .init(isNil: false, state: .playing, position: .init(isNil: false, sentenceIndex: 0)),
-            .init(isNil: false, state: .playing, position: .init(isNil: false, sentenceIndex: 1)),
+            initialState(),
+            .init(state: .playing, position: .init(sentenceIndex: 0)),
+            .init(state: .playing, position: .init(sentenceIndex: 1)),
             finishedState(),
         ]
         
@@ -130,8 +134,8 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let sut = createSUT(subtitles: anySubtitles())
         
         let expectedStateItems = [
-            defaultState(),
-            .init(isNil: false, state: .playing, position: .init(isNil: false, sentenceIndex: 1)),
+            initialState(),
+            .init(state: .playing, position: .init(sentenceIndex: 1)),
             finishedState(),
         ]
         
@@ -148,11 +152,11 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let sut = createSUT(subtitles: anySubtitles())
         
         let expectedStateItems = [
-            defaultState(),
-            .init(isNil: false, state: .playing, position: .init(isNil: false, sentenceIndex: 1)),
-            .init(isNil: false, state: .playing, position: .init(isNil: false, sentenceIndex: 1)),
+            initialState(),
+            .init(state: .playing, position: .init(sentenceIndex: 1)),
+            .init(state: .playing, position: .init(sentenceIndex: 1)),
             stoppedState(),
-            .init(isNil: false, state: .paused, position: .init(isNil: true))
+            .init(state: .paused, position: .init(isNil: true))
         ]
         
         let stateSequence = self.expectSequence(expectedStateItems)
@@ -179,9 +183,12 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let sut = createSUT(subtitles: anySubtitles())
         
         let expectedStateItems = [
-            defaultState(),
-            .init(isNil: false, state: .playing, position: nil),
-            .init(isNil: false, state: .paused, position: nil),
+            initialState(),
+            .init(
+                state: .playing,
+                position: .init(sentenceIndex: 0)
+            ),
+            .init(state: .paused, position: nil),
             stoppedState(),
         ]
         let stateSequence = self.expectSequence(expectedStateItems)
@@ -208,7 +215,8 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let sut = createSUT(subtitles: anySubtitles())
         
         let expectedStateItems = [
-            defaultState(),
+            initialState(),
+            stoppedState()
         ]
 
         let stateSequence = self.expectSequence(expectedStateItems)
@@ -224,8 +232,11 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let sut = createSUT(subtitles: anySubtitles())
         
         let expectedStateItems = [
-            defaultState(),
-            .init(isNil: false, state: .playing, position: nil),
+            initialState(),
+            .init(
+                state: .playing,
+                position: .init(sentenceIndex: 0)
+            ),
             stoppedState(),
         ]
         
@@ -248,11 +259,15 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let sut = createSUT(subtitles: anySubtitles())
         
+        sut.timer.willFire(filter: nil)
         let expectedStateItems = [
-            defaultState(),
-            .init(isNil: false, state: .playing),
-            .init(isNil: false, state: .paused),
-            defaultState(),
+            initialState(),
+            .init(
+                state: .playing,
+                position: .init(sentenceIndex: 0)
+            ),
+            .init(state: .paused),
+            stoppedState(),
         ]
 
         let stateSequence = self.expectSequence(expectedStateItems)
@@ -282,17 +297,22 @@ struct ExpectedCurrentSubtitlesState: Equatable {
     var isNil: Bool
     var state: SubtitlesPlayingState? = nil
     var position: ExpectedSubtitlesPosition? = nil
-    
+
+    init(isNil: Bool) {
+        
+        self.isNil = isNil
+    }
+
     init(
-        isNil: Bool,
         state: SubtitlesPlayingState? = nil,
         position: ExpectedSubtitlesPosition? = nil
     ) {
         
-        self.isNil = isNil
+        self.isNil = false
         self.state = state
         self.position = position
     }
+    
     
     init(from source: CurrentSubtitlesState?) {
         
@@ -323,14 +343,18 @@ struct ExpectedSubtitlesPosition: Equatable {
     var timeMarkIndex: Int? = nil
     
     init(
-        isNil: Bool,
         sentenceIndex: Int? = nil,
         timeMarkIndex: Int? = nil
     ) {
         
-        self.isNil = isNil
+        self.isNil = false
         self.sentenceIndex = sentenceIndex
         self.timeMarkIndex = timeMarkIndex
+    }
+    
+    init (isNil: Bool) {
+        
+        self.isNil = isNil
     }
     
     init(from source: SubtitlesPosition?) {

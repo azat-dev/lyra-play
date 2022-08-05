@@ -119,12 +119,15 @@ extension DefaultPlaySubtitlesUseCase {
     public func pause() -> Void {
 
         scheduler.pause()
+        state.value = .init(
+            state: .paused,
+            position: state.value.position
+        )
     }
 
     public func stop() -> Void {
 
         scheduler.stop()
-        let _ = subtitlesIterator.move(at: 0)
         state.value = .init(state: .stopped, position: nil)
     }
 }

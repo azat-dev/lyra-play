@@ -89,8 +89,8 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
         testSubtitles(
             subtitles: subtitles,
             expectedItems: [
-                .init(isNil: false, sentenceIndex: 0),
-                .init(isNil: false, sentenceIndex: 1),
+                .init(sentenceIndex: 0),
+                .init(sentenceIndex: 1),
                 .init(isNil: true)
             ]
         )
@@ -107,7 +107,7 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
         testSubtitles(
             subtitles: subtitles,
             expectedItems: [
-                .init(isNil: false, sentenceIndex: 0, timeMarkIndex: 0),
+                .init(sentenceIndex: 0, timeMarkIndex: 0),
                 .init(isNil: true)
             ]
         )
@@ -124,8 +124,8 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
         testSubtitles(
             subtitles: subtitles,
             expectedItems: [
-                .init(isNil: false, sentenceIndex: 0, timeMarkIndex: nil),
-                .init(isNil: false, sentenceIndex: 0, timeMarkIndex: 0),
+                .init(sentenceIndex: 0, timeMarkIndex: nil),
+                .init(sentenceIndex: 0, timeMarkIndex: 0),
                 .init(isNil: true)
             ]
         )
@@ -143,9 +143,9 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
         testSubtitles(
             subtitles: subtitles,
             expectedItems: [
-                .init(isNil: false, sentenceIndex: 0, timeMarkIndex: nil),
-                .init(isNil: false, sentenceIndex: 0, timeMarkIndex: 0),
-                .init(isNil: false, sentenceIndex: 0, timeMarkIndex: 1),
+                .init(sentenceIndex: 0, timeMarkIndex: nil),
+                .init(sentenceIndex: 0, timeMarkIndex: 0),
+                .init(sentenceIndex: 0, timeMarkIndex: 1),
                 .init(isNil: true)
             ]
         )
