@@ -156,7 +156,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
             .init(state: .playing, position: .init(sentenceIndex: 1)),
             .init(state: .playing, position: .init(sentenceIndex: 1)),
             stoppedState(),
-            .init(state: .paused, position: .init(isNil: true))
+            .init(state: .paused, position: .nilValue())
         ]
         
         let stateSequence = self.expectSequence(expectedStateItems)
@@ -299,12 +299,15 @@ struct ExpectedCurrentSubtitlesState: Equatable {
     var position: ExpectedSubtitlesPosition? = nil
 
     init(isNil: Bool) {
-        
         self.isNil = isNil
+    }
+    
+    static func nilValue() -> Self {
+        return .init(isNil: true)
     }
 
     init(
-        state: SubtitlesPlayingState? = nil,
+        state: SubtitlesPlayingState,
         position: ExpectedSubtitlesPosition? = nil
     ) {
         
@@ -343,7 +346,7 @@ struct ExpectedSubtitlesPosition: Equatable {
     var timeMarkIndex: Int? = nil
     
     init(
-        sentenceIndex: Int? = nil,
+        sentenceIndex: Int,
         timeMarkIndex: Int? = nil
     ) {
         
@@ -352,7 +355,12 @@ struct ExpectedSubtitlesPosition: Equatable {
         self.timeMarkIndex = timeMarkIndex
     }
     
-    init (isNil: Bool) {
+    
+    static func nilValue() -> Self {
+        return .init(isNil: true)
+    }
+    
+    private init (isNil: Bool) {
         
         self.isNil = isNil
     }

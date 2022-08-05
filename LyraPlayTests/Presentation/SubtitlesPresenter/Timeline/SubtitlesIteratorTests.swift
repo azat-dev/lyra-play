@@ -188,7 +188,7 @@ class SubtitlesIteratorTests: XCTestCase {
                 .init(
                     time: 0,
                     timeRange: (0..<1),
-                    position: .init(isNil: true)
+                    position: .nilValue()
                 ),
                 .init(
                     time: 1,
@@ -213,7 +213,7 @@ class SubtitlesIteratorTests: XCTestCase {
         let sut = createSUT(subtitles: subtitles)
         let _ = sut.move(at: 0)
         
-        let expectedResult = ExpectedSubtitlesIteratorOutput(time: 0, timeRange: (0..<0), position: .init(isNil: true))
+        let expectedResult = ExpectedSubtitlesIteratorOutput(time: 0, timeRange: (0..<0))
         AssertEqualReadable(.init(from: sut), expectedResult)
     }
     
@@ -224,7 +224,7 @@ class SubtitlesIteratorTests: XCTestCase {
         let sut = createSUT(subtitles: subtitles)
         let _ = sut.move(at: 100)
         
-        let expectedResult = ExpectedSubtitlesIteratorOutput(time: 0, timeRange: (0..<0), position: .init(isNil: true))
+        let expectedResult = ExpectedSubtitlesIteratorOutput(time: 0, timeRange: (0..<0))
         AssertEqualReadable(.init(from: sut), expectedResult)
     }
     
@@ -279,8 +279,7 @@ class SubtitlesIteratorTests: XCTestCase {
         
         let expectedResult = ExpectedSubtitlesIteratorOutput(
             time: 10,
-            timeRange: nil,
-            position: .init(isNil: true)
+            timeRange: nil
         )
         AssertEqualReadable(.init(from: sut), expectedResult)
     }
@@ -297,7 +296,7 @@ struct ExpectedSubtitlesIteratorOutput: Equatable {
     init(
         time: TimeInterval?,
         timeRange: Range<TimeInterval>? = nil,
-        position: ExpectedSubtitlesPosition = .init(isNil: true)
+        position: ExpectedSubtitlesPosition = .nilValue()
     ) {
         
         self.time = time

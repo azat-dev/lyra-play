@@ -75,7 +75,7 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
     func test_next__empty_subtitles() async throws {
         
         let emptySubtitles = Subtitles(duration: 0, sentences: [])
-        testSubtitles(subtitles: emptySubtitles, expectedItems: [.init(isNil: true)])
+        testSubtitles(subtitles: emptySubtitles, expectedItems: [.nilValue()])
     }
     
     func test_next__simple_sentences() async throws {
@@ -91,7 +91,7 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
             expectedItems: [
                 .init(sentenceIndex: 0),
                 .init(sentenceIndex: 1),
-                .init(isNil: true)
+                .nilValue()
             ]
         )
     }
@@ -108,7 +108,7 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
             subtitles: subtitles,
             expectedItems: [
                 .init(sentenceIndex: 0, timeMarkIndex: 0),
-                .init(isNil: true)
+                .nilValue()
             ]
         )
     }
@@ -126,7 +126,7 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
             expectedItems: [
                 .init(sentenceIndex: 0, timeMarkIndex: nil),
                 .init(sentenceIndex: 0, timeMarkIndex: 0),
-                .init(isNil: true)
+                .nilValue()
             ]
         )
     }
@@ -146,7 +146,7 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
                 .init(sentenceIndex: 0, timeMarkIndex: nil),
                 .init(sentenceIndex: 0, timeMarkIndex: 0),
                 .init(sentenceIndex: 0, timeMarkIndex: 1),
-                .init(isNil: true)
+                .nilValue()
             ]
         )
     }
