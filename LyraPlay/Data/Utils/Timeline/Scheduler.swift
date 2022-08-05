@@ -81,12 +81,13 @@ extension DefaultScheduler: Scheduler {
             
             let _ = self.timeMarksIterator.next()
             
+            block(nextTimeMark)
+            
             self.setNextTimer(
                 block: block,
                 lastTimeMark: nextTimeMark,
                 delta: timeDelta
             )
-            block(nextTimeMark)
         }
     }
     
@@ -128,7 +129,7 @@ extension DefaultScheduler: Scheduler {
         defer { semaphore.signal() }
         semaphore.wait()
         
-        isStopped = false
+        isStopped = true
         timer.cancel()
     }
 }

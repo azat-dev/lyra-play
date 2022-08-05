@@ -81,7 +81,7 @@ public class SubtitlesTimeSlotsParser {
             
             let sentenceSlot = SubtitlesTimeSlot(
                 timeRange: range,
-                subtitlesPosition: .init(sentenceIndex: sentenceIndex, timeMarkIndex: nil)
+                subtitlesPosition: .sentence(sentenceIndex)
             )
             
             timeSlots.append(sentenceSlot)

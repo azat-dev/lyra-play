@@ -285,7 +285,7 @@ struct SubtitlesPresentationStateEquatable: Equatable {
         self.numberOfSentences = numberOfSentences
         self.activeSentenceIndex = activeSentenceIndex
     }
-
+    
     init(from state: SubtitlesPresentationState?) {
         
         isNil = (state == nil)

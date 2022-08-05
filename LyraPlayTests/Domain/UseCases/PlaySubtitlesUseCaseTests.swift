@@ -69,15 +69,15 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
     }
     
     func initialState() -> ExpectedCurrentSubtitlesState {
-        return .init(state: .initial, position: nil)
+        return .init(state: .initial)
     }
     
     func stoppedState() -> ExpectedCurrentSubtitlesState {
-        return .init(state: .stopped, position: nil)
+        return .init(state: .stopped)
     }
     
     func finishedState() -> ExpectedCurrentSubtitlesState {
-        return .init(state: .finished, position: nil)
+        return .init(state: .finished)
     }
     
     
@@ -153,55 +153,59 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let expectedStateItems = [
             initialState(),
-            .init(state: .playing, position: .sentence(1)),
-            .init(state: .playing, position: .sentence(1)),
+            .init(state: .playing, position: .sentence(0)),
             stoppedState(),
-            .init(state: .paused, position: .nilValue())
+            .init(state: .paused)
         ]
         
         let stateSequence = self.expectSequence(expectedStateItems)
-        stateSequence.observe(sut.useCase.state, mapper: { .init(from: $0) })
+        
+        let controlledState = Observable(sut.useCase.state.value)
         
         sut.useCase.state.observe(on: self) { state in
             
+            if state.state == .stopped {
+                
+                controlledState.value = state
+                sut.useCase.pause()
+                return
+            }
+
             if state.state == .playing {
+                
+                controlledState.value = state
                 sut.useCase.stop()
+                return
             }
             
-            if state.state == .stopped {
-                sut.useCase.pause()
-            }
+            controlledState.value = state
         }
+        
+        stateSequence.observe(controlledState, mapper: { .init(from: $0) })
         
         sut.useCase.play(at: 0)
         stateSequence.wait(timeout: 1, enforceOrder: true)
+        
         sut.useCase.state.remove(observer: self)
+        controlledState.remove(observer: self)
     }
     
     func test_pause__playing() async throws {
         
         let sut = createSUT(subtitles: anySubtitles())
         
-        let expectedStateItems = [
+        let stateSequence = self.expectSequence([
+         
             initialState(),
-            .init(
-                state: .playing,
-                position: .sentence(0)
-            ),
-            .init(state: .paused, position: nil),
-            stoppedState(),
-        ]
-        let stateSequence = self.expectSequence(expectedStateItems)
+            .init(state: .playing, position: .sentence(0)),
+            .init(state: .paused, position: .sentence(0)),
+        ])
         
         stateSequence.observe(sut.useCase.state, mapper: { .init(from: $0) })
         sut.useCase.state.observe(on: self) { newState in
         
             if newState.state == .playing {
                 sut.useCase.pause()
-            }
-            
-            if newState.state == .paused {
-                sut.useCase.stop()
             }
         }
         
@@ -241,52 +245,67 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         ]
         
         let stateSequence = self.expectSequence(expectedStateItems)
-        stateSequence.observe(sut.useCase.state, mapper: { .init(from: $0) })
+        
+        let controlledState = Observable(sut.useCase.state.value)
         
         sut.useCase.state.observe(on: self) { newState in
             
             if newState.state == .playing {
+                controlledState.value = newState
                 sut.useCase.stop()
+                return
             }
+            
+            controlledState.value = newState
         }
         
+        stateSequence.observe(controlledState, mapper: { .init(from: $0) })
+        
         sut.useCase.play(at: 0)
-        stateSequence.wait(timeout: 1, enforceOrder: true)
+        stateSequence.wait(timeout: 2, enforceOrder: true)
         sut.useCase.state.remove(observer: self)
+        controlledState.remove(observer: self)
     }
     
     func test_stop__paused() async throws {
         
         let sut = createSUT(subtitles: anySubtitles())
         
-        sut.timer.willFire(filter: nil)
         let expectedStateItems = [
             initialState(),
-            .init(
-                state: .playing,
-                position: .sentence(0)
-            ),
-            .init(state: .paused),
+            .init(state: .playing, position: .sentence(0)),
+            .init(state: .paused, position: .sentence(0)),
             stoppedState(),
         ]
 
-        let stateSequence = self.expectSequence(expectedStateItems)
-        stateSequence.observe(sut.useCase.state, mapper: { .init(fromWithNilPosition: $0) })
-
+        let controlledState = Observable(sut.useCase.state.value)
+        
         sut.useCase.state.observe(on: self) { newState in
         
-            if newState.state == .playing {
-                sut.useCase.pause()
+            if newState.state == .paused {
+                
+                controlledState.value = newState
+                sut.useCase.stop()
+                return
             }
             
-            if newState.state == .paused {
-                sut.useCase.stop()
+            if newState.state == .playing {
+                
+                controlledState.value = newState
+                sut.useCase.pause()
+                return
             }
+            
+            controlledState.value = newState
         }
         
+        let stateSequence = self.expectSequence(expectedStateItems)
+        stateSequence.observe(controlledState, mapper: { .init(from: $0) })
+
         sut.useCase.play(at: 0)
         stateSequence.wait(timeout: 1, enforceOrder: true)
         sut.useCase.state.remove(observer: self)
+        controlledState.remove(observer: self)
     }
 }
 
@@ -296,7 +315,7 @@ struct ExpectedCurrentSubtitlesState: Equatable {
     
     var isNil: Bool
     var state: SubtitlesPlayingState? = nil
-    var position: ExpectedSubtitlesPosition? = nil
+    var position: ExpectedSubtitlesPosition = .nilValue()
 
     init(isNil: Bool) {
         self.isNil = isNil
@@ -308,7 +327,7 @@ struct ExpectedCurrentSubtitlesState: Equatable {
 
     init(
         state: SubtitlesPlayingState,
-        position: ExpectedSubtitlesPosition? = nil
+        position: ExpectedSubtitlesPosition = .nilValue()
     ) {
         
         self.isNil = false
@@ -329,13 +348,9 @@ struct ExpectedCurrentSubtitlesState: Equatable {
         
         if let position = source.position {
             self.position = ExpectedSubtitlesPosition(from: position)
+        } else {
+            self.position = .nilValue()
         }
-    }
-    
-    init(fromWithNilPosition source: CurrentSubtitlesState?) {
-        
-        self.init(from: source)
-        position = nil
     }
 }
 

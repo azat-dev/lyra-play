@@ -126,7 +126,7 @@ final class ActionTimerMock: ActionTimer {
     // MARK: - Properties
     
     typealias ExecutionBlock = () async -> Void
-    typealias FilterCallback = (TimeInterval) -> Bool
+    typealias FilterCallback = (TimeInterval, Bool) -> Bool
     
     struct Promise {
         
@@ -134,7 +134,9 @@ final class ActionTimerMock: ActionTimer {
         var time: TimeInterval?
     }
     
-    private var filter: FilterCallback? = { _ in true }
+    public var isCancelled = false
+    
+    private var filter: FilterCallback? = { _, _ in true }
     
     private var lastMessage: (interval: TimeInterval, block: ExecutionBlock)? {
         
@@ -164,7 +166,7 @@ final class ActionTimerMock: ActionTimer {
         
         if let filter = filter {
             
-            if filter(lastMessage.interval) {
+            if filter(lastMessage.interval, isCancelled) {
                 fire()
                 return
             }
@@ -219,11 +221,13 @@ final class ActionTimerMock: ActionTimer {
     
     func executeAfter(_ interval: TimeInterval, block: @escaping () async -> Void) {
 
+        isCancelled = false
         self.lastMessage = (interval, block)
     }
     
     func cancel() {
-        
+    
+        isCancelled = true
         lastMessage = nil
     }
 }
