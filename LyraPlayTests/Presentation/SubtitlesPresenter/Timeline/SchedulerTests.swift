@@ -14,17 +14,18 @@ class SchedulerTests: XCTestCase {
     typealias SUT = (
         scheduler: Scheduler,
         iterator: TimeMarksIteratorMock,
-        timerFactory: ActionTimerFactory
+        timer: ActionTimerMock
     )
     
     func createSUT() -> SUT {
         
-        let timerFactory = ActionTimerFactoryMock()
         let iterator = TimeMarksIteratorMock()
+
+        let timer = ActionTimerMock()
         
         let scheduler = DefaultScheduler(
             timeMarksIterator: iterator,
-            actionTimerFactory: timerFactory
+            timer: timer
         )
         
         detectMemoryLeak(instance: scheduler)
@@ -32,7 +33,7 @@ class SchedulerTests: XCTestCase {
         return (
             scheduler,
             iterator,
-            timerFactory
+            timer
         )
     }
     
@@ -122,21 +123,121 @@ class SchedulerTests: XCTestCase {
 
 final class ActionTimerMock: ActionTimer {
 
-    init() {}
+    // MARK: - Properties
     
-    func executeAfter(_ interval: TimeInterval, block: @escaping () async -> Void) {
-        Task {
-            await block()
+    typealias ExecutionBlock = () async -> Void
+    typealias FilterCallback = (TimeInterval) -> Bool
+    
+    struct Promise {
+        
+        var isFulfilled: Bool = false
+        var time: TimeInterval?
+    }
+    
+    private var filter: FilterCallback? = { _ in true }
+    
+    private var lastMessage: (interval: TimeInterval, block: ExecutionBlock)? {
+        
+        didSet {
+            tryFulfill()
         }
     }
     
-    func cancel() { }
+    private var promises = [Promise]() {
+        
+        didSet {
+            tryFulfill()
+        }
+    }
+    
+    // MARK: - Initializers
+    
+    init() {}
+    
+    // MARK: - Methods
+    
+    private func tryFulfill() {
+        
+        guard let lastMessage = lastMessage else {
+            return
+        }
+        
+        if let filter = filter {
+            
+            if filter(lastMessage.interval) {
+                fire()
+                return
+            }
+        }
+
+        for index in 0..<promises.count {
+            
+            let promise = promises[index]
+            if promise.isFulfilled {
+                continue
+            }
+            
+            if let time = promise.time,
+               time == lastMessage.interval {
+                
+                var updatedPromise = promise
+                updatedPromise.isFulfilled = true
+                promises[index] = updatedPromise
+                
+                fire()
+                return
+            }
+        }
+    }
+    
+    func willFire(at time: TimeInterval) {
+        
+        promises.append(.init(isFulfilled: false, time: time))
+    }
+    
+    func willFire(at times: [TimeInterval]) {
+
+        times.forEach { time in willFire(at: time) }
+    }
+    
+    func willFire(filter: FilterCallback?) {
+        self.filter = filter
+    }
+    
+    func fire() {
+        
+        guard let lastMessage = lastMessage else {
+            return
+        }
+
+        self.lastMessage = nil
+        
+        Task {
+            await lastMessage.block()
+        }
+    }
+    
+    func executeAfter(_ interval: TimeInterval, block: @escaping () async -> Void) {
+
+        self.lastMessage = (interval, block)
+    }
+    
+    func cancel() {
+        
+        lastMessage = nil
+    }
 }
 
 final class ActionTimerFactoryMock: ActionTimerFactory {
     
+    var timers = [ActionTimerMock]()
+    
     func create() -> ActionTimer {
-        return ActionTimerMock()
+
+        let timer = ActionTimerMock()
+        timers.append(timer)
+        
+        return timer
     }
 }
 

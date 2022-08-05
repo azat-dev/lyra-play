@@ -57,25 +57,5 @@ class DefaultActionTimerTests: XCTestCase {
 
         wait(for: [expectation], timeout: 1)
     }
-    
-//    func testSpeed() async throws {
-//
-//        let speed = 1.5
-//        let sut = createSUT(speed: )
-//
-//        let sequence = expectSequence([true])
-//        let startTime = Date.now
-//
-//        let expectedTime = 1
-//
-//        sut.executeAfter(expectedTime) {
-//
-//            let time = startTime.timeIntervalSinceNow * speed
-//            XCTAssertEqual(time, expectedTime, accuracy: 0.03)
-//            sequence.fulfill(with: true)
-//        }
-//
-//        sequence.wait(timeout: 3, enforceOrder: true)
-//    }
 }
 

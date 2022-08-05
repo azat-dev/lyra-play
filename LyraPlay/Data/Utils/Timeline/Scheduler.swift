@@ -23,17 +23,15 @@ public protocol Scheduler {
 public final class DefaultScheduler {
     
     private let timeMarksIterator: TimeMarksIterator
-    private let actionTimerFactory: ActionTimerFactory
     private var timer: ActionTimer
     
     public init(
         timeMarksIterator: TimeMarksIterator,
-        actionTimerFactory: ActionTimerFactory
+        timer: ActionTimer
     ) {
         
         self.timeMarksIterator = timeMarksIterator
-        self.actionTimerFactory = actionTimerFactory
-        self.timer = actionTimerFactory.create()
+        self.timer = timer
     }
 }
 
