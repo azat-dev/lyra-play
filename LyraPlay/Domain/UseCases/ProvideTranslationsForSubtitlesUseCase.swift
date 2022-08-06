@@ -120,7 +120,7 @@ extension DefaultProvideTranslationsForSubtitlesUseCase {
         }
     }
     
-    private func populateItems(sentencesWithLemmas: [[LemmaItem]], dictionaryItems: [DictionaryItem]) {
+    private func populateItemsWithGlobalTranslations(sentencesWithLemmas: [[LemmaItem]], dictionaryItems: [DictionaryItem]) {
         
         let numberOfSentences = sentencesWithLemmas.count
         
@@ -134,13 +134,13 @@ extension DefaultProvideTranslationsForSubtitlesUseCase {
                 
                 guard
                     let dictionaryItem = dictionaryItem,
-                    let translation = dictionaryItem.translations.first
+                    let translation = dictionaryItem.translations.first(where: { $0.mediaId == nil && $0.position == nil })
                 else {
                     continue
                 }
                 
-                var newItems = items[sentenceIndex, default: []]
-                newItems.append(
+                var newTranslationsForSentence = items[sentenceIndex, default: []]
+                newTranslationsForSentence.append(
                     .init(
                         textRange: lemmaItem.range,
                         translation: .init(
@@ -152,21 +152,127 @@ extension DefaultProvideTranslationsForSubtitlesUseCase {
                     )
                 )
                 
-                items[sentenceIndex] = newItems
+                items[sentenceIndex] = newTranslationsForSentence
             }
         }
     }
     
-    private func populateItems(mediaId: UUID, dictionaryItems: [DictionaryItem]) {
+    private func populateItemsWithTranslationsForMedia(sentencesWithLemmas: [[LemmaItem]], translationForMediaId: TranslationItem, dictionaryItem: DictionaryItem) {
+        
+        let numberOfSentences = sentencesWithLemmas.count
+        
+        for sentenceIndex in 0..<numberOfSentences {
+            
+            let sentenceLemmas = sentencesWithLemmas[sentenceIndex]
+            
+            for lemmaItem in sentenceLemmas {
+                
+                guard lemmaItem.lemma == dictionaryItem.lemma else {
+                    continue
+                }
+                
+                var newTranslationsForSentence = items[sentenceIndex, default: []]
+                newTranslationsForSentence.removeAll { $0.textRange != lemmaItem.range }
+                newTranslationsForSentence.append(
+                    .init(
+                        textRange: lemmaItem.range,
+                        translation: .init(
+                            dictionaryItemId: dictionaryItem.id!,
+                            translationId: translationForMediaId.id!,
+                            originalText: dictionaryItem.originalText,
+                            translatedText: translationForMediaId.text
+                        )
+                    )
+                )
+                
+                items[sentenceIndex] = newTranslationsForSentence
+            }
+        }
+    }
+    
+    private func populateItemsWithTranslationsForPositions(
+        translationsForPositions: [TranslationItem],
+        dictionaryItem: DictionaryItem,
+        subtitles: Subtitles
+    ) {
+        
+        let numberOfSentences = subtitles.sentences.count
+        
+        for sentenceIndex in 0..<numberOfSentences {
+            
+            let sentence = subtitles.sentences[sentenceIndex]
+            let filteredTranslations = translationsForPositions.filter { $0.position?.sentenceIndex == sentenceIndex }
+            
+            guard !filteredTranslations.isEmpty else {
+                continue
+            }
+            
+            var newTranslationsForSentence = items[sentenceIndex, default: []]
+            
+            
+            for translation in filteredTranslations {
+                
+                guard let translationPosition = translation.position else {
+                    continue
+                }
+                
+                let translationRange = translationPosition.getRange(in: sentence.text)
+                
+                newTranslationsForSentence.removeAll { $0.textRange.overlaps(translationRange) }
+                newTranslationsForSentence.append(
+                    .init(
+                        textRange: translationRange,
+                        translation: .init(
+                            dictionaryItemId: dictionaryItem.id!,
+                            translationId: translation.id!,
+                            originalText: dictionaryItem.originalText,
+                            translatedText: translation.text
+                        )
+                    )
+                )
+                
+                items[sentenceIndex] = newTranslationsForSentence
+            }
+        }
+    }
+    
+    private func populateItemsWithLocalTranslations(
+        mediaId: UUID,
+        dictionaryItems: [DictionaryItem],
+        sentencesWithLemmas: [[LemmaItem]],
+        subtitles: Subtitles
+    ) {
         
         for dictionaryItem in dictionaryItems {
             
-            for translation in dictionaryItem.translations {
+            let translationsForPositions = dictionaryItem.translations.filter { $0.mediaId == mediaId && $0.position != nil }
+            let translationForMediaId = dictionaryItem.translations.first { $0.mediaId == mediaId }
+            
+            if let translationForMediaId = translationForMediaId {
                 
-                guard translation.mediaId != mediaId else {
-                    continue
-                }
+                populateItemsWithTranslationsForMedia(
+                    sentencesWithLemmas: sentencesWithLemmas,
+                    translationForMediaId: translationForMediaId,
+                    dictionaryItem: dictionaryItem
+                )
             }
+            
+            if !translationsForPositions.isEmpty {
+                
+                populateItemsWithTranslationsForPositions(
+                    translationsForPositions: translationsForPositions,
+                    dictionaryItem: dictionaryItem,
+                    subtitles: subtitles
+                )
+            }
+        }
+    }
+    
+    public func sortItemsByTextRange() {
+        
+        for (key, translations) in items {
+
+            items[key] = translations.sorted { $0.textRange.lowerBound < $1.textRange.lowerBound }
         }
     }
     
@@ -193,7 +299,19 @@ extension DefaultProvideTranslationsForSubtitlesUseCase {
             return
         }
         
-        populateItems(sentencesWithLemmas: sentencesWithLemmas, dictionaryItems: dictionaryItems)
+        populateItemsWithGlobalTranslations(
+            sentencesWithLemmas: sentencesWithLemmas,
+            dictionaryItems: dictionaryItems
+        )
+        
+        populateItemsWithLocalTranslations(
+            mediaId: options.mediaId,
+            dictionaryItems: dictionaryItems,
+            sentencesWithLemmas: sentencesWithLemmas,
+            subtitles: options.subtitles
+        )
+        
+        sortItemsByTextRange()
     }
 }
 // MARK: - Output methods

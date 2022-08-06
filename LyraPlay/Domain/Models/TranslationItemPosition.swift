@@ -23,3 +23,14 @@ public struct TranslationItemPosition: Equatable {
         self.textRange = textRange
     }
 }
+
+extension TranslationItemPosition {
+    
+    public func getRange<T: StringProtocol>(in text: T) -> Range<String.Index> {
+        
+        let lowerBound = String.Index(utf16Offset: textRange.lowerBound, in: text)
+        let upperBound = String.Index(utf16Offset: textRange.upperBound, in: text)
+        
+        return (lowerBound..<upperBound)
+    }
+}
