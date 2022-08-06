@@ -42,7 +42,7 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         )
     }
     
-    func anyOptions(mediaId: UUID, subtitles: Subtitles) -> ProvideTranslationsForSubtitlesUseCaseOptions {
+    func anyPlayerSession(mediaId: UUID, subtitles: Subtitles) -> AdvancedPlayerSession {
         return .init(
             mediaId: mediaId,
             nativeLanguage: "",
@@ -108,7 +108,7 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         let sut = createSUT()
         
         let mediaId = anyMediaId()
-        let testOptions = anyOptions(mediaId: mediaId, subtitles: emptySubtitles())
+        let testOptions = anyPlayerSession(mediaId: mediaId, subtitles: emptySubtitles())
         
         await sut.useCase.prepare(
             options: testOptions
@@ -137,7 +137,7 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         
         let savedDictionaryItem = try AssertResultSucceded(putTranslationResult)
         
-        await sut.useCase.prepare(options: anyOptions(mediaId: anyMediaId(), subtitles: subtitles))
+        await sut.useCase.prepare(options: anyPlayerSession(mediaId: anyMediaId(), subtitles: subtitles))
         let receivedItems = await sut.useCase.getTranslations(
             sentenceIndex: 0
         )
@@ -199,7 +199,7 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         let translationWithLemma = translations[0]
         let translationWithRange = translations[1]
         
-        await sut.useCase.prepare(options: anyOptions(mediaId: anyMediaId(), subtitles: subtitles))
+        await sut.useCase.prepare(options: anyPlayerSession(mediaId: anyMediaId(), subtitles: subtitles))
         
         let expectedItems1: [SubtitlesTranslation] = [
             .init(

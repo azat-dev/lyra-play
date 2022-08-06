@@ -9,27 +9,6 @@ import Foundation
 
 // MARK: - Interfaces
 
-public struct ProvideTranslationsForSubtitlesUseCaseOptions: Equatable {
-    
-    public var mediaId: UUID
-    public var nativeLanguage: String
-    public var learningLanguage: String
-    public var subtitles: Subtitles
-    
-    public init(
-        mediaId: UUID,
-        nativeLanguage: String,
-        learningLanguage: String,
-        subtitles: Subtitles
-    ) {
-        
-        self.mediaId = mediaId
-        self.nativeLanguage = nativeLanguage
-        self.learningLanguage = learningLanguage
-        self.subtitles = subtitles
-    }
-}
-
 public struct SubtitlesTranslationItem: Equatable {
     
     public var dictionaryItemId: UUID
@@ -68,7 +47,7 @@ public struct SubtitlesTranslation: Equatable {
 
 public protocol ProvideTranslationsForSubtitlesUseCaseInput {
     
-    func prepare(options: ProvideTranslationsForSubtitlesUseCaseOptions) async -> Void
+    func prepare(options: AdvancedPlayerSession) async -> Void
 }
 
 public protocol ProvideTranslationsForSubtitlesUseCaseOutput {
@@ -276,7 +255,7 @@ extension DefaultProvideTranslationsForSubtitlesUseCase {
         }
     }
     
-    public func prepare(options: ProvideTranslationsForSubtitlesUseCaseOptions) async -> Void {
+    public func prepare(options: AdvancedPlayerSession) async -> Void {
         
         let sentencesWithLemmas = lemmatizeSubtitles(options.subtitles)
         var uniqueLemmas = Set<String>()
