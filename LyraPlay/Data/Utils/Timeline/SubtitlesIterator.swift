@@ -123,7 +123,7 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         return items
     }
 
-    public func beginExecution(from time: TimeInterval) -> TimeInterval? {
+    public func beginNextExecution(from time: TimeInterval) -> TimeInterval? {
 
         let numberOfItems = items.count
         

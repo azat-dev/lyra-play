@@ -255,7 +255,7 @@ final class TimeLineIteratorMock: TimeLineIterator {
         return timeMarks[currentIndex]
     }
     
-    func beginExecution(from time: TimeInterval) -> TimeInterval? {
+    func beginNextExecution(from time: TimeInterval) -> TimeInterval? {
         
         let recentIndex = timeMarks.lastIndex { $0 <= time }
         

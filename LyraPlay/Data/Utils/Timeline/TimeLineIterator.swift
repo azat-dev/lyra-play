@@ -9,7 +9,7 @@ import Foundation
 
 public protocol TimeLineIterator {
     
-    func beginExecution(from: TimeInterval) -> TimeInterval?
+    func beginNextExecution(from: TimeInterval) -> TimeInterval?
     
     func getNextEventTime() -> TimeInterval?
     
