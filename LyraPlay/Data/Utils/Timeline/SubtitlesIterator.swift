@@ -46,6 +46,8 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
     
     private let subtitles: Subtitles
 
+    private let subtitlesTimeSlots: [SubtitlesTimeSlot]
+    
     private var currentIndex: Int? = nil
 
     private var items: [Item]
@@ -75,45 +77,53 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
             return nil
         }
 
-        return positionsIterator.getItem(position: currentPosition)
+        let sentence = subtitles.sentences[currentPosition.sentenceIndex]
+        
+        guard
+            let timeMarkIndex = currentPosition.timeMarkIndex,
+            let timeMarks = sentence.timeMarks
+        else {
+            return .init(sentence: sentence)
+        }
+        
+        return .init(
+            sentence: sentence,
+            timeMarkInsideSentence: timeMarks[timeMarkIndex]
+        )
     }
     
-    
-    private var positionsIterator: SubtitlesPositionsIterator
     
     private var sentences: [Subtitles.Sentence] { subtitles.sentences }
     
     // MARK: - Initializers
     
-    public init(subtitles: Subtitles) {
+    public init(subtitles: Subtitles, subtitlesTimeSlots: [SubtitlesTimeSlot]) {
         
         self.subtitles = subtitles
-        self.positionsIterator = SubtitlesPositionsIterator(subtitles: subtitles)
-        self.items = Self.getItems(subtitles: subtitles)
+        self.subtitlesTimeSlots = subtitlesTimeSlots
+        
+        self.items = Self.getItems(subtitles: subtitles, subtitlesTimeSlots: subtitlesTimeSlots)
     }
     
     // MARK: - Methods
     
-    private static func getItems(subtitles: Subtitles) -> [Item] {
-        
-        let parser = SubtitlesTimeSlotsParser()
-        let timeSlots = parser.parse(from: subtitles)
+    private static func getItems(subtitles: Subtitles, subtitlesTimeSlots: [SubtitlesTimeSlot]) -> [Item] {
         
         var items = [Item]()
 
-        timeSlots.forEach { slot in
+        for timeSlot in subtitlesTimeSlots {
             
             items.append(
                 .init(
-                    time: slot.timeRange.lowerBound,
-                    timeRange: slot.timeRange,
-                    position: slot.subtitlesPosition
+                    time: timeSlot.timeRange.lowerBound,
+                    timeRange: timeSlot.timeRange,
+                    position: timeSlot.subtitlesPosition
                 )
             )
         }
         
         if
-            let lastTimeSlot = timeSlots.last,
+            let lastTimeSlot = subtitlesTimeSlots.last,
             lastTimeSlot.timeRange.upperBound != lastTimeSlot.timeRange.lowerBound
         {
             

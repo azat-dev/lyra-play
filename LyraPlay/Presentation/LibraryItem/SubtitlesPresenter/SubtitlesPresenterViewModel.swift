@@ -57,11 +57,15 @@ public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewMod
     private var currentSentenceWithSelectedWord: Int?
     public let state: Observable<SubtitlesPresentationState?> = Observable(nil)
     
-    public init(subtitles: Subtitles) {
+    public init(subtitles: Subtitles, subtitlesTimeSlots: [SubtitlesTimeSlot]) {
         
         self.subtitles = subtitles
         
-        self.subtitlesIterator = DefaultSubtitlesIterator(subtitles: subtitles)
+        self.subtitlesIterator = DefaultSubtitlesIterator(
+            subtitles: subtitles,
+            subtitlesTimeSlots: subtitlesTimeSlots
+        )
+        
         self.scheduler = DefaultScheduler(
             timeLineIterator: subtitlesIterator,
             timer: DefaultActionTimer()

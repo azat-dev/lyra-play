@@ -130,9 +130,12 @@ extension DefaultLibraryItemViewModel {
         let result = await loadSubtitlesUseCase.load(for: trackId, language: "English")
 
         let subtitles = try! result.get()
+        
+        let timeSlotsParser = SubtitlesTimeSlotsParser()
 
         let subtitlesViewModel = DefaultSubtitlesPresenterViewModel(
-            subtitles: subtitles
+            subtitles: subtitles,
+            subtitlesTimeSlots: timeSlotsParser.parse(from: subtitles)
         )
         
         Task {

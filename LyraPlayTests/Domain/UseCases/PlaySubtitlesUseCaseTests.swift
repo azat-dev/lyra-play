@@ -19,7 +19,12 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
     
     func createSUT(subtitles: Subtitles) -> SUT {
         
-        let subtitlesIterator = DefaultSubtitlesIterator(subtitles: subtitles)
+        let timeSlotsParser = SubtitlesTimeSlotsParser()
+        
+        let subtitlesIterator = DefaultSubtitlesIterator(
+            subtitles: subtitles,
+            subtitlesTimeSlots: timeSlotsParser.parse(from: subtitles)
+        )
         let timer = ActionTimerMock()
         
         let scheduler = DefaultScheduler(

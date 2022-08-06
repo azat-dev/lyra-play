@@ -22,8 +22,11 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
 
         let scheduler = SchedulerMock()
         
+        let timeSlotsParser = SubtitlesTimeSlotsParser()
+        
         let viewModel = DefaultSubtitlesPresenterViewModel(
-            subtitles: subtitles
+            subtitles: subtitles,
+            subtitlesTimeSlots: timeSlotsParser.parse(from: subtitles)
         )
         detectMemoryLeak(instance: viewModel)
         

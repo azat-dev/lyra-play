@@ -20,6 +20,11 @@ public final class DefaultSubtitlesIteratorFactory: SubtitlesIteratorFactory {
     
     public func create(for subtitles: Subtitles) -> SubtitlesIterator {
         
-        return DefaultSubtitlesIterator(subtitles: subtitles)
+        let timeSlotsParser = SubtitlesTimeSlotsParser()
+        
+        return DefaultSubtitlesIterator(
+            subtitles: subtitles,
+            subtitlesTimeSlots: timeSlotsParser.parse(from: subtitles)
+        )
     }
 }

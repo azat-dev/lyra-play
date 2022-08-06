@@ -15,8 +15,11 @@ class SubtitlesIteratorTests: XCTestCase {
 
     func createSUT(subtitles: Subtitles) -> SUT {
 
+        let timeSlotsParser = SubtitlesTimeSlotsParser()
+        
         let subtitlesIterator = DefaultSubtitlesIterator(
-            subtitles: subtitles
+            subtitles: subtitles,
+            subtitlesTimeSlots: timeSlotsParser.parse(from: subtitles)
         )
         detectMemoryLeak(instance: subtitlesIterator)
 
