@@ -55,6 +55,9 @@ public protocol ProvideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCa
 
 public final class DefaultProvideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase {
 
+    
+    typealias QueueItem = (sentenceIndex: Int, item: TranslationsToPlay)
+    
     // MARK: - Properties
 
     private let provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase
@@ -62,6 +65,10 @@ public final class DefaultProvideTranslationsToPlayUseCase: ProvideTranslationsT
     public let lastEventTime: TimeInterval? = nil
     
     public let currentItem: TranslationsToPlay? = nil
+    
+    private var itemsQueue = [QueueItem]()
+    
+    private var subtitles: Subtitles? = nil
 
     // MARK: - Initializers
 
@@ -75,9 +82,32 @@ public final class DefaultProvideTranslationsToPlayUseCase: ProvideTranslationsT
 
 extension DefaultProvideTranslationsToPlayUseCase {
 
-    public func prepare(params: AdvancedPlayerSession) -> Void {
+    private func prepareNextItems() async {
+        
+        guard let subtitles = subtitles else {
+            return
+        }
+        
+        let lastSentenceIndex = itemsQueue.last?.sentenceIndex ?? -1
+        let nextSentenceIndex = lastSentenceIndex + 1
+        
+        guard nextSentenceIndex < subtitles.sentences.count else {
+            return
+        }
+        
+        let sentenceTranslations = await provideTranslationsForSubtitlesUseCase.getTranslations(sentenceIndex: nextSentenceIndex)
+        
+        let sentence = subtitles.sentences[nextSentenceIndex]
+    }
+    
+    public func prepare(params: AdvancedPlayerSession) async -> Void {
 
-        fatalError("Not implemented")
+        itemsQueue = [QueueItem]()
+        subtitles = params.subtitles
+        
+        await provideTranslationsForSubtitlesUseCase.prepare(options: params)
+        
+        await prepareNextItems()
     }
 
     public func beginNextExecution(from time: TimeInterval?) -> TimeInterval? {
@@ -87,11 +117,23 @@ extension DefaultProvideTranslationsToPlayUseCase {
 
     public func getTimeOfNextEvent() -> TimeInterval? {
 
-        fatalError("Not implemented")
+        guard itemsQueue.count >= 2 else {
+            
+            return nil
+        }
+        
+        return itemsQueue[1].item.time
     }
 
     public func moveToNextEvent() -> TimeInterval? {
 
-        fatalError("Not implemented")
+        itemsQueue.removeFirst()
+        
+        if itemsQueue.count < 3 {
+            
+//            prepareNextItems()
+        }
+        
+        return itemsQueue.first?.item.time
     }
 }
