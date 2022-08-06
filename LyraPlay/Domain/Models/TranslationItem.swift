@@ -13,14 +13,14 @@ public struct TranslationItem: Equatable {
     public var text: String
     public var mediaId: UUID?
     public var timeMark: UUID?
-    public var position: String?
+    public var position: TranslationItemPosition?
     
     public init(
         id: UUID?,
         text: String,
         mediaId: UUID? = nil,
         timeMark: UUID? = nil,
-        position: String? = nil
+        position: TranslationItemPosition? = nil
     ) {
         
         self.id = id

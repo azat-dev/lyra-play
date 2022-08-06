@@ -8,19 +8,49 @@
 import Foundation
 import CoreData
 
+struct TranslationItemPositionDTO: Codable {
+
+    public var sentenceIndex: Int
+    public var textRange: Range<Int>
+
+    public init(
+        sentenceIndex: Int,
+        textRange: Range<Int>
+    ) {
+
+        self.sentenceIndex = sentenceIndex
+        self.textRange = textRange
+    }
+    
+    init(from item: TranslationItemPosition) {
+        
+        sentenceIndex = item.sentenceIndex
+        textRange = item.textRange
+    }
+    
+    func toDomain() -> TranslationItemPosition {
+        
+        return .init(
+            sentenceIndex: sentenceIndex,
+            textRange: textRange
+        )
+    }
+}
+
+
 struct TranslationItemDTO: Codable {
 
     var id: UUID?
     var text: String
     var mediaId: UUID?
     var timeMark: UUID?
-    var position: String?
+    var position: TranslationItemPositionDTO?
     
     init(
         text: String,
         mediaId: UUID? = nil,
         timeMark: UUID? = nil,
-        position: String? = nil
+        position: TranslationItemPositionDTO? = nil
     ) {
         self.text = text
         self.mediaId = mediaId
@@ -34,7 +64,12 @@ struct TranslationItemDTO: Codable {
         text = item.text
         mediaId = item.mediaId
         timeMark = item.timeMark
-        position = item.position
+        
+        if let position = item.position {
+            self.position = .init(from: position)
+        } else {
+            self.position = nil
+        }
     }
     
     func toDomain() -> TranslationItem {
@@ -44,7 +79,7 @@ struct TranslationItemDTO: Codable {
             text: text,
             mediaId: mediaId,
             timeMark: timeMark,
-            position: position
+            position: position?.toDomain()
         )
     }
     

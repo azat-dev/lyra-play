@@ -77,14 +77,14 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         )
     }
     
-    func anyTranslationItem(text: String, id: UUID? = nil) -> TranslationItem {
+    func anyTranslationItem(text: String, position: TranslationItemPosition? = nil, id: UUID? = nil) -> TranslationItem {
         
         return .init(
             id: id ?? anyTranslationId(),
             text: text,
             mediaId: anyMediaId(),
             timeMark: nil,
-            position: nil
+            position: position
         )
     }
     
@@ -95,6 +95,7 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
     ) -> DictionaryItem {
         
         return .init(
+            id: nil,
             originalText: originalText,
             lemma: lemma,
             language: "",
@@ -152,6 +153,74 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
                 )
             )
         ]
+        AssertEqualReadable(receivedItems, expectedItems)
+    }
+    
+    func test_getTranslations__with_text_ranges() async throws {
+        
+        let sut = createSUT()
+        
+        let sentence1 = "Apple, pear, apple"
+        let sentence2 = "apple"
+        
+        let sentences = [
+            sentence1,
+            sentence2
+        ]
+        
+        let subtitles = anySubtitles(sentences: sentences)
+        
+        let range = sentence1.range(of: "Apple")!
+        let encodedRange = range.lowerBound.utf16Offset(in: sentence1)..<range.upperBound.utf16Offset(in: sentence1)
+        
+        
+        let putDictionaryItemResult = await sut.dictionaryRepository.putItem(
+            anyDictionaryItem(
+                originalText: "apple",
+                lemma: "apple",
+                translations: [
+                    anyTranslationItem(text: "translation_for_lemma"),
+                    anyTranslationItem(
+                        text: "translation_for_range",
+                        position: .init(
+                            sentenceIndex: 0,
+                            textRange: encodedRange
+                        ),
+                        id: UUID()
+                    )
+                ]
+            )
+        )
+        
+        let savedDictionaryItem = try AssertResultSucceded(putDictionaryItemResult)
+        
+        await sut.useCase.prepare(options: anyOptions(mediaId: anyMediaId(), subtitles: subtitles))
+        
+        
+        let expectedItems: [SubtitlesTranslation] = [
+            .init(
+                textRange: sentence1.range(of: "Apple")!,
+                translation: .init(
+                    dictionaryItemId: savedDictionaryItem.id!,
+                    translationId: anyTranslationId(),
+                    originalText: savedDictionaryItem.originalText,
+                    translatedText: "translation_for_range"
+                )
+            ),
+            .init(
+                textRange: sentence2.range(of: "apple")!,
+                translation: .init(
+                    dictionaryItemId: savedDictionaryItem.id!,
+                    translationId: anyTranslationId(),
+                    originalText: savedDictionaryItem.originalText,
+                    translatedText: "translation_for_lemma"
+                )
+            ),
+        ]
+        
+        let receivedItems = await sut.useCase.getTranslations(
+            sentenceIndex: 0
+        )
         AssertEqualReadable(receivedItems, expectedItems)
     }
 }

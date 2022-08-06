@@ -27,10 +27,11 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         return .init(uuidString: "00000000-0000-0000-0000-000000000000")!
     }
     
-    func anyTranslation(text: String = "translation") -> TranslationItem {
+    func anyTranslation(text: String = "translation", position: TranslationItemPosition? = nil) -> TranslationItem {
         return TranslationItem(
             id: anyTranslationId(),
-            text: text
+            text: text,
+            position: position
         )
     }
     
@@ -43,7 +44,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
             language: "English" + suffix,
             translations: [
                 anyTranslation(text: "text1" + suffix),
-                anyTranslation(text: "text2" + suffix)
+                anyTranslation(text: "text2" + suffix, position: .init(sentenceIndex: 0, textRange: 0..<10))
             ]
         )
     }
@@ -56,7 +57,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         return item
     }
     
-    func testPutGetNewItem() async throws {
+    func test_putItem_getItem__new_item() async throws {
         
         let sut = createSUT()
         
@@ -72,7 +73,8 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         XCTAssertEqual(savedItem.lemma, item.lemma)
         XCTAssertEqual(savedItem.language, item.language)
         XCTAssertEqual(item.translations.count, item.translations.count)
-        XCTAssertEqual(item.translations, item.translations)
+        AssertEqualReadable(item.translations, item.translations)
+        
         
         let itemId = savedItem.id!
         
@@ -89,7 +91,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         AssertEqualReadable(receivedItem.translations, item.translations)
     }
     
-    func testUpdateNotExistingItem() async throws {
+    func test_putItem__update_not_existing_item() async throws {
         
         let sut = createSUT()
         
@@ -104,7 +106,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         }
     }
     
-    func testUpdateExistingItem() async throws {
+    func test_putItem__update_existing_item() async throws {
         
         let sut = createSUT()
         
@@ -131,7 +133,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         AssertEqualReadable(updatedItem.translations, updatedItemData.translations)
     }
     
-    func testOnlyOneItemWithTextLanguagePair() async throws {
+    func test_put__only_one_item_with_text_language_pair() async throws {
         
         let sut = createSUT()
         
@@ -151,7 +153,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
     }
     
-    func testDeleteNotExistingItem() async throws {
+    func test_deleteItem__not_existing() async throws {
         
         let sut = createSUT()
         
@@ -165,7 +167,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         }
     }
     
-    func testDeleteExistingItem() async throws {
+    func test_deleteItem__existing() async throws {
         
         let sut = createSUT()
         
@@ -188,7 +190,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         }
     }
     
-    func testSearchNotExistingItems() async throws {
+    func test_searchItems__not_existing() async throws {
         
         let sut = createSUT()
         
@@ -203,7 +205,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         XCTAssertTrue(items.isEmpty)
     }
     
-    func testSearchItems() async throws {
+    func test_searchItems() async throws {
         
         let sut = createSUT()
         
