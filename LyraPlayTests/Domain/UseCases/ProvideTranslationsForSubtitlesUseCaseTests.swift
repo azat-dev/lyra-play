@@ -170,10 +170,6 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         
         let subtitles = anySubtitles(sentences: sentences)
         
-        let range = sentence1.range(of: "Apple")!
-        let encodedRange = range.lowerBound.utf16Offset(in: sentence1)..<range.upperBound.utf16Offset(in: sentence1)
-        
-        
         let putDictionaryItemResult = await sut.dictionaryRepository.putItem(
             anyDictionaryItem(
                 originalText: "apple",
@@ -187,7 +183,7 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
                         text: "translation_for_range",
                         position: .init(
                             sentenceIndex: 0,
-                            textRange: encodedRange
+                            textRange: .textRange(of: "Apple", in: sentence1)!
                         ),
                         id: anyTranslationId()
                     )
