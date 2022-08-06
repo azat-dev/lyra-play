@@ -22,8 +22,14 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         return repository
     }
     
+    
+    func anyTranslationId() -> UUID {
+        return .init(uuidString: "00000000-0000-0000-0000-000000000000")!
+    }
+    
     func anyTranslation(text: String = "translation") -> TranslationItem {
         return TranslationItem(
+            id: anyTranslationId(),
             text: text
         )
     }
@@ -80,7 +86,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         XCTAssertEqual(receivedItem.lemma, item.lemma)
         XCTAssertEqual(receivedItem.language, item.language)
         XCTAssertEqual(receivedItem.translations.count, item.translations.count)
-        XCTAssertEqual(receivedItem.translations, item.translations)
+        AssertEqualReadable(receivedItem.translations, item.translations)
     }
     
     func testUpdateNotExistingItem() async throws {
@@ -122,7 +128,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         XCTAssertEqual(updatedItem.originalText, updatedItemData.originalText)
         XCTAssertEqual(updatedItem.language, updatedItemData.language)
         XCTAssertEqual(updatedItem.translations.count, updatedItemData.translations.count)
-        XCTAssertEqual(updatedItem.translations, updatedItemData.translations)
+        AssertEqualReadable(updatedItem.translations, updatedItemData.translations)
     }
     
     func testOnlyOneItemWithTextLanguagePair() async throws {
@@ -222,6 +228,6 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         XCTAssertEqual(items.count, expectedLemmas.count)
         
         let receivedLemmas = items.map { $0.lemma }
-        XCTAssertEqual(receivedLemmas.sorted(), expectedLemmas.sorted())
+        AssertEqualReadable(receivedLemmas.sorted(), expectedLemmas.sorted())
     }
 }

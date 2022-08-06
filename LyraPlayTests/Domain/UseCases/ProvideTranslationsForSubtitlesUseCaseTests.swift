@@ -55,6 +55,10 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         return .init(uuidString: "00000000-0000-0000-0000-000000000000")!
     }
     
+    func anyTranslationId() -> UUID {
+        return .init(uuidString: "00000000-0000-0000-0000-000000000000")!
+    }
+    
     func anySentenceIndex() -> Int {
         return .init()
     }
@@ -73,9 +77,10 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         )
     }
     
-    func anyTranslationItem(text: String) -> TranslationItem {
+    func anyTranslationItem(text: String, id: UUID? = nil) -> TranslationItem {
         
         return .init(
+            id: id ?? anyTranslationId(),
             text: text,
             mediaId: anyMediaId(),
             timeMark: nil,
@@ -109,7 +114,7 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         )
     }
     
-    func test_getTranslations() async throws {
+    func test_getTranslations__by_lemma() async throws {
         
         let sut = createSUT()
         
@@ -141,7 +146,7 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
                 textRange: sentences[0].range(of: "Apple")!,
                 translation: .init(
                     dictionaryItemId: savedDictionaryItem.id!,
-                    translationId: UUID(),
+                    translationId: anyTranslationId(),
                     originalText: savedDictionaryItem.originalText,
                     translatedText: "translatedapple"
                 )

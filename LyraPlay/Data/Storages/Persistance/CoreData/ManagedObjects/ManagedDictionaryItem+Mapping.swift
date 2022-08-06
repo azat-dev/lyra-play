@@ -10,6 +10,7 @@ import CoreData
 
 struct TranslationItemDTO: Codable {
 
+    var id: UUID?
     var text: String
     var mediaId: UUID?
     var timeMark: UUID?
@@ -29,6 +30,7 @@ struct TranslationItemDTO: Codable {
     
     init(from item: TranslationItem) {
         
+        id = item.id
         text = item.text
         mediaId = item.mediaId
         timeMark = item.timeMark
@@ -38,6 +40,7 @@ struct TranslationItemDTO: Codable {
     func toDomain() -> TranslationItem {
         
         return .init(
+            id: id,
             text: text,
             mediaId: mediaId,
             timeMark: timeMark,
