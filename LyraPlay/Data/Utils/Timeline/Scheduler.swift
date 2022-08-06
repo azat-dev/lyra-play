@@ -53,7 +53,7 @@ extension DefaultScheduler: Scheduler {
         semaphore.signal()
         
 
-        guard let nextTimeMark = timeLineIterator.getNext() else {
+        guard let nextTimeMark = timeLineIterator.getNextEventTime() else {
             return
         }
         
@@ -79,7 +79,7 @@ extension DefaultScheduler: Scheduler {
             
             let timeDelta = Date.now.timeIntervalSince(triggerTime) - timeOffset
             
-            let _ = self.timeLineIterator.next()
+            let _ = self.timeLineIterator.moveToNextEvent()
             
             block(nextTimeMark)
             
@@ -100,7 +100,7 @@ extension DefaultScheduler: Scheduler {
 
         semaphore.signal()
 
-        guard let currentTimeMark = timeLineIterator.move(at: time) else {
+        guard let currentTimeMark = timeLineIterator.beginExecution(from: time) else {
             setNextTimer(block: block)
             return
         }
@@ -121,7 +121,7 @@ extension DefaultScheduler: Scheduler {
         isStopped = true
         timer.cancel()
         
-        let _ = timeLineIterator.move(at: 0)
+        let _ = timeLineIterator.beginExecution(from: 0)
     }
     
     public func pause() {

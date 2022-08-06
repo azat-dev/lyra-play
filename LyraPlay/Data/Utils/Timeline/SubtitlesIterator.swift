@@ -63,7 +63,7 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         return items[currentIndex]
     }
     
-    public var currentTime: TimeInterval? { currentIteratorItem?.time }
+    public var lastEventTime: TimeInterval? { currentIteratorItem?.time }
     
     public var currentPosition: SubtitlesPosition? { currentIteratorItem?.position }
     
@@ -123,7 +123,7 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         return items
     }
 
-    public func move(at time: TimeInterval) -> TimeInterval? {
+    public func beginExecution(from time: TimeInterval) -> TimeInterval? {
 
         let numberOfItems = items.count
         
@@ -143,13 +143,13 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
                 timeRange.contains(time)
             {
                 currentIndex = index
-                return currentTime
+                return lastEventTime
             }
             
             if item.time == time {
                 
                 currentIndex = index
-                return currentTime
+                return lastEventTime
             }
         }
 
@@ -157,7 +157,7 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         return nil
     }
     
-    public func getNext() -> TimeInterval? {
+    public func getNextEventTime() -> TimeInterval? {
         
         let nextIndex = (currentIndex ?? -1) + 1
         
@@ -168,7 +168,7 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         return items[nextIndex].time
     }
     
-    public func next() -> TimeInterval? {
+    public func moveToNextEvent() -> TimeInterval? {
         
         let nextIndex = (currentIndex ?? -1) + 1
         

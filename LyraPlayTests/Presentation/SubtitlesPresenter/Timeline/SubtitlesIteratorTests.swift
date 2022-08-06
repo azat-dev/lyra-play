@@ -72,7 +72,7 @@ class SubtitlesIteratorTests: XCTestCase {
         )
     }
     
-    func test_getNext(
+    func test_getNextEventTime(
         subtitles: Subtitles,
         expectedItems: [TimeInterval?],
         file: StaticString = #filePath,
@@ -85,10 +85,10 @@ class SubtitlesIteratorTests: XCTestCase {
         while true {
             
             let prevState = ExpectedSubtitlesIteratorOutput(from: sut)
-            let time = sut.getNext()
+            let time = sut.getNextEventTime()
             
             AssertEqualReadable(.init(from: sut), prevState)
-            let _ = sut.next()
+            let _ = sut.moveToNextEvent()
             
             
             receivedItems.append(time)
@@ -101,10 +101,10 @@ class SubtitlesIteratorTests: XCTestCase {
         AssertEqualReadable(receivedItems, expectedItems, file: file, line: line)
     }
     
-    func test_getNext__with_empty_subtitle() async throws {
+    func test_getNextEventTime__with_empty_subtitle() async throws {
 
         let subtitles = Subtitles(duration: 0, sentences: [])
-        test_getNext(
+        test_getNextEventTime(
             subtitles: subtitles,
             expectedItems: [
                 0,
@@ -113,10 +113,10 @@ class SubtitlesIteratorTests: XCTestCase {
         )
     }
     
-    func test_getNext__receive_end_time_at_the_end() async throws {
+    func test_getNextEventTime__receive_end_time_at_the_end() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [])
-        test_getNext(
+        test_getNextEventTime(
             subtitles: subtitles,
             expectedItems: [
                 0,
@@ -126,7 +126,7 @@ class SubtitlesIteratorTests: XCTestCase {
         )
     }
     
-    func test_getNext__not_empty_subtitles() async throws {
+    func test_getNextEventTime__not_empty_subtitles() async throws {
 
         let subtitles = Subtitles(duration: 10, sentences: [
             anySentence(at: 1),
@@ -134,7 +134,7 @@ class SubtitlesIteratorTests: XCTestCase {
         let sut = createSUT(subtitles: subtitles)
 
         let prevState = ExpectedSubtitlesIteratorOutput(from: sut)
-        let result = sut.getNext()
+        let result = sut.getNextEventTime()
         
         XCTAssertEqual(result, 0)
         AssertEqualReadable(.init(from: sut), prevState)
@@ -152,7 +152,7 @@ class SubtitlesIteratorTests: XCTestCase {
         
         while true {
             
-            let item = sut.next()
+            let item = sut.moveToNextEvent()
             receivedItems.append(.init(from: sut))
             
             if item == nil {
@@ -206,29 +206,29 @@ class SubtitlesIteratorTests: XCTestCase {
         )
     }
     
-    func test_move__empty_subtitles() {
+    func test_moveToNextEvent__empty_subtitles() {
         
         let subtitles = Subtitles(duration: 0, sentences: [])
         
         let sut = createSUT(subtitles: subtitles)
-        let _ = sut.move(at: 0)
+        let _ = sut.beginExecution(from: 0)
         
         let expectedResult = ExpectedSubtitlesIteratorOutput(time: 0, timeRange: (0..<0))
         AssertEqualReadable(.init(from: sut), expectedResult)
     }
     
-    func test_move__empty_subtitles_with_offset() {
+    func test_moveToNextEvent__empty_subtitles_with_offset() {
         
         let subtitles = Subtitles(duration: 0, sentences: [])
         
         let sut = createSUT(subtitles: subtitles)
-        let _ = sut.move(at: 100)
+        let _ = sut.beginExecution(from: 100)
         
         let expectedResult = ExpectedSubtitlesIteratorOutput(time: 0, timeRange: (0..<0))
         AssertEqualReadable(.init(from: sut), expectedResult)
     }
     
-    func test_move__not_empty_subtitles_exact_time_match() {
+    func test_moveToNextEvent__not_empty_subtitles_exact_time_match() {
         
         let subtitles = Subtitles(duration: 10, sentences: [
             anySentence(at: 0),
@@ -237,7 +237,7 @@ class SubtitlesIteratorTests: XCTestCase {
         ])
         
         let sut = createSUT(subtitles: subtitles)
-        let _ = sut.move(at: 1.5)
+        let _ = sut.beginExecution(from: 1.5)
         
         let expectedResult = ExpectedSubtitlesIteratorOutput(
             time: 1,
@@ -247,7 +247,7 @@ class SubtitlesIteratorTests: XCTestCase {
         AssertEqualReadable(.init(from: sut), expectedResult)
     }
     
-    func test_move__not_empty_subtitles_between() {
+    func test_moveToNextEvent__not_empty_subtitles_between() {
         
         let subtitles = Subtitles(duration: 10, sentences: [
             anySentence(at: 0),
@@ -256,7 +256,7 @@ class SubtitlesIteratorTests: XCTestCase {
         ])
         
         let sut = createSUT(subtitles: subtitles)
-        let _ = sut.move(at: 1.5)
+        let _ = sut.beginExecution(from: 1.5)
         
         let expectedResult = ExpectedSubtitlesIteratorOutput(
             time: 1,
@@ -266,7 +266,7 @@ class SubtitlesIteratorTests: XCTestCase {
         AssertEqualReadable(.init(from: sut), expectedResult)
     }
     
-    func test_move__not_empty_subtitles_end() {
+    func test_moveToNextEvent__not_empty_subtitles_end() {
         
         let subtitles = Subtitles(duration: 10, sentences: [
             anySentence(at: 0),
@@ -275,7 +275,7 @@ class SubtitlesIteratorTests: XCTestCase {
         ])
         
         let sut = createSUT(subtitles: subtitles)
-        let _ = sut.move(at: 10)
+        let _ = sut.beginExecution(from: 10)
         
         let expectedResult = ExpectedSubtitlesIteratorOutput(
             time: 10,
@@ -306,7 +306,7 @@ struct ExpectedSubtitlesIteratorOutput: Equatable {
     
     init(from iterator: SubtitlesIterator) {
 
-        time = iterator.currentTime
+        time = iterator.lastEventTime
         timeRange = iterator.currentTimeRange
         position = .init(from: iterator.currentPosition)
     }

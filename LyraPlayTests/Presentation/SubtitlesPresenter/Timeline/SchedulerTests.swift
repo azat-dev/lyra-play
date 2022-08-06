@@ -251,11 +251,11 @@ final class TimeLineIteratorMock: TimeLineIterator {
     public var currentIndex = 0
     public var timeMarks = [TimeInterval]()
 
-    var currentTime: TimeInterval? {
+    var lastEventTime: TimeInterval? {
         return timeMarks[currentIndex]
     }
     
-    func move(at time: TimeInterval) -> TimeInterval? {
+    func beginExecution(from time: TimeInterval) -> TimeInterval? {
         
         let recentIndex = timeMarks.lastIndex { $0 <= time }
         
@@ -264,10 +264,10 @@ final class TimeLineIteratorMock: TimeLineIterator {
         }
 
         currentIndex = recentIndex
-        return currentTime
+        return lastEventTime
     }
     
-    func getNext() -> TimeInterval? {
+    func getNextEventTime() -> TimeInterval? {
         
         let nextIndex = currentIndex + 1
         
@@ -278,9 +278,9 @@ final class TimeLineIteratorMock: TimeLineIterator {
         return timeMarks[nextIndex]
     }
     
-    func next() -> TimeInterval? {
+    func moveToNextEvent() -> TimeInterval? {
         
-        guard let next = getNext() else {
+        guard let next = getNextEventTime() else {
             return nil
         }
 

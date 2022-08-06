@@ -111,7 +111,7 @@ extension DefaultPlaySubtitlesUseCase {
                 return
             }
             
-            let isLast = self.subtitlesIterator.getNext() == nil
+            let isLast = self.subtitlesIterator.getNextEventTime() == nil
             
             self.state.value = .init(
                 state: isLast ? .finished : .playing,

@@ -9,11 +9,11 @@ import Foundation
 
 public protocol TimeLineIterator {
     
-    func move(at: TimeInterval) -> TimeInterval?
+    func beginExecution(from: TimeInterval) -> TimeInterval?
     
-    func getNext() -> TimeInterval?
+    func getNextEventTime() -> TimeInterval?
     
-    func next() -> TimeInterval?
+    func moveToNextEvent() -> TimeInterval?
     
-    var currentTime: TimeInterval? { get }
+    var lastEventTime: TimeInterval? { get }
 }
