@@ -157,7 +157,7 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         return nil
     }
     
-    public func getNextEventTime() -> TimeInterval? {
+    public func getTimeOfNextEvent() -> TimeInterval? {
         
         let nextIndex = (currentIndex ?? -1) + 1
         

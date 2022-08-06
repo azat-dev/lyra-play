@@ -267,7 +267,7 @@ final class TimeLineIteratorMock: TimeLineIterator {
         return lastEventTime
     }
     
-    func getNextEventTime() -> TimeInterval? {
+    func getTimeOfNextEvent() -> TimeInterval? {
         
         let nextIndex = currentIndex + 1
         
@@ -280,7 +280,7 @@ final class TimeLineIteratorMock: TimeLineIterator {
     
     func moveToNextEvent() -> TimeInterval? {
         
-        guard let next = getNextEventTime() else {
+        guard let next = getTimeOfNextEvent() else {
             return nil
         }
 

@@ -53,7 +53,7 @@ extension DefaultScheduler: Scheduler {
         semaphore.signal()
         
 
-        guard let nextTimeMark = timeLineIterator.getNextEventTime() else {
+        guard let nextTimeMark = timeLineIterator.getTimeOfNextEvent() else {
             return
         }
         

@@ -11,7 +11,7 @@ public protocol TimeLineIterator {
     
     func beginNextExecution(from: TimeInterval) -> TimeInterval?
     
-    func getNextEventTime() -> TimeInterval?
+    func getTimeOfNextEvent() -> TimeInterval?
     
     func moveToNextEvent() -> TimeInterval?
     
