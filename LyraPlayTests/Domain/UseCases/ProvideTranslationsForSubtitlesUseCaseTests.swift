@@ -197,26 +197,31 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         
         let savedDictionaryItem = try AssertResultSucceded(putDictionaryItemResult)
         
-        await sut.useCase.prepare(options: anyOptions(mediaId: anyMediaId(), subtitles: subtitles))
+        let dictionaryId = savedDictionaryItem.id!
+        let translations = savedDictionaryItem.translations
         
+        let translationWithLemma = translations[0]
+        let translationWithRange = translations[1]
+        
+        await sut.useCase.prepare(options: anyOptions(mediaId: anyMediaId(), subtitles: subtitles))
         
         let expectedItems1: [SubtitlesTranslation] = [
             .init(
                 textRange: sentence1.range(of: "Apple")!,
                 translation: .init(
-                    dictionaryItemId: savedDictionaryItem.id!,
-                    translationId: savedDictionaryItem.translations[0].id!,
+                    dictionaryItemId: dictionaryId,
+                    translationId: translations[0].id!,
                     originalText: savedDictionaryItem.originalText,
-                    translatedText: "translation_for_range"
+                    translatedText: translationWithRange.text
                 )
             ),
             .init(
                 textRange: sentence1.range(of: "apple")!,
                 translation: .init(
                     dictionaryItemId: savedDictionaryItem.id!,
-                    translationId: savedDictionaryItem.translations[1].id!,
+                    translationId: translations[1].id!,
                     originalText: savedDictionaryItem.originalText,
-                    translatedText: "translation_for_lemma"
+                    translatedText: translationWithLemma.text
                 )
             ),
         ]
@@ -228,10 +233,10 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
             .init(
                 textRange: sentence2.range(of: "apple")!,
                 translation: .init(
-                    dictionaryItemId: savedDictionaryItem.id!,
-                    translationId: savedDictionaryItem.translations[0].id!,
+                    dictionaryItemId: dictionaryId,
+                    translationId: translations[0].id!,
                     originalText: savedDictionaryItem.originalText,
-                    translatedText: "translation_for_lemma"
+                    translatedText: translationWithLemma.text
                 )
             ),
         ]
