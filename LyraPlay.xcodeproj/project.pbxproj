@@ -22,7 +22,7 @@
 		AA0D3F812876244D006717B9 /* CoreDataSubtitlesRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0D3F802876244C006717B9 /* CoreDataSubtitlesRepositoryTests.swift */; };
 		AA0D3F8328762698006717B9 /* SubtitlesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0D3F8228762698006717B9 /* SubtitlesRepository.swift */; };
 		AA0D3F85287626D1006717B9 /* SubtitlesInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0D3F84287626D1006717B9 /* SubtitlesInfo.swift */; };
-		AA0F69B0287EDF7A00BD13DB /* TimeMarksIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69AF287EDF7A00BD13DB /* TimeMarksIterator.swift */; };
+		AA0F69B0287EDF7A00BD13DB /* TimeLineIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69AF287EDF7A00BD13DB /* TimeLineIterator.swift */; };
 		AA0F69B2287EE64300BD13DB /* Int+Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69B1287EE64300BD13DB /* Int+Double.swift */; };
 		AA0F69B4287EEFF500BD13DB /* SchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69B3287EEFF500BD13DB /* SchedulerTests.swift */; };
 		AA0F69B6287EF74500BD13DB /* Scheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69B5287EF74500BD13DB /* Scheduler.swift */; };
@@ -214,7 +214,7 @@
 		AA0D3F802876244C006717B9 /* CoreDataSubtitlesRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataSubtitlesRepositoryTests.swift; sourceTree = "<group>"; };
 		AA0D3F8228762698006717B9 /* SubtitlesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesRepository.swift; sourceTree = "<group>"; };
 		AA0D3F84287626D1006717B9 /* SubtitlesInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesInfo.swift; sourceTree = "<group>"; };
-		AA0F69AF287EDF7A00BD13DB /* TimeMarksIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeMarksIterator.swift; sourceTree = "<group>"; };
+		AA0F69AF287EDF7A00BD13DB /* TimeLineIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineIterator.swift; sourceTree = "<group>"; };
 		AA0F69B1287EE64300BD13DB /* Int+Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Double.swift"; sourceTree = "<group>"; };
 		AA0F69B3287EEFF500BD13DB /* SchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerTests.swift; sourceTree = "<group>"; };
 		AA0F69B5287EF74500BD13DB /* Scheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scheduler.swift; sourceTree = "<group>"; };
@@ -990,7 +990,7 @@
 				AA09E16E289BC5740003EB83 /* SubtitlesTimeSlotsParser.swift */,
 				AA09E16C289BC4000003EB83 /* SubtitlesPositionsIterator.swift */,
 				AA2A6DDC2897C27200AE5E75 /* SubtitlesIteratorFactory.swift */,
-				AA0F69AF287EDF7A00BD13DB /* TimeMarksIterator.swift */,
+				AA0F69AF287EDF7A00BD13DB /* TimeLineIterator.swift */,
 			);
 			path = Timeline;
 			sourceTree = "<group>";
@@ -1223,7 +1223,7 @@
 				AACCE807288815C0002EA7C5 /* ManagedDictionaryItem+CoreDataProperties.swift in Sources */,
 				AACEA3232869B14000111565 /* Observable.swift in Sources */,
 				AACCE80328881551002EA7C5 /* DictionaryItem.swift in Sources */,
-				AA0F69B0287EDF7A00BD13DB /* TimeMarksIterator.swift in Sources */,
+				AA0F69B0287EDF7A00BD13DB /* TimeLineIterator.swift in Sources */,
 				AA0F69BF287F58A600BD13DB /* RowCell.swift in Sources */,
 				AAF0E8B52889F0A800A19E90 /* SubtitlesTranslation.swift in Sources */,
 				AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */,

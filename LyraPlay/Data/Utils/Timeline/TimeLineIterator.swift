@@ -1,5 +1,5 @@
 //
-//  TimeMarksIterator.swift
+//  TimeLineIterator.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 13.07.22.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol TimeMarksIterator {
+public protocol TimeLineIterator {
     
     func move(at: TimeInterval) -> TimeInterval?
     

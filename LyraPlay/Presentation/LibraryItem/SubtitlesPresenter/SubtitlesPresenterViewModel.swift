@@ -63,7 +63,7 @@ public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewMod
         
         self.subtitlesIterator = DefaultSubtitlesIterator(subtitles: subtitles)
         self.scheduler = DefaultScheduler(
-            timeMarksIterator: subtitlesIterator,
+            timeLineIterator: subtitlesIterator,
             timer: DefaultActionTimer()
         )
     }

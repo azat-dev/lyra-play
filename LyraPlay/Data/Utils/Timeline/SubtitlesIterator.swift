@@ -21,7 +21,7 @@ public struct SubtitlesItem {
     }
 }
 
-public protocol SubtitlesIterator: TimeMarksIterator {
+public protocol SubtitlesIterator: TimeLineIterator {
     
     var currentPosition: SubtitlesPosition? { get }
 

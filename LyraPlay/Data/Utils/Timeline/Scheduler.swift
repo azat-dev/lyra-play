@@ -22,18 +22,18 @@ public protocol Scheduler {
 
 public final class DefaultScheduler {
     
-    private let timeMarksIterator: TimeMarksIterator
+    private let timeLineIterator: TimeLineIterator
     private var timer: ActionTimer
     
     private var semaphore = DispatchSemaphore(value: 1)
     private var isStopped: Bool = false
     
     public init(
-        timeMarksIterator: TimeMarksIterator,
+        timeLineIterator: TimeLineIterator,
         timer: ActionTimer
     ) {
         
-        self.timeMarksIterator = timeMarksIterator
+        self.timeLineIterator = timeLineIterator
         self.timer = timer
     }
 }
@@ -53,7 +53,7 @@ extension DefaultScheduler: Scheduler {
         semaphore.signal()
         
 
-        guard let nextTimeMark = timeMarksIterator.getNext() else {
+        guard let nextTimeMark = timeLineIterator.getNext() else {
             return
         }
         
@@ -79,7 +79,7 @@ extension DefaultScheduler: Scheduler {
             
             let timeDelta = Date.now.timeIntervalSince(triggerTime) - timeOffset
             
-            let _ = self.timeMarksIterator.next()
+            let _ = self.timeLineIterator.next()
             
             block(nextTimeMark)
             
@@ -100,7 +100,7 @@ extension DefaultScheduler: Scheduler {
 
         semaphore.signal()
 
-        guard let currentTimeMark = timeMarksIterator.move(at: time) else {
+        guard let currentTimeMark = timeLineIterator.move(at: time) else {
             setNextTimer(block: block)
             return
         }
@@ -121,7 +121,7 @@ extension DefaultScheduler: Scheduler {
         isStopped = true
         timer.cancel()
         
-        let _ = timeMarksIterator.move(at: 0)
+        let _ = timeLineIterator.move(at: 0)
     }
     
     public func pause() {

@@ -13,18 +13,18 @@ class SchedulerTests: XCTestCase {
     
     typealias SUT = (
         scheduler: Scheduler,
-        iterator: TimeMarksIteratorMock,
+        iterator: TimeLineIteratorMock,
         timer: ActionTimerMock
     )
     
     func createSUT() -> SUT {
         
-        let iterator = TimeMarksIteratorMock()
+        let iterator = TimeLineIteratorMock()
 
         let timer = ActionTimerMock()
         
         let scheduler = DefaultScheduler(
-            timeMarksIterator: iterator,
+            timeLineIterator: iterator,
             timer: timer
         )
         
@@ -245,7 +245,7 @@ final class ActionTimerFactoryMock: ActionTimerFactory {
     }
 }
 
-final class TimeMarksIteratorMock: TimeMarksIterator {
+final class TimeLineIteratorMock: TimeLineIterator {
     
     private var semaphore = DispatchSemaphore(value: 1)
     public var currentIndex = 0

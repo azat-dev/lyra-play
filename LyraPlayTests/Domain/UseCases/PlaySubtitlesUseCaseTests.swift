@@ -23,7 +23,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let timer = ActionTimerMock()
         
         let scheduler = DefaultScheduler(
-            timeMarksIterator: subtitlesIterator,
+            timeLineIterator: subtitlesIterator,
             timer: timer
         )
         
