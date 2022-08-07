@@ -166,7 +166,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         AssertEqualReadable(receivedOutputs, expectedOutputs)
     }
     
-    func test_getTimeOfNextEvent__subtitles_without_time_marks_inside_sentence_zero_offset1() async throws {
+    func test_getTimeOfNextEvent__subtitles_without_time_marks_inside_sentence_zero_offset() async throws {
         
         let sentence1 = anySentence(at: 0, text: "Apple, banana, orange")
         
@@ -213,18 +213,8 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
                         time: 10,
                         data: .groupAfterSentence(
                             items: [
-                                .init(
-                                    dictionaryItemId: orangeTranslation.translation.dictionaryItemId,
-                                    translationId: orangeTranslation.translation.translationId,
-                                    originalText: orangeTranslation.translation.originalText,
-                                    translatedText: orangeTranslation.translation.translatedText
-                                ),
-                                .init(
-                                    dictionaryItemId: bananaTranslation.translation.dictionaryItemId,
-                                    translationId: bananaTranslation.translation.translationId,
-                                    originalText: bananaTranslation.translation.originalText,
-                                    translatedText: bananaTranslation.translation.translatedText
-                                )
+                                orangeTranslation.translation,
+                                bananaTranslation.translation,
                             ]
                         )
                     )
