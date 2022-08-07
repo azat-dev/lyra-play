@@ -62,6 +62,17 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         )
     }
     
+    private func anyTimeMark(at: TimeInterval, duration: TimeInterval? = nil) -> Subtitles.TimeMark {
+        
+        let dummyRange = "a".range(of: "a")!
+        
+        return .init(
+            startTime: at,
+            duration: duration,
+            range: dummyRange
+        )
+    }
+    
     private func anyTranslationItem(text: String, position: TranslationItemPosition? = nil, id: UUID? = nil) -> TranslationItem {
         
         return .init(
@@ -127,12 +138,12 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         )
     }
     
-    private func anyTranslation() -> SubtitlesTranslation {
+    private func anyTranslation(textRange: Range<String.Index>? = nil) -> SubtitlesTranslation {
         
         let dummnyRange = "a".range(of: "a")!
         
         return SubtitlesTranslation(
-            textRange: dummnyRange,
+            textRange: textRange ?? dummnyRange,
             translation: .init(
                 dictionaryItemId: UUID(),
                 translationId: UUID(),
@@ -245,6 +256,70 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
                                 translation1.translation
                             ]
                         )
+                    )
+                )
+            ]
+        )
+    }
+    
+    func test_iterations__subtitles_with_time_marks_inside_and_group_sentence_zero_offset() async throws {
+    
+        let markedWord1 = "b"
+        let markedWord2 = "c"
+        let sentence1 = "a \(markedWord1) \(markedWord2)"
+        
+        let markedWordRange1 = sentence1.range(of: markedWord1)!
+        let markedWordRange2 = sentence1.range(of: markedWord2)!
+        
+        let subtitles = Subtitles(duration: 10, sentences: [
+            anySentence(
+                at: 0,
+                timeMarks: [
+                    .init(
+                        startTime: 5.1,
+                        duration: 2,
+                        range: markedWordRange1
+                    ),
+                    .init(
+                        startTime: 7,
+                        duration: 2,
+                        range: markedWordRange2
+                    )
+                ],
+                text: sentence1
+            ),
+        ])
+
+        let translation1 = anyTranslation()
+        let translation2 = anyTranslation(textRange: markedWordRange2)
+        
+        try await test_iteration(
+            subtitles: subtitles,
+            translations: [
+                0: [
+                    translation1,
+                    translation2
+                ],
+            ],
+            expectedOutputs: [
+                .init(
+                    lastEventTime: nil,
+                    currentItem: .nilValue()
+                ),
+                .init(
+                    lastEventTime: 9,
+                    currentItem: .init(
+                        time: 9,
+                        data: .single(translation: translation2.translation)
+                    )
+                ),
+                .init(
+                    lastEventTime: 10,
+                    currentItem: .init(
+                        time: 10,
+                        data: .groupAfterSentence(items: [
+                            translation1.translation
+                        ])
                     )
                 )
             ]
