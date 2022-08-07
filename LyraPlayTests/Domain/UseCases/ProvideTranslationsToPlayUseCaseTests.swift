@@ -154,6 +154,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
     }
     
     private func test_iteration(
+        from time: TimeInterval,
         subtitles: Subtitles,
         translations: [Int: [SubtitlesTranslation]],
         expectedOutputs: [ExpectedProvideTranslationsToPlayUseCaseOutput],
@@ -174,6 +175,12 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         
         var receivedOutputs = [ExpectedProvideTranslationsToPlayUseCaseOutput]()
         receivedOutputs.append(.init(from: sut.useCase))
+
+        if time != 0 {
+            
+            sut.useCase.beginNextExecution(from: time)
+            receivedOutputs.append(.init(from: sut.useCase))
+        }
         
         while true {
             
@@ -197,6 +204,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         let subtitles = Subtitles(duration: 10, sentences: [])
 
         try await test_iteration(
+            from: 0,
             subtitles: subtitles,
             translations: [:],
             expectedOutputs: [
@@ -220,6 +228,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         let translation2 = anyTranslation()
         
         try await test_iteration(
+            from: 0,
             subtitles: subtitles,
             translations: [
                 0: [
@@ -287,6 +296,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         ])
 
         try await test_iteration(
+            from: 0,
             subtitles: subtitles,
             translations: [
                 0: [
@@ -334,6 +344,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         ])
 
         try await test_iteration(
+            from: 0,
             subtitles: subtitles,
             translations: [
                 0: [
@@ -382,6 +393,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         ])
 
         try await test_iteration(
+            from: 0,
             subtitles: subtitles,
             translations: [
                 0: [
@@ -437,6 +449,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         ])
 
         try await test_iteration(
+            from: 0,
             subtitles: subtitles,
             translations: [
                 0: [
@@ -453,6 +466,78 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
                     currentItem: .init(
                         time: 5,
                         data: .single(translation: markedWordTranslation.translation)
+                    )
+                )
+            ]
+        )
+    }
+    
+    func test_beginNextExecution__empty_subtitles() async throws {
+
+        let subtitles = Subtitles(duration: 10, sentences: [])
+
+        try await test_iteration(
+            from: 100,
+            subtitles: subtitles,
+            translations: [:],
+            expectedOutputs: [
+                .init(
+                    lastEventTime: nil,
+                    currentItem: .nilValue()
+                ),
+                .init(
+                    lastEventTime: nil,
+                    currentItem: .nilValue()
+                )
+            ]
+        )
+    }
+    
+    func test_beginNextExecution__not_empty_subtitles_with_offset() async throws {
+
+        let subtitles = Subtitles(duration: 10, sentences: [
+            anySentence(at: 0),
+            anySentence(at: 3),
+            anySentence(at: 5)
+        ])
+
+        let translation1 = anyTranslation()
+        let translation2 = anyTranslation()
+        
+        try await test_iteration(
+            from: 3,
+            subtitles: subtitles,
+            translations: [
+                0: [
+                    translation1,
+                    translation2
+                ],
+                2: [
+                    translation1
+                ]
+            ],
+            expectedOutputs: [
+                .init(
+                    lastEventTime: 3,
+                    currentItem: .init(
+                        time: 3,
+                        data: .groupAfterSentence(
+                            items: [
+                                translation1.translation,
+                                translation2.translation,
+                            ]
+                        )
+                    )
+                ),
+                .init(
+                    lastEventTime: 10,
+                    currentItem: .init(
+                        time: 10,
+                        data: .groupAfterSentence(
+                            items: [
+                                translation1.translation
+                            ]
+                        )
                     )
                 )
             ]
