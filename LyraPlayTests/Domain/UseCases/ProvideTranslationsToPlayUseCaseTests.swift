@@ -181,7 +181,23 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         AssertEqualReadable(receivedOutputs, expectedOutputs, file: file, line: line)
     }
     
-    func test_getTimeOfNextEvent__subtitles_without_time_marks_inside_sentence_zero_offset() async throws {
+    func test_iteration__of_empty_subtitles() async throws {
+        
+        let subtitles = Subtitles(duration: 10, sentences: [])
+
+        try await test_iteration(
+            subtitles: subtitles,
+            translations: [:],
+            expectedOutputs: [
+                .init(
+                    lastEventTime: nil,
+                    currentItem: .nilValue()
+                ),
+            ]
+        )
+    }
+    
+    func test_iterations__subtitles_without_time_marks_inside_sentence_zero_offset() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
             anySentence(at: 0),
