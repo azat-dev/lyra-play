@@ -170,8 +170,19 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         
         await sut.useCase.prepare(params: testSession)
         
-        let receivedValue = sut.useCase.getTimeOfNextEvent()
-        AssertEqualReadable(receivedValue, 0)
+        var nextEventTime = sut.useCase.getTimeOfNextEvent()
+        
+        XCTAssertEqual(nextEventTime, 10)
+        AssertEqualReadable(
+            .init(from: sut.useCase),
+            ExpectedProvideTranslationsToPlayUseCaseOutput(
+                lastEventTime: nil,
+                currentItem: .nilValue()
+            )
+        )
+        
+        nextEventTime = sut.useCase.moveToNextEvent()
+        XCTAssertEqual(nextEventTime, 10)
         
         let expectedOutput = ExpectedProvideTranslationsToPlayUseCaseOutput(
             lastEventTime: 10,
@@ -197,6 +208,9 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         )
         
         AssertEqualReadable(.init(from: sut.useCase), expectedOutput)
+        
+        nextEventTime = sut.useCase.getTimeOfNextEvent()
+        XCTAssertEqual(nextEventTime, nil)
     }
 }
 
@@ -205,11 +219,11 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
 struct ExpectedProvideTranslationsToPlayUseCaseOutput: Equatable {
     
     var lastEventTime: TimeInterval? = nil
-    var currentItem: ExpectedTranslationsToPlay? = .nilValue()
+    var currentItem: ExpectedTranslationsToPlay = .nilValue()
     
     init(
         lastEventTime: TimeInterval? = nil,
-        currentItem: ExpectedTranslationsToPlay? = .nilValue()
+        currentItem: ExpectedTranslationsToPlay = .nilValue()
     ) {
         
         self.lastEventTime = lastEventTime
