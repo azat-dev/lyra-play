@@ -74,6 +74,8 @@ public final class DefaultProvideTranslationsToPlayUseCase: ProvideTranslationsT
     
     public var currentItem: TranslationsToPlay? = nil
     
+    private var lastPreparedSentenceIndex: Int?
+    
     private var queueItems = [QueueItem]()
     
     private var subtitles: Subtitles? = nil
@@ -190,12 +192,13 @@ extension DefaultProvideTranslationsToPlayUseCase {
             return
         }
         
-        let lastSentenceIndex = queueItems.last?.sentenceIndex ?? -1
-        let sentenceIndex = lastSentenceIndex + 1
+        let sentenceIndex = (lastPreparedSentenceIndex ?? -1) + 1
         
         guard sentenceIndex < subtitles.sentences.count else {
             return
         }
+        
+        lastPreparedSentenceIndex = sentenceIndex
         
         let translations = await provideTranslationsForSubtitlesUseCase.getTranslations(sentenceIndex: sentenceIndex)
         
@@ -270,14 +273,9 @@ extension DefaultProvideTranslationsToPlayUseCase {
         
         await prepareNextItems()
     }
-
-    public func getTimeOfNextEvent() -> TimeInterval? {
-
-        return queueItems.first?.item.time
-    }
-
-    public func moveToNextEvent() -> TimeInterval? {
-
+    
+    private func prepareItemsIfNeeded() {
+        
         if queueItems.count < minNumberOfItemsToQueue {
             
             let semaphore = DispatchSemaphore(value: 0)
@@ -290,8 +288,17 @@ extension DefaultProvideTranslationsToPlayUseCase {
             
             semaphore.wait()
         }
-        
-        
+    }
+
+    public func getTimeOfNextEvent() -> TimeInterval? {
+
+        prepareItemsIfNeeded()
+        return queueItems.first?.item.time
+    }
+
+    public func moveToNextEvent() -> TimeInterval? {
+
+        prepareItemsIfNeeded()
         let droppedItem = queueItems.removeFirst()
         currentItem = droppedItem.item
         

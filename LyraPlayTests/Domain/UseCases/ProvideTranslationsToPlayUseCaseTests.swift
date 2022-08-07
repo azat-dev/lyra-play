@@ -116,7 +116,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         AssertEqualReadable(.init(from: sut.useCase), prevState)
     }
     
-    private func anySentence(at: TimeInterval, timeMarks: [Subtitles.TimeMark]? = nil, text: String) -> Subtitles.Sentence {
+    private func anySentence(at: TimeInterval, timeMarks: [Subtitles.TimeMark]? = nil, text: String = "") -> Subtitles.Sentence {
         
         return Subtitles.Sentence(
             startTime: at,
@@ -124,6 +124,21 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
             text: text,
             timeMarks: timeMarks,
             components: []
+        )
+    }
+    
+    private func anyTranslation() -> SubtitlesTranslation {
+        
+        let dummnyRange = "a".range(of: "a")!
+        
+        return SubtitlesTranslation(
+            textRange: dummnyRange,
+            translation: .init(
+                dictionaryItemId: UUID(),
+                translationId: UUID(),
+                originalText: UUID().uuidString,
+                translatedText: UUID().uuidString
+            )
         )
     }
     
@@ -160,46 +175,32 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
             let eventTime = sut.useCase.moveToNextEvent()
             receivedOutputs.append(.init(from: sut.useCase))
             
-            XCTAssertEqual(eventTime, nextEventTime)
+            XCTAssertEqual(eventTime, nextEventTime, file: file, line: line)
         }
         
-        AssertEqualReadable(receivedOutputs, expectedOutputs)
+        AssertEqualReadable(receivedOutputs, expectedOutputs, file: file, line: line)
     }
     
     func test_getTimeOfNextEvent__subtitles_without_time_marks_inside_sentence_zero_offset() async throws {
         
-        let sentence1 = anySentence(at: 0, text: "Apple, banana, orange")
-        
         let subtitles = Subtitles(duration: 10, sentences: [
-            sentence1
+            anySentence(at: 0),
+            anySentence(at: 3),
+            anySentence(at: 5)
         ])
 
-        let orangeTranslation = SubtitlesTranslation(
-            textRange: sentence1.text.range(of: "orange")!,
-            translation: .init(
-                dictionaryItemId: UUID(),
-                translationId: UUID(),
-                originalText: "orange",
-                translatedText: "translated orange"
-            )
-        )
-        
-        let bananaTranslation = SubtitlesTranslation(
-            textRange: sentence1.text.range(of: "banana")!,
-            translation: .init(
-                dictionaryItemId: UUID(),
-                translationId: UUID(),
-                originalText: "banana",
-                translatedText: "translated banana"
-            )
-        )
+        let translation1 = anyTranslation()
+        let translation2 = anyTranslation()
         
         try await test_iteration(
             subtitles: subtitles,
             translations: [
                 0: [
-                    orangeTranslation,
-                    bananaTranslation,
+                    translation1,
+                    translation2
+                ],
+                2: [
+                    translation1
                 ]
             ],
             expectedOutputs: [
@@ -208,13 +209,24 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
                     currentItem: .nilValue()
                 ),
                 .init(
+                    lastEventTime: 3,
+                    currentItem: .init(
+                        time: 3,
+                        data: .groupAfterSentence(
+                            items: [
+                                translation1.translation,
+                                translation2.translation,
+                            ]
+                        )
+                    )
+                ),
+                .init(
                     lastEventTime: 10,
                     currentItem: .init(
                         time: 10,
                         data: .groupAfterSentence(
                             items: [
-                                orangeTranslation.translation,
-                                bananaTranslation.translation,
+                                translation1.translation
                             ]
                         )
                     )
