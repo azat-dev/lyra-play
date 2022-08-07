@@ -216,9 +216,18 @@ extension DefaultProvideTranslationsToPlayUseCase {
         
         for translation in translations {
             
-            let boundedTimeMarkIndex = timeMarks.firstIndex { $0.range.overlaps(translation.textRange) }
+            let boundedTimeMarkIndex = timeMarks.lastIndex { $0.range.overlaps(translation.textRange) }
             
             if let boundedTimeMarkIndex = boundedTimeMarkIndex {
+                
+                let boundedTimeMark = timeMarks[boundedTimeMarkIndex]
+                
+                if boundedTimeMark.range.upperBound < translation.textRange.upperBound {
+                
+                    groupedTranslations.append(translation.translation)
+                    continue
+                }
+                
                 
                 let timeSlot = timeSlotsForSentence.first { $0.subtitlesPosition?.timeMarkIndex == boundedTimeMarkIndex }
 

@@ -262,43 +262,35 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         )
     }
     
-    func test_iterations__subtitles_with_time_marks_inside_and_group_sentence_zero_offset() async throws {
+    func test_iterations__subtitles_with_time_mark_range_equals_to_translation_range() async throws {
     
-        let markedWord1 = "b"
-        let markedWord2 = "c"
-        let sentence1 = "a \(markedWord1) \(markedWord2)"
+        let markedWord = "1"
         
-        let markedWordRange1 = sentence1.range(of: markedWord1)!
-        let markedWordRange2 = sentence1.range(of: markedWord2)!
+        let sentence1 = "0 \(markedWord) 2"
+        
+        let markedWordRange = sentence1.range(of: markedWord)!
+
+        let markedWordTranslation = anyTranslation(textRange: markedWordRange)
         
         let subtitles = Subtitles(duration: 10, sentences: [
             anySentence(
                 at: 0,
                 timeMarks: [
                     .init(
-                        startTime: 5.1,
+                        startTime: 1,
                         duration: 2,
-                        range: markedWordRange1
+                        range: markedWordRange
                     ),
-                    .init(
-                        startTime: 7,
-                        duration: 2,
-                        range: markedWordRange2
-                    )
                 ],
                 text: sentence1
             ),
         ])
 
-        let translation1 = anyTranslation()
-        let translation2 = anyTranslation(textRange: markedWordRange2)
-        
         try await test_iteration(
             subtitles: subtitles,
             translations: [
                 0: [
-                    translation1,
-                    translation2
+                    markedWordTranslation,
                 ],
             ],
             expectedOutputs: [
@@ -307,19 +299,160 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
                     currentItem: .nilValue()
                 ),
                 .init(
-                    lastEventTime: 9,
+                    lastEventTime: 3,
                     currentItem: .init(
-                        time: 9,
-                        data: .single(translation: translation2.translation)
+                        time: 3,
+                        data: .single(translation: markedWordTranslation.translation)
                     )
+                )
+            ]
+        )
+    }
+    
+    func test_iterations__subtitles_with_time_mark_range_greater_than_translation_range() async throws {
+    
+        let markedWord = "1"
+        
+        let sentence1 = "0 \(markedWord) 2 3"
+        
+        let markedWordRange = sentence1.range(of: markedWord + " 2")!
+
+        let markedWordTranslation = anyTranslation(textRange: markedWordRange)
+        
+        let subtitles = Subtitles(duration: 10, sentences: [
+            anySentence(
+                at: 0,
+                timeMarks: [
+                    .init(
+                        startTime: 1,
+                        duration: 2,
+                        range: markedWordRange
+                    ),
+                ],
+                text: sentence1
+            ),
+        ])
+
+        try await test_iteration(
+            subtitles: subtitles,
+            translations: [
+                0: [
+                    markedWordTranslation,
+                ],
+            ],
+            expectedOutputs: [
+                .init(
+                    lastEventTime: nil,
+                    currentItem: .nilValue()
+                ),
+                .init(
+                    lastEventTime: 3,
+                    currentItem: .init(
+                        time: 3,
+                        data: .single(translation: markedWordTranslation.translation)
+                    )
+                )
+            ]
+        )
+    }
+    
+    func test_iterations__subtitles_with_time_mark_range_smaller_than_translation_range() async throws {
+    
+        let markedWord = "1"
+        
+        let sentence1 = "0 \(markedWord)1 2 3"
+        
+        let markedWordRange = sentence1.range(of: markedWord )!
+        let translationRange = sentence1.range(of: markedWord + "1")!
+
+        let markedWordTranslation = anyTranslation(textRange: translationRange)
+        
+        let subtitles = Subtitles(duration: 10, sentences: [
+            anySentence(
+                at: 0,
+                timeMarks: [
+                    .init(
+                        startTime: 1,
+                        duration: 2,
+                        range: markedWordRange
+                    ),
+                ],
+                text: sentence1
+            ),
+        ])
+
+        try await test_iteration(
+            subtitles: subtitles,
+            translations: [
+                0: [
+                    markedWordTranslation,
+                ],
+            ],
+            expectedOutputs: [
+                .init(
+                    lastEventTime: nil,
+                    currentItem: .nilValue()
                 ),
                 .init(
                     lastEventTime: 10,
                     currentItem: .init(
                         time: 10,
-                        data: .groupAfterSentence(items: [
-                            translation1.translation
-                        ])
+                        data: .groupAfterSentence(items: [markedWordTranslation.translation])
+                    )
+                )
+            ]
+        )
+    }
+    
+    func test_iterations__subtitles_with_multiple_time_marks_inside_translation_range__use_only_last_one() async throws {
+    
+        let markedWord = "12"
+        
+        let sentence1 = "0 \(markedWord) 3 4 5"
+        
+        let markedWordRange = sentence1.range(of: markedWord )!
+        
+        let timeMarkRange1 = sentence1.range(of: "1")!
+        let timeMarkRange2 = sentence1.range(of: "2")!
+        
+        let markedWordTranslation = anyTranslation(textRange: markedWordRange)
+        
+        let subtitles = Subtitles(duration: 10, sentences: [
+            anySentence(
+                at: 0,
+                timeMarks: [
+                    .init(
+                        startTime: 1,
+                        duration: 2,
+                        range: timeMarkRange1
+                    ),
+                    .init(
+                        startTime: 4,
+                        duration: 1,
+                        range: timeMarkRange2
+                    ),
+                ],
+                text: sentence1
+            ),
+        ])
+
+        try await test_iteration(
+            subtitles: subtitles,
+            translations: [
+                0: [
+                    markedWordTranslation,
+                ],
+            ],
+            expectedOutputs: [
+                .init(
+                    lastEventTime: nil,
+                    currentItem: .nilValue()
+                ),
+                .init(
+                    lastEventTime: 5,
+                    currentItem: .init(
+                        time: 5,
+                        data: .single(translation: markedWordTranslation.translation)
                     )
                 )
             ]
