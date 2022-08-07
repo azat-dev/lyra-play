@@ -64,10 +64,9 @@ public final class DefaultProvideTranslationsToPlayUseCase: ProvideTranslationsT
     }
     
     
-    
     // MARK: - Properties
 
-    private let minNumberOfItemsToQueue = 3
+    private let minNumberOfItemsToQueue: Int
     
     private let provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase
 
@@ -83,8 +82,12 @@ public final class DefaultProvideTranslationsToPlayUseCase: ProvideTranslationsT
 
     // MARK: - Initializers
 
-    public init(provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase) {
+    public init(
+        provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase,
+        minNumberOfItemsToQueue: Int = 3
+    ) {
 
+        self.minNumberOfItemsToQueue = minNumberOfItemsToQueue
         self.provideTranslationsForSubtitlesUseCase = provideTranslationsForSubtitlesUseCase
     }
 }
