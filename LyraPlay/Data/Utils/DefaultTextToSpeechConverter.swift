@@ -19,7 +19,6 @@ public final class DefaultTextToSpeechConverter: TextToSpeechConverter {
     private func getEnhancedVoice(language: String) -> AVSpeechSynthesisVoice? {
         
         let voices = AVSpeechSynthesisVoice.speechVoices()
-        dump(voices.filter { $0.language == language})
         return voices.first { $0.language == language && $0.quality == .enhanced }
     }
     
