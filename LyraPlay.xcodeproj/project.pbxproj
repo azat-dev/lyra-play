@@ -24,6 +24,9 @@
 		AA0D3F85287626D1006717B9 /* SubtitlesInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0D3F84287626D1006717B9 /* SubtitlesInfo.swift */; };
 		AA0DADEF28A10A2100B11B95 /* PlaySubtitlesUseCaseFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0DADEE28A10A2100B11B95 /* PlaySubtitlesUseCaseFactoryTests.swift */; };
 		AA0DADF128A10B4700B11B95 /* PlaySubtitlesUseCaseFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0DADF028A10B4700B11B95 /* PlaySubtitlesUseCaseFactory.swift */; };
+		AA0DADF728A14F1800B11B95 /* TextToSpeechConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0DADF628A14F1800B11B95 /* TextToSpeechConverter.swift */; };
+		AA0DADF928A14FB900B11B95 /* TextToSpeechConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0DADF828A14FB900B11B95 /* TextToSpeechConverterTests.swift */; };
+		AA0DADFB28A1509B00B11B95 /* DefaultTextToSpeechConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0DADFA28A1509B00B11B95 /* DefaultTextToSpeechConverter.swift */; };
 		AA0F69B0287EDF7A00BD13DB /* TimeLineIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69AF287EDF7A00BD13DB /* TimeLineIterator.swift */; };
 		AA0F69B2287EE64300BD13DB /* Int+Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69B1287EE64300BD13DB /* Int+Double.swift */; };
 		AA0F69B4287EEFF500BD13DB /* SchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69B3287EEFF500BD13DB /* SchedulerTests.swift */; };
@@ -220,6 +223,9 @@
 		AA0D3F84287626D1006717B9 /* SubtitlesInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesInfo.swift; sourceTree = "<group>"; };
 		AA0DADEE28A10A2100B11B95 /* PlaySubtitlesUseCaseFactoryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaySubtitlesUseCaseFactoryTests.swift; sourceTree = "<group>"; };
 		AA0DADF028A10B4700B11B95 /* PlaySubtitlesUseCaseFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaySubtitlesUseCaseFactory.swift; sourceTree = "<group>"; };
+		AA0DADF628A14F1800B11B95 /* TextToSpeechConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextToSpeechConverter.swift; sourceTree = "<group>"; };
+		AA0DADF828A14FB900B11B95 /* TextToSpeechConverterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextToSpeechConverterTests.swift; sourceTree = "<group>"; };
+		AA0DADFA28A1509B00B11B95 /* DefaultTextToSpeechConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTextToSpeechConverter.swift; sourceTree = "<group>"; };
 		AA0F69AF287EDF7A00BD13DB /* TimeLineIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineIterator.swift; sourceTree = "<group>"; };
 		AA0F69B1287EE64300BD13DB /* Int+Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Double.swift"; sourceTree = "<group>"; };
 		AA0F69B3287EEFF500BD13DB /* SchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerTests.swift; sourceTree = "<group>"; };
@@ -870,6 +876,7 @@
 				AA1ACC2B286317A2000EEDD5 /* TagsParser.swift */,
 				AAC8E0F1288B13F8001A274A /* TextAnalyzer */,
 				AAF3E35628831E8300ECBFA3 /* Timeline */,
+				AA0DADFA28A1509B00B11B95 /* DefaultTextToSpeechConverter.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1010,6 +1017,7 @@
 		AAFB97982875C5D1007A76A7 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				AA0DADF828A14FB900B11B95 /* TextToSpeechConverterTests.swift */,
 				AAFB97992875C5DF007A76A7 /* Subtitles */,
 				AA1ACC2528630F9E000EEDD5 /* DefaultTagsParser */,
 			);
@@ -1040,6 +1048,7 @@
 			isa = PBXGroup;
 			children = (
 				AAFB979E2875CFA9007A76A7 /* SubtitlesParser.swift */,
+				AA0DADF628A14F1800B11B95 /* TextToSpeechConverter.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1200,6 +1209,7 @@
 				AA040E0328835247000CFC26 /* SubtitlesPresenterView+Layout.swift in Sources */,
 				AA0DADF128A10B4700B11B95 /* PlaySubtitlesUseCaseFactory.swift in Sources */,
 				AA731CC5287070C00044412F /* ShowMediaInfoUseCase.swift in Sources */,
+				AA0DADFB28A1509B00B11B95 /* DefaultTextToSpeechConverter.swift in Sources */,
 				AA66FD2C287A0A07005AD524 /* LoadSubtitlesUseCase.swift in Sources */,
 				AA9BEB062865D78C0028DF8E /* AudioLibraryRepository.swift in Sources */,
 				AAA87989289E947800E04CA9 /* Range+TextRange.swift in Sources */,
@@ -1233,6 +1243,7 @@
 				AA4F9707286E3C380087F45A /* AudioFilesBrowserViewController+Styles.swift in Sources */,
 				AA41508C286B603B004549F4 /* AudioFilesBrowserCell+Styles.swift in Sources */,
 				AAFB97A12875D0FD007A76A7 /* LyricsParser.swift in Sources */,
+				AA0DADF728A14F1800B11B95 /* TextToSpeechConverter.swift in Sources */,
 				AACCE807288815C0002EA7C5 /* ManagedDictionaryItem+CoreDataProperties.swift in Sources */,
 				AACEA3232869B14000111565 /* Observable.swift in Sources */,
 				AACCE80328881551002EA7C5 /* DictionaryItem.swift in Sources */,
@@ -1334,6 +1345,7 @@
 				AAFB979B2875C60F007A76A7 /* LyricsParserTests.swift in Sources */,
 				AA731CCA2870BE890044412F /* LoadTrackUseCaseTests.swift in Sources */,
 				AAC8E0F0288B10AF001A274A /* LemmatizerTests.swift in Sources */,
+				AA0DADF928A14FB900B11B95 /* TextToSpeechConverterTests.swift in Sources */,
 				AA66FD28287A0795005AD524 /* SubtitlesParserMock.swift in Sources */,
 				AA415084286B0987004549F4 /* AssertResult.swift in Sources */,
 				AA0D3F812876244D006717B9 /* CoreDataSubtitlesRepositoryTests.swift in Sources */,
@@ -1528,6 +1540,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1557,6 +1570,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
