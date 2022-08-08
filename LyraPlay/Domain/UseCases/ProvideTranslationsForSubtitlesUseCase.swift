@@ -28,6 +28,14 @@ public struct SubtitlesTranslationItem: Equatable {
         self.originalText = originalText
         self.translatedText = translatedText
     }
+    
+    public var originalTextLanguage: String {
+        "en_US"
+    }
+    
+    public var translatedTextLanguage: String {
+        "ru_RU"
+    }
 }
 
 public struct SubtitlesTranslation: Equatable {

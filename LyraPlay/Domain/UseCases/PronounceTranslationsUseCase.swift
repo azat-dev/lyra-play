@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AVFAudio
 
 // MARK: - Interfaces
 
@@ -25,9 +26,9 @@ public enum PronounceTranslationsUseCaseState: Equatable {
 
 public protocol PronounceTranslationsUseCaseInput {
 
-    func pronounceSingle(translation: SubtitlesTranslationItem) -> Void
+    func pronounceSingle(translation: SubtitlesTranslationItem) async -> Void
 
-    func pronounceGroup(translations: [SubtitlesTranslationItem]) -> Void
+    func pronounceGroup(translations: [SubtitlesTranslationItem]) async -> Void
 
     func pause() -> Void
 
@@ -49,14 +50,19 @@ public final class DefaultPronounceTranslationsUseCase: PronounceTranslationsUse
     // MARK: - Properties
 
     private let textToSpeechConverter: TextToSpeechConverter
+    private let audioService: AudioService
 
     public let state: Observable<PronounceTranslationsUseCaseState> = .init(.stopped)
 
     // MARK: - Initializers
 
-    public init(textToSpeechConverter: TextToSpeechConverter) {
+    public init(
+        textToSpeechConverter: TextToSpeechConverter,
+        audioService: AudioService
+    ) {
 
         self.textToSpeechConverter = textToSpeechConverter
+        self.audioService = audioService
     }
 }
 
@@ -64,12 +70,43 @@ public final class DefaultPronounceTranslationsUseCase: PronounceTranslationsUse
 
 extension DefaultPronounceTranslationsUseCase {
 
-    public func pronounceSingle(translation: SubtitlesTranslationItem) -> Void {
+    private func convert(translation: SubtitlesTranslationItem) async -> (original: Data?, translated: Data?) {
+        
+        let results = await [
+            
+            textToSpeechConverter.convert(
+                text: translation.originalText,
+                language: translation.originalTextLanguage
+            ),
+            textToSpeechConverter.convert(
+                text: translation.translatedText,
+                language: translation.translatedTextLanguage
+            )
+        ]
+        
+        return (
+            try? results[0].get(),
+            try? results[1].get()
+        )
+    }
+    
+    public func pronounceSingle(translation: SubtitlesTranslationItem) async -> Void {
 
-        fatalError("Not implemented")
+        let converted = await convert(translation: translation)
+        
+        if let originalData = converted.original {
+            
+            await audioService.play(
+                fileId: translation.translationId.uuidString,
+                data: originalData
+            )
+            
+            sleep(1)
+        }
+        
     }
 
-    public func pronounceGroup(translations: [SubtitlesTranslationItem]) -> Void {
+    public func pronounceGroup(translations: [SubtitlesTranslationItem]) async -> Void {
 
         fatalError("Not implemented")
     }
