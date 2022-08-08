@@ -8,41 +8,45 @@
 import XCTest
 import LyraPlay
 
- class PlaySubtitlesUseCaseFactoryTests: XCTestCase {
-
+class PlaySubtitlesUseCaseFactoryTests: XCTestCase {
+    
     typealias SUT = (
         useCase: PlaySubtitlesUseCaseFactory,
         subtitlesIterator: SubtitlesIterator,
         scheduler: SchedulerMock
     )
+    
+    func createSUT(subtitles: Subtitles) -> SUT {
+        
+        let subtitlesIterator = DefaultSubtitlesIterator(
+            subtitles: subtitles,
+            subtitlesTimeSlots: []
+        )
 
-    func createSUT() -> SUT {
-
-        let subtitlesIterator = DefaultSubtitlesIterator()
         let scheduler = SchedulerMock()
-
+        
         let useCase = DefaultPlaySubtitlesUseCaseFactory(
             subtitlesIterator: subtitlesIterator,
             scheduler: scheduler
         )
         detectMemoryLeak(instance: useCase)
-
+        
         return (
             useCase,
             subtitlesIterator,
             scheduler
         )
     }
-
+    
     func anySubtitles() -> Subtitles {
         return .init(duration: 0, sentences: [])
     }
-
+    
     func test_create() async throws {
-
-        let sut = createSUT()
-
-        let playSubtitlesUseCase = sut.useCase.create(with: anySubtitles())
+        
+        let sut = createSUT(subtitles: anySubtitles())
+        
+        let playSubtitlesUseCase = sut.useCase.create()
         XCTAssertNotNil(playSubtitlesUseCase)
     }
 }
