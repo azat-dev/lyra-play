@@ -178,7 +178,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
 
         if time != 0 {
             
-            sut.useCase.beginNextExecution(from: time)
+            let _ = sut.useCase.beginNextExecution(from: time)
             receivedOutputs.append(.init(from: sut.useCase))
         }
         
@@ -504,19 +504,54 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         let translation1 = anyTranslation()
         let translation2 = anyTranslation()
         
+        let translations = [
+            0: [
+                translation1,
+                translation2
+            ],
+            2: [
+                translation1
+            ]
+        ]
+        
         try await test_iteration(
             from: 3,
             subtitles: subtitles,
-            translations: [
-                0: [
-                    translation1,
-                    translation2
-                ],
-                2: [
-                    translation1
-                ]
-            ],
+            translations: translations,
             expectedOutputs: [
+                .initialValue(),
+                .init(
+                    lastEventTime: 3,
+                    currentItem: .init(
+                        time: 3,
+                        data: .groupAfterSentence(
+                            items: [
+                                translation1.translation,
+                                translation2.translation,
+                            ]
+                        )
+                    )
+                ),
+                .init(
+                    lastEventTime: 10,
+                    currentItem: .init(
+                        time: 10,
+                        data: .groupAfterSentence(
+                            items: [
+                                translation1.translation
+                            ]
+                        )
+                    )
+                )
+            ]
+        )
+        
+        try await test_iteration(
+            from: 5,
+            subtitles: subtitles,
+            translations: translations,
+            expectedOutputs: [
+                .initialValue(),
                 .init(
                     lastEventTime: 3,
                     currentItem: .init(
@@ -572,6 +607,14 @@ struct ExpectedProvideTranslationsToPlayUseCaseOutput: Equatable {
         if let currentItem = source.currentItem {
             self.currentItem = ExpectedTranslationsToPlay(from: currentItem)
         }
+    }
+    
+    static func initialValue() -> Self {
+        
+        return .init(
+            lastEventTime: nil,
+            currentItem: .nilValue()
+        )
     }
 }
 

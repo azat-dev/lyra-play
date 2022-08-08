@@ -78,9 +78,9 @@ public final class DefaultProvideTranslationsToPlayUseCase: ProvideTranslationsT
     
     private var queueItems = [QueueItem]()
     
-    private var subtitles: Subtitles? = nil
+    private var subtitles: Subtitles!
     
-    private var subtitlesTimeSlots: [SentenceIndex: [SubtitlesTimeSlot]]? = nil
+    private var subtitlesTimeSlots: [SentenceIndex: [SubtitlesTimeSlot]]!
 
     // MARK: - Initializers
 
@@ -98,107 +98,32 @@ public final class DefaultProvideTranslationsToPlayUseCase: ProvideTranslationsT
 
 extension DefaultProvideTranslationsToPlayUseCase {
 
-    private static func getTimeSlotsBySentences(timeSlots: [SubtitlesTimeSlot]) -> [SentenceIndex: [SubtitlesTimeSlot]] {
+    private static func groupTimeSlotsBySentences(timeSlots: [SubtitlesTimeSlot]) -> [SentenceIndex: [SubtitlesTimeSlot]] {
         
         var result = [SentenceIndex: [SubtitlesTimeSlot]]()
         
-        var currentSentenceIndex: Int?
-        var lastSentenceItems = [SubtitlesTimeSlot]()
-        
-        
-        let appendSentenceItemsToResult = { () -> Void in
-            
-            guard
-                let currentSentenceIndex = currentSentenceIndex,
-                !lastSentenceItems.isEmpty
-            else {
-                return
-            }
-
-            result[currentSentenceIndex] = lastSentenceItems
-        }
-        
-        let startNewSentence = { (newSentenceIndex: Int) -> Void in
-            
-            currentSentenceIndex  = newSentenceIndex
-            lastSentenceItems = []
-        }
-        
-        
         for timeSlot in timeSlots {
             
-            guard let position = timeSlot.subtitlesPosition else {
-            
-                appendSentenceItemsToResult()
-                
-                currentSentenceIndex = nil
-                lastSentenceItems = []
+            guard let sentenceIndex = timeSlot.subtitlesPosition?.sentenceIndex else {
                 continue
             }
-
-            if currentSentenceIndex != position.sentenceIndex {
-                
-                appendSentenceItemsToResult()
-                startNewSentence(position.sentenceIndex)
-            }
             
-            lastSentenceItems.append(timeSlot)
-        }
-        
-        if !lastSentenceItems.isEmpty {
-            
-            appendSentenceItemsToResult()
+            var newItems = result[sentenceIndex, default: []]
+            newItems.append(timeSlot)
+            result[sentenceIndex] = newItems
         }
         
         return result
     }
     
-    private func appendSingleTranslation(sentenceIndex: Int, time: TimeInterval, translation: SubtitlesTranslationItem) {
+
+    private func getNextItems(sentenceIndex: Int) async -> [QueueItem] {
         
-        queueItems.append(
-            .init(
-                sentenceIndex: sentenceIndex,
-                item: .init(
-                    time: time,
-                    data: .single(translation: translation)
-                )
-            )
-        )
-    }
-    
-    private func appendGroupedTranslations(sentenceIndex: Int, time: TimeInterval, items: [SubtitlesTranslationItem]) {
-        
-        guard !items.isEmpty else {
-            return
-        }
-        
-        queueItems.append(
-            .init(
-                sentenceIndex: sentenceIndex,
-                item: .init(
-                    time: time,
-                    data: .groupAfterSentence(items: items)
-                )
-            )
-        )
-    }
-    
-    private func prepareNextItems() async {
-        
-        guard
-            let subtitles = subtitles,
-            let subtitlesTimeSlots = subtitlesTimeSlots
-        else {
-            return
-        }
-        
-        let sentenceIndex = (lastPreparedSentenceIndex ?? -1) + 1
+        var items = [QueueItem]()
         
         guard sentenceIndex < subtitles.sentences.count else {
-            return
+            return items
         }
-        
-        lastPreparedSentenceIndex = sentenceIndex
         
         let translations = await provideTranslationsForSubtitlesUseCase.getTranslations(sentenceIndex: sentenceIndex)
         
@@ -206,7 +131,7 @@ extension DefaultProvideTranslationsToPlayUseCase {
         guard
             let sentenceTimeRange = timeSlotsForSentence.last?.timeRange
         else {
-            return
+            return items
         }
         
         var groupedTranslations = [SubtitlesTranslationItem]()
@@ -228,17 +153,20 @@ extension DefaultProvideTranslationsToPlayUseCase {
                     continue
                 }
                 
-                
                 let timeSlot = timeSlotsForSentence.first { $0.subtitlesPosition?.timeMarkIndex == boundedTimeMarkIndex }
 
                 guard let timeSlot = timeSlot else {
                     continue
                 }
                 
-                appendSingleTranslation(
-                    sentenceIndex: sentenceIndex,
-                    time: timeSlot.timeRange.upperBound,
-                    translation: translation.translation
+                items.append(
+                    .init(
+                        sentenceIndex: sentenceIndex,
+                        item: .init(
+                            time: timeSlot.timeRange.upperBound,
+                            data: .single(translation: translation.translation)
+                        )
+                    )
                 )
                 continue
             }
@@ -255,12 +183,38 @@ extension DefaultProvideTranslationsToPlayUseCase {
             
             groupedTranslations.append(translation.translation)
         }
+        
+        guard !groupedTranslations.isEmpty else {
 
-        appendGroupedTranslations(
-            sentenceIndex: sentenceIndex,
-            time: sentenceTimeRange.upperBound,
-            items: groupedTranslations
+            return items
+        }
+        
+        
+        items.append(
+            .init(
+                sentenceIndex: sentenceIndex,
+                item: .init(
+                    time: sentenceTimeRange.upperBound,
+                    data: .groupAfterSentence(items: groupedTranslations)
+                )
+            )
         )
+        
+        return items
+    }
+    
+    private func prepareNextItems() async {
+        
+        let sentenceIndex = (lastPreparedSentenceIndex ?? -1) + 1
+        
+        guard sentenceIndex < subtitles.sentences.count else {
+            return
+        }
+        
+        lastPreparedSentenceIndex = sentenceIndex
+        let nextItems = await getNextItems(sentenceIndex: sentenceIndex)
+
+        queueItems.append(contentsOf: nextItems)
         
         if queueItems.count < minNumberOfItemsToQueue {
             
@@ -276,7 +230,7 @@ extension DefaultProvideTranslationsToPlayUseCase {
         // FIXME: Make timeSlots dependency
         let parser = SubtitlesTimeSlotsParser()
         let timeSlots = parser.parse(from: params.subtitles)
-        subtitlesTimeSlots = Self.getTimeSlotsBySentences(timeSlots: timeSlots)
+        subtitlesTimeSlots = Self.groupTimeSlotsBySentences(timeSlots: timeSlots)
         
         await provideTranslationsForSubtitlesUseCase.prepare(options: params)
         
@@ -285,18 +239,20 @@ extension DefaultProvideTranslationsToPlayUseCase {
     
     private func prepareItemsIfNeeded() {
         
-        if queueItems.count < minNumberOfItemsToQueue {
-            
-            let semaphore = DispatchSemaphore(value: 0)
-            
-            Task(priority: .userInitiated) {
-                
-                await prepareNextItems()
-                semaphore.signal()
-            }
-            
-            semaphore.wait()
+        guard queueItems.count < minNumberOfItemsToQueue else {
+            return
         }
+
+        // FIXME: Remove semaphore
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        Task(priority: .userInitiated) {
+            
+            defer { semaphore.signal() }
+            await prepareNextItems()
+        }
+        
+        semaphore.wait()
     }
 
     public func getTimeOfNextEvent() -> TimeInterval? {
@@ -314,7 +270,73 @@ extension DefaultProvideTranslationsToPlayUseCase {
         return lastEventTime
     }
     
-    public func beginNextExecution(from: TimeInterval) -> TimeInterval? {
-        fatalError("Not implemented")
+    private func findItems(for time: TimeInterval) async -> (sentenceIndex: Int, items: [QueueItem], lastItemIndex: Int)? {
+        
+        let numberOfSentences = subtitles.sentences.count
+        
+        for sentenceIndex in stride(from: numberOfSentences - 1, through: 0, by: -1) {
+    
+            let timeSlots = subtitlesTimeSlots[sentenceIndex, default: []]
+            let timeSlotIndex = timeSlots.lastIndex { $0.timeRange.contains(time) || $0.timeRange.upperBound <= time }
+            
+            guard timeSlotIndex != nil else {
+                continue
+            }
+            
+            let items = await getNextItems(sentenceIndex: sentenceIndex)
+            
+            guard let lastIndex = items.lastIndex (where: { $0.item.time <= time }) else {
+                continue
+            }
+            
+            return (sentenceIndex, items, lastIndex)
+        }
+
+        return nil
+    }
+    
+    private func resetState() {
+        
+        currentItem = nil
+        queueItems = []
+        lastPreparedSentenceIndex = nil
+    }
+    
+    public func beginNextExecution(from time: TimeInterval) -> TimeInterval? {
+        
+        // FIXME: Remove semaphore
+        let semaphore = DispatchSemaphore(value: 0)
+
+        Task(priority: .userInitiated) {
+
+            defer { semaphore.signal() }
+            
+            guard let foundItemData = await findItems(for: time) else {
+                
+                resetState()
+                return
+            }
+            
+            var nextItems = foundItemData.items
+            let sentenceIndex = foundItemData.sentenceIndex
+
+            nextItems.removeFirst(foundItemData.lastItemIndex)
+            
+            if nextItems.isEmpty {
+
+                currentItem = nil
+            } else {
+
+                currentItem = nextItems.removeFirst().item
+            }
+            
+            queueItems = nextItems
+            lastPreparedSentenceIndex = sentenceIndex
+        }
+        
+        semaphore.wait()
+        prepareItemsIfNeeded()
+        
+        return lastEventTime
     }
 }
