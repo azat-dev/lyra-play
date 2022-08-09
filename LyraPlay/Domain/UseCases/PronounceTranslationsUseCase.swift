@@ -104,6 +104,13 @@ extension DefaultPronounceTranslationsUseCase {
             sleep(1)
         }
         
+        if let translatedData = converted.translated {
+            
+            let _ = await audioService.play(
+                fileId: translation.translationId.uuidString,
+                data: translatedData
+            )
+        }
     }
 
     public func pronounceGroup(translations: [SubtitlesTranslationItem]) async -> Void {
