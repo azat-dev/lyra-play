@@ -89,11 +89,10 @@ extension DefaultPronounceTranslationsUseCase {
             try? results[1].get()
         )
     }
-    
-    public func pronounceSingle(translation: SubtitlesTranslationItem) async -> Void {
 
+    private func pronounce(translation: SubtitlesTranslationItem) async -> Bool {
+        
         let converted = await convert(translation: translation)
-        state.value = .playing(.single(translation: translation))
         
         if let originalData = converted.original {
             
@@ -104,12 +103,12 @@ extension DefaultPronounceTranslationsUseCase {
             )
             
             guard case .success = result else {
-                return
+                return false
             }
-            
-            await audioService.stop()
+
+            // Clean finished result
+            let _ = await audioService.stop()
         }
-        
         
         if let translatedData = converted.translated {
             
@@ -119,12 +118,32 @@ extension DefaultPronounceTranslationsUseCase {
             )
         }
         
+        return true
+    }
+    
+    public func pronounceSingle(translation: SubtitlesTranslationItem) async -> Void {
+
+        state.value = .playing(.single(translation: translation))
+        let _ = await pronounce(translation: translation)
         state.value = .finished
     }
 
     public func pronounceGroup(translations: [SubtitlesTranslationItem]) async -> Void {
 
-        print("Not implemented")
+        
+        for index in 0..<translations.count {
+            
+            let translation = translations[index]
+            
+            state.value = .playing(.group(translations: translations, currentTranslationIndex: index))
+            let success = await pronounce(translation: translation)
+            
+            if !success {
+                break
+            }
+        }
+        
+        state.value = .finished
     }
 
     public func pause() -> Void {
