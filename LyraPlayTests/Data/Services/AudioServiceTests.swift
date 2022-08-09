@@ -12,10 +12,10 @@ import LyraPlay
 
 class AudioServiceTests: XCTestCase {
 
-    func createSUT() -> AudioService {
+    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> AudioService {
 
         let audioService = DefaultAudioService()
-        detectMemoryLeak(instance: audioService)
+        detectMemoryLeak(instance: audioService, file: file, line: line)
         return audioService
     }
     
@@ -59,7 +59,7 @@ class AudioServiceTests: XCTestCase {
         stateSequence.wait(timeout: 5, enforceOrder: true)
     }
     
-    func test_waitForEnd() async throws {
+    func test_playAndWaitForEnd__success() async throws {
         
         let audioService = createSUT()
     
@@ -73,14 +73,47 @@ class AudioServiceTests: XCTestCase {
         
         stateSequence.observe(audioService.state)
         
-        let data = try getTestFile()
         let shortData = try getTestFile(name: "test_music_with_tags_short")
         
-        let result = await audioService.playAndWaitForEnd(fileId: fileId, data: data)
+        let result = await audioService.playAndWaitForEnd(fileId: fileId, data: shortData)
         
         try AssertResultSucceded(result)
         XCTAssertEqual(audioService.state.value, .finished(data: .init(fileId: fileId)))
         
         stateSequence.wait(timeout: 0, enforceOrder: true)
+    }
+    
+    func test_playAndWaitForEnd__interrupted() async throws {
+        
+        let audioService = createSUT()
+    
+        let fileId = "test1"
+        
+        let shortData = try getTestFile(name: "test_music_with_tags_short")
+
+        audioService.state.observe(on: self) { [weak audioService] state in
+
+            guard let audioService = audioService else {
+                return
+            }
+            
+            if case .playing = state {
+
+                Task {
+                    await audioService.stop()
+                }
+            }
+        }
+        
+        let result = await audioService.playAndWaitForEnd(fileId: fileId, data: shortData)
+        let error = try AssertResultFailed(result)
+
+        guard case .waitIsInterrupted = error else {
+            
+            XCTFail("Wrong error type \(error)")
+            return
+        }
+        
+        audioService.state.remove(observer: self)
     }
 }

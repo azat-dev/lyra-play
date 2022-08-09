@@ -7,6 +7,10 @@
 
 import Foundation
 
+public final class ObserverToken {
+    public init() {}
+}
+
 public final class Observable<Value> {
 
     struct Observer<Value> {

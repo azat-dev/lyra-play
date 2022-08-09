@@ -62,10 +62,15 @@ public final class DefaulPlayerControlUseCase: PlayerControlUseCase {
     private func mapAudioServiceError(_ error: AudioServiceError) -> PlayerControlUseCaseError {
         
         switch error {
+            
         case .internalError(let err):
             return .internalError(err)
+        
         case .noActiveFile:
             return .noActiveTrack
+        
+        case .waitIsInterrupted:
+            return .internalError(nil)
         }
     }
     

@@ -106,6 +106,49 @@ extension DefaultAudioService {
         return .success(())
     }
     
+    public func playAndWaitForEnd(fileId: String, data trackData: Data) async -> Result<Void, AudioServiceError> {
+        
+        return await withCheckedContinuation { continuation in
+            
+            let observerToken = ObserverToken()
+            
+            state.observe(on: observerToken) { [weak self] state in
+                
+                switch state {
+                    
+                case .initial:
+                    return
+                    
+                case .playing(let stateData):
+                    
+                    if stateData.fileId == fileId {
+                        return
+                    }
+                    
+                case .finished:
+                    continuation.resume(returning: .success(()))
+                    
+                default:
+                    continuation.resume(returning: .failure(.waitIsInterrupted))
+                }
+                
+                self?.state.remove(observer: observerToken)
+            }
+            
+            Task {
+                
+                let result = await self.play(fileId: fileId, data: trackData)
+                
+                guard case .success = result else {
+
+                    self.state.remove(observer: observerToken)
+                    continuation.resume(returning: result)
+                    return
+                }
+            }
+        }
+    }
+    
     public func pause() async -> Result<Void, AudioServiceError> {
         
         guard let player = player else {

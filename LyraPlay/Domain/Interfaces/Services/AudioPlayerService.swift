@@ -11,6 +11,8 @@ public enum AudioServiceError: Error {
 
     case noActiveFile
     case internalError(Error?)
+    
+    case waitIsInterrupted
 }
 
 public enum AudioServiceState: Equatable {
@@ -36,6 +38,8 @@ public struct AudioServiceStateData: Equatable {
 public protocol AudioServiceInput {
 
     func play(fileId: String, data: Data) async -> Result<Void, AudioServiceError>
+    
+    func playAndWaitForEnd(fileId: String, data: Data) async -> Result<Void, AudioServiceError>
 
     func pause() async -> Result<Void, AudioServiceError>
 
@@ -47,5 +51,5 @@ public protocol AudioServiceOutput {
     var state: Observable<AudioServiceState> { get }
 }
 
-public protocol AudioService: AudioServiceOutput, AudioServiceInput {
+public protocol AudioService: AnyObject, AudioServiceOutput, AudioServiceInput {
 }

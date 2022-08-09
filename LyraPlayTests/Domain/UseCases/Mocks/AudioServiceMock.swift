@@ -10,7 +10,6 @@ import LyraPlay
 
 class AudioServiceMock: AudioService {
     
-    
     public var state: Observable<AudioServiceState> = .init(.initial)
     
     public var currentTime = Observable(0.0)
@@ -19,6 +18,13 @@ class AudioServiceMock: AudioService {
     func play(fileId: String, data: Data) async -> Result<Void, AudioServiceError> {
         
         self.state.value = .playing(data: .init(fileId: fileId))
+        return .success(())
+    }
+    
+    func playAndWaitForEnd(fileId: String, data: Data) async -> Result<Void, AudioServiceError> {
+
+        self.state.value = .playing(data: .init(fileId: fileId))
+        self.state.value = .finished(data: .init(fileId: fileId))
         return .success(())
     }
     
