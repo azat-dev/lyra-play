@@ -2,18 +2,18 @@
 //  PlaySubtitlesUseCase.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 01.08.2022.
+//  Created by Azat Kaiumov on 09.08.2022.
 //
 
 import Foundation
 
 // MARK: - Interfaces
 
-public enum SubtitlesPlayingState {
+public enum PlaySubtitlesUseCaseState: Equatable {
 
     case initial
-    case playing
-    case paused
+    case playing(position: SubtitlesPosition?)
+    case paused(position: SubtitlesPosition?)
     case stopped
     case finished
 }
@@ -23,10 +23,6 @@ public struct SubtitlesPosition: Equatable {
     public var sentenceIndex: Int
     public var timeMarkIndex: Int?
 
-    public static func sentence(_ index: Int) -> Self {
-        return .init(sentenceIndex: index, timeMarkIndex: nil)
-    }
-    
     public init(
         sentenceIndex: Int,
         timeMarkIndex: Int?
@@ -35,20 +31,9 @@ public struct SubtitlesPosition: Equatable {
         self.sentenceIndex = sentenceIndex
         self.timeMarkIndex = timeMarkIndex
     }
-}
 
-public struct CurrentSubtitlesState {
-
-    public var state: SubtitlesPlayingState
-    public var position: SubtitlesPosition?
-
-    public init(
-        state: SubtitlesPlayingState,
-        position: SubtitlesPosition?
-    ) {
-
-        self.state = state
-        self.position = position
+        public static func sentence(_ index: Int) -> Self {
+        return .init(sentenceIndex: index, timeMarkIndex: nil)
     }
 }
 
@@ -63,10 +48,10 @@ public protocol PlaySubtitlesUseCaseInput {
 
 public protocol PlaySubtitlesUseCaseOutput {
 
-    var state: Observable<CurrentSubtitlesState> { get }
+    var state: Observable<PlaySubtitlesUseCaseState> { get }
 }
 
-public protocol PlaySubtitlesUseCase: PlaySubtitlesUseCaseOutput, PlaySubtitlesUseCaseInput {
+public protocol PlaySubtitlesUseCase: AnyObject, PlaySubtitlesUseCaseOutput, PlaySubtitlesUseCaseInput {
 }
 
 // MARK: - Implementations
@@ -78,12 +63,7 @@ public final class DefaultPlaySubtitlesUseCase: PlaySubtitlesUseCase {
     private let subtitlesIterator: SubtitlesIterator
     private let scheduler: Scheduler
 
-    public let state: Observable<CurrentSubtitlesState> = Observable(
-        .init(
-            state: .initial,
-            position: nil
-        )
-    )
+    public let state = Observable(PlaySubtitlesUseCaseState.initial)
 
     // MARK: - Initializers
 
@@ -112,26 +92,27 @@ extension DefaultPlaySubtitlesUseCase {
             }
             
             let isLast = self.subtitlesIterator.getTimeOfNextEvent() == nil
+
+            guard !isLast else {
+                
+                self.state.value = .finished
+                return
+            }
             
-            self.state.value = .init(
-                state: isLast ? .finished : .playing,
-                position: self.subtitlesIterator.currentPosition
-            )
+            self.state.value = .playing(position: self.subtitlesIterator.currentPosition)
         }
     }
 
     public func pause() -> Void {
 
         scheduler.pause()
-        state.value = .init(
-            state: .paused,
-            position: state.value.position
-        )
+        state.value = .paused(position: self.subtitlesIterator.currentPosition)
     }
 
     public func stop() -> Void {
 
         scheduler.stop()
-        state.value = .init(state: .stopped, position: nil)
+        subtitlesIterator.beginNextExecution(from: 0)
+        state.value = .stopped
     }
 }
