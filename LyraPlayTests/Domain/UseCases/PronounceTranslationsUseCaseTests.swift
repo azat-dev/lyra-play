@@ -12,7 +12,7 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
     
     typealias SUT = (
         useCase: PronounceTranslationsUseCase,
-        textToSpeechConverter: TextToSpeechConverterMock,
+        textToSpeechConverter: TextToSpeechConverter,
         audioService: AudioServiceMock
     )
     
@@ -38,8 +38,8 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
         return .init(
             dictionaryItemId: UUID(),
             translationId: UUID(),
-            originalText: "Test",
-            translatedText: "TestTranslation"
+            originalText: "Apple",
+            translatedText: "Яблоко"
         )
     }
     
@@ -70,7 +70,7 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
             translation: testTranslation
         )
         
-        stateSequence.wait(timeout: 5, enforceOrder: true)
+        stateSequence.wait(timeout: 3, enforceOrder: true)
     }
     
     func test_pronounceGroup() async throws {
@@ -196,7 +196,7 @@ final class TextToSpeechConverterMock: TextToSpeechConverter {
     func convert(text: String, language: String) async -> Result<Data, TextToSpeechConverterError> {
         
         let bundle = Bundle(for: type(of: self ))
-        let url = bundle.url(forResource: "test_music_with_tags", withExtension: "mp3")!
+        let url = bundle.url(forResource: "test_music_with_tags_short", withExtension: "mp3")!
         
         let testFileData = try! Data(contentsOf: url)
         

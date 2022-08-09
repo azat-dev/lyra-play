@@ -63,22 +63,30 @@ class AudioServiceTests: XCTestCase {
         
         let audioService = createSUT()
     
-        let fileId = "test1"
+        let fileId1 = "test1"
+        let fileId2 = "test2"
         
         let stateSequence = self.expectSequence([
             AudioServiceState.initial,
-            .playing(data: .init(fileId: fileId)),
-            .finished(data: .init(fileId: fileId))
+            .playing(data: .init(fileId: fileId1)),
+            .finished(data: .init(fileId: fileId1)),
+            .playing(data: .init(fileId: fileId2)),
+            .finished(data: .init(fileId: fileId2))
         ])
         
         stateSequence.observe(audioService.state)
         
         let shortData = try getTestFile(name: "test_music_with_tags_short")
         
-        let result = await audioService.playAndWaitForEnd(fileId: fileId, data: shortData)
+        let result = await audioService.playAndWaitForEnd(fileId: fileId1, data: shortData)
         
         try AssertResultSucceded(result)
-        XCTAssertEqual(audioService.state.value, .finished(data: .init(fileId: fileId)))
+        XCTAssertEqual(audioService.state.value, .finished(data: .init(fileId: fileId1)))
+        
+        let result2 = await audioService.playAndWaitForEnd(fileId: fileId2, data: shortData)
+        
+        try AssertResultSucceded(result2)
+        XCTAssertEqual(audioService.state.value, .finished(data: .init(fileId: fileId2)))
         
         stateSequence.wait(timeout: 0, enforceOrder: true)
     }

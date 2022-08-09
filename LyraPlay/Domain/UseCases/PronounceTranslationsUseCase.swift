@@ -93,24 +93,33 @@ extension DefaultPronounceTranslationsUseCase {
     public func pronounceSingle(translation: SubtitlesTranslationItem) async -> Void {
 
         let converted = await convert(translation: translation)
+        state.value = .playing(.single(translation: translation))
         
         if let originalData = converted.original {
             
-            let _ = await audioService.play(
+            
+            let result = await audioService.playAndWaitForEnd(
                 fileId: translation.translationId.uuidString,
                 data: originalData
             )
             
-            sleep(1)
+            guard case .success = result else {
+                return
+            }
+            
+            await audioService.stop()
         }
+        
         
         if let translatedData = converted.translated {
             
-            let _ = await audioService.play(
+            let _ = await audioService.playAndWaitForEnd(
                 fileId: translation.translationId.uuidString,
                 data: translatedData
             )
         }
+        
+        state.value = .finished
     }
 
     public func pronounceGroup(translations: [SubtitlesTranslationItem]) async -> Void {

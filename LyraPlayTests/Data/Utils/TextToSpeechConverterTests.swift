@@ -10,8 +10,6 @@ import AVFoundation
 
 import LyraPlay
 
-let audioService = DefaultAudioService()
-
  class TextToSpeechConverterTests: XCTestCase {
 
     typealias SUT = TextToSpeechConverter

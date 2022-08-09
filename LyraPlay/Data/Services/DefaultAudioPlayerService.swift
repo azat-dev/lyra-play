@@ -58,20 +58,20 @@ public final class DefaultAudioService: NSObject, AudioService, AVAudioPlayerDel
 // MARK: - Input methods
 
 extension DefaultAudioService {
-
+    
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully: Bool) {
-
+        
         guard successfully else {
             return
         }
-
+        
         switch self.state.value {
-
+            
         case .initial, .stopped, .finished, .interrupted, .paused:
             print("Wrong state")
             dump(self.state.value)
             break
-
+            
         case .playing(let stateData):
             self.state.value = .finished(data: stateData)
             break
@@ -93,11 +93,11 @@ extension DefaultAudioService {
             self.player = player
             
             player.play()
-
+            
             self.state.value = .playing(data: .init(fileId: fileId))
             
         } catch {
-
+            
             state.value = .initial
             print("*** Unable to set up the audio player: \(error.localizedDescription) ***")
             return .failure(.internalError(error))
@@ -108,11 +108,23 @@ extension DefaultAudioService {
     
     public func playAndWaitForEnd(fileId: String, data trackData: Data) async -> Result<Void, AudioServiceError> {
         
-        return await withCheckedContinuation { continuation in
+        let observerToken = ObserverToken()
+
+        var isFinished = false
+        var isSetupCall = true
+        
+        let result: Result<Void, AudioServiceError> = await withCheckedContinuation { continuation  in
             
-            let observerToken = ObserverToken()
-            
-            state.observe(on: observerToken) { [weak self] state in
+            state.observe(on: observerToken) { state in
+
+                if isSetupCall {
+                    isSetupCall = false
+                    return
+                }
+                
+                guard !isFinished else {
+                    return
+                }
                 
                 switch state {
                     
@@ -125,14 +137,23 @@ extension DefaultAudioService {
                         return
                     }
                     
-                case .finished:
-                    continuation.resume(returning: .success(()))
+                    continuation.resume(returning: .failure(.waitIsInterrupted))
+                    return
+                    
+                case .finished(let stateData):
+                    if stateData.fileId == fileId {
+                        
+                        isFinished = true
+                        continuation.resume(returning: .success(()))
+                        return
+                    }
+                    
+                    continuation.resume(returning: .failure(.waitIsInterrupted))
+                    return
                     
                 default:
                     continuation.resume(returning: .failure(.waitIsInterrupted))
                 }
-                
-                self?.state.remove(observer: observerToken)
             }
             
             Task {
@@ -140,13 +161,15 @@ extension DefaultAudioService {
                 let result = await self.play(fileId: fileId, data: trackData)
                 
                 guard case .success = result else {
-
-                    self.state.remove(observer: observerToken)
                     continuation.resume(returning: result)
                     return
                 }
             }
         }
+        
+        state.remove(observer: observerToken)
+        
+        return result
     }
     
     public func pause() async -> Result<Void, AudioServiceError> {
@@ -197,13 +220,13 @@ extension DefaultAudioService {
             switch self.state.value {
                 
             case .paused(let state, _),
-                .interrupted(let state, _):
+                    .interrupted(let state, _):
                 self.state.value = .playing(data: state)
                 
             default:
                 break
             }
-
+            
             return .success
         }
         
@@ -222,8 +245,8 @@ extension DefaultAudioService {
             switch self.state.value {
                 
             case .playing(let state),
-                .interrupted(let state, _),
-                .paused(let state, _):
+                    .interrupted(let state, _),
+                    .paused(let state, _):
                 self.state.value = .paused(data: state, time: player.currentTime)
                 
             default:
