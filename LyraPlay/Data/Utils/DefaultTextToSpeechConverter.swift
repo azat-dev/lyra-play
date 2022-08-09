@@ -10,6 +10,8 @@ import AVFoundation
 
 public final class DefaultTextToSpeechConverter: TextToSpeechConverter {
     
+    let synthesizer = AVSpeechSynthesizer()
+    
     // MARK: - Initializers
     
     public init() {}
@@ -22,32 +24,11 @@ public final class DefaultTextToSpeechConverter: TextToSpeechConverter {
         return voices.first { $0.language == language && $0.quality == .enhanced }
     }
     
-    private static func save(buffer: AVAudioPCMBuffer, pathUrl: URL) throws {
-        
-        let audioFile = try AVAudioFile(
-            forWriting: pathUrl,
-            settings: buffer.format.settings,
-            commonFormat: .pcmFormatInt16,
-            interleaved: false
-        )
-        
-        try audioFile.write(from: buffer)
-    }
-    
-    private static func convertBufferToData(buffer: AVAudioPCMBuffer) throws -> Data {
+    private static func getTempFilePath() -> URL {
         
         let fileName = "\(UUID().uuidString).caf"
-
-        let tempFileUrl = FileManager.default.temporaryDirectory
+        return FileManager.default.temporaryDirectory
             .appendingPathComponent(fileName, isDirectory: false)
-        
-        try save(buffer: buffer, pathUrl: tempFileUrl)
-        
-        let data = try Data(contentsOf: tempFileUrl)
-        
-        try FileManager.default.removeItem(at: tempFileUrl)
-        
-        return data
     }
     
     public func convert(text: String, language: String) async -> Result<Data, TextToSpeechConverterError> {
@@ -55,34 +36,57 @@ public final class DefaultTextToSpeechConverter: TextToSpeechConverter {
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = getEnhancedVoice(language: language) ?? AVSpeechSynthesisVoice(language: language)
         
-        let synthesizer = AVSpeechSynthesizer()
-        
+        var isFailed = false
         return await withCheckedContinuation { continuation in
+            
+            let tempFilePath = Self.getTempFilePath()
+            defer { try? FileManager.default.removeItem(at: tempFilePath) }
+            
+            var audioFile: AVAudioFile?
             
             synthesizer.write(utterance) { (buffer: AVAudioBuffer) in
                 
-               guard let pcmBuffer = buffer as? AVAudioPCMBuffer else {
-                   
-                   let error = NSError(domain: "Wrong buffer format \(buffer)", code: 0)
-                   continuation.resume(returning: .failure(.internalError(error)))
-                   return
-               }
+                guard !isFailed else {
+                    return
+                }
                 
-                guard pcmBuffer.frameLength > 0 else {
+                guard let pcmBuffer = buffer as? AVAudioPCMBuffer else {
                     
-                    let error = NSError(domain: "Buffer is empty \(buffer)", code: 0)
+                    let error = NSError(domain: "Wrong buffer format \(buffer)", code: 0)
                     continuation.resume(returning: .failure(.internalError(error)))
                     return
                 }
                 
-                do {
+                guard pcmBuffer.frameLength > 0 else {
                     
-                    let data = try Self.convertBufferToData(buffer: pcmBuffer)
+                    guard let data = try? Data(contentsOf: tempFilePath) else {
+                        
+                        continuation.resume(returning: .failure(.internalError(nil)))
+                        return
+                    }
+                    
                     continuation.resume(returning: .success(data))
+                    return
+                }
+                
+                do {
+                 
+                    if audioFile == nil {
+                        
+                        audioFile = try AVAudioFile(
+                            forWriting: tempFilePath,
+                            settings: buffer.format.settings,
+                            commonFormat: .pcmFormatInt16,
+                            interleaved: false
+                        )
+                    }
+                    
+                    try audioFile!.write(from: pcmBuffer)
+                    
                 } catch {
                     
+                    isFailed = true
                     continuation.resume(returning: .failure(.internalError(error)))
-                    return
                 }
             }
         }
