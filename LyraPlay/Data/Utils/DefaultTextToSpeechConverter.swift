@@ -31,18 +31,16 @@ public final class DefaultTextToSpeechConverter: TextToSpeechConverter {
             .appendingPathComponent(fileName, isDirectory: false)
     }
     
-    public func convert(text: String, language: String) async -> Result<Data, TextToSpeechConverterError> {
-        
-        let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = getEnhancedVoice(language: language) ?? AVSpeechSynthesisVoice(language: language)
+    private func writeSpeechToFile(utterance: AVSpeechUtterance) async -> Result<URL, Error>{
         
         var isFailed = false
+        
+        let tempFilePath = Self.getTempFilePath()
+        
+        
+        var audioFile: AVAudioFile?
+        
         return await withCheckedContinuation { continuation in
-            
-            let tempFilePath = Self.getTempFilePath()
-            defer { try? FileManager.default.removeItem(at: tempFilePath) }
-            
-            var audioFile: AVAudioFile?
             
             synthesizer.write(utterance) { (buffer: AVAudioBuffer) in
                 
@@ -53,26 +51,18 @@ public final class DefaultTextToSpeechConverter: TextToSpeechConverter {
                 guard let pcmBuffer = buffer as? AVAudioPCMBuffer else {
                     
                     let error = NSError(domain: "Wrong buffer format \(buffer)", code: 0)
-                    continuation.resume(returning: .failure(.internalError(error)))
+                    continuation.resume(returning: .failure(error))
                     return
                 }
                 
                 guard pcmBuffer.frameLength > 0 else {
-                    
-                    guard let data = try? Data(contentsOf: tempFilePath) else {
-                        
-                        continuation.resume(returning: .failure(.internalError(nil)))
-                        return
-                    }
-                    
-                    continuation.resume(returning: .success(data))
+                    continuation.resume(returning: .success(tempFilePath))
                     return
                 }
                 
                 do {
-                 
+                    
                     if audioFile == nil {
-                        
                         audioFile = try AVAudioFile(
                             forWriting: tempFilePath,
                             settings: buffer.format.settings,
@@ -86,9 +76,30 @@ public final class DefaultTextToSpeechConverter: TextToSpeechConverter {
                 } catch {
                     
                     isFailed = true
-                    continuation.resume(returning: .failure(.internalError(error)))
+                    continuation.resume(returning: .failure(error))
                 }
             }
         }
+    }
+    
+    public func convert(text: String, language: String) async -> Result<Data, TextToSpeechConverterError> {
+        
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = getEnhancedVoice(language: language) ?? AVSpeechSynthesisVoice(language: language)
+        
+        let result = await writeSpeechToFile(utterance: utterance)
+        
+        guard case .success(let url) = result else {
+
+            return .failure(.internalError(result.error))
+        }
+        
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        guard let data = try? Data(contentsOf: url) else {
+            return .failure(.internalError(nil))
+        }
+        
+        return .success(data)
     }
 }
