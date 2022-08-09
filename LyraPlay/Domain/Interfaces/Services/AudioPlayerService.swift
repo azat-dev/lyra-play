@@ -2,41 +2,50 @@
 //  AudioService.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 29.06.22.
+//  Created by Azat Kaiumov on 08.08.2022.
 //
 
 import Foundation
 
 public enum AudioServiceError: Error {
-    
-    case internalError(Error?)
+
     case noActiveFile
+    case internalError(Error?)
 }
 
-public protocol AudioServiceOutput {
-    
-    var fileId: Observable<String?> { get }
-    
-    var isPlaying: Observable<Bool> { get }
-    
-    var volume: Observable<Double> { get }
-    
-    var currentTime: Observable<Double> { get }
+public enum AudioServiceState: Equatable {
+
+    case initial
+    case stopped
+    case playing(data: AudioServiceStateData)
+    case interrupted(data: AudioServiceStateData, time: TimeInterval)
+    case paused(data: AudioServiceStateData, time: TimeInterval)
+    case finished(data: AudioServiceStateData)
+}
+
+public struct AudioServiceStateData: Equatable {
+
+    public var fileId: String
+
+    public init(fileId: String) {
+
+        self.fileId = fileId
+    }
 }
 
 public protocol AudioServiceInput {
 
     func play(fileId: String, data: Data) async -> Result<Void, AudioServiceError>
-    
+
     func pause() async -> Result<Void, AudioServiceError>
-    
+
     func stop() async -> Result<Void, AudioServiceError>
-    
-    func seek(time: Double) async -> Result<Void, AudioServiceError>
-    
-    func setVolume(value: Double) async -> Result<Void, AudioServiceError>
 }
 
-public protocol AudioService: AudioServiceInput, AudioServiceOutput {
-    
+public protocol AudioServiceOutput {
+
+    var state: Observable<AudioServiceState> { get }
+}
+
+public protocol AudioService: AudioServiceOutput, AudioServiceInput {
 }

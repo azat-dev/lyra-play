@@ -14,25 +14,25 @@ import CoreMedia
 class CurrentPlayerStateUseCaseTests: XCTestCase {
     
     typealias SUT = (
-        currentPlayerStateUseCase: CurrentPlayerStateUseCase,
+        useCase: CurrentPlayerStateUseCase,
         audioService: AudioServiceMock,
         showMediaInfoUseCase: ShowMediaInfoUseCaseMock
     )
     
-    func createSUT() -> SUT {
+    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
         
         let showMediaInfoUseCase = ShowMediaInfoUseCaseMock()
         let audioService = AudioServiceMock()
         
-        let currentPlayerStateUseCase = DefaultCurrentPlayerStateUseCase(
+        let useCase = DefaultCurrentPlayerStateUseCase(
             audioService: audioService,
             showMediaInfoUseCase: showMediaInfoUseCase
         )
         
-        detectMemoryLeak(instance: currentPlayerStateUseCase)
+        detectMemoryLeak(instance: useCase, file: file, line: line)
         
         return (
-            currentPlayerStateUseCase,
+            useCase,
             audioService,
             showMediaInfoUseCase
         )
@@ -60,164 +60,142 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         return tracks
     }
     
-    func testPlayTrack() async throws {
+    func test_play__track() async throws {
         
-        let (currentPlayerStateUseCase, audioService, showMediaInfoUseCase) = createSUT()
+        let sut = createSUT()
     
-        let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
+        let tracks = setupTracks(showMediaInfoUseCase: sut.showMediaInfoUseCase)
         let track = tracks.first!
         
-        let playerStateSequence = self.expectSequence([PlayerState.stopped, PlayerState.playing])
-        let currentTimeSequence = self.expectSequence([0.0, 1.0])
+        let playerStateSequence = self.expectSequence([PlayerState.stopped, .playing])
         
         let trackIdSequence = self.expectSequence([nil, track.id])
         
-        trackIdSequence.observe(currentPlayerStateUseCase.info, mapper: { $0?.id })
-        playerStateSequence.observe(currentPlayerStateUseCase.state)
+        trackIdSequence.observe(sut.useCase.info, mapper: { $0?.id })
+        playerStateSequence.observe(sut.useCase.state)
         
-        let resultPlay = await audioService.play(
+        let resultPlay = await sut.audioService.play(
             fileId: track.id,
             data: Data()
         )
         
         try AssertResultSucceded(resultPlay)
-
         
-        currentTimeSequence.observe(currentPlayerStateUseCase.currentTime) { value in
-            
-            if value > 0 {
-                return 1.0
-            } else if value < 0 {
-                return -1.0
-            }
-            
-            return value
-        }
-
         playerStateSequence.wait(timeout: 3, enforceOrder: true)
-        currentTimeSequence.wait(timeout: 3, enforceOrder: true)
         trackIdSequence.wait(timeout: 3, enforceOrder: true)
     }
     
-    func testPauseTrack() async throws {
+    func test_pause__playing_track() async throws {
         
-        let (currentPlayerStateUseCase, audioService, showMediaInfoUseCase) = createSUT()
+        let sut = createSUT()
 
-        let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
+        let tracks = setupTracks(showMediaInfoUseCase: sut.showMediaInfoUseCase)
         let track = tracks.first!
 
         let playerStateSequence = self.expectSequence([PlayerState.stopped, PlayerState.playing, PlayerState.paused])
-        let currentTimeSequence = self.expectSequence([0.0])
         let trackIdSequence = self.expectSequence([nil, track.id])
 
-        playerStateSequence.observe(currentPlayerStateUseCase.state)
-        trackIdSequence.observe(currentPlayerStateUseCase.info, mapper: { $0?.id })
+        playerStateSequence.observe(sut.useCase.state)
+        trackIdSequence.observe(sut.useCase.info, mapper: { $0?.id })
 
-        let resultPlay = await audioService.play(
+        let resultPlay = await sut.audioService.play(
             fileId: track.id,
             data: Data()
         )
         try AssertResultSucceded(resultPlay)
 
-        let resultPause = await audioService.pause()
+        let resultPause = await sut.audioService.pause()
         try AssertResultSucceded(resultPause)
-
-        currentTimeSequence.observe(currentPlayerStateUseCase.currentTime) { value in
-
-            if value > 0 {
-                return 1.0
-            } else if value < 0 {
-                return -1.0
-            }
-
-            return value
-        }
 
         trackIdSequence.wait(timeout: 3, enforceOrder: true)
         playerStateSequence.wait(timeout: 3, enforceOrder: true)
-        currentTimeSequence.wait(timeout: 3, enforceOrder: true)
     }
     
-    func testStopTrack() async throws {
+    func test_stop_track() async throws {
         
-        let (currentPlayerStateUseCase, audioService, showMediaInfoUseCase) = createSUT()
+        let sut = createSUT()
 
-        let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
+        let tracks = setupTracks(showMediaInfoUseCase: sut.showMediaInfoUseCase)
         let track = tracks.first!
 
-        let playerStateSequence = self.expectSequence([PlayerState.stopped, PlayerState.playing, PlayerState.stopped])
-        let currentTimeSequence = self.expectSequence([0.0])
+        let playerStateSequence = self.expectSequence([
+            PlayerState.stopped,
+            .playing,
+            .stopped
+        ])
+        
         let trackIdSequence = self.expectSequence([nil, track.id, nil])
 
-        playerStateSequence.observe(currentPlayerStateUseCase.state)
-        trackIdSequence.observe(currentPlayerStateUseCase.info, mapper: { $0?.id })
+        let controlledPlayerState = Observable(sut.useCase.state.value)
+        
+        sut.useCase.state.observe(on: self) { state in
+            
+            guard state == .playing else {
 
-        let resultPlay = await audioService.play(
+                controlledPlayerState.value = state
+                return
+            }
+            
+            controlledPlayerState.value = state
+            
+            Task {
+                
+                let resultStop = await sut.audioService.stop()
+                try! AssertResultSucceded(resultStop)
+            }
+        }
+        
+        playerStateSequence.observe(controlledPlayerState)
+        trackIdSequence.observe(sut.useCase.info, mapper: {
+            $0?.id
+        })
+        
+        sut.useCase.info.observe(on: self) { info in
+            dump(info)
+        }
+
+        let resultPlay = await sut.audioService.play(
             fileId: track.id,
             data: Data()
         )
         try AssertResultSucceded(resultPlay)
 
-        let resultPause = await audioService.stop()
-        try AssertResultSucceded(resultPause)
-
-        currentTimeSequence.observe(currentPlayerStateUseCase.currentTime) { value in
-
-            if value > 0 {
-                return 1.0
-            } else if value < 0 {
-                return -1.0
-            }
-
-            return value
-        }
-
         trackIdSequence.wait(timeout: 3, enforceOrder: true)
         playerStateSequence.wait(timeout: 3, enforceOrder: true)
-        currentTimeSequence.wait(timeout: 3, enforceOrder: true)
     }
     
-    func testChageTrack() async throws {
+    func test_change_track() async throws {
         
-        let (currentPlayerStateUseCase, audioService, showMediaInfoUseCase) = createSUT()
+        let sut = createSUT()
 
-        let tracks = setupTracks(showMediaInfoUseCase: showMediaInfoUseCase)
+        let tracks = setupTracks(showMediaInfoUseCase: sut.showMediaInfoUseCase)
         let track1 = tracks.first!
         let track2 = tracks[1]
 
-        let playerStateSequence = self.expectSequence([PlayerState.stopped, PlayerState.playing, PlayerState.playing])
-        let currentTimeSequence = self.expectSequence([0.0])
+        let playerStateSequence = self.expectSequence([
+            PlayerState.stopped,
+            .playing,
+        ])
+        
         let trackIdSequence = self.expectSequence([nil, track1.id, track2.id])
 
-        playerStateSequence.observe(currentPlayerStateUseCase.state)
-        trackIdSequence.observe(currentPlayerStateUseCase.info, mapper: { $0?.id })
+        playerStateSequence.observe(sut.useCase.state)
+        trackIdSequence.observe(sut.useCase.info, mapper: { $0?.id })
 
-        let resultPlay1 = await audioService.play(
+        let resultPlay1 = await sut.audioService.play(
             fileId: track1.id,
             data: Data()
         )
         try AssertResultSucceded(resultPlay1)
 
         
-        let resultPlay2 = await audioService.play(
+        let resultPlay2 = await sut.audioService.play(
             fileId: track2.id,
             data: Data()
         )
         try AssertResultSucceded(resultPlay2)
 
-        currentTimeSequence.observe(currentPlayerStateUseCase.currentTime) { value in
-
-            if value > 0 {
-                return 1.0
-            } else if value < 0 {
-                return -1.0
-            }
-
-            return value
-        }
-
         trackIdSequence.wait(timeout: 3, enforceOrder: true)
         playerStateSequence.wait(timeout: 3, enforceOrder: true)
-        currentTimeSequence.wait(timeout: 3, enforceOrder: true)
     }
 }

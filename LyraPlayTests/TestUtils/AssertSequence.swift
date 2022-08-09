@@ -63,14 +63,9 @@ class AssertSequence<T: Equatable> {
         let index = receivedValues.count - 1
         
         guard index < expectedValues.count else {
-            XCTFail(
-                "Expected value at \(index), doesn't exist",
-                file: file,
-                line: line
-            )
             return
         }
-        
+
         AssertEqualReadable(
             value,
             expectedValues[index],

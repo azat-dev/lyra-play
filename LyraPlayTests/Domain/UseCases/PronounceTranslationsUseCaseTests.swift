@@ -12,21 +12,25 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
     
     typealias SUT = (
         useCase: PronounceTranslationsUseCase,
-        textToSpeechConverter: TextToSpeechConverterMock
+        textToSpeechConverter: TextToSpeechConverterMock,
+        audioService: AudioServiceMock
     )
     
     func createSUT() -> SUT {
         
         let textToSpeechConverter = TextToSpeechConverterMock()
+        let audioService = AudioServiceMock()
         
         let useCase = DefaultPronounceTranslationsUseCase(
-            textToSpeechConverter: textToSpeechConverter
+            textToSpeechConverter: textToSpeechConverter,
+            audioService: audioService
         )
         detectMemoryLeak(instance: useCase)
         
         return (
             useCase,
-            textToSpeechConverter
+            textToSpeechConverter,
+            audioService
         )
     }
     
@@ -62,7 +66,7 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
         
         stateSequence.observe(sut.useCase.state)
         
-        sut.useCase.pronounceSingle(
+        await sut.useCase.pronounceSingle(
             translation: testTranslation
         )
         
@@ -85,7 +89,7 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
         
         stateSequence.observe(sut.useCase.state)
         
-        sut.useCase.pronounceGroup(translations: testTranslations)
+        await sut.useCase.pronounceGroup(translations: testTranslations)
         
         stateSequence.wait(timeout: 5, enforceOrder: true)
     }

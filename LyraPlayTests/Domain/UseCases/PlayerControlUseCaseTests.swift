@@ -37,11 +37,11 @@ class PlayerControlUseCaseTests: XCTestCase {
         )
     }
     
-    func testPlayNotExistingTrack() async throws {
+    func test_play__not_existing_track() async throws {
         
-        let (useCase, _, _) = createSUT()
+        let sut = createSUT()
         
-        let result = await useCase.play(trackId: UUID())
+        let result = await sut.useCase.play(trackId: UUID())
         let error = try AssertResultFailed(result)
         
         guard case .trackNotFound = error else {
@@ -57,33 +57,34 @@ class PlayerControlUseCaseTests: XCTestCase {
         }
     }
     
-    func testPlayExistingTrack() async throws {
+    func test_play__existing_track() async throws {
 
-        let (useCase, audioService, loadTrackUseCase) = createSUT()
+        let sut = createSUT()
         
-        setUpTracks(loadTrackUseCase: loadTrackUseCase)
+        setUpTracks(loadTrackUseCase: sut.loadTrackUseCase)
         
-        let track = loadTrackUseCase.tracks.first!
+        let track = sut.loadTrackUseCase.tracks.first!
         let trackId = track.0
         
-        let trackIdSequence = self.expectSequence([nil, trackId.uuidString])
-        let playingSequence = self.expectSequence([false, true])
+        let audioServiceStateSequence = self.expectSequence([
+            
+            AudioServiceState.initial,
+            .playing(data: .init(fileId: trackId.uuidString)),
+        ])
         
-        trackIdSequence.observe(audioService.fileId)
-        playingSequence.observe(audioService.isPlaying)
+        audioServiceStateSequence.observe(sut.audioService.state)
         
-        let result = await useCase.play(trackId: trackId)
+        let result = await sut.useCase.play(trackId: trackId)
         try AssertResultSucceded(result)
         
-        trackIdSequence.wait(timeout: 3, enforceOrder: true)
-        playingSequence.wait(timeout: 3, enforceOrder: true)
+        audioServiceStateSequence.wait(timeout: 3, enforceOrder: true)
     }
     
-    func testPauseNotActiveTrack() async throws {
+    func test_pause__not_active_track() async throws {
 
-        let (useCase, _, _) = createSUT()
+        let sut = createSUT()
         
-        let result = await useCase.pause()
+        let result = await sut.useCase.pause()
         let error = try AssertResultFailed(result)
         
         guard case .noActiveTrack = error else {
@@ -92,49 +93,53 @@ class PlayerControlUseCaseTests: XCTestCase {
         }
     }
     
-    func testPauseActiveTrack() async throws {
+    func test_pause__active_track() async throws {
         
-        let (useCase, audioService, loadTrackUseCase) = createSUT()
+        let sut = createSUT()
         
-        setUpTracks(loadTrackUseCase: loadTrackUseCase)
+        setUpTracks(loadTrackUseCase: sut.loadTrackUseCase)
         
-        let track = loadTrackUseCase.tracks.first!
+        let track = sut.loadTrackUseCase.tracks.first!
         let trackId = track.0
         
-        let trackIdSequence = self.expectSequence([nil, trackId.uuidString])
-        let playingSequence = self.expectSequence([false, true, false])
+        let audioServiceStateSequence = self.expectSequence([
+            
+            AudioServiceState.initial,
+            .playing(data: .init(fileId: trackId.uuidString)),
+            .paused(data: .init(fileId: trackId.uuidString), time: 0)
+        ])
         
-        trackIdSequence.observe(audioService.fileId)
-        playingSequence.observe(audioService.isPlaying)
-        
-        let _ = await useCase.play(trackId: trackId)
-        let result = await useCase.pause()
+        audioServiceStateSequence.observe(sut.audioService.state)
+
+        let _ = await sut.useCase.play(trackId: trackId)
+        let result = await sut.useCase.pause()
         try AssertResultSucceded(result)
-        
-        trackIdSequence.wait(timeout: 3, enforceOrder: true)
-        playingSequence.wait(timeout: 3, enforceOrder: true)
+
+        audioServiceStateSequence.wait(timeout: 3, enforceOrder: true)
     }
     
-    func testChangeActiveTrack() async throws {
+    func test_change_active_track() async throws {
         
-        let (useCase, audioService, loadTrackUseCase) = createSUT()
+        let sut = createSUT()
         
-        setUpTracks(loadTrackUseCase: loadTrackUseCase)
+        setUpTracks(loadTrackUseCase: sut.loadTrackUseCase)
         
-        let tracks = Array(loadTrackUseCase.tracks.keys)
+        let tracks = Array(sut.loadTrackUseCase.tracks.keys)
         let trackId1 = tracks[0]
         let trackId2 = tracks[1]
         
-        let trackIdSequence = self.expectSequence([nil, trackId1.uuidString, trackId2.uuidString])
-        let playingSequence = self.expectSequence([false, true, true])
+        let audioServiceStateSequence = self.expectSequence([
+            
+            AudioServiceState.initial,
+            .playing(data: .init(fileId: trackId1.uuidString)),
+            .playing(data: .init(fileId: trackId2.uuidString)),
+        ])
         
-        trackIdSequence.observe(audioService.fileId)
-        playingSequence.observe(audioService.isPlaying)
+        audioServiceStateSequence.observe(sut.audioService.state)
         
-        let _ = await useCase.play(trackId: trackId1)
-        let _ = await useCase.play(trackId: trackId2)
+        let _ = await sut.useCase.play(trackId: trackId1)
+        let _ = await sut.useCase.play(trackId: trackId2)
         
-        trackIdSequence.wait(timeout: 3, enforceOrder: true)
-        playingSequence.wait(timeout: 3, enforceOrder: true)
+        audioServiceStateSequence.wait(timeout: 10, enforceOrder: true)
     }
 }

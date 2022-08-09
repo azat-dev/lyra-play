@@ -10,71 +10,39 @@ import LyraPlay
 
 class AudioServiceMock: AudioService {
     
-    public var fileId: Observable<String?> = Observable(nil)
     
-    public var isPlaying = Observable(false)
+    public var state: Observable<AudioServiceState> = .init(.initial)
     
     public var currentTime = Observable(0.0)
     
-    public var volume = Observable(0.0)
-
     
     func play(fileId: String, data: Data) async -> Result<Void, AudioServiceError> {
-    
-        self.fileId.value = fileId
-        isPlaying.value = true
         
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.01) { [weak self] in
-            
-            guard
-                let self = self,
-                self.isPlaying.value
-            else {
-                return
-            }
-            
-            
-            self.currentTime.value += 1
-        }
-        
+        self.state.value = .playing(data: .init(fileId: fileId))
         return .success(())
     }
     
     func pause() async -> Result<Void, AudioServiceError> {
-    
-        guard fileId.value != nil else {
-            return .failure(.noActiveFile)
-        }
         
-        isPlaying.value = false
-        return .success(())
+        switch self.state.value {
+            
+        case .stopped, .initial:
+            
+            return .failure(.noActiveFile)
+            
+        case .paused(let stateData, _), .playing(let stateData), .interrupted(let stateData, _):
+            
+            self.state.value = .paused(data: stateData, time: currentTime.value)
+            return .success(())
+            
+        case .finished:
+            return .success(())
+        }
     }
     
     func stop() async -> Result<Void, AudioServiceError> {
         
-        guard fileId.value != nil else {
-            return .failure(.noActiveFile)
-        }
-        
-        fileId.value = nil
-        isPlaying.value = false
-        
-        return .success(())
-    }
-    
-    func seek(time: Double) async -> Result<Void, AudioServiceError> {
-        
-        guard fileId.value != nil else {
-            return .failure(.noActiveFile)
-        }
-        
-        currentTime.value = time
-        return .success(())
-    }
-    
-    func setVolume(value: Double) async -> Result<Void, AudioServiceError> {
-        
-        volume.value = value
+        self.state.value = .stopped
         return .success(())
     }
 }

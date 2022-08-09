@@ -14,7 +14,7 @@ public enum CurrentPlayerStateUseCaseError: Error {
     case internalError(Error?)
 }
 
-public enum PlayerState {
+public enum PlayerState: Equatable {
     
     case stopped
     case playing
@@ -45,6 +45,8 @@ public final class DefaultCurrentPlayerStateUseCase: CurrentPlayerStateUseCase {
     private let audioService: AudioServiceOutput
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
     
+    private var prevTrackId: String?
+    
     public var info: Observable<MediaInfo?> = Observable(nil)
     public var state: Observable<PlayerState> = Observable(.stopped)
     public var currentTime = Observable(0.0)
@@ -54,17 +56,17 @@ public final class DefaultCurrentPlayerStateUseCase: CurrentPlayerStateUseCase {
         audioService: AudioServiceOutput,
         showMediaInfoUseCase: ShowMediaInfoUseCase
     ) {
-
+        
         self.audioService = audioService
         self.showMediaInfoUseCase = showMediaInfoUseCase
-
+        
         bind(to: audioService)
     }
     
     private func updateTrackInfo(trackId: UUID) async {
-
+        
         let result = await self.showMediaInfoUseCase.fetchInfo(trackId: trackId)
-
+        
         guard let mediaInfo = try? result.get() else {
             
             self.state.value = .stopped
@@ -74,64 +76,68 @@ public final class DefaultCurrentPlayerStateUseCase: CurrentPlayerStateUseCase {
         
         self.info.value = mediaInfo
     }
-
-    public func bind(to audioService: AudioServiceOutput) {
     
-        audioService.fileId.observe(on: self) { [weak self] persistentTrackId in
-            
+    public func bind(to audioService: AudioServiceOutput) {
+        
+        audioService.state.observe(on: self) { [weak self] state in
+
             guard let self = self else {
                 return
             }
             
-            guard
-                let persistentTrackId = persistentTrackId,
-                let trackId = UUID(uuidString: persistentTrackId)
-            else {
-
-                let newStateValue = PlayerState.stopped
-                let isStateChanged = self.state.value != newStateValue
+            var newOutputState = self.state.value
+            var newTrackId = self.prevTrackId
+            
+            defer { self.prevTrackId = newTrackId }
+            
+            switch state {
+            
+            case .playing(let stateData):
                 
-                if isStateChanged {
-                    self.state.value = newStateValue
-                    
-                    if self.info.value != nil {
-                        self.info.value = nil
-                    }
+                newOutputState = .playing
+                newTrackId = stateData.fileId
+                
+            case .paused(let data, let time),
+                    .interrupted(let data, let time):
+                
+                newOutputState = .paused
+                newTrackId = data.fileId
+                self.currentTime.value = time
+                
+            case .stopped:
+                
+                newOutputState = .stopped
+                self.currentTime.value = 0
+                newTrackId = nil
+                
+            default:
+                break
+            }
+            
+            if newOutputState != self.state.value {
+                self.state.value = newOutputState
+                
+                if newOutputState == .stopped {
+                    self.info.value = nil
+                    return
                 }
-                return
             }
             
-            Task {
-                await self.updateTrackInfo(trackId: trackId)
+            if newTrackId != self.prevTrackId {
+                
+                guard
+                    let newTrackId = newTrackId,
+                    let trackId = UUID(uuidString: newTrackId)
+                else {
+                    
+                    self.info.value = nil
+                    return
+                }
+                
+                Task {
+                    await self.updateTrackInfo(trackId: trackId)
+                }
             }
-        }
-        
-        audioService.isPlaying.observe(on: self) { [weak self] isPlaying in
-            
-            guard let self = self else {
-                return
-            }
-            
-            guard !isPlaying else {
-                self.state.value = .playing
-                return
-            }
-            
-            let prevState = self.state.value
-
-            if prevState == .playing {
-                self.state.value = .paused
-            }
-        }
-        
-        audioService.currentTime.observe(on: self) { [weak self] currentTime in
-            
-            self?.currentTime.value = currentTime
-        }
-        
-        audioService.volume.observe(on: self) { [weak self] volume in
-            
-            self?.volume.value = volume
         }
     }
 }

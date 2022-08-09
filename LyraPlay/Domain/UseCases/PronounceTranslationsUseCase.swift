@@ -96,7 +96,7 @@ extension DefaultPronounceTranslationsUseCase {
         
         if let originalData = converted.original {
             
-            await audioService.play(
+            let _ = await audioService.play(
                 fileId: translation.translationId.uuidString,
                 data: originalData
             )
@@ -108,7 +108,7 @@ extension DefaultPronounceTranslationsUseCase {
 
     public func pronounceGroup(translations: [SubtitlesTranslationItem]) async -> Void {
 
-        fatalError("Not implemented")
+        print("Not implemented")
     }
 
     public func pause() -> Void {

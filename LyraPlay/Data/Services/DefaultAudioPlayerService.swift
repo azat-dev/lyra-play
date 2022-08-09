@@ -9,7 +9,11 @@ import Foundation
 import AVFoundation
 import MediaPlayer
 
-public final class DefaultAudioService: AudioService {
+// MARK: - Implementations
+
+public final class DefaultAudioService: NSObject, AudioService, AVAudioPlayerDelegate {
+    
+    // MARK: - Properties
     
     private let audioSession: AVAudioSession
     private var player: AVAudioPlayer?
@@ -22,12 +26,18 @@ public final class DefaultAudioService: AudioService {
     
     private var playerIsPlayingObserver: NSKeyValueObservation? = nil
     
-    public init() {
-
+    public let state: Observable<AudioServiceState> = .init(.initial)
+    
+    // MARK: - Initializers
+    
+    public override init() {
+        
         self.audioSession = AVAudioSession.sharedInstance()
         self.player = nil
         self.commandCenter = MPRemoteCommandCenter.shared()
-
+        
+        super.init()
+        
         do {
             // Set the audio session category, mode, and options.
             try audioSession.setCategory(
@@ -45,35 +55,28 @@ public final class DefaultAudioService: AudioService {
     }
 }
 
+// MARK: - Input methods
+
 extension DefaultAudioService {
-    
-//    private func bind(to player: AVAudioPlayer) {
-//
-//        playerIsPlayingObserver = player.observe(\.isPlaying, options: [.initial, .new, .old, .prior]) { [weak self] player, change in
-//
-//
-//            debugPrint(player.isPlaying)
-//            debugPrint(change)
-//
-//            guard let newIsPlaying = change.newValue else {
-//                return
-//            }
-//
-//            guard self?.isPlaying.value != newIsPlaying else {
-//                return
-//            }
-//
-//            self?.isPlaying.value = newIsPlaying
-//            if !newIsPlaying {
-//                self?.fileId.value = nil
-//            }
-//        }
-//    }
-//
-//    private func removeBinding(to player: AVAudioPlayer) {
-//
-//        playerIsPlayingObserver?.invalidate()
-//    }
+
+    public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully: Bool) {
+
+        guard successfully else {
+            return
+        }
+
+        switch self.state.value {
+
+        case .initial, .stopped, .finished, .interrupted, .paused:
+            print("Wrong state")
+            dump(self.state.value)
+            break
+
+        case .playing(let stateData):
+            self.state.value = .finished(data: stateData)
+            break
+        }
+    }
 }
 
 extension DefaultAudioService {
@@ -81,26 +84,21 @@ extension DefaultAudioService {
     public func play(fileId: String, data trackData: Data) async -> Result<Void, AudioServiceError> {
         
         try? audioSession.setActive(true)
-
+        
         do {
-
-//            if let prevPlayer = self.player {
-//                removeBinding(to: prevPlayer)
-//            }
             
             let player = try AVAudioPlayer(data: trackData)
-//            bind(to: player)
-            
+            player.delegate = self
             
             self.player = player
             
             player.play()
-            
-            self.fileId.value = fileId
-            self.isPlaying.value = true
+
+            self.state.value = .playing(data: .init(fileId: fileId))
             
         } catch {
 
+            state.value = .initial
             print("*** Unable to set up the audio player: \(error.localizedDescription) ***")
             return .failure(.internalError(error))
         }
@@ -114,8 +112,14 @@ extension DefaultAudioService {
             return .failure(.noActiveFile)
         }
         
-        self.isPlaying.value = false
         player.pause()
+        
+        guard case .playing(data: let stateData) = state.value else {
+            
+            return .success(())
+        }
+        
+        self.state.value = .paused(data: .init(fileId: stateData.fileId), time: player.currentTime)
         return .success(())
     }
     
@@ -126,22 +130,10 @@ extension DefaultAudioService {
         }
         
         player.stop()
-//        removeBinding(to: player)
-        self.player = nil
-        self.isPlaying.value = false
-        self.fileId.value = nil
-        self.currentTime.value = 0
         
-        return .success(())
-    }
-    
-    public func seek(time: Double) async -> Result<Void, AudioServiceError> {
-        fatalError()
-    }
-    
-    public func setVolume(value: Double) async -> Result<Void, AudioServiceError> {
-
-        player?.setVolume(Float(value), fadeDuration: 0)
+        self.player = nil
+        
+        self.state.value = .stopped
         return .success(())
     }
 }
@@ -149,29 +141,53 @@ extension DefaultAudioService {
 extension DefaultAudioService {
     
     func setupRemoteControls() {
-
+        
         commandCenter.playCommand.addTarget { [unowned self] event in
             
             guard let player = self.player else {
                 return .commandFailed
             }
             
+            
             player.play()
+            
+            switch self.state.value {
+                
+            case .paused(let state, _),
+                .interrupted(let state, _):
+                self.state.value = .playing(data: state)
+                
+            default:
+                break
+            }
+
             return .success
         }
-
+        
         commandCenter.pauseCommand.addTarget { [unowned self] event in
             
             guard let player = self.player else {
                 return .commandFailed
             }
             
-            if player.rate == 1.0 {
-                player.pause()
-                return .success
+            if player.rate != 1.0 {
+                return .commandFailed
             }
             
-            return .commandFailed
+            player.pause()
+            
+            switch self.state.value {
+                
+            case .playing(let state),
+                .interrupted(let state, _),
+                .paused(let state, _):
+                self.state.value = .paused(data: state, time: player.currentTime)
+                
+            default:
+                break
+            }
+            
+            return .success
         }
         
         commandCenter.changePlaybackPositionCommand.addTarget { event in
@@ -186,7 +202,7 @@ extension DefaultAudioService {
             else {
                 return .commandFailed
             }
-
+            
             let currentTime = player.currentTime
             
             if currentTime - 10 > 0 {
@@ -208,5 +224,5 @@ extension DefaultAudioService {
             return .success
         }
     }
-
+    
 }
