@@ -23,6 +23,18 @@ public enum AudioServiceState: Equatable {
     case interrupted(data: AudioServiceStateData, time: TimeInterval)
     case paused(data: AudioServiceStateData, time: TimeInterval)
     case finished(data: AudioServiceStateData)
+    
+    public func getFileId() -> String? {
+        
+        switch self {
+            
+        case .initial, .stopped:
+            return nil
+
+        case .playing(let data), .interrupted(let data, _), .paused(let data, _), .finished(let data):
+            return data.fileId
+        }
+    }
 }
 
 public struct AudioServiceStateData: Equatable {
