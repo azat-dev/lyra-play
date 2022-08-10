@@ -12,28 +12,24 @@ class PlaySubtitlesUseCaseFactoryTests: XCTestCase {
     
     typealias SUT = (
         useCase: PlaySubtitlesUseCaseFactory,
-        subtitlesIterator: SubtitlesIterator,
+        subtitlesIteratorFactory: SubtitlesIteratorFactory,
         scheduler: SchedulerMock
     )
     
-    func createSUT(subtitles: Subtitles) -> SUT {
+    func createSUT() -> SUT {
         
-        let subtitlesIterator = DefaultSubtitlesIterator(
-            subtitles: subtitles,
-            subtitlesTimeSlots: []
-        )
-
         let scheduler = SchedulerMock()
+        let subtitlesIteratorFactory = DefaultSubtitlesIteratorFactory()
         
         let useCase = DefaultPlaySubtitlesUseCaseFactory(
-            subtitlesIterator: subtitlesIterator,
+            subtitlesIteratorFactory: subtitlesIteratorFactory,
             scheduler: scheduler
         )
         detectMemoryLeak(instance: useCase)
         
         return (
             useCase,
-            subtitlesIterator,
+            subtitlesIteratorFactory,
             scheduler
         )
     }
@@ -44,9 +40,9 @@ class PlaySubtitlesUseCaseFactoryTests: XCTestCase {
     
     func test_create() async throws {
         
-        let sut = createSUT(subtitles: anySubtitles())
+        let sut = createSUT()
         
-        let playSubtitlesUseCase = sut.useCase.create()
+        let playSubtitlesUseCase = sut.useCase.create(with: anySubtitles())
         XCTAssertNotNil(playSubtitlesUseCase)
     }
 }

@@ -11,7 +11,7 @@ import Foundation
 
 public protocol PlaySubtitlesUseCaseFactory {
 
-    func create() -> PlaySubtitlesUseCase
+    func create(with: Subtitles) -> PlaySubtitlesUseCase
 }
 
 // MARK: - Implementations
@@ -20,26 +20,26 @@ public final class DefaultPlaySubtitlesUseCaseFactory: PlaySubtitlesUseCaseFacto
 
     // MARK: - Properties
 
-    private let subtitlesIterator: SubtitlesIterator
+    private let subtitlesIteratorFactory: SubtitlesIteratorFactory
     private let scheduler: Scheduler
 
     // MARK: - Initializers
 
     public init(
-        subtitlesIterator: SubtitlesIterator,
+        subtitlesIteratorFactory: SubtitlesIteratorFactory,
         scheduler: Scheduler
     ) {
 
-        self.subtitlesIterator = subtitlesIterator
+        self.subtitlesIteratorFactory = subtitlesIteratorFactory
         self.scheduler = scheduler
     }
 
     // MARK: - Methods
 
-    public func create() -> PlaySubtitlesUseCase {
+    public func create(with subtitles: Subtitles) -> PlaySubtitlesUseCase {
 
         return DefaultPlaySubtitlesUseCase(
-            subtitlesIterator: subtitlesIterator,
+            subtitlesIterator: subtitlesIteratorFactory.create(for: subtitles),
             scheduler: scheduler
         )
     }

@@ -18,6 +18,8 @@ public protocol SubtitlesIteratorFactory {
 
 public final class DefaultSubtitlesIteratorFactory: SubtitlesIteratorFactory {
     
+    public init() {}
+    
     public func create(for subtitles: Subtitles) -> SubtitlesIterator {
         
         let timeSlotsParser = SubtitlesTimeSlotsParser()
