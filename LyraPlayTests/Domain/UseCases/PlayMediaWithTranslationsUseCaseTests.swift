@@ -107,7 +107,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         
         stateSequence.observe(sut.useCase.state)
         
-        let _ = sut.useCase.play(
+        let _ = await sut.useCase.play(
             mediaId: testMediaId,
             nativeLanguage: anyNativeLanguage(),
             learningLanguage: anyLearningLanguage(),
@@ -115,6 +115,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         )
         
         stateSequence.wait(timeout: 5, enforceOrder: true)
+        sut.useCase.state.remove(observer: self)
     }
     
     func test_play__wit_not_empty_subtitles_without_offset() async throws {
@@ -176,7 +177,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         stateSequence.observe(sut.useCase.state)
         
         sut.loadSubtitlesUseCase.resolveLoad = { _, _ in .success(subtitles) }
-        sut.useCase.play(
+        await sut.useCase.play(
             mediaId: testMediaId,
             nativeLanguage: anyNativeLanguage(),
             learningLanguage: anyLearningLanguage(),

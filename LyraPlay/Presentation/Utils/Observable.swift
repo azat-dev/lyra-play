@@ -32,19 +32,50 @@ public final class Observable<Value> {
         self.value = value
     }
     
+    private func notifyObserver(_ observer: Observer<Value>, value: Value) {
+        
+        guard let queue = observer.queue else {
+            
+            observer.block(value)
+            return
+        }
+        
+        queue.async {
+            observer.block(value)
+        }
+    }
+    
     public func observe(on observer: AnyObject, queue: DispatchQueue?, observerBlock: @escaping (Value) -> Void) {
-        let data = Observer(
+
+        let observer = Observer(
             observer: observer,
             queue: queue,
             block: observerBlock
         )
         
-        observers.append(data)
-        observerBlock(self.value)
+        observers.append(observer)
+        notifyObserver(observer, value: self.value)
     }
     
     public func observe(on observer: AnyObject, observerBlock: @escaping (Value) -> Void) {
+
         observe(on: observer, queue: nil, observerBlock: observerBlock)
+    }
+    
+    public func observeIgnoreInitial(on observer: AnyObject, observerBlock: @escaping (Value) -> Void) {
+
+        observeIgnoreInitial(on: observer, queue: nil, observerBlock: observerBlock)
+    }
+    
+    public func observeIgnoreInitial(on observer: AnyObject, queue: DispatchQueue?, observerBlock: @escaping (Value) -> Void) {
+
+        let observer = Observer(
+            observer: observer,
+            queue: queue,
+            block: observerBlock
+        )
+        
+        observers.append(observer)
     }
     
     public func remove(observer: AnyObject) {
@@ -57,15 +88,7 @@ public final class Observable<Value> {
         
         for observer in observers {
             
-            guard let queue = observer.queue else {
-                
-                observer.block(currentValue)
-                continue
-            }
-            
-            queue.async {
-                observer.block(currentValue)
-            }
+            notifyObserver(observer, value: currentValue)
         }
     }
 }
