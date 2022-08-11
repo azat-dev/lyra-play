@@ -12,13 +12,13 @@ import XCTest
 
 class PlayerViewModelTests: XCTestCase {
 
-//    private var playerControlUseCase: PlayerControlUseCase!
+//    private var playMediaUseCase: PlayMediaUseCase!
 //    private var playerViewModel: PlayerViewModel!
 //    
 //    override func setUp() async throws {
 //        
-//        playerControlUseCase = PlayerControlUseCaseMock()
-//        playerViewModel = DefaultPlayerViewModel(playerControlUseCase: playerControlUseCase)
+//        playMediaUseCase = PlayMediaUseCaseMock()
+//        playerViewModel = DefaultPlayerViewModel(playMediaUseCase: playMediaUseCase)
 //    }
 //    
 //

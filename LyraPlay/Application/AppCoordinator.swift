@@ -74,13 +74,24 @@ final class DefaultAppCoordinator: AppCoordinator {
         return currentState
     } ()
     
-    private lazy var playerControlUseCase: PlayerControlUseCase = {
+    private lazy var playMediaUseCase: PlayMediaUseCase = {
         
-        return DefaulPlayerControlUseCase(
+        return DefaultPlayMediaUseCase(
             audioService: audioService,
             loadTrackUseCase: loadTrackUseCase
         )
     } ()
+    
+    private lazy var playMediaUseCaseOutput: PlayMediaUseCaseOutput = {
+        
+        return playMediaUseCase
+    } ()
+    
+    private lazy var playMediaUseCaseInput: PlayMediaUseCaseInput = {
+        
+        return playMediaUseCase
+    } ()
+
     
     private lazy var audioLibraryRepository: AudioLibraryRepository = {
         
@@ -199,7 +210,7 @@ final class DefaultAppCoordinator: AppCoordinator {
             coordinator: self,
             browseFilesUseCase: browseFilesUseCase,
             importFileUseCase: importFileUseCase,
-            playerControlUseCase: playerControlUseCase
+            playMediaUseCase: playMediaUseCase
         )
         return factory.build()
     }
@@ -266,7 +277,7 @@ extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
             coordnator: self,
             showMediaInfoUseCase: showMediaInfoUseCase,
             currentPlayerStateUseCase: currentPlayerStateUseCase,
-            playerControlUseCase: playerControlUseCase,
+            playMediaUseCase: playMediaUseCase,
             importSubtitlesUseCase: importSubtitlesUseCase,
             loadSubtitlesUseCase: loadSubtitlesUseCase
         )
@@ -279,7 +290,7 @@ extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
     func openAudioPlayer(trackId: UUID) {
         
         let factory = PlayerViewControllerFactory(
-            playerControlUseCase: playerControlUseCase
+            playMediaUseCase: playMediaUseCase
         )
         
         let vc = factory.build()

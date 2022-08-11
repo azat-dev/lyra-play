@@ -51,7 +51,7 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
     private let trackId: UUID
     private let coordinator: LibraryItemCoordinator
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
-    private let playerControlUseCase: PlayerControlUseCase
+    private let playMediaUseCase: PlayMediaUseCase
     private let currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput
     private let importSubtitlesUseCase: ImportSubtitlesUseCase
     private let loadSubtitlesUseCase: LoadSubtitlesUseCase
@@ -65,7 +65,7 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
         coordinator: LibraryItemCoordinator,
         showMediaInfoUseCase: ShowMediaInfoUseCase,
         currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput,
-        playerControlUseCase: PlayerControlUseCase,
+        playMediaUseCase: PlayMediaUseCase,
         importSubtitlesUseCase: ImportSubtitlesUseCase,
         loadSubtitlesUseCase: LoadSubtitlesUseCase
     ) {
@@ -73,7 +73,7 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
         self.trackId = trackId
         self.coordinator = coordinator
         self.showMediaInfoUseCase = showMediaInfoUseCase
-        self.playerControlUseCase = playerControlUseCase
+        self.playMediaUseCase = playMediaUseCase
         self.currentPlayerStateUseCase = currentPlayerStateUseCase
         self.importSubtitlesUseCase = importSubtitlesUseCase
         self.loadSubtitlesUseCase = loadSubtitlesUseCase
@@ -161,11 +161,11 @@ extension DefaultLibraryItemViewModel {
      
         if self.isPlaying.value {
             
-            let _ = await playerControlUseCase.pause()
+            let _ = await playMediaUseCase.pause()
             return
         }
         
-        let _ = await playerControlUseCase.play(trackId: trackId)
+        let _ = await playMediaUseCase.play(mediaId: trackId)
         await loadSubtitles()
     }
     

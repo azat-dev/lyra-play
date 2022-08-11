@@ -45,7 +45,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
             coordinator: coordinator,
             browseUseCase: useCase,
             importFileUseCase: importFileUseCase,
-            playerControlUseCase: PlayerControlUseCaseMock()
+            playMediaUseCase: PlayMediaUseCaseMock()
         )
         
         detectMemoryLeak(instance: viewModel)

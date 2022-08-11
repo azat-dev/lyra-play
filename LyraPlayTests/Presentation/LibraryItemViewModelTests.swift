@@ -14,7 +14,7 @@ import XCTest
 //    fileprivate typealias SUT = (
 //        coordinator: LibraryItemCoordinatorMock,
 //        showMediaInfoUseCase: ShowMediaInfoUseCaseMock,
-//        playerControlUseCase: PlayerControlUseCaseMock,
+//        playMediaUseCase: PlayMediaUseCaseMock,
 //        currentPlayerStateUseCase: CurrentPlayerStateUseCaseMock,
 //        importSubtitlesUseCase: ImportSubtitlesUseCaseMock
 //    )
@@ -25,14 +25,14 @@ import XCTest
 //        
 //        let showMediaInfoUseCase = ShowMediaInfoUseCaseMock()
 //        let currentPlayerStateUseCase = CurrentPlayerStateUseCaseMock(showMediaInfoUseCase: showMediaInfoUseCase)
-//        let playerControlUseCase = PlayerControlUseCaseMock(currentPlayerStateUseCase: currentPlayerStateUseCase)
+//        let playMediaUseCase = PlayMediaUseCaseMock(currentPlayerStateUseCase: currentPlayerStateUseCase)
 //        
 //        let importSubtitlesUseCase = ImportSubtitlesUseCaseMock()
 //        
 //        return (
 //            coordinator,
 //            showMediaInfoUseCase,
-//            playerControlUseCase,
+//            playMediaUseCase,
 //            currentPlayerStateUseCase,
 //            importSubtitlesUseCase
 //        )
@@ -45,7 +45,7 @@ import XCTest
 //            coordinator: sut.coordinator,
 //            showMediaInfoUseCase: sut.showMediaInfoUseCase,
 //            currentPlayerStateUseCase: sut.currentPlayerStateUseCase,
-//            playerControlUseCase: sut.playerControlUseCase,
+//            playMediaUseCase: sut.playMediaUseCase,
 //            importSubtitlesUseCase: sut.importSubtitlesUseCase
 //        )
 //        
