@@ -152,6 +152,13 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
                     text: sentence1,
                     timeMarks: [],
                     components: []
+                ),
+                .init(
+                    startTime: 2,
+                    duration: 1,
+                    text: sentence1,
+                    timeMarks: [],
+                    components: []
                 )
             ]
         )
