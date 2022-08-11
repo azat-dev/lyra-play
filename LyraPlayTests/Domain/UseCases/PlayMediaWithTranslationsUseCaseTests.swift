@@ -12,6 +12,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
     
     typealias SUT = (
         useCase: PlayMediaWithTranslationsUseCase,
+        playMediaUseCase: PlayMediaUseCaseMock,
         loadSubtitlesUseCase: LoadSubtitlesUseCaseMock,
         playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory,
         provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase,
@@ -47,7 +48,8 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         )
         
         let translationsScheduler = SchedulerMock()
-        
+
+        let playMediaUseCase = PlayMediaUseCaseMock()
         
         let useCase = DefaultPlayMediaWithTranslationsUseCase(
             playMediaUseCase: playMediaUseCase,
@@ -101,6 +103,8 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         
         let expectedStateItems: [PlayMediaWithTranslationsUseCaseState] = [
             .initial,
+            .loading,
+            .playing(subtitlesPosition: nil),
             .finished
         ]
         
@@ -109,12 +113,22 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         
         stateSequence.observe(sut.useCase.state)
         
+        sut.useCase.state.observe(on: self) { state in
+
+            guard case .playing = state else {
+                return
+            }
+            
+            sut.playMediaUseCase.finish()
+        }
+        
         let _ = await sut.useCase.play(
             mediaId: testMediaId,
             nativeLanguage: anyNativeLanguage(),
             learningLanguage: anyLearningLanguage(),
             at: 0
         )
+        
         
         stateSequence.wait(timeout: 5, enforceOrder: true)
         sut.useCase.state.remove(observer: self)

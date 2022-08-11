@@ -11,13 +11,13 @@ import AVFAudio
 // MARK: - Interfaces
 
 public enum PronounceTranslationsUseCaseStateData: Equatable {
-
+    
     case single(translation: SubtitlesTranslationItem)
     case group(translations: [SubtitlesTranslationItem], currentTranslationIndex: Int)
 }
 
 public enum PronounceTranslationsUseCaseState: Equatable {
-
+    
     case playing(PronounceTranslationsUseCaseStateData)
     case paused(PronounceTranslationsUseCaseStateData)
     case stopped
@@ -25,18 +25,18 @@ public enum PronounceTranslationsUseCaseState: Equatable {
 }
 
 public protocol PronounceTranslationsUseCaseInput {
-
+    
     func pronounceSingle(translation: SubtitlesTranslationItem) async -> Void
-
+    
     func pronounceGroup(translations: [SubtitlesTranslationItem]) async -> Void
-
+    
     func pause() -> Void
-
+    
     func stop() -> Void
 }
 
 public protocol PronounceTranslationsUseCaseOutput {
-
+    
     var state: Observable<PronounceTranslationsUseCaseState> { get }
 }
 
@@ -46,21 +46,21 @@ public protocol PronounceTranslationsUseCase: PronounceTranslationsUseCaseOutput
 // MARK: - Implementations
 
 public final class DefaultPronounceTranslationsUseCase: PronounceTranslationsUseCase {
-
+    
     // MARK: - Properties
-
+    
     private let textToSpeechConverter: TextToSpeechConverter
     private let audioService: AudioService
-
+    
     public let state: Observable<PronounceTranslationsUseCaseState> = .init(.stopped)
-
+    
     // MARK: - Initializers
-
+    
     public init(
         textToSpeechConverter: TextToSpeechConverter,
         audioService: AudioService
     ) {
-
+        
         self.textToSpeechConverter = textToSpeechConverter
         self.audioService = audioService
     }
@@ -69,7 +69,7 @@ public final class DefaultPronounceTranslationsUseCase: PronounceTranslationsUse
 // MARK: - Input methods
 
 extension DefaultPronounceTranslationsUseCase {
-
+    
     private func convert(translation: SubtitlesTranslationItem) async -> (original: Data?, translated: Data?) {
         
         let results = await [
@@ -89,7 +89,7 @@ extension DefaultPronounceTranslationsUseCase {
             try? results[1].get()
         )
     }
-
+    
     private func pronounce(translation: SubtitlesTranslationItem) async -> Bool {
         
         let converted = await convert(translation: translation)
@@ -105,7 +105,7 @@ extension DefaultPronounceTranslationsUseCase {
             guard case .success = result else {
                 return false
             }
-
+            
             // Clean finished result
             let _ = await audioService.stop()
         }
@@ -122,14 +122,14 @@ extension DefaultPronounceTranslationsUseCase {
     }
     
     public func pronounceSingle(translation: SubtitlesTranslationItem) async -> Void {
-
+        
         state.value = .playing(.single(translation: translation))
         let _ = await pronounce(translation: translation)
         state.value = .finished
     }
-
+    
     public func pronounceGroup(translations: [SubtitlesTranslationItem]) async -> Void {
-
+        
         
         for index in 0..<translations.count {
             
@@ -145,14 +145,32 @@ extension DefaultPronounceTranslationsUseCase {
         
         state.value = .finished
     }
-
+    
     public func pause() -> Void {
-
-        fatalError("Not implemented")
+        
+        switch state.value {
+            
+        case .paused, .stopped, .finished:
+            break
+            
+        case .playing:
+            Task {
+                await audioService.pause()
+            }
+        }
     }
-
+    
     public func stop() -> Void {
-
-        fatalError("Not implemented")
+        
+        switch state.value {
+            
+        case .stopped, .finished:
+            break
+            
+        case .paused, .playing:
+            Task {
+                await audioService.stop()
+            }
+        }
     }
 }

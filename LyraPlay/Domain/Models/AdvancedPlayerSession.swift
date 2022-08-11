@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AdvancedPlayerSession {
+public struct AdvancedPlayerSession: Equatable {
 
     public var mediaId: UUID
     public var nativeLanguage: String

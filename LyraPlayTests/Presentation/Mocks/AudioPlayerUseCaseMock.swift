@@ -29,6 +29,7 @@ final class PlayMediaUseCaseMock: PlayMediaUseCase {
         currentPlayerStateUseCase?.state.value = .playing
         
         self.state.value = .playing(mediaId: mediaId)
+        
         return .success(())
     }
     
@@ -49,5 +50,14 @@ final class PlayMediaUseCaseMock: PlayMediaUseCase {
         state.value = .stopped
         
         return .success(())
+    }
+    
+    func finish() {
+        
+        guard let currentTrackId = currentTrackId else {
+            fatalError("No active track")
+        }
+        
+        self.state.value = .finished(mediaId: currentTrackId)
     }
 }
