@@ -50,6 +50,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         
         
         let useCase = DefaultPlayMediaWithTranslationsUseCase(
+            playMediaUseCase: playMediaUseCase,
             loadSubtitlesUseCase: loadSubtitlesUseCase,
             playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
             provideTranslationsToPlayUseCase: provideTranslationsToPlayUseCase,
@@ -60,6 +61,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         
         return (
             useCase,
+            playMediaUseCase,
             loadSubtitlesUseCase,
             playSubtitlesUseCaseFactory,
             provideTranslationsToPlayUseCase,
