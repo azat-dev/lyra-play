@@ -293,7 +293,7 @@ extension DefaultPlayMediaWithTranslationsUseCase {
             
             switch self.state.value {
                 
-            case .initial, .playing, .paused, .stopped, .finished:
+            case .initial, .playing, .paused, .stopped, .finished, .loading:
                 break
                 
             case .pronouncingTranslations:
