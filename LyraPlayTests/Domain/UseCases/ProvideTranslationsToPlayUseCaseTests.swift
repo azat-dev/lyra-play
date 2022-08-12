@@ -106,11 +106,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         let mediaId = anyMediaId()
         let testOptions = anyPlayerSession(mediaId: mediaId, subtitles: emptySubtitles())
         
-        let prevState = ExpectedProvideTranslationsToPlayUseCaseOutput(from: sut.useCase)
-        
         await sut.useCase.prepare(params: testOptions)
-        
-        AssertEqualReadable(.init(from: sut.useCase), prevState)
     }
     
     func test_prepare() async throws {
@@ -120,11 +116,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         let mediaId = anyMediaId()
         let testOptions = anyPlayerSession(mediaId: mediaId, subtitles: emptySubtitles())
         
-        let prevState = ExpectedProvideTranslationsToPlayUseCaseOutput(from: sut.useCase)
-        
         await sut.useCase.prepare(params: testOptions)
-        
-        AssertEqualReadable(.init(from: sut.useCase), prevState)
     }
     
     private func anySentence(at: TimeInterval, timeMarks: [Subtitles.TimeMark]? = nil, text: String = "") -> Subtitles.Sentence {
@@ -154,10 +146,10 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
     }
     
     private func test_iteration(
-        from time: TimeInterval,
+        from fromSentenceIndex: Int,
         subtitles: Subtitles,
         translations: [Int: [SubtitlesTranslation]],
-        expectedOutputs: [ExpectedProvideTranslationsToPlayUseCaseOutput],
+        expectedOutputs: [TranslationsToPlay?],
         file: StaticString = #filePath,
         line: UInt = #line
     ) async throws {
@@ -173,27 +165,40 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         
         await sut.useCase.prepare(params: testSession)
         
-        var receivedOutputs = [ExpectedProvideTranslationsToPlayUseCaseOutput]()
-        receivedOutputs.append(.init(from: sut.useCase))
-
-        if time != 0 {
+        var receivedOutputs = [TranslationsToPlay?]()
+        
+        guard fromSentenceIndex < subtitles.sentences.count else {
             
-            let _ = sut.useCase.beginNextExecution(from: time)
-            receivedOutputs.append(.init(from: sut.useCase))
+            let translation = await sut.useCase.getTranslationsToPlay(for: .sentence(fromSentenceIndex))
+            receivedOutputs.append(translation)
+    
+            AssertEqualReadable(receivedOutputs, expectedOutputs, file: file, line: line)
+            return
         }
         
-        while true {
+        for sentenceIndex in fromSentenceIndex..<subtitles.sentences.count {
             
-            let nextEventTime = sut.useCase.getTimeOfNextEvent()
-
-            guard let nextEventTime = nextEventTime else {
-                break
+            let sentence = subtitles.sentences[sentenceIndex]
+            
+            let translation = await sut.useCase.getTranslationsToPlay(for: .sentence(sentenceIndex))
+            receivedOutputs.append(translation)
+            
+            guard let timeMarks = sentence.timeMarks else {
+                continue
             }
-
-            let eventTime = sut.useCase.moveToNextEvent()
-            receivedOutputs.append(.init(from: sut.useCase))
             
-            XCTAssertEqual(eventTime, nextEventTime, file: file, line: line)
+            for timeMarkIndex in 0..<timeMarks.count {
+                
+                let translation = await sut.useCase.getTranslationsToPlay(for: .init(sentenceIndex: sentenceIndex, timeMarkIndex: timeMarkIndex))
+                
+                receivedOutputs.append(translation)
+            }
+        }
+        
+        if fromSentenceIndex > subtitles.sentences.count {
+            
+            let translation = await sut.useCase.getTranslationsToPlay(for: .sentence(fromSentenceIndex))
+            receivedOutputs.append(translation)
         }
         
         AssertEqualReadable(receivedOutputs, expectedOutputs, file: file, line: line)
@@ -202,17 +207,12 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
     func test_iteration__of_empty_subtitles() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [])
-
+        
         try await test_iteration(
             from: 0,
             subtitles: subtitles,
             translations: [:],
-            expectedOutputs: [
-                .init(
-                    lastEventTime: nil,
-                    currentItem: .nilValue()
-                ),
-            ]
+            expectedOutputs: [nil]
         )
     }
     
@@ -223,7 +223,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
             anySentence(at: 3),
             anySentence(at: 5)
         ])
-
+        
         let translation1 = anyTranslation()
         let translation2 = anyTranslation()
         
@@ -241,30 +241,21 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
             ],
             expectedOutputs: [
                 .init(
-                    lastEventTime: nil,
-                    currentItem: .nilValue()
-                ),
-                .init(
-                    lastEventTime: 3,
-                    currentItem: .init(
-                        time: 3,
-                        data: .groupAfterSentence(
-                            items: [
-                                translation1.translation,
-                                translation2.translation,
-                            ]
-                        )
+                    position: .sentence(0),
+                    data: .groupAfterSentence(
+                        items: [
+                            translation1.translation,
+                            translation2.translation,
+                        ]
                     )
                 ),
+                nil,
                 .init(
-                    lastEventTime: 10,
-                    currentItem: .init(
-                        time: 10,
-                        data: .groupAfterSentence(
-                            items: [
-                                translation1.translation
-                            ]
-                        )
+                    position: .sentence(2),
+                    data: .groupAfterSentence(
+                        items: [
+                            translation1.translation,
+                        ]
                     )
                 )
             ]
@@ -272,13 +263,13 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
     }
     
     func test_iterations__subtitles_with_time_mark_range_equals_to_translation_range() async throws {
-    
+        
         let markedWord = "1"
         
         let sentence1 = "0 \(markedWord) 2"
         
         let markedWordRange = sentence1.range(of: markedWord)!
-
+        
         let markedWordTranslation = anyTranslation(textRange: markedWordRange)
         
         let subtitles = Subtitles(duration: 10, sentences: [
@@ -294,7 +285,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
                 text: sentence1
             ),
         ])
-
+        
         try await test_iteration(
             from: 0,
             subtitles: subtitles,
@@ -304,29 +295,23 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
                 ],
             ],
             expectedOutputs: [
+                nil,
                 .init(
-                    lastEventTime: nil,
-                    currentItem: .nilValue()
-                ),
-                .init(
-                    lastEventTime: 3,
-                    currentItem: .init(
-                        time: 3,
-                        data: .single(translation: markedWordTranslation.translation)
-                    )
+                    position: .init(sentenceIndex: 0, timeMarkIndex: 0),
+                    data: .single(translation: markedWordTranslation.translation)
                 )
             ]
         )
     }
     
     func test_iterations__subtitles_with_time_mark_range_greater_than_translation_range() async throws {
-    
+        
         let markedWord = "1"
         
         let sentence1 = "0 \(markedWord) 2 3"
         
         let markedWordRange = sentence1.range(of: markedWord + " 2")!
-
+        
         let markedWordTranslation = anyTranslation(textRange: markedWordRange)
         
         let subtitles = Subtitles(duration: 10, sentences: [
@@ -342,7 +327,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
                 text: sentence1
             ),
         ])
-
+        
         try await test_iteration(
             from: 0,
             subtitles: subtitles,
@@ -352,30 +337,24 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
                 ],
             ],
             expectedOutputs: [
+                nil,
                 .init(
-                    lastEventTime: nil,
-                    currentItem: .nilValue()
-                ),
-                .init(
-                    lastEventTime: 3,
-                    currentItem: .init(
-                        time: 3,
-                        data: .single(translation: markedWordTranslation.translation)
-                    )
+                    position: .init(sentenceIndex: 0, timeMarkIndex: 0),
+                    data: .single(translation: markedWordTranslation.translation)
                 )
             ]
         )
     }
     
     func test_iterations__subtitles_with_time_mark_range_smaller_than_translation_range() async throws {
-    
+        
         let markedWord = "1"
         
         let sentence1 = "0 \(markedWord)1 2 3"
         
         let markedWordRange = sentence1.range(of: markedWord )!
         let translationRange = sentence1.range(of: markedWord + "1")!
-
+        
         let markedWordTranslation = anyTranslation(textRange: translationRange)
         
         let subtitles = Subtitles(duration: 10, sentences: [
@@ -391,7 +370,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
                 text: sentence1
             ),
         ])
-
+        
         try await test_iteration(
             from: 0,
             subtitles: subtitles,
@@ -402,22 +381,16 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
             ],
             expectedOutputs: [
                 .init(
-                    lastEventTime: nil,
-                    currentItem: .nilValue()
+                    position: .sentence(0),
+                    data: .groupAfterSentence(items: [markedWordTranslation.translation])
                 ),
-                .init(
-                    lastEventTime: 10,
-                    currentItem: .init(
-                        time: 10,
-                        data: .groupAfterSentence(items: [markedWordTranslation.translation])
-                    )
-                )
+                nil
             ]
         )
     }
     
     func test_iterations__subtitles_with_multiple_time_marks_inside_translation_range__use_only_last_one() async throws {
-    
+        
         let markedWord = "12"
         
         let sentence1 = "0 \(markedWord) 3 4 5"
@@ -447,7 +420,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
                 text: sentence1
             ),
         ])
-
+        
         try await test_iteration(
             from: 0,
             subtitles: subtitles,
@@ -457,50 +430,36 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
                 ],
             ],
             expectedOutputs: [
+                nil,
+                nil,
                 .init(
-                    lastEventTime: nil,
-                    currentItem: .nilValue()
-                ),
-                .init(
-                    lastEventTime: 5,
-                    currentItem: .init(
-                        time: 5,
-                        data: .single(translation: markedWordTranslation.translation)
-                    )
+                    position: .init(sentenceIndex: 0, timeMarkIndex: 1),
+                    data: .single(translation: markedWordTranslation.translation)
                 )
             ]
         )
     }
     
-    func test_beginNextExecution__empty_subtitles() async throws {
-
+    func test_iteration__empty_subtitles_with_offset() async throws {
+        
         let subtitles = Subtitles(duration: 10, sentences: [])
-
+        
         try await test_iteration(
             from: 100,
             subtitles: subtitles,
             translations: [:],
-            expectedOutputs: [
-                .init(
-                    lastEventTime: nil,
-                    currentItem: .nilValue()
-                ),
-                .init(
-                    lastEventTime: nil,
-                    currentItem: .nilValue()
-                )
-            ]
+            expectedOutputs: [ nil ]
         )
     }
     
-    func test_beginNextExecution__not_empty_subtitles_with_offset() async throws {
-
+    func test_iteration__not_empty_subtitles_with_offset() async throws {
+        
         let subtitles = Subtitles(duration: 10, sentences: [
             anySentence(at: 0),
             anySentence(at: 3),
             anySentence(at: 5)
         ])
-
+        
         let translation1 = anyTranslation()
         let translation2 = anyTranslation()
         
@@ -515,144 +474,37 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         ]
         
         try await test_iteration(
-            from: 3,
+            from: 1,
             subtitles: subtitles,
             translations: translations,
             expectedOutputs: [
-                .initialValue(),
+                nil,
                 .init(
-                    lastEventTime: 3,
-                    currentItem: .init(
-                        time: 3,
-                        data: .groupAfterSentence(
-                            items: [
-                                translation1.translation,
-                                translation2.translation,
-                            ]
-                        )
-                    )
-                ),
-                .init(
-                    lastEventTime: 10,
-                    currentItem: .init(
-                        time: 10,
-                        data: .groupAfterSentence(
-                            items: [
-                                translation1.translation
-                            ]
-                        )
+                    position: .sentence(2),
+                    data: .groupAfterSentence(
+                        items: [
+                            translation1.translation
+                        ]
                     )
                 )
             ]
         )
         
         try await test_iteration(
-            from: 5,
+            from: 2,
             subtitles: subtitles,
             translations: translations,
             expectedOutputs: [
-                .initialValue(),
                 .init(
-                    lastEventTime: 3,
-                    currentItem: .init(
-                        time: 3,
-                        data: .groupAfterSentence(
-                            items: [
-                                translation1.translation,
-                                translation2.translation,
-                            ]
-                        )
-                    )
-                ),
-                .init(
-                    lastEventTime: 10,
-                    currentItem: .init(
-                        time: 10,
-                        data: .groupAfterSentence(
-                            items: [
-                                translation1.translation
-                            ]
-                        )
+                    position: .sentence(2),
+                    data: .groupAfterSentence(
+                        items: [
+                            translation1.translation
+                        ]
                     )
                 )
             ]
         )
-    }
-}
-
-// MARK: - Helpers
-
-struct ExpectedProvideTranslationsToPlayUseCaseOutput: Equatable {
-    
-    var lastEventTime: TimeInterval? = nil
-    var currentItem: ExpectedTranslationsToPlay = .nilValue()
-    
-    init(
-        lastEventTime: TimeInterval? = nil,
-        currentItem: ExpectedTranslationsToPlay = .nilValue()
-    ) {
-        
-        self.lastEventTime = lastEventTime
-        self.currentItem = currentItem
-    }
-    
-    init(from source: ProvideTranslationsToPlayUseCaseOutput?) {
-        
-        guard let source = source else {
-            return
-        }
-        
-        self.lastEventTime = source.lastEventTime
-        
-        if let currentItem = source.currentItem {
-            self.currentItem = ExpectedTranslationsToPlay(from: currentItem)
-        }
-    }
-    
-    static func initialValue() -> Self {
-        
-        return .init(
-            lastEventTime: nil,
-            currentItem: .nilValue()
-        )
-    }
-}
-
-struct ExpectedTranslationsToPlay: Equatable {
-    
-    var isNil: Bool
-    var time: TimeInterval? = nil
-    var data: TranslationsToPlayData? = nil
-    
-    init(
-        time: TimeInterval? = nil,
-        data: TranslationsToPlayData? = nil
-    ) {
-        
-        self.isNil = false
-        self.time = time
-        self.data = data
-    }
-    
-    private init(isNil: Bool) {
-        
-        self.isNil = isNil
-    }
-    
-    init(from source: TranslationsToPlay?) {
-        
-        self.isNil = (source == nil)
-        
-        guard let source = source else {
-            return
-        }
-        
-        self.time = source.time
-        self.data = source.data
-    }
-    
-    static func nilValue() -> ExpectedTranslationsToPlay {
-        return .init(isNil: true)
     }
 }
 

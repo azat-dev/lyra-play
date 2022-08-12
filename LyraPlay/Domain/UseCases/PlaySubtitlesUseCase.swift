@@ -18,7 +18,7 @@ public enum PlaySubtitlesUseCaseState: Equatable {
     case finished
 }
 
-public struct SubtitlesPosition: Equatable {
+public struct SubtitlesPosition: Equatable, Comparable {
 
     public var sentenceIndex: Int
     public var timeMarkIndex: Int?
@@ -34,6 +34,19 @@ public struct SubtitlesPosition: Equatable {
 
         public static func sentence(_ index: Int) -> Self {
         return .init(sentenceIndex: index, timeMarkIndex: nil)
+    }
+    
+    public static func < (lhs: SubtitlesPosition, rhs: SubtitlesPosition) -> Bool {
+        
+        if lhs.sentenceIndex < rhs.sentenceIndex {
+            return true
+        }
+        
+        if lhs.sentenceIndex > rhs.sentenceIndex {
+            return false
+        }
+        
+        return (lhs.timeMarkIndex ?? -1) < (rhs.timeMarkIndex ?? -1)
     }
 }
 
