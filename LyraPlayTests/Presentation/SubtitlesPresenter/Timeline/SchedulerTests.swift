@@ -23,11 +23,7 @@ class SchedulerTests: XCTestCase {
 
         let timer = ActionTimerMock()
         
-        let scheduler = DefaultScheduler(
-            timeLineIterator: iterator,
-            timer: timer
-        )
-        
+        let scheduler = DefaultScheduler(timer: timer)
         detectMemoryLeak(instance: scheduler, file: file, line: line)
         
         return (
@@ -37,7 +33,7 @@ class SchedulerTests: XCTestCase {
         )
     }
     
-    func test_start__empty_iterator() async throws {
+    func test_execute__empty_iterator() async throws {
 
         let expectation = expectation(description: "Don't call")
         expectation.isInverted = true
@@ -45,14 +41,14 @@ class SchedulerTests: XCTestCase {
         let sut = createSUT()
 
         sut.iterator.timeMarks = []
-        sut.scheduler.start(at: 0.0) { _ in
+        sut.scheduler.execute(timeline: sut.iterator, from: 0.0) { _ in
             expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: 1)
     }
 
-    func test_start__at_zero() async throws {
+    func test_execute__at_zero() async throws {
 
         let sut = createSUT()
 
@@ -61,7 +57,7 @@ class SchedulerTests: XCTestCase {
         let sequence = expectSequence(timeMarks)
 
         sut.iterator.timeMarks = timeMarks
-        sut.scheduler.start(at: 0.0) { time in
+        sut.scheduler.execute(timeline: sut.iterator, from: 0.0) { time in
 
             sequence.fulfill(with: time)
         }
@@ -69,7 +65,7 @@ class SchedulerTests: XCTestCase {
         sequence.wait(timeout: 1, enforceOrder: true)
     }
 
-    func test_start__at_offset() async throws {
+    func test_execute__at_offset() async throws {
 
         let sut = createSUT()
 
@@ -78,7 +74,7 @@ class SchedulerTests: XCTestCase {
 
         sut.iterator.timeMarks = timeMarks
 
-        sut.scheduler.start(at: 0.1) { time in
+        sut.scheduler.execute(timeline: sut.iterator, from: 0.1) { time in
 
             sequence.fulfill(with: time)
         }
@@ -96,7 +92,7 @@ class SchedulerTests: XCTestCase {
         sut.iterator.timeMarks = [1, 2, 3]
 
         sut.timer.willFire(filter: { _, _ in true })
-        sut.scheduler.start(at: 0.0) { [weak scheduler] time in
+        sut.scheduler.execute(timeline: sut.iterator, from: 0.0) { [weak scheduler] time in
 
             sequence.fulfill(with: time)
 
@@ -115,7 +111,7 @@ class SchedulerTests: XCTestCase {
         let expectation = expectation(description: "Don't call")
         expectation.isInverted = true
 
-        sut.scheduler.start(at: 0.0) { _ in
+        sut.scheduler.execute(timeline: sut.iterator, from: 0.0) { _ in
             expectation.fulfill()
         }
         sut.scheduler.stop()
@@ -133,7 +129,7 @@ class SchedulerTests: XCTestCase {
         sut.iterator.timeMarks = [1, 2, 3]
 
         sut.timer.willFire(filter: { _, _ in true })
-        sut.scheduler.start(at: 0.0) { [weak scheduler] time in
+        sut.scheduler.execute(timeline: sut.iterator, from: 0.0) { [weak scheduler] time in
 
             sequence.fulfill(with: time)
 

@@ -11,7 +11,7 @@ import Foundation
 
 public protocol Scheduler: AnyObject {
     
-    func start(at: TimeInterval, block: @escaping (TimeInterval) -> Void)
+    func execute(timeline: TimeLineIterator, from: TimeInterval, block: @escaping (TimeInterval) -> Void)
     
     func stop()
     
@@ -26,7 +26,6 @@ public final class DefaultScheduler {
     
     typealias Callback = (TimeInterval) -> Void
     
-    private let timeLineIterator: TimeLineIterator
     private var timer: ActionTimer
     
     private var semaphore = DispatchSemaphore(value: 1)
@@ -34,12 +33,7 @@ public final class DefaultScheduler {
     
     private var currentSession: Session? = nil
     
-    public init(
-        timeLineIterator: TimeLineIterator,
-        timer: ActionTimer
-    ) {
-        
-        self.timeLineIterator = timeLineIterator
+    public init(timer: ActionTimer) {
         self.timer = timer
     }
 }
@@ -52,14 +46,14 @@ extension DefaultScheduler: Scheduler {
         
         semaphore.wait()
         
-        guard currentSession != nil else {
+        guard let currentSession = currentSession else {
             semaphore.signal()
             return
         }
         
         semaphore.signal()
         
-        guard let nextTimeMark = timeLineIterator.getTimeOfNextEvent() else {
+        guard let nextTimeMark = currentSession.timeline.getTimeOfNextEvent() else {
             return
         }
         
@@ -84,7 +78,7 @@ extension DefaultScheduler: Scheduler {
             }
             
             self.semaphore.signal()
-            let _ = self.timeLineIterator.moveToNextEvent()
+            let _ = currentSession.timeline.moveToNextEvent()
 
             self.semaphore.wait()
             self.currentSession?.lastIterationStartTime = nil
@@ -115,7 +109,7 @@ extension DefaultScheduler: Scheduler {
         }
     }
     
-    public func start(at time: TimeInterval, block: @escaping (TimeInterval) -> Void) {
+    public func execute(timeline: TimeLineIterator, from time: TimeInterval, block: @escaping (TimeInterval) -> Void) {
         
         semaphore.wait()
         
@@ -124,12 +118,13 @@ extension DefaultScheduler: Scheduler {
         currentSession = .init(
             lastIterationStartTime: nil,
             lastTimeMark: 0,
+            timeline: timeline,
             block: block
         )
         
         semaphore.signal()
         
-        guard let currentTimeMark = timeLineIterator.beginNextExecution(from: time) else {
+        guard let currentTimeMark = timeline.beginNextExecution(from: time) else {
 
             setNextTimer(block: block)
             return
@@ -161,8 +156,6 @@ extension DefaultScheduler: Scheduler {
         
         currentSession = nil
         timer.cancel()
-        
-        let _ = timeLineIterator.beginNextExecution(from: 0)
     }
     
     public func pause() {
@@ -212,21 +205,25 @@ extension DefaultScheduler {
         var lastIterationStartTime: Date? = nil
         var lastTimeMark: TimeInterval = 0
         var pausedAt: Date? = nil
+        var timeline: TimeLineIterator
         var block: (TimeInterval) -> Void
         
         init(
             lastIterationStartTime: Date? = nil,
             lastTimeMark: TimeInterval,
+            timeline: TimeLineIterator,
             block: @escaping DefaultScheduler.Callback
         ) {
             self.lastIterationStartTime = lastIterationStartTime
             self.lastTimeMark = lastTimeMark
             self.block = block
+            self.timeline = timeline
         }
         
         init(from source: Session) {
             
             self.lastIterationStartTime = source.lastIterationStartTime
+            self.timeline = source.timeline
             self.lastTimeMark = source.lastTimeMark
             self.pausedAt = source.pausedAt
             self.block = source.block

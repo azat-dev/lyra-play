@@ -98,7 +98,7 @@ extension DefaultPlaySubtitlesUseCase {
 
         scheduler.stop()
         
-        scheduler.start(at: time) { [weak self] time in
+        scheduler.execute(timeline: subtitlesIterator, from: time) { [weak self] time in
             
             guard let self = self else {
                 return

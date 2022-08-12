@@ -66,10 +66,7 @@ public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewMod
             subtitlesTimeSlots: subtitlesTimeSlots
         )
         
-        self.scheduler = DefaultScheduler(
-            timeLineIterator: subtitlesIterator,
-            timer: DefaultActionTimer()
-        )
+        self.scheduler = DefaultScheduler(timer: DefaultActionTimer())
     }
 }
 
@@ -153,7 +150,7 @@ extension DefaultSubtitlesPresenterViewModel {
     
     public func play(at time: TimeInterval) async {
         
-        scheduler.start(at: time) { [weak self] time in
+        scheduler.execute(timeline: subtitlesIterator, from: time) { [weak self] time in
             
             guard let self = self else {
                 return

@@ -27,10 +27,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         )
         let timer = ActionTimerMock()
         
-        let scheduler = DefaultScheduler(
-            timeLineIterator: subtitlesIterator,
-            timer: timer
-        )
+        let scheduler = DefaultScheduler(timer: timer)
         
         let useCase = DefaultPlaySubtitlesUseCase(
             subtitlesIterator: subtitlesIterator,
