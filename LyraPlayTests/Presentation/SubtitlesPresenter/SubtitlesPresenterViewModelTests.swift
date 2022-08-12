@@ -268,6 +268,9 @@ final class SchedulerMock: Scheduler {
     
     func pause() {
     }
+    
+    func resume() {
+    }
 }
 
 // MARK: - Helper Types

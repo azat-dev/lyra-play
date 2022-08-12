@@ -9,24 +9,30 @@ import Foundation
 
 // MARK: - Interfaces
 
-public protocol Scheduler {
+public protocol Scheduler: AnyObject {
     
     func start(at: TimeInterval, block: @escaping (TimeInterval) -> Void)
     
     func stop()
     
     func pause()
+    
+    func resume()
 }
 
 // MARK: - Implementations
 
 public final class DefaultScheduler {
     
+    typealias Callback = (TimeInterval) -> Void
+    
     private let timeLineIterator: TimeLineIterator
     private var timer: ActionTimer
     
     private var semaphore = DispatchSemaphore(value: 1)
     private var isStopped: Bool = false
+    
+    private var currentSession: Session? = nil
     
     public init(
         timeLineIterator: TimeLineIterator,
@@ -38,21 +44,21 @@ public final class DefaultScheduler {
     }
 }
 
+// MARK: - Methods
+
 extension DefaultScheduler: Scheduler {
     
-    private func setNextTimer(block: @escaping (TimeInterval) -> Void, lastTimeMark: TimeInterval = 0, delta: TimeInterval = 0) {
+    private func setNextTimer(block: @escaping Callback, lastTimeMark: TimeInterval = 0, delta: TimeInterval = 0) {
         
         semaphore.wait()
         
-        if isStopped {
-            
+        guard currentSession != nil else {
             semaphore.signal()
             return
         }
         
         semaphore.signal()
         
-
         guard let nextTimeMark = timeLineIterator.getTimeOfNextEvent() else {
             return
         }
@@ -60,28 +66,46 @@ extension DefaultScheduler: Scheduler {
         let triggerTime = Date.now
         let timeOffset = nextTimeMark - lastTimeMark - delta
         
+        semaphore.wait()
+        self.currentSession?.lastIterationStartTime = triggerTime
+        semaphore.signal()
+        
         timer.executeAfter(timeOffset) { [weak self] in
-
+        
             guard let self = self else {
                 return
             }
             
             self.semaphore.wait()
-            
-            if self.isStopped {
-                
+
+            guard let currentSession = self.currentSession else {
                 self.semaphore.signal()
                 return
             }
             
             self.semaphore.signal()
+            let _ = self.timeLineIterator.moveToNextEvent()
+
+            self.semaphore.wait()
+            self.currentSession?.lastIterationStartTime = nil
+            self.currentSession?.lastTimeMark = nextTimeMark
             
+            let prevSession = currentSession
+            
+            self.semaphore.signal()
             
             let timeDelta = Date.now.timeIntervalSince(triggerTime) - timeOffset
-            
-            let _ = self.timeLineIterator.moveToNextEvent()
-            
             block(nextTimeMark)
+
+            
+            self.semaphore.wait()
+            
+            guard self.currentSession === prevSession else {
+                self.semaphore.signal()
+                return
+            }
+            
+            self.semaphore.signal()
             
             self.setNextTimer(
                 block: block,
@@ -96,18 +120,35 @@ extension DefaultScheduler: Scheduler {
         semaphore.wait()
         
         timer.cancel()
-        isStopped = false
-
+        
+        currentSession = .init(
+            lastIterationStartTime: nil,
+            lastTimeMark: 0,
+            block: block
+        )
+        
         semaphore.signal()
-
+        
         guard let currentTimeMark = timeLineIterator.beginNextExecution(from: time) else {
+
             setNextTimer(block: block)
             return
         }
         
         if time == currentTimeMark {
             
+            semaphore.wait()
+            currentSession?.lastIterationStartTime = nil
+            currentSession?.lastTimeMark = currentTimeMark
+            semaphore.signal()
+            
+            let prevSession = currentSession
+            
             block(currentTimeMark)
+            
+            if currentSession !== prevSession {
+                return
+            }
         }
         
         setNextTimer(block: block)
@@ -118,7 +159,7 @@ extension DefaultScheduler: Scheduler {
         defer { semaphore.signal() }
         semaphore.wait()
         
-        isStopped = true
+        currentSession = nil
         timer.cancel()
         
         let _ = timeLineIterator.beginNextExecution(from: 0)
@@ -126,10 +167,81 @@ extension DefaultScheduler: Scheduler {
     
     public func pause() {
         
-        defer { semaphore.signal() }
         semaphore.wait()
         
-        isStopped = true
+        guard let currentSession = currentSession else {
+            semaphore.signal()
+            return
+        }
+        
+
+        self.currentSession = .init(from: currentSession)
+        self.currentSession?.pausedAt = .now
+
         timer.cancel()
+        semaphore.signal()
+    }
+    
+    public func resume() {
+        
+        semaphore.wait()
+        
+        
+        guard let currentSession = currentSession else {
+            semaphore.signal()
+            return
+        }
+        
+        timer.cancel()
+
+        let elapsedTime = currentSession.getElapsedTime()
+        
+        self.currentSession = .init(from: currentSession)
+        self.currentSession?.pausedAt = nil
+        self.currentSession?.lastIterationStartTime = nil
+        
+        semaphore.signal()
+        setNextTimer(block: currentSession.block, lastTimeMark: elapsedTime)
+    }
+}
+
+extension DefaultScheduler {
+    
+    private class Session {
+        
+        var lastIterationStartTime: Date? = nil
+        var lastTimeMark: TimeInterval = 0
+        var pausedAt: Date? = nil
+        var block: (TimeInterval) -> Void
+        
+        init(
+            lastIterationStartTime: Date? = nil,
+            lastTimeMark: TimeInterval,
+            block: @escaping DefaultScheduler.Callback
+        ) {
+            self.lastIterationStartTime = lastIterationStartTime
+            self.lastTimeMark = lastTimeMark
+            self.block = block
+        }
+        
+        init(from source: Session) {
+            
+            self.lastIterationStartTime = source.lastIterationStartTime
+            self.lastTimeMark = source.lastTimeMark
+            self.pausedAt = source.pausedAt
+            self.block = source.block
+        }
+        
+        func getElapsedTime() -> TimeInterval {
+
+            guard
+                let lastIterationStartTime = lastIterationStartTime,
+                let pausedAt = pausedAt
+            else {
+                return lastTimeMark
+            }
+            
+            return lastTimeMark + pausedAt.timeIntervalSince(lastIterationStartTime)
+        }
     }
 }

@@ -18,8 +18,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase,
         provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCaseMock,
         pronounceTranslationsUseCase: PronounceTranslationsUseCase,
-        subtitlesScheduler: SchedulerMock,
-        translationsScheduler: SchedulerMock
+        subtitlesScheduler: SchedulerMock
     )
     
     func createSUT() -> SUT {
@@ -47,8 +46,6 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             scheduler: subtitlesScheduler
         )
         
-        let translationsScheduler = SchedulerMock()
-
         let playMediaUseCase = PlayMediaUseCaseMock()
         
         let useCase = DefaultPlayMediaWithTranslationsUseCase(
@@ -56,8 +53,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             loadSubtitlesUseCase: loadSubtitlesUseCase,
             playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
             provideTranslationsToPlayUseCase: provideTranslationsToPlayUseCase,
-            pronounceTranslationsUseCase: pronounceTranslationsUseCase,
-            translationsScheduler: translationsScheduler
+            pronounceTranslationsUseCase: pronounceTranslationsUseCase
         )
         detectMemoryLeak(instance: useCase)
         
@@ -69,8 +65,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             provideTranslationsToPlayUseCase,
             provideTranslationsForSubtitlesUseCase,
             pronounceTranslationsUseCase,
-            subtitlesScheduler,
-            translationsScheduler
+            subtitlesScheduler
         )
     }
     

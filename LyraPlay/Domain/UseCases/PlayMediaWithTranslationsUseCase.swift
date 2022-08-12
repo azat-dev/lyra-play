@@ -65,7 +65,6 @@ public final class DefaultPlayMediaWithTranslationsUseCase: PlayMediaWithTransla
     private let playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory
     private let provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase
     private let pronounceTranslationsUseCase: PronounceTranslationsUseCase
-    private let translationsScheduler: Scheduler
     
     public let state: Observable<PlayMediaWithTranslationsUseCaseState> = .init(.initial)
     
@@ -102,8 +101,7 @@ public final class DefaultPlayMediaWithTranslationsUseCase: PlayMediaWithTransla
         loadSubtitlesUseCase: LoadSubtitlesUseCase,
         playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory,
         provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase,
-        pronounceTranslationsUseCase: PronounceTranslationsUseCase,
-        translationsScheduler: Scheduler
+        pronounceTranslationsUseCase: PronounceTranslationsUseCase
     ) {
         
         self.playMediaUseCase = playMediaUseCase
@@ -111,7 +109,6 @@ public final class DefaultPlayMediaWithTranslationsUseCase: PlayMediaWithTransla
         self.playSubtitlesUseCaseFactory = playSubtitlesUseCaseFactory
         self.provideTranslationsToPlayUseCase = provideTranslationsToPlayUseCase
         self.pronounceTranslationsUseCase = pronounceTranslationsUseCase
-        self.translationsScheduler = translationsScheduler
         
         observeMediaState()
         observePronouncingTranslations()
@@ -182,7 +179,6 @@ extension DefaultPlayMediaWithTranslationsUseCase {
     public func pause() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         playSubtitlesUseCase?.pause()
-        translationsScheduler.pause()
         pronounceTranslationsUseCase.pause()
         
         return .success(())
@@ -190,7 +186,6 @@ extension DefaultPlayMediaWithTranslationsUseCase {
     
     public func stop() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        translationsScheduler.stop()
         pronounceTranslationsUseCase.stop()
         playSubtitlesUseCase?.stop()
         currentSession = nil
@@ -200,7 +195,6 @@ extension DefaultPlayMediaWithTranslationsUseCase {
     
     private func didFinish() {
         
-        translationsScheduler.stop()
         self.pronounceTranslationsUseCase.stop()
         self.playSubtitlesUseCase?.stop()
         
@@ -226,18 +220,16 @@ extension DefaultPlayMediaWithTranslationsUseCase {
     
     private func updateSubtitlesPosition(_ newPosition: SubtitlesPosition?) {
         
+        guard currentSubtitlesPosition != newPosition else {
+            return
+        }
+        
         switch self.state.value {
-        case .initial, .finished, .stopped, .loading:
+        case .initial, .finished, .stopped, .loading, .pronouncingTranslations, .paused:
             break
             
         case .playing:
             self.state.value = .playing(subtitlesPosition: newPosition)
-            
-        case .pronouncingTranslations( _, let data):
-            self.state.value = .pronouncingTranslations(subtitlesPosition: newPosition, data: data)
-            
-        case .paused:
-            self.state.value = .paused(subtitlesPosition: newPosition)
         }
     }
 }
@@ -283,6 +275,36 @@ extension DefaultPlayMediaWithTranslationsUseCase {
         playMediaUseCase.state.observeIgnoreInitial(on: self) { [weak self] in self?.updateState($0) }
     }
     
+    private func playTranslationAfterSubtitlesPositionChange(position newPosition: SubtitlesPosition?) {
+        
+        guard let currentPosition = currentSubtitlesPosition else {
+            return
+        }
+        
+        guard currentPosition != newPosition else {
+            return
+        }
+        
+        
+        let isSentenceFinished = (newPosition == nil || newPosition!.sentenceIndex != currentPosition.sentenceIndex)
+        
+        let positionToPlay = isSentenceFinished ? .sentence(currentPosition.sentenceIndex) : currentPosition
+        
+        Task {
+            
+            let translations = await self.provideTranslationsToPlayUseCase.getTranslationsToPlay(for: positionToPlay)
+            guard let translations = translations else {
+                
+                self.updateSubtitlesPosition(newPosition)
+                return
+            }
+            
+            self.playSubtitlesUseCase?.pause()
+            await self.playMediaUseCase.pause()
+            await self.pronounceCurrentTranslationItem(translations: translations)
+        }
+    }
+    
     private func updateState(_ newState: PlaySubtitlesUseCaseState) {
         
         switch newState {
@@ -290,37 +312,40 @@ extension DefaultPlayMediaWithTranslationsUseCase {
         case .initial, .stopped, .finished:
             break
             
-        case .playing(let position):
-            
-            guard let currentPosition = currentSubtitlesPosition else {
-                return
-            }
-            
-            if currentPosition != position {
-                
-                Task {
-                    
-                    let translations = await self.provideTranslationsToPlayUseCase.getTranslationsToPlay(for: currentPosition)
-                    guard let translations = translations else {
-                        
-                        self.updateSubtitlesPosition(position)
-                        return
-                    }
-                    
-                    self.playSubtitlesUseCase?.pause()
-                    await self.pronounceCurrentTranslationItem(translations: translations)
-                    await self.playMediaUseCase.pause()
-                }
-            }
-            
         case .paused(let position):
             self.updateSubtitlesPosition(position)
+            
+        case .playing(let position):
+            playTranslationAfterSubtitlesPositionChange(position: position)
         }
     }
     
     private func observePlayingSubtitles() {
         
         playSubtitlesUseCase?.state.observeIgnoreInitial(on: self) { [weak self] in self?.updateState($0) }
+    }
+    
+    private func resumePlayingAfterPronunciationBlock() {
+        
+        let currentState = self.state.value
+        
+        switch currentState {
+            
+        case .initial, .playing, .paused, .stopped, .finished, .loading:
+            break
+            
+        case .pronouncingTranslations:
+            
+            guard case .finished = self.playMediaUseCase.state.value else {
+                
+                self.state.value = .finished
+                return
+            }
+            
+            //                self.playSubtitlesUseCase.resume()
+            //                self.playMediaUseCase.resume()
+            self.state.value = .playing(subtitlesPosition: self.currentSubtitlesPosition)
+        }
     }
     
     private func updateState(_ newState: PronounceTranslationsUseCaseState) {
@@ -331,28 +356,10 @@ extension DefaultPlayMediaWithTranslationsUseCase {
             break
             
         case .playing(let stateData):
-            
             self.state.value = .pronouncingTranslations(subtitlesPosition: self.currentSubtitlesPosition, data: stateData)
             
         case .finished:
-            
-            switch self.state.value {
-                
-            case .initial, .playing, .paused, .stopped, .finished, .loading:
-                break
-                
-            case .pronouncingTranslations:
-                
-                guard case .finished = self.playMediaUseCase.state.value else {
-                    
-                    self.state.value = .finished
-                    return
-                }
-                
-//                self.playSubtitlesUseCase.resume()
-//                self.playMediaUseCase.resume()
-                self.state.value = .playing(subtitlesPosition: self.currentSubtitlesPosition)
-            }
+            resumePlayingAfterPronunciationBlock()
         }
     }
     
