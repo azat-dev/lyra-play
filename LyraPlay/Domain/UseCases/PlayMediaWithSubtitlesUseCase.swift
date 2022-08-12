@@ -61,6 +61,8 @@ public protocol PlayMediaWithSubtitlesUseCaseInput {
     
     func prepare(params: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
     
+    func play() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
+    
     func play(at time: TimeInterval?) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
     
     func pause() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
@@ -144,8 +146,12 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
         return .success(())
     }
     
+    public func play() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+        return await play(at: nil)
+    }
+    
     public func play(at time: TimeInterval?) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        
+
         fatalError("Not implemented")
     }
     
