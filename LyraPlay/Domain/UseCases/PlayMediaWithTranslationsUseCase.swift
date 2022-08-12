@@ -131,6 +131,8 @@ extension DefaultPlayMediaWithTranslationsUseCase {
             return
         }
         
+        await playMediaUseCase.prepare(mediaId: session.mediaId)
+        
         let loadSubtitlesResult = await loadSubtitlesUseCase.load(
             for: session.mediaId,
             language: session.learningLanguage
@@ -171,7 +173,7 @@ extension DefaultPlayMediaWithTranslationsUseCase {
         let session = Session(mediaId: mediaId, learningLanguage: learningLanguage, nativeLanguage: nativeLanguage)
         
         await prepareResources(session: session)
-        await playMediaUseCase.play(mediaId: mediaId)
+        await playMediaUseCase.play()
         
         return .success(())
     }
@@ -243,7 +245,7 @@ extension DefaultPlayMediaWithTranslationsUseCase {
         
         switch newState {
             
-        case .initial, .loading, .loaded, .stopped:
+        case .initial, .loading, .loaded, .stopped, .failedLoad:
             return
             
         case .playing:

@@ -19,16 +19,25 @@ final class PlayMediaUseCaseMock: PlayMediaUseCase {
         self.currentPlayerStateUseCase = currentPlayerStateUseCase
     }
     
-    func play(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError> {
+    func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError> {
         
         currentTrackId = mediaId
         self.state.value = .loading(mediaId: mediaId)
-        self.state.value = .loaded(mediaId: mediaId)
+        self.state.value = .loaded(mediaId: mediaId, data: "".data(using: .utf8)!)
         
-        await currentPlayerStateUseCase?.setTrack(trackId: mediaId)
+        return .success(())
+    }
+    
+    func play() async -> Result<Void, PlayMediaUseCaseError> {
+        
+        guard let currentTrackId = currentTrackId else {
+            return .failure(.noActiveTrack)
+        }
+        
+        await currentPlayerStateUseCase?.setTrack(trackId: currentTrackId)
         currentPlayerStateUseCase?.state.value = .playing
         
-        self.state.value = .playing(mediaId: mediaId)
+        self.state.value = .playing(mediaId: currentTrackId)
         
         return .success(())
     }

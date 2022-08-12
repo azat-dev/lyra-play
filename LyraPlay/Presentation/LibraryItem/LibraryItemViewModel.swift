@@ -165,7 +165,8 @@ extension DefaultLibraryItemViewModel {
             return
         }
         
-        let _ = await playMediaUseCase.play(mediaId: trackId)
+        let _ = await playMediaUseCase.prepare(mediaId: trackId)
+        let _ = await playMediaUseCase.play()
         await loadSubtitles()
     }
     

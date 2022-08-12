@@ -50,7 +50,9 @@ class PlayMediaUseCaseTests: XCTestCase {
     private func setUpTracks(loadTrackUseCase: LoadTrackUseCaseMock) {
         
         for _ in 0..<5 {
-            loadTrackUseCase.tracks[UUID()] = Data()
+            
+            let id = UUID()
+            loadTrackUseCase.tracks[id] = id.uuidString.data(using: .utf8)
         }
     }
     
@@ -66,7 +68,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         let expectedStateItems: [PlayMediaUseCaseState] = [
             .initial,
             .loading(mediaId: trackId),
-            .loaded(mediaId: trackId),
+            .loaded(mediaId: trackId, data: sut.loadTrackUseCase.tracks[trackId]!),
         ]
         
         let stateSequence = self.expectSequence(expectedStateItems)
@@ -98,7 +100,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         let expectedStateItems: [PlayMediaUseCaseState] = [
             .initial,
             .loading(mediaId: trackId),
-            .loaded(mediaId: trackId),
+            .loaded(mediaId: trackId, data: sut.loadTrackUseCase.tracks[trackId]!),
             .playing(mediaId: trackId),
 //            .finished(mediaId: trackId)
         ]
@@ -156,7 +158,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         let expectedStateItems: [PlayMediaUseCaseState] = [
             .initial,
             .loading(mediaId: trackId),
-            .loaded(mediaId: trackId),
+            .loaded(mediaId: trackId, data: sut.loadTrackUseCase.tracks[trackId]!),
             .playing(mediaId: trackId),
             .paused(mediaId: trackId, time: 0)
         ]
@@ -188,6 +190,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         
         setUpTracks(loadTrackUseCase: sut.loadTrackUseCase)
         
+        let tracksData = sut.loadTrackUseCase.tracks
         let tracks = Array(sut.loadTrackUseCase.tracks.keys)
         let trackId1 = tracks[0]
         let trackId2 = tracks[1]
@@ -195,10 +198,10 @@ class PlayMediaUseCaseTests: XCTestCase {
         let expectedStateItems: [PlayMediaUseCaseState] = [
             .initial,
             .loading(mediaId: trackId1),
-            .loaded(mediaId: trackId1),
+            .loaded(mediaId: trackId1, data: tracksData[trackId1]!),
             .playing(mediaId: trackId1),
             .loading(mediaId: trackId2),
-            .loaded(mediaId: trackId2),
+            .loaded(mediaId: trackId2, data: tracksData[trackId2]!),
             .playing(mediaId: trackId2),
         ]
         

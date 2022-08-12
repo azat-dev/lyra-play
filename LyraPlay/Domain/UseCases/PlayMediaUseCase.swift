@@ -20,7 +20,8 @@ public enum PlayMediaUseCaseState: Equatable {
     
     case initial
     case loading(mediaId: UUID)
-    case loaded(mediaId: UUID)
+    case loaded(mediaId: UUID, data: Data)
+    case failedLoad(mediaId: UUID)
     case playing(mediaId: UUID)
     case stopped
     case interrupted(mediaId: UUID, time: TimeInterval)
@@ -34,7 +35,7 @@ public enum PlayMediaUseCaseState: Equatable {
         case .initial, .stopped:
             return nil
 
-        case .loading(let mediaId), .loaded(let mediaId), .playing(let mediaId), .interrupted(let mediaId, _), .paused(let mediaId, _), .finished(let mediaId):
+        case .loading(let mediaId), .loaded(let mediaId, _), .playing(let mediaId), .interrupted(let mediaId, _), .paused(let mediaId, _), .finished(let mediaId), .failedLoad(let mediaId):
             return mediaId
         }
     }
@@ -42,7 +43,9 @@ public enum PlayMediaUseCaseState: Equatable {
 
 public protocol PlayMediaUseCaseInput {
     
-    func play(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError>
+    func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError>
+    
+    func play() async -> Result<Void, PlayMediaUseCaseError>
     
     func pause() async -> Result<Void, PlayMediaUseCaseError>
     
@@ -128,7 +131,7 @@ public final class DefaultPlayMediaUseCase: PlayMediaUseCase {
 
 extension DefaultPlayMediaUseCase {
     
-    public func play(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError> {
+    public func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError> {
         
         self.state.value = .loading(mediaId: mediaId)
         let loadResult = await loadTrackUseCase.load(trackId: mediaId)
@@ -137,11 +140,22 @@ extension DefaultPlayMediaUseCase {
 
             self.state.value = .initial
             let mappedError = map(error: loadResult.error!)
+            
+            self.state.value = .failedLoad(mediaId: mediaId)
             return .failure(mappedError)
         }
         
-        self.state.value = .loaded(mediaId: mediaId)
+        self.state.value = .loaded(mediaId: mediaId, data: trackData)
+        return .success(())
+    }
+    
+    public func play() async -> Result<Void, PlayMediaUseCaseError> {
         
+        guard case .loaded(let mediaId, let trackData) = self.state.value else {
+            
+            return .failure(.noActiveTrack)
+        }
+
         let playResult = await audioService.play(fileId: mediaId.uuidString, data: trackData)
         
         guard case .success = playResult else {
