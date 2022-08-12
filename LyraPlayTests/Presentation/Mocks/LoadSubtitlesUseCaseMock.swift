@@ -12,14 +12,14 @@ class LoadSubtitlesUseCaseMock: LoadSubtitlesUseCase {
 
     typealias LoadSubtitlesCallback = (_ mediaFileId: UUID, _ language: String) async -> Result<Subtitles, LoadSubtitlesUseCaseError>
     
-    public var resolveLoad: LoadSubtitlesCallback? = nil
+    public var willReturn: LoadSubtitlesCallback? = nil
     
     func load(for mediaFileId: UUID, language: String) async -> Result<Subtitles, LoadSubtitlesUseCaseError> {
         
-        guard let resolveLoad = resolveLoad else {
+        guard let willReturn = willReturn else {
             fatalError("Not implemented")
         }
         
-        return await resolveLoad(mediaFileId, language)
+        return await willReturn(mediaFileId, language)
     }
 }

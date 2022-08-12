@@ -103,7 +103,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             .finished
         ]
         
-        sut.loadSubtitlesUseCase.resolveLoad = { _, _ in .success(testSubtitles)  }
+        sut.loadSubtitlesUseCase.willReturn = { _, _ in .success(testSubtitles)  }
         let stateSequence = self.expectSequence(expectedStateItems)
         
         stateSequence.observe(sut.useCase.state)
@@ -194,7 +194,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         
         stateSequence.observe(sut.useCase.state)
         
-        sut.loadSubtitlesUseCase.resolveLoad = { _, _ in .success(subtitles) }
+        sut.loadSubtitlesUseCase.willReturn = { _, _ in .success(subtitles) }
         await sut.useCase.play(
             mediaId: testMediaId,
             nativeLanguage: anyNativeLanguage(),

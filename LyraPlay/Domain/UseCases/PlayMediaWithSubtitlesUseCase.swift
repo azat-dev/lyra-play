@@ -12,6 +12,8 @@ import Foundation
 public enum PlayMediaWithSubtitlesUseCaseError: Error {
     
     case mediaFileNotFound
+    case internalError(Error?)
+    case noActiveMedia
 }
 
 public enum PlayMediaWithSubtitlesUseCaseState: Equatable {
@@ -86,6 +88,8 @@ public final class DefaultPlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesU
     
     public let state: Observable<PlayMediaWithSubtitlesUseCaseState> = .init(.initial)
     
+    private var playSubtitlesUseCase: PlaySubtitlesUseCase?
+    
     // MARK: - Initializers
     
     public init(
@@ -104,9 +108,40 @@ public final class DefaultPlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesU
 
 extension DefaultPlayMediaWithSubtitlesUseCase {
     
-    public func prepare(params: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+    public func prepare(params session: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
-        fatalError("Not implemented")
+        state.value = .loading(session: session)
+        
+        let loadMediaResult = await playMediaUseCase.prepare(mediaId: session.mediaId)
+        
+        guard case .success = loadMediaResult else {
+            
+            state.value = .loadFailed(session: session)
+            return .failure(map(error: loadMediaResult.error!))
+        }
+        
+        let loadSubtitlesResult = await loadSubtitlesUseCase.load(
+            for: session.mediaId,
+            language: session.subtitlesLanguage
+        )
+        
+        if case .success(let subtitles) = loadSubtitlesResult {
+            
+            playSubtitlesUseCase = playSubtitlesUseCaseFactory.create(with: subtitles)
+            
+            self.state.value = .loaded(
+                session: session,
+                subtitlesState: .init(
+                    position: nil,
+                    subtitles: subtitles
+                )
+            )
+        } else {
+            
+            self.state.value = .loaded(session: session, subtitlesState: nil)
+        }
+        
+        return .success(())
     }
     
     public func play(at time: TimeInterval?) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
@@ -122,5 +157,25 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
     public func stop() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         fatalError("Not implemented")
+    }
+}
+
+// MARK: - Error Mappings
+
+extension DefaultPlayMediaWithSubtitlesUseCase {
+
+    private func map(error: PlayMediaUseCaseError) -> PlayMediaWithSubtitlesUseCaseError {
+
+        switch error {
+            
+        case .noActiveTrack:
+            return .noActiveMedia
+        
+        case .trackNotFound:
+            return .mediaFileNotFound
+        
+        case .internalError(let error):
+            return .internalError(error)
+        }
     }
 }

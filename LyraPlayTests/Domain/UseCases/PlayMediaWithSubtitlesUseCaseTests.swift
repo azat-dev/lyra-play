@@ -62,6 +62,9 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         
         let sut = createSUT()
         
+        sut.loadSubtitlesUseCase.willReturn = { _, _ in .failure(.itemNotFound) }
+        sut.playMediaUseCase.prepareWillReturn = { _ in .failure(.trackNotFound) }
+        
         let sessionParams = anySessionParams()
         
         let expectedStateItems: [PlayMediaWithSubtitlesUseCaseState] = [
@@ -90,8 +93,12 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         
         let sut = createSUT()
         
-        let sessionParams = anySessionParams()
         
+        sut.loadSubtitlesUseCase.willReturn = { _, _ in .failure(.itemNotFound) }
+        sut.playMediaUseCase.prepareWillReturn = { _ in .success(()) }
+        
+        let sessionParams = anySessionParams()
+
         let expectedStateItems: [PlayMediaWithSubtitlesUseCaseState] = [
             .initial,
             .loading(session: sessionParams),
@@ -111,8 +118,12 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         
         let sut = createSUT()
         
-        let sessionParams = anySessionParams()
         let subtitles = anySubtitles()
+        
+        sut.loadSubtitlesUseCase.willReturn = { _, _ in  .success(subtitles) }
+        sut.playMediaUseCase.prepareWillReturn = { _ in .success(()) }
+        
+        let sessionParams = anySessionParams()
         
         let expectedStateItems: [PlayMediaWithSubtitlesUseCaseState] = [
             .initial,
