@@ -21,21 +21,30 @@ class DurationParserTests: XCTestCase {
         return parser
     }
     
-    func testParseEmpty() async throws {
+    func test_parse_empty() async throws {
         
         let parser = createSUT()
         let parsed = parser.parse("")
         XCTAssertNil(parsed)
     }
     
-    func testParseAlphanumeric() async throws {
+    private func assertWrongValue(_ text: String, file: StaticString = #filePath, line: UInt = #line) {
         
         let parser = createSUT()
-        let parsed = parser.parse("1A:2B")
-        XCTAssertNil(parsed)
+        let parsed = parser.parse(text)
+        
+        XCTAssertNil(parsed, file: file, line: line)
     }
     
-    func assertValue(_ text: String, _ expectedValue: Double, file: StaticString = #filePath, line: UInt = #line) {
+    func test_parse_wrong_format() async throws {
+        
+        assertWrongValue("1A:2B")
+        assertWrongValue("00:00.00.00")
+        assertWrongValue("00:00.XXX")
+        assertWrongValue("00:00.XXXX")
+    }
+    
+    private func assertValue(_ text: String, _ expectedValue: Double, file: StaticString = #filePath, line: UInt = #line) {
         
         let parser = createSUT()
         
