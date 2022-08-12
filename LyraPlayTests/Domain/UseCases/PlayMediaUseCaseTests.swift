@@ -34,11 +34,11 @@ class PlayMediaUseCaseTests: XCTestCase {
         )
     }
     
-    func test_play__not_existing_track() async throws {
+    func test_prepare__not_existing_track() async throws {
         
         let sut = createSUT()
         
-        let result = await sut.useCase.play(mediaId: UUID())
+        let result = await sut.useCase.prepare(mediaId: UUID())
         let error = try AssertResultFailed(result)
         
         guard case .trackNotFound = error else {
@@ -52,6 +52,30 @@ class PlayMediaUseCaseTests: XCTestCase {
         for _ in 0..<5 {
             loadTrackUseCase.tracks[UUID()] = Data()
         }
+    }
+    
+    func test_prepare__existing_track() async throws {
+        
+        let sut = createSUT()
+        
+        setUpTracks(loadTrackUseCase: sut.loadTrackUseCase)
+        
+        let track = sut.loadTrackUseCase.tracks.first!
+        let trackId = track.0
+        
+        let expectedStateItems: [PlayMediaUseCaseState] = [
+            .initial,
+            .loading(mediaId: trackId),
+            .loaded(mediaId: trackId),
+        ]
+        
+        let stateSequence = self.expectSequence(expectedStateItems)
+        stateSequence.observe(sut.useCase.state)
+        
+        let result = await sut.useCase.prepare(mediaId: trackId)
+        try AssertResultSucceded(result)
+        
+        stateSequence.wait(timeout: 3, enforceOrder: true)
     }
     
     func test_play__existing_track() async throws {
@@ -82,7 +106,8 @@ class PlayMediaUseCaseTests: XCTestCase {
         let stateSequence = self.expectSequence(expectedStateItems)
         stateSequence.observe(sut.useCase.state)
         
-        let result = await sut.useCase.play(mediaId: trackId)
+        await sut.useCase.prepare(mediaId: trackId)
+        let result = await sut.useCase.play()
         try AssertResultSucceded(result)
         
         audioServiceStateSequence.wait(timeout: 3, enforceOrder: true)
@@ -148,7 +173,8 @@ class PlayMediaUseCaseTests: XCTestCase {
         
         audioServiceStateSequence.observe(sut.audioService.state)
 
-        let _ = await sut.useCase.play(mediaId: trackId)
+        let _ = await sut.useCase.prepare(mediaId: trackId)
+        let _ = await sut.useCase.play()
         let result = await sut.useCase.pause()
         try AssertResultSucceded(result)
 
@@ -188,8 +214,11 @@ class PlayMediaUseCaseTests: XCTestCase {
         
         audioServiceStateSequence.observe(sut.audioService.state)
         
-        let _ = await sut.useCase.play(mediaId: trackId1)
-        let _ = await sut.useCase.play(mediaId: trackId2)
+        let _ = await sut.useCase.prepare(mediaId: trackId1)
+        let _ = await sut.useCase.play()
+        
+        let _ = await sut.useCase.prepare(mediaId: trackId2)
+        let _ = await sut.useCase.play()
         
         audioServiceStateSequence.wait(timeout: 10, enforceOrder: true)
         stateSequence.wait(timeout: 3, enforceOrder: true)
