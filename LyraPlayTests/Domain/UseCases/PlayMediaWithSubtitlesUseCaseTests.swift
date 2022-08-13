@@ -177,7 +177,7 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         
         let sut = createSUT()
         
-        let subtitles = Subtitles(duration: 0, sentences: [
+        let subtitles = Subtitles(duration: 10, sentences: [
             anySentence(at: 0),
             anySentence(at: 1),
         ])
@@ -191,6 +191,7 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
             .initial,
             .loading(session: sessionParams),
             .loaded(session: sessionParams, subtitlesState: .init(position: nil, subtitles: subtitles)),
+            .playing(session: sessionParams, subtitlesState: .init(position: nil, subtitles: subtitles)),
             .playing(session: sessionParams, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
             .playing(session: sessionParams, subtitlesState: .init(position: .sentence(1), subtitles: subtitles))
         ]
@@ -199,8 +200,8 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         stateSequence.observe(sut.useCase.state)
         
         let _ = await sut.useCase.prepare(params: sessionParams)
-        let result = await sut.useCase.play()
         
+        let result = await sut.useCase.play()
         try AssertResultSucceded(result)
         
         stateSequence.wait(timeout: 5, enforceOrder: true)

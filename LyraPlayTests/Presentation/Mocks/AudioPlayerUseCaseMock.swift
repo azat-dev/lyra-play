@@ -24,7 +24,14 @@ final class PlayMediaUseCaseMock: PlayMediaUseCase {
     func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError> {
         
         if let prepareWillReturn = prepareWillReturn {
-            return prepareWillReturn(mediaId)
+            
+            let result = prepareWillReturn(mediaId)
+            
+            if case .success =  result {
+                currentTrackId  = mediaId
+            }
+            
+            return result
         }
         
         currentTrackId = mediaId
