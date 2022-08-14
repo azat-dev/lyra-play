@@ -15,43 +15,49 @@ public enum AudioServiceError: Error {
     case waitIsInterrupted
 }
 
+public struct AudioServiceSession: Equatable {
+
+    public var fileId: String
+
+    public init(fileId: String) {
+        self.fileId = fileId
+    }
+}
+
 public enum AudioServiceState: Equatable {
 
     case initial
     case stopped
-    case playing(data: AudioServiceStateData)
-    case interrupted(data: AudioServiceStateData, time: TimeInterval)
-    case paused(data: AudioServiceStateData, time: TimeInterval)
-    case finished(data: AudioServiceStateData)
+    case loaded(session: AudioServiceSession)
+    case playing(session: AudioServiceSession)
+    case interrupted(session: AudioServiceSession, time: TimeInterval)
+    case paused(session: AudioServiceSession, time: TimeInterval)
+    case finished(session: AudioServiceSession)
     
-    public func getFileId() -> String? {
+    public var session: AudioServiceSession? {
         
         switch self {
             
         case .initial, .stopped:
             return nil
 
-        case .playing(let data), .interrupted(let data, _), .paused(let data, _), .finished(let data):
-            return data.fileId
+        case .playing(let session), .loaded(let session), .interrupted(let session, _), .paused(let session, _), .finished(let session):
+            return session
         }
     }
 }
 
-public struct AudioServiceStateData: Equatable {
-
-    public var fileId: String
-
-    public init(fileId: String) {
-
-        self.fileId = fileId
-    }
-}
+// MARK: - Protocols
 
 public protocol AudioServiceInput {
 
-    func play(fileId: String, data: Data) async -> Result<Void, AudioServiceError>
+    func prepare(fileId: String, data trackData: Data) async -> Result<Void, AudioServiceError>
     
-    func playAndWaitForEnd(fileId: String, data: Data) async -> Result<Void, AudioServiceError>
+    func play() async -> Result<Void, AudioServiceError>
+    
+    func play(atTime: TimeInterval) async -> Result<Void, AudioServiceError>
+    
+    func playAndWaitForEnd() async -> Result<Void, AudioServiceError>
 
     func pause() async -> Result<Void, AudioServiceError>
 

@@ -68,7 +68,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         let expectedStateItems: [PlayMediaUseCaseState] = [
             .initial,
             .loading(mediaId: trackId),
-            .loaded(mediaId: trackId, data: sut.loadTrackUseCase.tracks[trackId]!),
+            .loaded(mediaId: trackId),
         ]
         
         let stateSequence = self.expectSequence(expectedStateItems)
@@ -92,7 +92,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         let audioServiceStateSequence = self.expectSequence([
             
             AudioServiceState.initial,
-            .playing(data: .init(fileId: trackId.uuidString)),
+            .playing(session: .init(fileId: trackId.uuidString)),
         ])
         
         audioServiceStateSequence.observe(sut.audioService.state)
@@ -100,7 +100,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         let expectedStateItems: [PlayMediaUseCaseState] = [
             .initial,
             .loading(mediaId: trackId),
-            .loaded(mediaId: trackId, data: sut.loadTrackUseCase.tracks[trackId]!),
+            .loaded(mediaId: trackId),
             .playing(mediaId: trackId),
 //            .finished(mediaId: trackId)
         ]
@@ -108,7 +108,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         let stateSequence = self.expectSequence(expectedStateItems)
         stateSequence.observe(sut.useCase.state)
         
-        await sut.useCase.prepare(mediaId: trackId)
+        let _ = await sut.useCase.prepare(mediaId: trackId)
         let result = await sut.useCase.play()
         try AssertResultSucceded(result)
         
@@ -158,7 +158,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         let expectedStateItems: [PlayMediaUseCaseState] = [
             .initial,
             .loading(mediaId: trackId),
-            .loaded(mediaId: trackId, data: sut.loadTrackUseCase.tracks[trackId]!),
+            .loaded(mediaId: trackId),
             .playing(mediaId: trackId),
             .paused(mediaId: trackId, time: 0)
         ]
@@ -169,8 +169,8 @@ class PlayMediaUseCaseTests: XCTestCase {
         let audioServiceStateSequence = self.expectSequence([
             
             AudioServiceState.initial,
-            .playing(data: .init(fileId: trackId.uuidString)),
-            .paused(data: .init(fileId: trackId.uuidString), time: 0)
+            .playing(session: .init(fileId: trackId.uuidString)),
+            .paused(session: .init(fileId: trackId.uuidString), time: 0)
         ])
         
         audioServiceStateSequence.observe(sut.audioService.state)
@@ -198,10 +198,10 @@ class PlayMediaUseCaseTests: XCTestCase {
         let expectedStateItems: [PlayMediaUseCaseState] = [
             .initial,
             .loading(mediaId: trackId1),
-            .loaded(mediaId: trackId1, data: tracksData[trackId1]!),
+            .loaded(mediaId: trackId1),
             .playing(mediaId: trackId1),
             .loading(mediaId: trackId2),
-            .loaded(mediaId: trackId2, data: tracksData[trackId2]!),
+            .loaded(mediaId: trackId2),
             .playing(mediaId: trackId2),
         ]
         
@@ -211,8 +211,8 @@ class PlayMediaUseCaseTests: XCTestCase {
         let audioServiceStateSequence = self.expectSequence([
             
             AudioServiceState.initial,
-            .playing(data: .init(fileId: trackId1.uuidString)),
-            .playing(data: .init(fileId: trackId2.uuidString)),
+            .playing(session: .init(fileId: trackId1.uuidString)),
+            .playing(session: .init(fileId: trackId2.uuidString)),
         ])
         
         audioServiceStateSequence.observe(sut.audioService.state)

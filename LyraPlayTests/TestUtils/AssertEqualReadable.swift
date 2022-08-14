@@ -41,4 +41,19 @@ public func AssertEqualReadable<T>(
         file: file,
         line: line
     )
+    
+    var request = URLRequest(url: .init(string: "http://localhost:8080/logs/dump")!)
+    request.httpMethod = "POST"
+    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    let data: [String: String] = [
+        "method": "AssertEqualReadable",
+        "receivedValue": receivedValueDumped,
+        "expectedValue": expectedValueDumped,
+        "file": String(describing: file),
+        "line": String(line)
+    ]
+    
+    request.httpBody = try? JSONSerialization.data(withJSONObject: data)
+    URLSession.shared.dataTask(with: request).resume();
 }

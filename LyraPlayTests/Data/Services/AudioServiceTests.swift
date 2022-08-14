@@ -34,11 +34,16 @@ class AudioServiceTests: XCTestCase {
         let fileId1 = "test1"
         let fileId2 = "test2"
         
+        let session1 = AudioServiceSession(fileId: fileId1)
+        let session2 = AudioServiceSession(fileId: fileId2)
+        
         let stateSequence = self.expectSequence([
             AudioServiceState.initial,
-            .playing(data: .init(fileId: fileId1)),
-            .playing(data: .init(fileId: fileId2)),
-            .finished(data: .init(fileId: fileId2))
+            .loaded(session: session1),
+            .playing(session: session1),
+            .loaded(session: session2),
+            .playing(session: session2),
+            .finished(session: session2)
         ])
         
         stateSequence.observe(audioService.state)
@@ -46,12 +51,18 @@ class AudioServiceTests: XCTestCase {
         let data = try getTestFile()
         let shortData = try getTestFile(name: "test_music_with_tags_short")
         
-        let result1 = await audioService.play(fileId: fileId1, data: data)
+        let prepareResult1 = await audioService.prepare(fileId: fileId1, data: data)
+        try AssertResultSucceded(prepareResult1)
+        
+        let result1 = await audioService.play()
         try AssertResultSucceded(result1)
         
         sleep(1)
         
-        let result2 = await audioService.play(fileId: fileId2, data: shortData)
+        let prepareResult2 = await audioService.prepare(fileId: fileId2, data: shortData)
+        try AssertResultSucceded(prepareResult2)
+        
+        let result2 = await audioService.play()
         try AssertResultSucceded(result2)
         
         sleep(1)
@@ -66,27 +77,39 @@ class AudioServiceTests: XCTestCase {
         let fileId1 = "test1"
         let fileId2 = "test2"
         
+        let session1 = AudioServiceSession(fileId: fileId1)
+        let session2 = AudioServiceSession(fileId: fileId2)
+        
         let stateSequence = self.expectSequence([
             AudioServiceState.initial,
-            .playing(data: .init(fileId: fileId1)),
-            .finished(data: .init(fileId: fileId1)),
-            .playing(data: .init(fileId: fileId2)),
-            .finished(data: .init(fileId: fileId2))
+            .loaded(session: session1),
+            .playing(session: session1),
+            .finished(session: session1),
+            .loaded(session: session2),
+            .playing(session: session2),
+            .finished(session: session2)
         ])
         
         stateSequence.observe(audioService.state)
         
         let shortData = try getTestFile(name: "test_music_with_tags_short")
         
-        let result = await audioService.playAndWaitForEnd(fileId: fileId1, data: shortData)
+        let prepareResult1 = await audioService.prepare(fileId: fileId1, data: shortData)
+        try AssertResultSucceded(prepareResult1)
+        
+        let result = await audioService.playAndWaitForEnd()
         
         try AssertResultSucceded(result)
-        XCTAssertEqual(audioService.state.value, .finished(data: .init(fileId: fileId1)))
+        XCTAssertEqual(audioService.state.value, .finished(session: .init(fileId: fileId1)))
         
-        let result2 = await audioService.playAndWaitForEnd(fileId: fileId2, data: shortData)
+        
+        let prepareResult2 = await audioService.prepare(fileId: fileId2, data: shortData)
+        try AssertResultSucceded(prepareResult2)
+        
+        let result2 = await audioService.playAndWaitForEnd()
         
         try AssertResultSucceded(result2)
-        XCTAssertEqual(audioService.state.value, .finished(data: .init(fileId: fileId2)))
+        XCTAssertEqual(audioService.state.value, .finished(session: .init(fileId: fileId2)))
         
         stateSequence.wait(timeout: 0, enforceOrder: true)
     }
@@ -113,7 +136,9 @@ class AudioServiceTests: XCTestCase {
             }
         }
         
-        let result = await audioService.playAndWaitForEnd(fileId: fileId, data: shortData)
+        let _ = await audioService.prepare(fileId: fileId, data: shortData)
+        
+        let result = await audioService.playAndWaitForEnd()
         let error = try AssertResultFailed(result)
 
         guard case .waitIsInterrupted = error else {

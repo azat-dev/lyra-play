@@ -18,6 +18,8 @@ public protocol Scheduler: AnyObject {
     func pause()
     
     func resume()
+    
+    var isActive: Bool { get }
 }
 
 // MARK: - Implementations
@@ -41,6 +43,15 @@ public final class DefaultScheduler {
 // MARK: - Methods
 
 extension DefaultScheduler: Scheduler {
+    
+    public var isActive: Bool {
+        
+        semaphore.wait()
+        defer { semaphore.signal() }
+        
+        return currentSession != nil
+        
+    }
     
     private func setNextTimer(block: @escaping Callback, lastTimeMark: TimeInterval = 0, delta: TimeInterval = 0) {
         
@@ -94,12 +105,12 @@ extension DefaultScheduler: Scheduler {
             
             self.semaphore.wait()
             
-            guard self.currentSession === prevSession else {
-                self.semaphore.signal()
+            let isSessionChanged = self.currentSession !== prevSession
+            self.semaphore.signal()
+
+            guard !isSessionChanged else {
                 return
             }
-            
-            self.semaphore.signal()
             
             self.setNextTimer(
                 block: block,
@@ -135,13 +146,17 @@ extension DefaultScheduler: Scheduler {
             semaphore.wait()
             currentSession?.lastIterationStartTime = nil
             currentSession?.lastTimeMark = currentTimeMark
+            let prevSession = currentSession
             semaphore.signal()
             
-            let prevSession = currentSession
             
             block(currentTimeMark)
             
-            if currentSession !== prevSession {
+            semaphore.wait()
+            let isSessionChanged = prevSession !== self.currentSession
+            semaphore.signal()
+            
+            if isSessionChanged {
                 return
             }
         }
@@ -178,7 +193,6 @@ extension DefaultScheduler: Scheduler {
     public func resume() {
         
         semaphore.wait()
-        
         
         guard let currentSession = currentSession else {
             semaphore.signal()

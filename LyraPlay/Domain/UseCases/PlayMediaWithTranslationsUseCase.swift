@@ -250,7 +250,7 @@ extension DefaultPlayMediaWithTranslationsUseCase {
             
         case .playing:
             
-            playSubtitlesUseCase?.play(at: 0)
+            playSubtitlesUseCase?.play()
             self.state.value = .playing(subtitlesPosition: self.currentSubtitlesPosition)
             
         case .paused, .interrupted:

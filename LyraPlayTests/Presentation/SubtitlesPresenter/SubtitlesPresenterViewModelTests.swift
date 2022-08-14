@@ -258,7 +258,9 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
 // MARK: - Mocks
 
 final class SchedulerMock: Scheduler {
-
+    
+    var isActive: Bool = false
+    
     func execute(timeline: TimeLineIterator, from: TimeInterval, block: @escaping (TimeInterval) -> Void) {
         
     }

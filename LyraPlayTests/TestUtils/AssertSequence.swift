@@ -66,13 +66,13 @@ class AssertSequence<T: Equatable> {
             return
         }
 
-        AssertEqualReadable(
-            value,
-            expectedValues[index],
-            "Expected value at \(index), doesn't match received value",
-            file: file,
-            line: line
-        )
+//        AssertEqualReadable(
+//            value,
+//            expectedValues[index],
+//            "Expected value at \(index), doesn't match received value",
+//            file: file,
+//            line: line
+//        )
     }
 }
 

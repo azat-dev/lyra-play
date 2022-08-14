@@ -84,7 +84,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         ])
         
         stateSequence.observe(sut.useCase.state)
-        sut.useCase.play(at: 0)
+        sut.useCase.play(atTime: 0)
 
         stateSequence.wait(timeout: 1, enforceOrder: true)
     }
@@ -96,7 +96,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let stateSequence = self.expectSequence([ PlaySubtitlesUseCaseState.initial ])
         stateSequence.observe(sut.useCase.state)
 
-        sut.useCase.play(at: 100)
+        sut.useCase.play(atTime: 100)
 
         stateSequence.wait(timeout: 1, enforceOrder: true)
         sut.useCase.state.remove(observer: self)
@@ -116,7 +116,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let stateSequence = self.expectSequence(expectedStateItems)
         stateSequence.observe(sut.useCase.state)
 
-        sut.useCase.play(at: 0)
+        sut.useCase.play(atTime: 0)
         stateSequence.wait(timeout: 1, enforceOrder: true)
         sut.useCase.state.remove(observer: self)
     }
@@ -134,7 +134,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let stateSequence = self.expectSequence(expectedStateItems)
         stateSequence.observe(sut.useCase.state)
 
-        sut.useCase.play(at: 0.1)
+        sut.useCase.play(atTime: 0.1)
         stateSequence.wait(timeout: 1, enforceOrder: true)
         sut.useCase.state.remove(observer: self)
     }
@@ -175,7 +175,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
 
         stateSequence.observe(controlledState)
 
-        sut.useCase.play(at: 0)
+        sut.useCase.play(atTime: 0)
         stateSequence.wait(timeout: 1, enforceOrder: true)
 
         sut.useCase.state.remove(observer: self)
@@ -201,7 +201,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
             }
         }
 
-        sut.useCase.play(at: 0)
+        sut.useCase.play(atTime: 0)
         stateSequence.wait(timeout: 1, enforceOrder: true)
         sut.useCase.state.remove(observer: self)
     }
@@ -250,7 +250,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
 
         stateSequence.observe(controlledState)
 
-        sut.useCase.play(at: 0)
+        sut.useCase.play(atTime: 0)
         stateSequence.wait(timeout: 2, enforceOrder: true)
         sut.useCase.state.remove(observer: self)
         controlledState.remove(observer: self)
@@ -291,7 +291,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let stateSequence = self.expectSequence(expectedStateItems)
         stateSequence.observe(controlledState)
 
-        sut.useCase.play(at: 0)
+        sut.useCase.play(atTime: 0)
         stateSequence.wait(timeout: 1, enforceOrder: true)
         sut.useCase.state.remove(observer: self)
         controlledState.remove(observer: self)

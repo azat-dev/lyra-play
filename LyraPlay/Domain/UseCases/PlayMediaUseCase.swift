@@ -20,7 +20,7 @@ public enum PlayMediaUseCaseState: Equatable {
     
     case initial
     case loading(mediaId: UUID)
-    case loaded(mediaId: UUID, data: Data)
+    case loaded(mediaId: UUID)
     case failedLoad(mediaId: UUID)
     case playing(mediaId: UUID)
     case stopped
@@ -28,14 +28,14 @@ public enum PlayMediaUseCaseState: Equatable {
     case paused(mediaId: UUID, time: TimeInterval)
     case finished(mediaId: UUID)
     
-    func getMediaId() -> UUID? {
+    public var mediaId: UUID? {
         
         switch self {
-
+            
         case .initial, .stopped:
             return nil
-
-        case .loading(let mediaId), .loaded(let mediaId, _), .playing(let mediaId), .interrupted(let mediaId, _), .paused(let mediaId, _), .finished(let mediaId), .failedLoad(let mediaId):
+            
+        case .loading(let mediaId), .loaded(let mediaId), .playing(let mediaId), .interrupted(let mediaId, _), .paused(let mediaId, _), .finished(let mediaId), .failedLoad(let mediaId):
             return mediaId
         }
     }
@@ -46,6 +46,8 @@ public protocol PlayMediaUseCaseInput {
     func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError>
     
     func play() async -> Result<Void, PlayMediaUseCaseError>
+    
+    func play(atTime: TimeInterval) async -> Result<Void, PlayMediaUseCaseError>
     
     func pause() async -> Result<Void, PlayMediaUseCaseError>
     
@@ -92,28 +94,31 @@ public final class DefaultPlayMediaUseCase: PlayMediaUseCase {
             
             guard
                 let self = self,
-                let currentMediaId = self.state.value.getMediaId()
+                let currentMediaId = self.state.value.mediaId
             else {
                 return
             }
             
-            guard currentMediaId.uuidString == audioServiceState.getFileId() else {
+            guard currentMediaId.uuidString == audioServiceState.session?.fileId else {
                 
                 self.state.value = .stopped
                 return
             }
-
+            
             switch audioServiceState {
                 
             case .initial:
                 break
+                
+            case .loaded:
+                self.state.value = .loaded(mediaId: currentMediaId)
                 
             case .stopped:
                 self.state.value = .stopped
                 
             case .playing:
                 self.state.value = .playing(mediaId: currentMediaId)
-            
+                
             case .interrupted(_, let time):
                 self.state.value = .interrupted(mediaId: currentMediaId, time: time)
                 
@@ -133,39 +138,63 @@ extension DefaultPlayMediaUseCase {
     
     public func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError> {
         
-        self.state.value = .loading(mediaId: mediaId)
+        state.value = .loading(mediaId: mediaId)
         let loadResult = await loadTrackUseCase.load(trackId: mediaId)
         
         guard case .success(let trackData) = loadResult else {
-
-            self.state.value = .initial
-            let mappedError = map(error: loadResult.error!)
             
-            self.state.value = .failedLoad(mediaId: mediaId)
-            return .failure(mappedError)
+            state.value = .failedLoad(mediaId: mediaId)
+            return .failure(map(error: loadResult.error!))
         }
         
-        self.state.value = .loaded(mediaId: mediaId, data: trackData)
+        let prepareResult = await audioService.prepare(fileId: mediaId.uuidString, data: trackData)
+        
+        guard case .success = prepareResult else {
+            
+            state.value = .failedLoad(mediaId: mediaId)
+            return .failure(map(error: loadResult.error!))
+        }
+        
+        state.value = .loaded(mediaId: mediaId)
+        return .success(())
+    }
+    
+    private func play(at time: TimeInterval?) async -> Result<Void, PlayMediaUseCaseError> {
+
+        guard case .loaded = self.state.value else {
+            return .failure(.noActiveTrack)
+        }
+        
+        let playResult: Result<Void, AudioServiceError>
+        
+        if let time = time {
+            playResult = await audioService.play(atTime: time)
+        } else {
+            playResult = await audioService.play()
+        }
+        
+        guard case .success = playResult else {
+            return .failure(map(error: playResult.error!))
+        }
+        
         return .success(())
     }
     
     public func play() async -> Result<Void, PlayMediaUseCaseError> {
         
-        guard case .loaded(let mediaId, let trackData) = self.state.value else {
+        switch self.state.value {
             
+        case .interrupted, .paused, .loaded:
+            return await play(at: nil)
+            
+        default:
             return .failure(.noActiveTrack)
         }
-
-        let playResult = await audioService.play(fileId: mediaId.uuidString, data: trackData)
+    }
+    
+    public func play(atTime: TimeInterval) async -> Result<Void, PlayMediaUseCaseError> {
         
-        guard case .success = playResult else {
-            
-            self.state.value = .initial
-            let mappedError = map(error: playResult.error!)
-            return .failure(mappedError)
-        }
-        
-        return .success(())
+        return await play(at: atTime)
     }
     
     public func pause() async -> Result<Void, PlayMediaUseCaseError> {
@@ -173,8 +202,7 @@ extension DefaultPlayMediaUseCase {
         let pauseResult = await audioService.pause()
         
         guard case .success = pauseResult else {
-            let mappedError = map(error: pauseResult.error!)
-            return .failure(mappedError)
+            return .failure(map(error: pauseResult.error!))
         }
         
         return .success(())

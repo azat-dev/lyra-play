@@ -96,12 +96,16 @@ extension DefaultPronounceTranslationsUseCase {
         
         if let originalData = converted.original {
             
-            
-            let result = await audioService.playAndWaitForEnd(
+            let prepareResult = await audioService.prepare(
                 fileId: translation.translationId.uuidString,
                 data: originalData
             )
             
+            guard case .success = prepareResult else {
+                return false
+            }
+            
+            let result = await audioService.playAndWaitForEnd()
             guard case .success = result else {
                 return false
             }
@@ -112,10 +116,14 @@ extension DefaultPronounceTranslationsUseCase {
         
         if let translatedData = converted.translated {
             
-            let _ = await audioService.playAndWaitForEnd(
+            let prepareResult = await audioService.prepare(
                 fileId: translation.translationId.uuidString,
                 data: translatedData
             )
+            
+            guard case .success = prepareResult else {
+                return false
+            }
         }
         
         return true

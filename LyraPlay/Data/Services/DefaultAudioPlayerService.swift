@@ -67,13 +67,13 @@ extension DefaultAudioService {
         
         switch self.state.value {
             
-        case .initial, .stopped, .finished, .interrupted, .paused:
+        case .initial, .stopped, .finished, .interrupted, .paused, .loaded:
             print("Wrong state")
             dump(self.state.value)
             break
             
         case .playing(let stateData):
-            self.state.value = .finished(data: stateData)
+            self.state.value = .finished(session: stateData)
             break
         }
     }
@@ -81,7 +81,7 @@ extension DefaultAudioService {
 
 extension DefaultAudioService {
     
-    public func play(fileId: String, data trackData: Data) async -> Result<Void, AudioServiceError> {
+    public func prepare(fileId: String, data trackData: Data) async -> Result<Void, AudioServiceError> {
         
         try? audioSession.setActive(true)
         
@@ -91,10 +91,9 @@ extension DefaultAudioService {
             player.delegate = self
             
             self.player = player
-            
-            player.play()
-            
-            self.state.value = .playing(data: .init(fileId: fileId))
+
+            player.prepareToPlay()
+            self.state.value = .loaded(session: .init(fileId: fileId))
             
         } catch {
             
@@ -106,7 +105,48 @@ extension DefaultAudioService {
         return .success(())
     }
     
-    public func playAndWaitForEnd(fileId: String, data trackData: Data) async -> Result<Void, AudioServiceError> {
+    public func play() async -> Result<Void, AudioServiceError> {
+        
+        guard
+            let player = self.player,
+            let session = self.state.value.session
+        else {
+            
+            return .failure(.noActiveFile)
+        }
+        
+        try? audioSession.setActive(true)
+        
+        player.play()
+        self.state.value = .playing(session: session)
+        
+        return .success(())
+    }
+    
+    public func play(atTime: TimeInterval) async -> Result<Void, AudioServiceError> {
+
+        guard
+            let player = self.player,
+            let session = state.value.session
+        else {
+
+            return .failure(.noActiveFile)
+        }
+        
+        try? audioSession.setActive(true)
+        
+        player.play(atTime: atTime)
+        self.state.value = .playing(session: session)
+        
+        return .success(())
+    }
+    
+    public func playAndWaitForEnd() async -> Result<Void, AudioServiceError> {
+        
+        guard let currentSession = state.value.session else {
+
+            return .failure(.noActiveFile)
+        }
         
         let observerToken = ObserverToken()
 
@@ -131,17 +171,17 @@ extension DefaultAudioService {
                 case .initial:
                     return
                     
-                case .playing(let stateData):
+                case .playing(let session):
                     
-                    if stateData.fileId == fileId {
+                    if session == currentSession {
                         return
                     }
                     
                     continuation.resume(returning: .failure(.waitIsInterrupted))
                     return
                     
-                case .finished(let stateData):
-                    if stateData.fileId == fileId {
+                case .finished(let session):
+                    if session == currentSession {
                         
                         isFinished = true
                         continuation.resume(returning: .success(()))
@@ -158,7 +198,7 @@ extension DefaultAudioService {
             
             Task {
                 
-                let result = await self.play(fileId: fileId, data: trackData)
+                let result = await self.play()
                 
                 guard case .success = result else {
                     continuation.resume(returning: result)
@@ -174,18 +214,19 @@ extension DefaultAudioService {
     
     public func pause() async -> Result<Void, AudioServiceError> {
         
-        guard let player = player else {
+        guard
+            let player = player
+        else {
             return .failure(.noActiveFile)
         }
         
         player.pause()
         
-        guard case .playing(data: let stateData) = state.value else {
-            
+        guard case .playing(let session) = state.value else {
             return .success(())
         }
         
-        self.state.value = .paused(data: .init(fileId: stateData.fileId), time: player.currentTime)
+        self.state.value = .paused(session: session, time: player.currentTime)
         return .success(())
     }
     
@@ -219,9 +260,9 @@ extension DefaultAudioService {
             
             switch self.state.value {
                 
-            case .paused(let state, _),
-                    .interrupted(let state, _):
-                self.state.value = .playing(data: state)
+            case .paused(let session, _),
+                    .interrupted(let session, _):
+                self.state.value = .playing(session: session)
                 
             default:
                 break
@@ -244,10 +285,10 @@ extension DefaultAudioService {
             
             switch self.state.value {
                 
-            case .playing(let state),
-                    .interrupted(let state, _),
-                    .paused(let state, _):
-                self.state.value = .paused(data: state, time: player.currentTime)
+            case .playing(let session),
+                    .interrupted(let session, _),
+                    .paused(let session, _):
+                self.state.value = .paused(session: session, time: player.currentTime)
                 
             default:
                 break

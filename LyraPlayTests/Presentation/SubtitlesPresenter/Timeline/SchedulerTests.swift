@@ -89,7 +89,10 @@ class SchedulerTests: XCTestCase {
 
         let sequence = expectSequence([1.0, 2])
 
-        sut.iterator.timeMarks = [1, 2, 3]
+        let elementAfterPauseExpectation = expectation(description: "Don't call")
+        elementAfterPauseExpectation.isInverted = true
+        
+        sut.iterator.timeMarks = [1, 2, 3, 4]
 
         sut.timer.willFire(filter: { _, _ in true })
         sut.scheduler.execute(timeline: sut.iterator, from: 0.0) { [weak scheduler] time in
@@ -98,50 +101,15 @@ class SchedulerTests: XCTestCase {
 
             if time == 2 {
                 scheduler?.pause()
+            }
+            
+            if time > 2 {
+                elementAfterPauseExpectation.fulfill()
             }
         }
 
         sequence.wait(timeout: 1, enforceOrder: true)
-    }
-
-    func test_stop() async throws {
-
-        let sut = createSUT()
-
-        let expectation = expectation(description: "Don't call")
-        expectation.isInverted = true
-
-        sut.scheduler.execute(timeline: sut.iterator, from: 0.0) { _ in
-            expectation.fulfill()
-        }
-        sut.scheduler.stop()
-
-        wait(for: [expectation], timeout: 1)
-    }
-
-    func test_resume__paused() async throws {
-        
-        let sut = createSUT()
-        let scheduler = sut.scheduler
-        
-        let sequence = expectSequence([1.0, 2, 3])
-        
-        sut.iterator.timeMarks = [1, 2, 3]
-
-        sut.timer.willFire(filter: { _, _ in true })
-        sut.scheduler.execute(timeline: sut.iterator, from: 0.0) { [weak scheduler] time in
-
-            sequence.fulfill(with: time)
-
-            if time == 2 {
-                print("Pause")
-                scheduler?.pause()
-                print("Resume")
-                scheduler?.resume()
-            }
-        }
-        
-        sequence.wait(timeout: 10, enforceOrder: true)
+        wait(for: [elementAfterPauseExpectation], timeout: 1)
     }
 }
 
@@ -247,14 +215,12 @@ final class ActionTimerMock: ActionTimer {
     
     func executeAfter(_ interval: TimeInterval, block: @escaping () async -> Void) {
 
-        print("Start timer \(interval)")
         isCancelled = false
         self.lastMessage = (interval, block)
     }
     
     func cancel() {
     
-        print("Cancel timer")
         isCancelled = true
         lastMessage = nil
     }
@@ -292,7 +258,6 @@ final class TimeLineIteratorMock: TimeLineIterator {
         }
 
         currentIndex = recentIndex
-        print("Change index1 \(currentIndex)")
         return lastEventTime
     }
     
@@ -314,7 +279,6 @@ final class TimeLineIteratorMock: TimeLineIterator {
         }
 
         currentIndex += 1
-        print("Change index2 \(currentIndex)")
         return next
     }
 }

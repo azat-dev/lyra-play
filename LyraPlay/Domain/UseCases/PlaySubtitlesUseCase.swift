@@ -52,7 +52,9 @@ public struct SubtitlesPosition: Equatable, Comparable {
 
 public protocol PlaySubtitlesUseCaseInput {
 
-    func play(at time: TimeInterval) -> Void
+    func play() -> Void
+    
+    func play(atTime: TimeInterval) -> Void
 
     func pause() -> Void
 
@@ -94,26 +96,35 @@ public final class DefaultPlaySubtitlesUseCase: PlaySubtitlesUseCase {
 
 extension DefaultPlaySubtitlesUseCase {
     
-    public func play(at time: TimeInterval) -> Void {
-
-        scheduler.stop()
+    private func moveToNextEvent() {
         
-        scheduler.execute(timeline: subtitlesIterator, from: time) { [weak self] time in
-            
-            guard let self = self else {
-                return
-            }
-            
-            let isLast = self.subtitlesIterator.getTimeOfNextEvent() == nil
+        let isLast = self.subtitlesIterator.getTimeOfNextEvent() == nil
 
-            guard !isLast else {
-                
-                self.state.value = .finished
-                return
-            }
+        guard !isLast else {
             
-            self.state.value = .playing(position: self.subtitlesIterator.currentPosition)
+            state.value = .finished
+            return
         }
+        
+        state.value = .playing(position: subtitlesIterator.currentPosition)
+    }
+    
+    public func play() -> Void {
+        
+        if scheduler.isActive {
+
+            scheduler.resume()
+            return
+        }
+        
+        scheduler.execute(timeline: subtitlesIterator, from: 0) { [weak self] _ in self?.moveToNextEvent() }
+    }
+    
+    public func play(atTime time: TimeInterval) -> Void {
+    
+        scheduler.stop()
+
+        scheduler.execute(timeline: subtitlesIterator, from: time) { [weak self] _ in self?.moveToNextEvent() }
     }
 
     public func pause() -> Void {

@@ -74,10 +74,12 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         trackIdSequence.observe(sut.useCase.info, mapper: { $0?.id })
         playerStateSequence.observe(sut.useCase.state)
         
-        let resultPlay = await sut.audioService.play(
+        let _ = await sut.audioService.prepare(
             fileId: track.id,
             data: Data()
         )
+        
+        let resultPlay = await sut.audioService.play()
         
         try AssertResultSucceded(resultPlay)
         
@@ -98,10 +100,11 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         playerStateSequence.observe(sut.useCase.state)
         trackIdSequence.observe(sut.useCase.info, mapper: { $0?.id })
 
-        let resultPlay = await sut.audioService.play(
+        let _ = await sut.audioService.prepare(
             fileId: track.id,
             data: Data()
         )
+        let resultPlay = await sut.audioService.play()
         try AssertResultSucceded(resultPlay)
 
         let resultPause = await sut.audioService.pause()
@@ -153,11 +156,13 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         sut.useCase.info.observe(on: self) { info in
             dump(info)
         }
-
-        let resultPlay = await sut.audioService.play(
+        
+        let _ = await sut.audioService.prepare(
             fileId: track.id,
             data: Data()
         )
+
+        let resultPlay = await sut.audioService.play()
         try AssertResultSucceded(resultPlay)
 
         trackIdSequence.wait(timeout: 3, enforceOrder: true)
@@ -182,17 +187,20 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         playerStateSequence.observe(sut.useCase.state)
         trackIdSequence.observe(sut.useCase.info, mapper: { $0?.id })
 
-        let resultPlay1 = await sut.audioService.play(
+        let _ = await sut.audioService.prepare(
             fileId: track1.id,
             data: Data()
         )
+        
+        let resultPlay1 = await sut.audioService.play()
         try AssertResultSucceded(resultPlay1)
 
-        
-        let resultPlay2 = await sut.audioService.play(
+        let _ = await sut.audioService.prepare(
             fileId: track2.id,
             data: Data()
         )
+        
+        let resultPlay2 = await sut.audioService.play()
         try AssertResultSucceded(resultPlay2)
 
         trackIdSequence.wait(timeout: 3, enforceOrder: true)
