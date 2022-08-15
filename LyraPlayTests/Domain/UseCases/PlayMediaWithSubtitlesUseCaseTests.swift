@@ -190,6 +190,7 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
             anySentence(at: 0),
             anySentence(at: 1),
             anySentence(at: 2),
+            anySentence(at: 3),
         ])
 
         sut.loadSubtitlesUseCase.willReturn = { _, _ in  .success(subtitles) }
@@ -210,41 +211,34 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         ]
 
         let stateSequence = self.expectSequence(expectedStateItems)
-        var paused = false
-        var played = false
 
+        let pauseIndex = 4
+        let playIndex = pauseIndex + 1
+        let stopIndex = playIndex + 2
+        
         let disposable = sut.useCase.state
-            .filter { state in
+            .enumerated()
+            .map({ index, item in
 
-                switch state {
-
-                case .playing(_, let subitlesState) where subitlesState?.position == .sentence(0):
-                    if paused {
-                        break
-                    }
-
-                    paused = true
+                switch index {
+                case pauseIndex:
                     Task {
                         let _ = await sut.useCase.pause()
                     }
-
-                case .paused:
-                    if played {
-                        break
+                case playIndex:
+                    Task {
+                        let _ = await sut.useCase.play()
                     }
-
-                    played = true
-                    Task { let _ = await sut.useCase.play() }
-
-                case .playing(_, let subitlesState) where subitlesState?.position == .sentence(1):
-                    Task { let _ = await sut.useCase.stop() }
-
+                case stopIndex:
+                    Task {
+                        let _ = await sut.useCase.stop()
+                    }
                 default:
                     break
                 }
 
-                return true
-            }
+                return item
+            })
             .sink { stateSequence.fulfill(with: $0) }
 
         let _ = await sut.useCase.prepare(params: sessionParams)
@@ -255,5 +249,21 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         
         stateSequence.wait(timeout: 5, enforceOrder: true)
         disposable.cancel()
+    }
+}
+
+// MARK: - Helpers
+
+extension Publisher {
+    
+    public func enumerated() -> Publishers.Map<Self, (Int, Output)> {
+        
+        var index = -1
+        
+        return self.map { item in
+            
+            index += 1
+            return (index, item)
+        }
     }
 }
