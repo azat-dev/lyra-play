@@ -154,34 +154,34 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let stateSequence = self.expectSequence(expectedStateItems)
         
-        let controlledState = Observable(sut.useCase.state.value)
+        let stopAtIndex = 1
+        let pauseAtIndex = stopAtIndex + 1
         
-        let observer = sut.useCase.state.sink { state in
-            
-            if state == .stopped {
+        let observer = sut.useCase.state
+            .enumerated()
+            .map { index, item in
                 
-                controlledState.value = state
-                sut.useCase.pause()
-                return
-            }
-            
-            if case .playing = state {
+                switch index {
+                    
+                case stopAtIndex:
+                    Task { sut.useCase.stop() }
+                    
+                case pauseAtIndex:
+                    Task { sut.useCase.pause() }
+                    
+                default:
+                    break
+                }
                 
-                controlledState.value = state
-                sut.useCase.stop()
-                return
+                return item
             }
-            
-            controlledState.value = state
-        }
-        
-        stateSequence.observe(controlledState)
+            .sink { value in
+                stateSequence.fulfill(with: value)
+            }
         
         sut.useCase.play(atTime: 0)
         stateSequence.wait(timeout: 1, enforceOrder: true)
-        
-        controlledState.remove(observer: self)
-        
+
         observer.cancel()
     }
     
