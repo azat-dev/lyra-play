@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 // MARK: - Interfaces
 
@@ -63,7 +64,7 @@ public protocol PlaySubtitlesUseCaseInput {
 
 public protocol PlaySubtitlesUseCaseOutput {
 
-    var state: Observable<PlaySubtitlesUseCaseState> { get }
+    var state: CurrentValueSubject<PlaySubtitlesUseCaseState, Never> { get }
 }
 
 public protocol PlaySubtitlesUseCase: AnyObject, PlaySubtitlesUseCaseOutput, PlaySubtitlesUseCaseInput {
@@ -78,7 +79,7 @@ public final class DefaultPlaySubtitlesUseCase: PlaySubtitlesUseCase {
     private let subtitlesIterator: SubtitlesIterator
     private let scheduler: Scheduler
 
-    public let state = Observable(PlaySubtitlesUseCaseState.initial)
+    public let state = CurrentValueSubject<PlaySubtitlesUseCaseState, Never>(.initial)
 
     // MARK: - Initializers
 

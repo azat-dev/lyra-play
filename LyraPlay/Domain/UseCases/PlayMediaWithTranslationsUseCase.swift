@@ -70,11 +70,7 @@ public final class DefaultPlayMediaWithTranslationsUseCase: PlayMediaWithTransla
     
     private var currentSession: Session?
     
-    private var playSubtitlesUseCase: PlaySubtitlesUseCase? {
-        didSet {
-            observePlayingSubtitles()
-        }
-    }
+    private var playSubtitlesUseCase: PlaySubtitlesUseCase? 
     
     // MARK: - Computed properties
     
@@ -322,10 +318,6 @@ extension DefaultPlayMediaWithTranslationsUseCase {
         }
     }
     
-    private func observePlayingSubtitles() {
-        
-        playSubtitlesUseCase?.state.observeIgnoreInitial(on: self) { [weak self] in self?.updateState($0) }
-    }
     
     private func resumePlayingAfterPronunciationBlock() {
         

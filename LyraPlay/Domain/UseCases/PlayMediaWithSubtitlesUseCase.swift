@@ -130,13 +130,15 @@ public final class DefaultPlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesU
     
     public var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseState, Never> = .init(.initial)
     
+    private var playSubtitlesObserver: AnyCancellable?
+    
     private var playSubtitlesUseCase: PlaySubtitlesUseCase? {
         
         didSet {
-            
-            oldValue?.state.remove(observer: self)
-            
-            playSubtitlesUseCase?.state.observeIgnoreInitial(on: self) { [weak self] in self?.updateSubtitlesPosition($0) }
+
+            playSubtitlesObserver?.cancel()
+
+            playSubtitlesObserver = playSubtitlesUseCase?.state.sink { [weak self] in self?.updateSubtitlesPosition($0) }
         }
     }
     
@@ -153,6 +155,10 @@ public final class DefaultPlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesU
         self.loadSubtitlesUseCase = loadSubtitlesUseCase
         
         observeMediaState()
+    }
+    
+    deinit {
+        playSubtitlesObserver?.cancel()
     }
 }
 
