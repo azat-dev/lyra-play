@@ -46,7 +46,7 @@ class AudioServiceTests: XCTestCase {
             .finished(session: session2)
         ])
         
-        stateSequence.observe(audioService.state)
+        let observation = stateSequence.observe(audioService.state)
         
         let data = try getTestFile()
         let shortData = try getTestFile(name: "test_music_with_tags_short")
@@ -68,6 +68,7 @@ class AudioServiceTests: XCTestCase {
         sleep(1)
         
         stateSequence.wait(timeout: 5, enforceOrder: true)
+        observation.cancel()
     }
     
     func test_playAndWaitForEnd__success() async throws {
@@ -90,7 +91,7 @@ class AudioServiceTests: XCTestCase {
             .finished(session: session2)
         ])
         
-        stateSequence.observe(audioService.state)
+        let observation = stateSequence.observe(audioService.state)
         
         let shortData = try getTestFile(name: "test_music_with_tags_short")
         
@@ -112,6 +113,7 @@ class AudioServiceTests: XCTestCase {
         XCTAssertEqual(audioService.state.value, .finished(session: .init(fileId: fileId2)))
         
         stateSequence.wait(timeout: 0, enforceOrder: true)
+        observation.cancel()
     }
     
     func test_playAndWaitForEnd__interrupted() async throws {
@@ -122,7 +124,7 @@ class AudioServiceTests: XCTestCase {
         
         let shortData = try getTestFile(name: "test_music_with_tags_short")
 
-        audioService.state.observe(on: self) { [weak audioService] state in
+        let cancellation = audioService.state.sink { [weak audioService] state in
 
             guard let audioService = audioService else {
                 return
@@ -147,6 +149,6 @@ class AudioServiceTests: XCTestCase {
             return
         }
         
-        audioService.state.remove(observer: self)
+        cancellation.cancel()
     }
 }

@@ -6,12 +6,14 @@
 //
 
 import Foundation
+import Combine
+
 import LyraPlay
 
 class AudioServiceMock: AudioService {
     
     
-    public var state: Observable<AudioServiceState> = .init(.initial)
+    public var state: CurrentValueSubject<AudioServiceState, Never> = .init(.initial)
     
     public var currentTime = Observable(0.0)
     

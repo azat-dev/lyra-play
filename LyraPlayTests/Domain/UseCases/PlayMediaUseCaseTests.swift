@@ -95,7 +95,7 @@ class PlayMediaUseCaseTests: XCTestCase {
             .playing(session: .init(fileId: trackId.uuidString)),
         ])
         
-        audioServiceStateSequence.observe(sut.audioService.state)
+        let observation = audioServiceStateSequence.observe(sut.audioService.state)
         
         let expectedStateItems: [PlayMediaUseCaseState] = [
             .initial,
@@ -114,6 +114,8 @@ class PlayMediaUseCaseTests: XCTestCase {
         
         audioServiceStateSequence.wait(timeout: 3, enforceOrder: true)
         stateSequence.wait(timeout: 3, enforceOrder: true)
+        
+        observation.cancel()
     }
     
     func test_pause__not_active_track() async throws {
@@ -125,7 +127,7 @@ class PlayMediaUseCaseTests: XCTestCase {
             AudioServiceState.initial,
         ])
         
-        audioServiceStateSequence.observe(sut.audioService.state)
+        let cancelObservation = audioServiceStateSequence.observe(sut.audioService.state)
         
         let expectedStateItems: [PlayMediaUseCaseState] = [
             .initial,
@@ -144,6 +146,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         
         audioServiceStateSequence.wait(timeout: 3, enforceOrder: true)
         stateSequence.wait(timeout: 3, enforceOrder: true)
+        cancelObservation.cancel()
     }
     
     func test_pause__active_track() async throws {
@@ -173,7 +176,7 @@ class PlayMediaUseCaseTests: XCTestCase {
             .paused(session: .init(fileId: trackId.uuidString), time: 0)
         ])
         
-        audioServiceStateSequence.observe(sut.audioService.state)
+        let cancelObservation = audioServiceStateSequence.observe(sut.audioService.state)
 
         let _ = await sut.useCase.prepare(mediaId: trackId)
         let _ = await sut.useCase.play()
@@ -182,6 +185,7 @@ class PlayMediaUseCaseTests: XCTestCase {
 
         audioServiceStateSequence.wait(timeout: 3, enforceOrder: true)
         stateSequence.wait(timeout: 3, enforceOrder: true)
+        cancelObservation.cancel()
     }
     
     func test_change_active_track() async throws {
@@ -190,7 +194,6 @@ class PlayMediaUseCaseTests: XCTestCase {
         
         setUpTracks(loadTrackUseCase: sut.loadTrackUseCase)
         
-        let tracksData = sut.loadTrackUseCase.tracks
         let tracks = Array(sut.loadTrackUseCase.tracks.keys)
         let trackId1 = tracks[0]
         let trackId2 = tracks[1]
@@ -215,7 +218,7 @@ class PlayMediaUseCaseTests: XCTestCase {
             .playing(session: .init(fileId: trackId2.uuidString)),
         ])
         
-        audioServiceStateSequence.observe(sut.audioService.state)
+        let cancelObservation = audioServiceStateSequence.observe(sut.audioService.state)
         
         let _ = await sut.useCase.prepare(mediaId: trackId1)
         let _ = await sut.useCase.play()
@@ -225,5 +228,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         
         audioServiceStateSequence.wait(timeout: 10, enforceOrder: true)
         stateSequence.wait(timeout: 3, enforceOrder: true)
+        
+        cancelObservation.cancel()
     }
 }

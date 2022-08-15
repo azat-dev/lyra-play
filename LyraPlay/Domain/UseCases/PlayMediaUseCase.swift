@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 // MARK: - Interfaces
 
@@ -75,6 +76,8 @@ public final class DefaultPlayMediaUseCase: PlayMediaUseCase {
     
     private var currentMediaId: UUID?
     
+    private var observeAudioServiceCanellation: AnyCancellable?
+    
     // MARK: - Initializers
     
     public init(
@@ -85,12 +88,16 @@ public final class DefaultPlayMediaUseCase: PlayMediaUseCase {
         self.audioService = audioService
         self.loadTrackUseCase = loadTrackUseCase
         
-        observeAudioService()
+        observeAudioServiceCanellation = observe(audioService: audioService)
     }
     
-    private func observeAudioService() {
+    deinit {
+        observeAudioServiceCanellation?.cancel()
+    }
+    
+    private func observe(audioService: AudioService) -> AnyCancellable {
         
-        self.audioService.state.observeIgnoreInitial(on: self) { [weak self] audioServiceState in
+        return audioService.state.sink { [weak self] audioServiceState in
             
             guard
                 let self = self,
@@ -100,7 +107,6 @@ public final class DefaultPlayMediaUseCase: PlayMediaUseCase {
             }
             
             guard currentMediaId.uuidString == audioServiceState.session?.fileId else {
-                
                 self.state.value = .stopped
                 return
             }

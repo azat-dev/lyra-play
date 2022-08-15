@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 public enum AudioServiceError: Error {
 
@@ -66,7 +67,7 @@ public protocol AudioServiceInput {
 
 public protocol AudioServiceOutput {
 
-    var state: Observable<AudioServiceState> { get }
+    var state: CurrentValueSubject<AudioServiceState, Never> { get }
 }
 
 public protocol AudioService: AnyObject, AudioServiceOutput, AudioServiceInput {

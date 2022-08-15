@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 // MARK: - Interfaces
 
@@ -43,6 +44,7 @@ public protocol CurrentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput {
 public final class DefaultCurrentPlayerStateUseCase: CurrentPlayerStateUseCase {
     
     private let audioService: AudioServiceOutput
+    private var audioServiceCancellation: AnyCancellable?
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
     
     private var prevTrackId: String?
@@ -63,6 +65,10 @@ public final class DefaultCurrentPlayerStateUseCase: CurrentPlayerStateUseCase {
         bind(to: audioService)
     }
     
+    deinit {
+        audioServiceCancellation?.cancel()
+    }
+    
     private func updateTrackInfo(trackId: UUID) async {
         
         let result = await self.showMediaInfoUseCase.fetchInfo(trackId: trackId)
@@ -79,7 +85,7 @@ public final class DefaultCurrentPlayerStateUseCase: CurrentPlayerStateUseCase {
     
     public func bind(to audioService: AudioServiceOutput) {
         
-        audioService.state.observe(on: self) { [weak self] state in
+        audioServiceCancellation = audioService.state.sink { [weak self] state in
 
             guard let self = self else {
                 return

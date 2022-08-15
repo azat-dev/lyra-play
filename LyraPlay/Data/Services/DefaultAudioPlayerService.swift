@@ -8,6 +8,7 @@
 import Foundation
 import AVFoundation
 import MediaPlayer
+import Combine
 
 // MARK: - Implementations
 
@@ -21,7 +22,7 @@ public final class DefaultAudioService: NSObject, AudioService, AVAudioPlayerDel
     
     private var playerIsPlayingObserver: NSKeyValueObservation? = nil
     
-    public let state: Observable<AudioServiceState> = .init(.initial)
+    public let state: CurrentValueSubject<AudioServiceState, Never> = .init(.initial)
     
     // MARK: - Initializers
     
@@ -142,15 +143,16 @@ extension DefaultAudioService {
 
             return .failure(.noActiveFile)
         }
-        
-        let observerToken = ObserverToken()
 
+        var stateCancellation: AnyCancellable?
+        defer { stateCancellation?.cancel() }
+        
         var isFinished = false
         var isSetupCall = true
         
         let result: Result<Void, AudioServiceError> = await withCheckedContinuation { continuation  in
             
-            state.observe(on: observerToken) { state in
+            stateCancellation = state.sink { state in
 
                 if isSetupCall {
                     isSetupCall = false
@@ -202,7 +204,6 @@ extension DefaultAudioService {
             }
         }
         
-        state.remove(observer: observerToken)
         
         return result
     }

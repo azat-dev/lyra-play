@@ -7,6 +7,8 @@
 
 import Foundation
 import XCTest
+import Combine
+
 import LyraPlay
 
 class AssertSequence<T: Equatable> {
@@ -90,6 +92,30 @@ extension AssertSequence {
         }
     }
 }
+
+// MARK: - Publisher
+
+extension AssertSequence {
+    
+    func observe<P>(_ publisher: P, file: StaticString = #filePath, line: UInt = #line) -> AnyCancellable where P: Publisher, P.Failure == Never, P.Output == T {
+        
+        return observe(publisher, mapper: { $0 }, file: file, line: line)
+    }
+    
+    func observe<P>(_ publisher: P, mapper: @escaping (P.Output) -> T, file: StaticString = #filePath, line: UInt = #line) -> AnyCancellable where P: Publisher, P.Output: Equatable, P.Failure == Never {
+        
+        return publisher.sink { [weak self] value in
+            
+            guard let self = self else {
+                return
+            }
+            
+            let mappedValue = mapper(value)
+            self.fulfill(with: mappedValue, file: file, line: line)
+        }
+    }
+}
+
 
 // MARK: - MessageChannel
 
