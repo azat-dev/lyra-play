@@ -106,20 +106,6 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         line: UInt = #line
     ) async throws {
         
-        let sut = createSUT()
-        
-        let session = PlayMediaWithTranslationsSession(
-            mediaId: anyMediaId(),
-            learningLanguage: anyLearningLanguage(),
-            nativeLanguage: anyNativeLanguage()
-        )
-        
-        let expectedStateItems: [PlayMediaWithTranslationsUseCaseState] = [
-            .initial,
-            .loading(session: session),
-            .loadFailed(session: session)
-        ]
-        
         sut.playMediaUseCase.prepareWillReturn = { _ in isMediaExist ? .success(()) : .failure(.trackNotFound) }
         sut.loadSubtitlesUseCase.willReturn = { _, _ in subtitles == nil ? .failure(.itemNotFound) : .success(subtitles!)}
         let stateSequence = self.expectSequence(expectedStateItems)
@@ -160,7 +146,6 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             subtitles: nil,
             isMediaExist: false,
             expectedStateItems: [
-            
                 .initial,
                 .loading(session: session),
                 .loadFailed(session: session)
@@ -184,7 +169,6 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             subtitles: nil,
             isMediaExist: true,
             expectedStateItems: [
-            
                 .initial,
                 .loading(session: session),
                 .loaded(session: session, subtitlesState: nil)
@@ -209,7 +193,6 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             subtitles: subtitles,
             isMediaExist: true,
             expectedStateItems: [
-            
                 .initial,
                 .loading(session: session),
                 .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles))
@@ -233,7 +216,6 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             subtitles: nil,
             isMediaExist: true,
             expectedStateItems: [
-            
                 .initial,
                 .loading(session: session),
                 .loaded(session: session, subtitlesState: nil),
@@ -241,13 +223,28 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         )
 
         let expectedStateItems: [PlayMediaWithTranslationsUseCaseState] = [
-            .playing(session: session, subtitlesState: nil)
+            .loaded(session: session, subtitlesState: nil),
+            .playing(session: session, subtitlesState: nil),
+            .finished(session: session)
         ]
         
         let stateSequence = expectSequence(expectedStateItems)
-        let observer = stateSequence.observe(sut.useCase.state)
-
+        let observer = sut.useCase.state
+            .enumerated()
+            .map { index, item in
+                
+                if index == 1 {
+                    Task {
+                        sut.playMediaUseCase.finish()
+                    }
+                }
+                
+                return item
+                
+            }.sink { stateSequence.fulfill(with: $0) }
+        
         let result = await sut.useCase.play()
+        
         try AssertResultSucceded(result)
         
         stateSequence.wait(timeout: 3, enforceOrder: true)

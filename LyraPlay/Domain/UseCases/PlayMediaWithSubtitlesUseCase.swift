@@ -274,7 +274,7 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
         
         guard case .success(let subtitles) = loadSubtitlesResult else {
             
-            self.state.value = .loaded(session: session, subtitlesState: nil)
+            state.value = .loaded(session: session, subtitlesState: nil)
             return .success(())
         }
         
