@@ -38,17 +38,27 @@ public struct PlayMediaWithTranslationsSession: Equatable {
 public enum PlayMediaWithTranslationsUseCaseState: Equatable {
     
     case initial
+
     case loading(session: PlayMediaWithTranslationsSession)
-    case playing(session: PlayMediaWithTranslationsSession, subtitlesPosition: SubtitlesPosition?)
-    case pronouncingTranslations(session: PlayMediaWithTranslationsSession, subtitlesPosition: SubtitlesPosition?, data: PronounceTranslationsUseCaseStateData)
-    case paused(session: PlayMediaWithTranslationsSession, subtitlesPosition: SubtitlesPosition?)
+
+    case loadFailed(session: PlayMediaWithTranslationsSession)
+
+    case loaded(session: PlayMediaWithTranslationsSession, subtitlesState: SubtitlesState?)
+
+    case playing(session: PlayMediaWithTranslationsSession, subtitlesState: SubtitlesState?)
+
+    case pronouncingTranslations(session: PlayMediaWithTranslationsSession, subtitlesState: SubtitlesState?, data: PronounceTranslationsUseCaseStateData)
+
+    case paused(session: PlayMediaWithTranslationsSession, subtitlesState: SubtitlesState?)
+
     case stopped(session: PlayMediaWithTranslationsSession)
+
     case finished(session: PlayMediaWithTranslationsSession)
 }
 
 public protocol PlayMediaWithTranslationsUseCaseInput {
     
-    func prepare(session: PlayMediaWithTranslationsSession)
+    func prepare(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError>
     
     func play() async -> Result<Void, PlayMediaWithTranslationsUseCaseError>
     
@@ -106,9 +116,47 @@ public final class DefaultPlayMediaWithTranslationsUseCase: PlayMediaWithTransla
 
 extension DefaultPlayMediaWithTranslationsUseCase {
     
-    public func prepare(session: PlayMediaWithTranslationsSession) {
-
+    public func prepare(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+        
         state.value = .loading(session: session)
+        
+        let result = await playMediaWithSubtitlesUseCase.prepare(
+            params: .init(mediaId: session.mediaId, subtitlesLanguage: session.learningLanguage)
+        )
+        
+        guard case .success = result else {
+            
+            state.value = .loadFailed(session: session)
+            return .failure(map(error: result.error!))
+        }
+        
+        if Task.isCancelled {
+            return .success(())
+        }
+        
+        guard case .loaded(_, let subtitlesData) = playMediaWithSubtitlesUseCase.state.value else {
+            
+            state.value = .loadFailed(session: session)
+            return .failure(.internalError(nil))
+        }
+        
+        guard let subtitles = subtitlesData?.subtitles else {
+            
+            state.value = .loaded(session: session, subtitlesState: nil)
+            return .success(())
+        }
+
+        await provideTranslationsToPlayUseCase.prepare(
+            params: .init(
+                mediaId: session.mediaId,
+                nativeLanguage: session.nativeLanguage,
+                learningLanguage: session.learningLanguage,
+                subtitles: subtitles
+            )
+        )
+        
+        state.value = .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles))
+        return .success(())
     }
     
     public func play() async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
@@ -121,6 +169,8 @@ extension DefaultPlayMediaWithTranslationsUseCase {
     public func play(atTime: TimeInterval) async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         return .success(())
     }
+    
+    
     
     public func pause() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
