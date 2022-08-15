@@ -83,11 +83,11 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
             .finished
         ])
         
-        let observation = stateSequence.observe(sut.useCase.state)
+        let observer = stateSequence.observe(sut.useCase.state)
         sut.useCase.play(atTime: 0)
         
         stateSequence.wait(timeout: 1, enforceOrder: true)
-        observation.cancel()
+        observer.cancel()
     }
     
     func test_play__empty_subtitles__with_offset() async throws {
@@ -95,12 +95,12 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let sut = createSUT(subtitles: emptySubtitles())
         
         let stateSequence = self.expectSequence([ PlaySubtitlesUseCaseState.initial ])
-        let observation = stateSequence.observe(sut.useCase.state)
+        let observer = stateSequence.observe(sut.useCase.state)
         
         sut.useCase.play(atTime: 100)
         
         stateSequence.wait(timeout: 1, enforceOrder: true)
-        observation.cancel()
+        observer.cancel()
     }
     
     func test_play__not_empty_subtitles__from_beginning() async throws {
@@ -115,12 +115,12 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         ]
         
         let stateSequence = self.expectSequence(expectedStateItems)
-        let observation = stateSequence.observe(sut.useCase.state)
+        let observer = stateSequence.observe(sut.useCase.state)
         
         sut.useCase.play(atTime: 0)
         stateSequence.wait(timeout: 1, enforceOrder: true)
         
-        observation.cancel()
+        observer.cancel()
     }
     
     func test_play__not_empty_subtitles__with_offset() async throws {
@@ -134,11 +134,11 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         ]
         
         let stateSequence = self.expectSequence(expectedStateItems)
-        let observation = stateSequence.observe(sut.useCase.state)
+        let observer = stateSequence.observe(sut.useCase.state)
         
         sut.useCase.play(atTime: 0.1)
         stateSequence.wait(timeout: 1, enforceOrder: true)
-        observation.cancel()
+        observer.cancel()
     }
     
     func test_pause__stopped() async throws {
@@ -156,7 +156,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let controlledState = Observable(sut.useCase.state.value)
         
-        let observation = sut.useCase.state.sink { state in
+        let observer = sut.useCase.state.sink { state in
             
             if state == .stopped {
                 
@@ -182,7 +182,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         controlledState.remove(observer: self)
         
-        observation.cancel()
+        observer.cancel()
     }
     
     func test_pause__playing() async throws {
@@ -198,7 +198,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let pauseAtIndex = 1
         
-        let observation = sut.useCase.state
+        let observer = sut.useCase.state
             .enumerated()
             .map { index, item in
                 
@@ -214,7 +214,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         sut.useCase.play(atTime: 0)
         stateSequence.wait(timeout: 1, enforceOrder: true)
-        observation.cancel()
+        observer.cancel()
     }
     
     func test_stop__not_playing() async throws {
@@ -227,11 +227,11 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         ]
         
         let stateSequence = self.expectSequence(expectedStateItems)
-        let observation = stateSequence.observe(sut.useCase.state)
+        let observer = stateSequence.observe(sut.useCase.state)
         
         sut.useCase.stop()
         stateSequence.wait(timeout: 1, enforceOrder: true)
-        observation.cancel()
+        observer.cancel()
     }
     
     func test_stop__playing() async throws {
@@ -248,7 +248,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let stopAtIndex = 1
         
-        let observation = sut.useCase.state
+        let observer = sut.useCase.state
             .enumerated()
             .map { index, item in
                 
@@ -265,7 +265,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         sut.useCase.play(atTime: 0)
         stateSequence.wait(timeout: 2, enforceOrder: true)
         
-        observation.cancel()
+        observer.cancel()
     }
     
     func test_stop__paused() async throws {
@@ -283,7 +283,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let pauseAtIndex = 1
         let stopAtIndex = pauseAtIndex + 1
         
-        let observation = sut.useCase.state
+        let observer = sut.useCase.state
             .enumerated()
             .map { index, item in
                 
@@ -308,7 +308,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         sut.useCase.play(atTime: 0)
         stateSequence.wait(timeout: 1, enforceOrder: true)
         
-        observation.cancel()
+        observer.cancel()
     }
 }
 

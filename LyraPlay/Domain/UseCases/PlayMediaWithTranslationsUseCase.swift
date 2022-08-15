@@ -269,8 +269,6 @@ extension DefaultPlayMediaWithTranslationsUseCase {
     }
     
     private func observeMediaState() {
-        
-        playMediaUseCase.state.observeIgnoreInitial(on: self) { [weak self] in self?.updateState($0) }
     }
     
     private func playTranslationAfterSubtitlesPositionChange(position newPosition: SubtitlesPosition?) {

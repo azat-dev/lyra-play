@@ -6,13 +6,15 @@
 //
 
 import Foundation
+import Combine
+
 import LyraPlay
 
 final class PlayMediaUseCaseMock: PlayMediaUseCase {
     
     private var currentTrackId: UUID? = nil
     private var currentPlayerStateUseCase: CurrentPlayerStateUseCaseMock?
-    var state: Observable<PlayMediaUseCaseState> = .init(.initial)
+    var state = CurrentValueSubject<PlayMediaUseCaseState, Never>(.initial)
     
     public init(currentPlayerStateUseCase: CurrentPlayerStateUseCaseMock? = nil) {
         

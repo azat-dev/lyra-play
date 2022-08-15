@@ -72,12 +72,13 @@ class PlayMediaUseCaseTests: XCTestCase {
         ]
         
         let stateSequence = self.expectSequence(expectedStateItems)
-        stateSequence.observe(sut.useCase.state)
+        let observer = stateSequence.observe(sut.useCase.state)
         
         let result = await sut.useCase.prepare(mediaId: trackId)
         try AssertResultSucceded(result)
         
         stateSequence.wait(timeout: 3, enforceOrder: true)
+        observer.cancel()
     }
     
     func test_play__existing_track() async throws {
@@ -95,7 +96,7 @@ class PlayMediaUseCaseTests: XCTestCase {
             .playing(session: .init(fileId: trackId.uuidString)),
         ])
         
-        let observation = audioServiceStateSequence.observe(sut.audioService.state)
+        let audioServiceObserver = audioServiceStateSequence.observe(sut.audioService.state)
         
         let expectedStateItems: [PlayMediaUseCaseState] = [
             .initial,
@@ -106,7 +107,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         ]
         
         let stateSequence = self.expectSequence(expectedStateItems)
-        stateSequence.observe(sut.useCase.state)
+        let stateObserver = stateSequence.observe(sut.useCase.state)
         
         let _ = await sut.useCase.prepare(mediaId: trackId)
         let result = await sut.useCase.play()
@@ -115,7 +116,8 @@ class PlayMediaUseCaseTests: XCTestCase {
         audioServiceStateSequence.wait(timeout: 3, enforceOrder: true)
         stateSequence.wait(timeout: 3, enforceOrder: true)
         
-        observation.cancel()
+        audioServiceObserver.cancel()
+        stateObserver.cancel()
     }
     
     func test_pause__not_active_track() async throws {
@@ -127,14 +129,14 @@ class PlayMediaUseCaseTests: XCTestCase {
             AudioServiceState.initial,
         ])
         
-        let cancelObservation = audioServiceStateSequence.observe(sut.audioService.state)
+        let audioServiceObserver = audioServiceStateSequence.observe(sut.audioService.state)
         
         let expectedStateItems: [PlayMediaUseCaseState] = [
             .initial,
         ]
         
         let stateSequence = self.expectSequence(expectedStateItems)
-        stateSequence.observe(sut.useCase.state)
+        let stateObserver = stateSequence.observe(sut.useCase.state)
         
         let result = await sut.useCase.pause()
         let error = try AssertResultFailed(result)
@@ -146,7 +148,9 @@ class PlayMediaUseCaseTests: XCTestCase {
         
         audioServiceStateSequence.wait(timeout: 3, enforceOrder: true)
         stateSequence.wait(timeout: 3, enforceOrder: true)
-        cancelObservation.cancel()
+        
+        audioServiceObserver.cancel()
+        stateObserver.cancel()
     }
     
     func test_pause__active_track() async throws {
@@ -167,7 +171,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         ]
         
         let stateSequence = self.expectSequence(expectedStateItems)
-        stateSequence.observe(sut.useCase.state)
+        let stateObserver = stateSequence.observe(sut.useCase.state)
         
         let audioServiceStateSequence = self.expectSequence([
             
@@ -176,7 +180,7 @@ class PlayMediaUseCaseTests: XCTestCase {
             .paused(session: .init(fileId: trackId.uuidString), time: 0)
         ])
         
-        let cancelObservation = audioServiceStateSequence.observe(sut.audioService.state)
+        let audioServiceObserver = audioServiceStateSequence.observe(sut.audioService.state)
 
         let _ = await sut.useCase.prepare(mediaId: trackId)
         let _ = await sut.useCase.play()
@@ -185,7 +189,9 @@ class PlayMediaUseCaseTests: XCTestCase {
 
         audioServiceStateSequence.wait(timeout: 3, enforceOrder: true)
         stateSequence.wait(timeout: 3, enforceOrder: true)
-        cancelObservation.cancel()
+        
+        audioServiceObserver.cancel()
+        stateObserver.cancel()
     }
     
     func test_change_active_track() async throws {
@@ -209,7 +215,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         ]
         
         let stateSequence = self.expectSequence(expectedStateItems)
-        stateSequence.observe(sut.useCase.state)
+        let stateObserver = stateSequence.observe(sut.useCase.state)
         
         let audioServiceStateSequence = self.expectSequence([
             
@@ -218,7 +224,7 @@ class PlayMediaUseCaseTests: XCTestCase {
             .playing(session: .init(fileId: trackId2.uuidString)),
         ])
         
-        let cancelObservation = audioServiceStateSequence.observe(sut.audioService.state)
+        let audioServiceObserver = audioServiceStateSequence.observe(sut.audioService.state)
         
         let _ = await sut.useCase.prepare(mediaId: trackId1)
         let _ = await sut.useCase.play()
@@ -229,6 +235,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         audioServiceStateSequence.wait(timeout: 10, enforceOrder: true)
         stateSequence.wait(timeout: 3, enforceOrder: true)
         
-        cancelObservation.cancel()
+        audioServiceObserver.cancel()
+        stateObserver.cancel()
     }
 }

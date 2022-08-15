@@ -57,7 +57,7 @@ public protocol PlayMediaUseCaseInput {
 
 public protocol PlayMediaUseCaseOutput {
     
-    var state: Observable<PlayMediaUseCaseState> { get }
+    var state: CurrentValueSubject<PlayMediaUseCaseState, Never> { get }
 }
 
 public protocol PlayMediaUseCase: PlayMediaUseCaseOutput, PlayMediaUseCaseInput {
@@ -72,7 +72,7 @@ public final class DefaultPlayMediaUseCase: PlayMediaUseCase {
     private let audioService: AudioService
     private let loadTrackUseCase: LoadTrackUseCase
     
-    public let state: Observable<PlayMediaUseCaseState> = .init(.initial)
+    public let state = CurrentValueSubject<PlayMediaUseCaseState, Never>(.initial)
     
     private var currentMediaId: UUID?
     
