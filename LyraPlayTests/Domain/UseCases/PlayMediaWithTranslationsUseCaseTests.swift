@@ -217,6 +217,43 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         )
     }
     
+    func test_play__without_subtitles() async throws {
+        
+        let sut = createSUT()
+        
+        let session = PlayMediaWithTranslationsSession(
+            mediaId: anyMediaId(),
+            learningLanguage: anyLearningLanguage(),
+            nativeLanguage: anyNativeLanguage()
+        )
+
+        try await prepare(
+            sut: sut,
+            session: session,
+            subtitles: nil,
+            isMediaExist: true,
+            expectedStateItems: [
+            
+                .initial,
+                .loading(session: session),
+                .loaded(session: session, subtitlesState: nil),
+            ]
+        )
+
+        let expectedStateItems: [PlayMediaWithTranslationsUseCaseState] = [
+            .playing(session: session, subtitlesState: nil)
+        ]
+        
+        let stateSequence = expectSequence(expectedStateItems)
+        let observer = stateSequence.observe(sut.useCase.state)
+
+        let result = await sut.useCase.play()
+        try AssertResultSucceded(result)
+        
+        stateSequence.wait(timeout: 3, enforceOrder: true)
+        observer.cancel()
+    }
+    
     //    func test_play__wit_not_empty_subtitles_without_offset() async throws {
     //
     //        let sut = createSUT()
