@@ -61,17 +61,6 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         return .init(duration: 0, sentences: [])
     }
     
-    private func anySentence(at: TimeInterval, timeMarks: [Subtitles.TimeMark]? = nil, text: String = "") -> Subtitles.Sentence {
-        
-        return Subtitles.Sentence(
-            startTime: at,
-            duration: nil,
-            text: text,
-            timeMarks: timeMarks,
-            components: []
-        )
-    }
-    
     func test_prepare__not_existing_media() async throws {
         
         let sut = createSUT()
@@ -187,10 +176,10 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         let sut = createSUT()
 
         let subtitles = Subtitles(duration: 4, sentences: [
-            anySentence(at: 0),
-            anySentence(at: 1),
-            anySentence(at: 2),
-            anySentence(at: 3),
+            .anySentence(at: 0),
+            .anySentence(at: 1),
+            .anySentence(at: 2),
+            .anySentence(at: 3),
         ])
 
         sut.subtitlesTimer.willFire { _, _ in

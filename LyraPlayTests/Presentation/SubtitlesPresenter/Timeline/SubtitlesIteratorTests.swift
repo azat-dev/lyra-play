@@ -26,16 +26,6 @@ class SubtitlesIteratorTests: XCTestCase {
         return subtitlesIterator
     }
 
-    private func anySentence(at: TimeInterval, timeMarks: [Subtitles.TimeMark]? = nil) -> Subtitles.Sentence {
-        return Subtitles.Sentence(
-            startTime: at,
-            duration: nil,
-            text: "",
-            timeMarks: timeMarks,
-            components: []
-        )
-    }
-
     private func timeMark(at: TimeInterval) -> Subtitles.TimeMark {
 
         let text = ""
@@ -56,16 +46,16 @@ class SubtitlesIteratorTests: XCTestCase {
         return Subtitles(
             duration: 3.5,
             sentences: [
-                anySentence(at: 0.0),
-                anySentence(at: 2.0),
-                anySentence(
+                .anySentence(at: 0.0),
+                .anySentence(at: 2.0),
+                .anySentence(
                     at: 3.0,
                     timeMarks: [
                         .init(startTime: 3.0, range: dummyRange),
                         .init(startTime: 3.2, range: dummyRange)
                     ]
                 ),
-                anySentence(
+                .anySentence(
                     at: 3.0,
                     timeMarks: [
                         .init(startTime: 3.1, range: dummyRange)
@@ -132,7 +122,7 @@ class SubtitlesIteratorTests: XCTestCase {
     func test_getTimeOfNextEvent__not_empty_subtitles() async throws {
 
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 1),
+            .anySentence(at: 1),
         ])
         let sut = createSUT(subtitles: subtitles)
 
@@ -181,8 +171,8 @@ class SubtitlesIteratorTests: XCTestCase {
     func test_moveToNextEvent__with_simple_subtitles() async throws {
 
         let subtitles = Subtitles(duration: 3, sentences: [
-            anySentence(at: 1),
-            anySentence(at: 2),
+            .anySentence(at: 1),
+            .anySentence(at: 2),
         ])
         
         test_moveToNextEvent(
@@ -234,9 +224,9 @@ class SubtitlesIteratorTests: XCTestCase {
     func test_beginNextExecution__not_empty_subtitles_exact_time_match() {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0),
-            anySentence(at: 1),
-            anySentence(at: 2),
+            .anySentence(at: 0),
+            .anySentence(at: 1),
+            .anySentence(at: 2),
         ])
         
         let sut = createSUT(subtitles: subtitles)
@@ -253,9 +243,9 @@ class SubtitlesIteratorTests: XCTestCase {
     func test_beginNextExecution__not_empty_subtitles_between() {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0),
-            anySentence(at: 1),
-            anySentence(at: 2),
+            .anySentence(at: 0),
+            .anySentence(at: 1),
+            .anySentence(at: 2),
         ])
         
         let sut = createSUT(subtitles: subtitles)
@@ -272,9 +262,9 @@ class SubtitlesIteratorTests: XCTestCase {
     func test_beginNextExecution__not_empty_subtitles_end() {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0),
-            anySentence(at: 1),
-            anySentence(at: 2),
+            .anySentence(at: 0),
+            .anySentence(at: 1),
+            .anySentence(at: 2),
         ])
         
         let sut = createSUT(subtitles: subtitles)

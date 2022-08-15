@@ -62,17 +62,6 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         )
     }
     
-    private func anyTimeMark(at: TimeInterval, duration: TimeInterval? = nil) -> Subtitles.TimeMark {
-        
-        let dummyRange = "a".range(of: "a")!
-        
-        return .init(
-            startTime: at,
-            duration: duration,
-            range: dummyRange
-        )
-    }
-    
     private func anyTranslationItem(text: String, position: TranslationItemPosition? = nil, id: UUID? = nil) -> TranslationItem {
         
         return .init(
@@ -117,17 +106,6 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         let testOptions = anyPlayerSession(mediaId: mediaId, subtitles: emptySubtitles())
         
         await sut.useCase.prepare(params: testOptions)
-    }
-    
-    private func anySentence(at: TimeInterval, timeMarks: [Subtitles.TimeMark]? = nil, text: String = "") -> Subtitles.Sentence {
-        
-        return Subtitles.Sentence(
-            startTime: at,
-            duration: nil,
-            text: text,
-            timeMarks: timeMarks,
-            components: []
-        )
     }
     
     private func anyTranslation(textRange: Range<String.Index>? = nil) -> SubtitlesTranslation {
@@ -219,9 +197,9 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
     func test_iterations__subtitles_without_time_marks_inside_sentence_zero_offset() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0),
-            anySentence(at: 3),
-            anySentence(at: 5)
+            .anySentence(at: 0),
+            .anySentence(at: 3),
+            .anySentence(at: 5)
         ])
         
         let translation1 = anyTranslation()
@@ -273,7 +251,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         let markedWordTranslation = anyTranslation(textRange: markedWordRange)
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(
+            .anySentence(
                 at: 0,
                 timeMarks: [
                     .init(
@@ -315,7 +293,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         let markedWordTranslation = anyTranslation(textRange: markedWordRange)
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(
+            .anySentence(
                 at: 0,
                 timeMarks: [
                     .init(
@@ -358,7 +336,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         let markedWordTranslation = anyTranslation(textRange: translationRange)
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(
+            .anySentence(
                 at: 0,
                 timeMarks: [
                     .init(
@@ -403,7 +381,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         let markedWordTranslation = anyTranslation(textRange: markedWordRange)
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(
+            .anySentence(
                 at: 0,
                 timeMarks: [
                     .init(
@@ -455,9 +433,9 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
     func test_iteration__not_empty_subtitles_with_offset() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0),
-            anySentence(at: 3),
-            anySentence(at: 5)
+            .anySentence(at: 0),
+            .anySentence(at: 3),
+            .anySentence(at: 5)
         ])
         
         let translation1 = anyTranslation()

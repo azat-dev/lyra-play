@@ -22,28 +22,6 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
         return iterator
     }
     
-    private func anySentence(at: TimeInterval, duration: TimeInterval? = nil, timeMarks: [Subtitles.TimeMark]? = nil) -> Subtitles.Sentence {
-        
-        return .init(
-            startTime: at,
-            duration: duration,
-            text: "",
-            timeMarks: timeMarks,
-            components: []
-        )
-    }
-    
-    private func anyTimeMark(at: TimeInterval, duration: TimeInterval? = nil) -> Subtitles.TimeMark {
-        
-        let dummyRange = "a".range(of: "a")!
-        
-        return .init(
-            startTime: at,
-            duration: duration,
-            range: dummyRange
-        )
-    }
-    
     func testSubtitles(
         subtitles: Subtitles,
         expectedItems: [ExpectedSubtitlesPosition],
@@ -82,8 +60,8 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
         
         let subtitles = Subtitles(duration: 10, sentences: [
             
-            anySentence(at: 0),
-            anySentence(at: 1)
+            .anySentence(at: 0),
+            .anySentence(at: 1)
         ])
         
         testSubtitles(
@@ -99,8 +77,8 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
     func test_next__time_mark_has_same_startTime_as_sentence() {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0, timeMarks: [
-                anyTimeMark(at: 0)
+            .anySentence(at: 0, timeMarks: [
+                .anyTimeMark(at: 0)
             ]),
         ])
         
@@ -116,8 +94,8 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
     func test_next__time_mark_has_different_startTime_from_sentence() {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0, timeMarks: [
-                anyTimeMark(at: 1)
+            .anySentence(at: 0, timeMarks: [
+                .anyTimeMark(at: 1)
             ]),
         ])
         
@@ -134,9 +112,9 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
     func test_next__multiple_time_marks() {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0, timeMarks: [
-                anyTimeMark(at: 1),
-                anyTimeMark(at: 2)
+            .anySentence(at: 0, timeMarks: [
+                .anyTimeMark(at: 1),
+                .anyTimeMark(at: 2)
             ]),
         ])
         
@@ -154,8 +132,8 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
     func test_getItem__sentences_without_time_marks() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 1),
-            anySentence(at: 2)
+            .anySentence(at: 1),
+            .anySentence(at: 2)
         ])
         let sut = createSUT(subtitles: subtitles)
         
@@ -168,10 +146,10 @@ class SubtitlesPositionsIteratorTests: XCTestCase {
     func test_getItem__sentences_with_time_marks() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0),
-            anySentence(at: 1, timeMarks: [
-                anyTimeMark(at: 1),
-                anyTimeMark(at: 2),
+            .anySentence(at: 0),
+            .anySentence(at: 1, timeMarks: [
+                .anyTimeMark(at: 1),
+                .anyTimeMark(at: 2),
             ])
         ])
         let sut = createSUT(subtitles: subtitles)

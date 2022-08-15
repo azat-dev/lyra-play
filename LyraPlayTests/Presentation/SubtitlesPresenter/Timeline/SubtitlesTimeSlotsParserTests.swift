@@ -21,29 +21,6 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
         return parser
     }
     
-    private func anySentence(at: TimeInterval, duration: TimeInterval? = nil, timeMarks: [Subtitles.TimeMark]? = nil) -> Subtitles.Sentence {
-        
-        return .init(
-            startTime: at,
-            duration: duration,
-            text: "",
-            timeMarks: timeMarks,
-            components: []
-        )
-    }
-    
-    private func anyTimeMark(at: TimeInterval, duration: TimeInterval? = nil) -> Subtitles.TimeMark {
-        
-        let dummyRange = "a".range(of: "a")!
-        
-        return .init(
-            startTime: at,
-            duration: duration,
-            range: dummyRange
-        )
-    }
-    
-    
     func test_parse__empty_subtitles() async throws {
         
         let emptySubtitles = Subtitles(duration: 0, sentences: [])
@@ -59,7 +36,7 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
     func test_parse__sentence_starts_from_beginning() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0)
+            .anySentence(at: 0)
         ])
         
         AssertEqualReadable(
@@ -79,7 +56,7 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
     func test_parse__sentence_doesnt_start_from_beginning() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 1)
+            .anySentence(at: 1)
         ])
         
         AssertEqualReadable(
@@ -100,7 +77,7 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
     func test_parse__sentence_with_duration() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0, duration: 5)
+            .anySentence(at: 0, duration: 5)
         ])
         
         AssertEqualReadable(
@@ -121,8 +98,8 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
     func test_parse__sentence_with_time_mark() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0, timeMarks: [
-                anyTimeMark(at: 1, duration: 3)
+            .anySentence(at: 0, timeMarks: [
+                .anyTimeMark(at: 1, duration: 3)
             ])
         ])
         
@@ -148,8 +125,8 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
     func test_parse__sentence_with_time_marks_and_duration() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0, duration: 5, timeMarks: [
-                anyTimeMark(at: 1, duration: 3)
+            .anySentence(at: 0, duration: 5, timeMarks: [
+                .anyTimeMark(at: 1, duration: 3)
             ])
         ])
         
@@ -179,9 +156,9 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
     func test_parse__with_spaces_between_sentences() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0, duration: 1),
-            anySentence(at: 2, duration: 1),
-            anySentence(at: 4, duration: 1),
+            .anySentence(at: 0, duration: 1),
+            .anySentence(at: 2, duration: 1),
+            .anySentence(at: 4, duration: 1),
         ])
         
         AssertEqualReadable(
@@ -218,9 +195,9 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
     func test_parse__with_no_spaces_between_sentences() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0, duration: 1),
-            anySentence(at: 1, duration: 1),
-            anySentence(at: 2, duration: 1),
+            .anySentence(at: 0, duration: 1),
+            .anySentence(at: 1, duration: 1),
+            .anySentence(at: 2, duration: 1),
         ])
         
         AssertEqualReadable(
@@ -249,8 +226,8 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
     func test_parse__with_time_mark_with_same_time_as_sentence() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0, duration: 2, timeMarks: [
-                anyTimeMark(at: 0)
+            .anySentence(at: 0, duration: 2, timeMarks: [
+                .anyTimeMark(at: 0)
             ]),
         ])
         
@@ -272,8 +249,8 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
     func test_parse__with_time_mark_with_different_time_from_sentence() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0, duration: 2, timeMarks: [
-                anyTimeMark(at: 1)
+            .anySentence(at: 0, duration: 2, timeMarks: [
+                .anyTimeMark(at: 1)
             ]),
         ])
         
@@ -299,10 +276,10 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
     func test_parse__with_space_between_time_marks() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0, timeMarks: [
-                anyTimeMark(at: 1, duration: 1),
-                anyTimeMark(at: 3, duration: 1),
-                anyTimeMark(at: 5, duration: 1)
+            .anySentence(at: 0, timeMarks: [
+                .anyTimeMark(at: 1, duration: 1),
+                .anyTimeMark(at: 3, duration: 1),
+                .anyTimeMark(at: 5, duration: 1)
             ]),
         ])
         
@@ -344,9 +321,9 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
     func test_parse__with_no_space_between_time_marks() async throws {
         
         let subtitles = Subtitles(duration: 10, sentences: [
-            anySentence(at: 0, timeMarks: [
-                anyTimeMark(at: 1, duration: 1),
-                anyTimeMark(at: 2, duration: 1),
+            .anySentence(at: 0, timeMarks: [
+                .anyTimeMark(at: 1, duration: 1),
+                .anyTimeMark(at: 2, duration: 1),
             ]),
         ])
         
