@@ -14,9 +14,25 @@ public enum PlaySubtitlesUseCaseState: Equatable {
 
     case initial
     case playing(position: SubtitlesPosition?)
+    case playingChangingPosition(from: SubtitlesPosition?, to: SubtitlesPosition?)
     case paused(position: SubtitlesPosition?)
     case stopped
     case finished
+}
+
+extension PlaySubtitlesUseCaseState {
+    
+    public var position: SubtitlesPosition? {
+
+        switch self {
+
+        case .initial, .stopped, .finished:
+            return nil
+
+        case .playing(let position), .paused(let position), .playingChangingPosition(let position, _):
+            return position
+        }
+    }
 }
 
 public struct SubtitlesPosition: Equatable, Comparable {
@@ -107,6 +123,7 @@ extension DefaultPlaySubtitlesUseCase {
             return
         }
         
+        state.value = .playingChangingPosition(from: state.value.position, to: subtitlesIterator.currentPosition)
         state.value = .playing(position: subtitlesIterator.currentPosition)
     }
     

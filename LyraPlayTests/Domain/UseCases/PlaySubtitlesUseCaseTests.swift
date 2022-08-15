@@ -109,7 +109,9 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let expectedStateItems: [PlaySubtitlesUseCaseState] = [
             .initial,
+            .playingChangingPosition(from: nil, to: .sentence(0)),
             .playing(position: .sentence(0)),
+            .playingChangingPosition(from: .sentence(0), to: .sentence(1)),
             .playing(position: .sentence(1)),
             .finished
         ]
@@ -129,6 +131,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let expectedStateItems: [PlaySubtitlesUseCaseState] = [
             .initial,
+            .playingChangingPosition(from: nil, to: .sentence(1)),
             .playing(position: .sentence(1)),
             .finished
         ]
@@ -147,6 +150,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let expectedStateItems: [PlaySubtitlesUseCaseState] = [
             .initial,
+            .playingChangingPosition(from: nil, to: .sentence(0)),
             .playing(position: .sentence(0)),
             .stopped,
             .paused(position: .sentence(0))
@@ -192,6 +196,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let stateSequence = self.expectSequence([
             
             PlaySubtitlesUseCaseState.initial,
+            .playingChangingPosition(from: nil, to: .sentence(0)),
             .playing(position: .sentence(0)),
             .paused(position: .sentence(0))
         ])
@@ -240,6 +245,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let expectedStateItems: [PlaySubtitlesUseCaseState] = [
             .initial,
+            .playingChangingPosition(from: nil, to: .sentence(0)),
             .playing(position: .sentence(0)),
             .stopped
         ]
@@ -274,6 +280,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let expectedStateItems: [PlaySubtitlesUseCaseState] = [
             .initial,
+            .playingChangingPosition(from: nil, to: .sentence(0)),
             .playing(position: .sentence(0)),
             .paused(position: .sentence(0)),
             .stopped

@@ -226,22 +226,21 @@ extension DefaultPlayMediaWithTranslationsUseCase {
 }
 
 // MARK: - Playing translations
-//
-//extension DefaultPlayMediaWithTranslationsUseCase {
-//
-//    private func pronounceCurrentTranslationItem(translations: TranslationsToPlay) async {
-//
-//        switch translations.data {
-//
-//        case .single(let translation):
-//            await self.pronounceTranslationsUseCase.pronounceSingle(translation: translation)
-//
-//        case .groupAfterSentence(let translations):
-//            await self.pronounceTranslationsUseCase.pronounceGroup(translations: translations)
-//        }
-//    }
-//}
 
+extension DefaultPlayMediaWithTranslationsUseCase {
+
+    private func pronounceCurrentTranslationItem(translations: TranslationsToPlay) async {
+
+        switch translations.data {
+
+        case .single(let translation):
+            await self.pronounceTranslationsUseCase.pronounceSingle(translation: translation)
+
+        case .groupAfterSentence(let translations):
+            await self.pronounceTranslationsUseCase.pronounceGroup(translations: translations)
+        }
+    }
+}
 
 // MARK: - Update state
 
@@ -249,7 +248,9 @@ extension DefaultPlayMediaWithTranslationsUseCase {
 
     private func updateState(_ newState: PlayMediaWithSubtitlesUseCaseState) {
         
-        guard let session = state.value.session else {
+        let currentState = state.value
+        
+        guard let session = currentState.session else {
             return
         }
 
@@ -262,6 +263,15 @@ extension DefaultPlayMediaWithTranslationsUseCase {
             break
 
         case .playing(_, let subtitlesState):
+            
+            if
+                case .playing(_, let currentSubtitlesState) = currentState,
+                let newPosition = subtitlesState?.position,
+                currentSubtitlesState?.position != newPosition
+            {
+
+            }
+            
             state.value = .playing(session: session, subtitlesState: subtitlesState)
             
         case .interrupted(_, let subtitlesState, let time):

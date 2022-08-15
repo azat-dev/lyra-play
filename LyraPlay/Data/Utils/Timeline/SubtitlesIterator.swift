@@ -28,6 +28,8 @@ public protocol SubtitlesIterator: TimeLineIterator {
     var currentItem: SubtitlesItem? { get }
     
     var currentTimeRange: Range<TimeInterval>? { get }
+    
+    func getNextPosition() -> SubtitlesPosition?
 }
 
 // MARK: - Implementations
@@ -176,6 +178,17 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         }
         
         return items[nextIndex].time
+    }
+    
+    public func getNextPosition() -> SubtitlesPosition? {
+        
+        let nextIndex = (currentIndex ?? -1) + 1
+        
+        guard nextIndex < items.count else {
+            return nil
+        }
+        
+        return items[nextIndex].position
     }
     
     public func moveToNextEvent() -> TimeInterval? {
