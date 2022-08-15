@@ -19,11 +19,6 @@ public final class DefaultAudioService: NSObject, AudioService, AVAudioPlayerDel
     private var player: AVAudioPlayer?
     private let commandCenter: MPRemoteCommandCenter
     
-    public var volume: Observable<Double> = Observable(0.0)
-    public var isPlaying = Observable(false)
-    public var fileId: Observable<String?> = Observable(nil)
-    public var currentTime: Observable<Double> = Observable(0.0)
-    
     private var playerIsPlayingObserver: NSKeyValueObservation? = nil
     
     public let state: Observable<AudioServiceState> = .init(.initial)
