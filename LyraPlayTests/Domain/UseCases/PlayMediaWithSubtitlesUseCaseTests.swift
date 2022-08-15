@@ -18,14 +18,14 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         playMediaUseCase: PlayMediaUseCaseMock,
         playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory,
         loadSubtitlesUseCase: LoadSubtitlesUseCaseMock,
-        subtitlesTimer: ActionTimer
+        subtitlesTimer: ActionTimerMock
     )
     
     func createSUT() -> SUT {
         
         let playMediaUseCase = PlayMediaUseCaseMock()
         
-        let subtitlesTimer = DefaultActionTimer()
+        let subtitlesTimer = ActionTimerMock()
         
         let playSubtitlesUseCaseFactory = DefaultPlaySubtitlesUseCaseFactory(
             subtitlesIteratorFactory: DefaultSubtitlesIteratorFactory(),
@@ -193,6 +193,9 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
             anySentence(at: 3),
         ])
 
+        sut.subtitlesTimer.willFire { _, _ in
+            true
+        }
         sut.loadSubtitlesUseCase.willReturn = { _, _ in  .success(subtitles) }
         sut.playMediaUseCase.prepareWillReturn = { _ in .success(()) }
 

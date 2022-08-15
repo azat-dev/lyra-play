@@ -65,14 +65,6 @@ class AssertSequence<T: Equatable> {
         guard index < expectedValues.count else {
             return
         }
-
-//        AssertEqualReadable(
-//            value,
-//            expectedValues[index],
-//            "Expected value at \(index), doesn't match received value",
-//            file: file,
-//            line: line
-//        )
     }
 }
 

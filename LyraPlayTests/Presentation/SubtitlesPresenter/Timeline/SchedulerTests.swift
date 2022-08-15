@@ -20,7 +20,7 @@ class SchedulerTests: XCTestCase {
     func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
         
         let iterator = TimeLineIteratorMock()
-
+        
         let timer = ActionTimerMock()
         
         let scheduler = DefaultScheduler(timer: timer)
@@ -34,71 +34,70 @@ class SchedulerTests: XCTestCase {
     }
     
     func test_execute__empty_iterator() async throws {
-
+        
         let expectation = expectation(description: "Don't call")
         expectation.isInverted = true
-
+        
         let sut = createSUT()
-
+        
         sut.iterator.timeMarks = []
         sut.scheduler.execute(timeline: sut.iterator, from: 0.0) { _ in
             expectation.fulfill()
         }
-
+        
         wait(for: [expectation], timeout: 1)
     }
-
+    
     func test_execute__at_zero() async throws {
-
+        
         let sut = createSUT()
-
+        
         let timeMarks = [0.0, 0.1, 0.2]
-
+        
         let sequence = expectSequence(timeMarks)
-
+        
         sut.iterator.timeMarks = timeMarks
         sut.scheduler.execute(timeline: sut.iterator, from: 0.0) { time in
-
+            
             sequence.fulfill(with: time)
         }
-
+        
         sequence.wait(timeout: 1, enforceOrder: true)
     }
-
+    
     func test_execute__at_offset() async throws {
-
+        
         let sut = createSUT()
-
+        
         let timeMarks = [0.0, 0.1, 0.2]
         let sequence = expectSequence([0.1, 0.2])
-
+        
         sut.iterator.timeMarks = timeMarks
-
+        
         sut.scheduler.execute(timeline: sut.iterator, from: 0.1) { time in
-
+            
             sequence.fulfill(with: time)
         }
-
+        
         sequence.wait(timeout: 1, enforceOrder: true)
     }
-
+    
     func test_pause() async throws {
-
+        
         let sut = createSUT()
         let scheduler = sut.scheduler
-
+        
         let sequence = expectSequence([1.0, 2])
-
+        
         let elementAfterPauseExpectation = expectation(description: "Don't call")
         elementAfterPauseExpectation.isInverted = true
         
         sut.iterator.timeMarks = [1, 2, 3, 4]
-
-        sut.timer.willFire(filter: { _, _ in true })
+        
         sut.scheduler.execute(timeline: sut.iterator, from: 0.0) { [weak scheduler] time in
-
+            
             sequence.fulfill(with: time)
-
+            
             if time == 2 {
                 scheduler?.pause()
             }
@@ -107,7 +106,7 @@ class SchedulerTests: XCTestCase {
                 elementAfterPauseExpectation.fulfill()
             }
         }
-
+        
         sequence.wait(timeout: 1, enforceOrder: true)
         wait(for: [elementAfterPauseExpectation], timeout: 1)
     }
@@ -116,7 +115,7 @@ class SchedulerTests: XCTestCase {
 // MARK: - Mocks
 
 final class ActionTimerMock: ActionTimer {
-
+    
     // MARK: - Properties
     
     typealias ExecutionBlock = () async -> Void
@@ -135,14 +134,19 @@ final class ActionTimerMock: ActionTimer {
     private var lastMessage: (interval: TimeInterval, block: ExecutionBlock)? {
         
         didSet {
-            tryFulfill()
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.1) {
+                self.tryFulfill()
+            }
+            
         }
     }
     
     private var promises = [Promise]() {
         
         didSet {
-            tryFulfill()
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.1) {
+                self.tryFulfill()
+            }
         }
     }
     
@@ -153,6 +157,10 @@ final class ActionTimerMock: ActionTimer {
     // MARK: - Methods
     
     private func tryFulfill() {
+        
+        guard !isCancelled else {
+            return
+        }
         
         guard let lastMessage = lastMessage else {
             return
@@ -165,7 +173,7 @@ final class ActionTimerMock: ActionTimer {
                 return
             }
         }
-
+        
         for index in 0..<promises.count {
             
             let promise = promises[index]
@@ -187,12 +195,10 @@ final class ActionTimerMock: ActionTimer {
     }
     
     func willFire(at time: TimeInterval) {
-        
         promises.append(.init(isFulfilled: false, time: time))
     }
     
     func willFire(at times: [TimeInterval]) {
-
         times.forEach { time in willFire(at: time) }
     }
     
@@ -205,7 +211,7 @@ final class ActionTimerMock: ActionTimer {
         guard let lastMessage = lastMessage else {
             return
         }
-
+        
         self.lastMessage = nil
         
         Task {
@@ -214,13 +220,13 @@ final class ActionTimerMock: ActionTimer {
     }
     
     func executeAfter(_ interval: TimeInterval, block: @escaping () async -> Void) {
-
+        
         isCancelled = false
         self.lastMessage = (interval, block)
     }
     
     func cancel() {
-    
+        
         isCancelled = true
         lastMessage = nil
     }
@@ -231,7 +237,7 @@ final class ActionTimerFactoryMock: ActionTimerFactory {
     var timers = [ActionTimerMock]()
     
     func create() -> ActionTimer {
-
+        
         let timer = ActionTimerMock()
         timers.append(timer)
         
@@ -244,7 +250,7 @@ final class TimeLineIteratorMock: TimeLineIterator {
     private var semaphore = DispatchSemaphore(value: 1)
     public var currentIndex = -1
     public var timeMarks = [TimeInterval]()
-
+    
     var lastEventTime: TimeInterval? {
         return timeMarks[currentIndex]
     }
@@ -256,7 +262,7 @@ final class TimeLineIteratorMock: TimeLineIterator {
         guard let recentIndex = recentIndex else {
             return nil
         }
-
+        
         currentIndex = recentIndex
         return lastEventTime
     }
@@ -277,7 +283,7 @@ final class TimeLineIteratorMock: TimeLineIterator {
         guard let next = getTimeOfNextEvent() else {
             return nil
         }
-
+        
         currentIndex += 1
         return next
     }
