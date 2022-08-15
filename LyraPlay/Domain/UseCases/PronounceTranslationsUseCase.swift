@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 import AVFAudio
 
 // MARK: - Interfaces
@@ -37,7 +38,7 @@ public protocol PronounceTranslationsUseCaseInput {
 
 public protocol PronounceTranslationsUseCaseOutput {
     
-    var state: Observable<PronounceTranslationsUseCaseState> { get }
+    var state: CurrentValueSubject<PronounceTranslationsUseCaseState, Never> { get }
 }
 
 public protocol PronounceTranslationsUseCase: PronounceTranslationsUseCaseOutput, PronounceTranslationsUseCaseInput {
@@ -52,7 +53,7 @@ public final class DefaultPronounceTranslationsUseCase: PronounceTranslationsUse
     private let textToSpeechConverter: TextToSpeechConverter
     private let audioService: AudioService
     
-    public let state: Observable<PronounceTranslationsUseCaseState> = .init(.stopped)
+    public let state = CurrentValueSubject<PronounceTranslationsUseCaseState, Never>(.stopped)
     
     // MARK: - Initializers
     

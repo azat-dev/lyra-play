@@ -356,7 +356,5 @@ extension DefaultPlayMediaWithTranslationsUseCase {
     }
     
     private func observePronouncingTranslations() {
-        
-        self.pronounceTranslationsUseCase.state.observeIgnoreInitial(on: self) { [weak self] in self?.updateState($0) }
     }
 }

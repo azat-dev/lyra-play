@@ -64,13 +64,14 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
         
         let stateSequence = self.expectSequence(expectedStateItems)
         
-        stateSequence.observe(sut.useCase.state)
+        let observer = stateSequence.observe(sut.useCase.state)
         
         await sut.useCase.pronounceSingle(
             translation: testTranslation
         )
         
         stateSequence.wait(timeout: 3, enforceOrder: true)
+        observer.cancel()
     }
     
     func test_pronounceGroup() async throws {
@@ -87,48 +88,14 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
         ]
         let stateSequence = self.expectSequence(expectedStateItems)
         
-        stateSequence.observe(sut.useCase.state)
+        let observer = stateSequence.observe(sut.useCase.state)
         
         await sut.useCase.pronounceGroup(translations: testTranslations)
         
         stateSequence.wait(timeout: 5, enforceOrder: true)
+        observer.cancel()
     }
 
-    func test_change_state_single(expectedStateItems: [PronounceTranslationsUseCaseState]) async throws {
-        
-        let sut = createSUT()
-        
-        let testTranslation = anyTranslation()
-        
-        let expectedStateItems: [PronounceTranslationsUseCaseState] = [
-            .stopped,
-            .playing(.single(translation: testTranslation)),
-            .paused(.single(translation: testTranslation)),
-        ]
-        
-        let stateSequence = self.expectSequence(expectedStateItems)
-        
-        let controlledState = Observable(sut.useCase.state.value)
-        
-        sut.useCase.state.observe(on: self) { newState in
-            
-            if case .playing = newState {
-                
-                controlledState.value = newState
-                sut.useCase.pause()
-                return
-            }
-            
-            controlledState.value = newState
-        }
-        
-        stateSequence.observe(controlledState)
-        stateSequence.wait(timeout: 1, enforceOrder: true)
-        
-        controlledState.remove(observer: self)
-        sut.useCase.state.remove(observer: self)
-    }
-    
     func test_pause__playing_single() async throws {
         
         let sut = createSUT()
@@ -143,25 +110,29 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
         
         let stateSequence = self.expectSequence(expectedStateItems)
         
-        let controlledState = Observable(sut.useCase.state.value)
+        let pauseAtIndex = 1
         
-        sut.useCase.state.observe(on: self) { newState in
-            
-            if case .playing = newState {
+        let observer = sut.useCase.state
+            .enumerated()
+            .map { (index, state) in
                 
-                controlledState.value = newState
-                sut.useCase.pause()
-                return
+                switch index {
+                
+                case pauseAtIndex:
+                    Task {
+                        sut.useCase.pause()
+                    }
+                
+                default:
+                    break
+                }
+                
+                return state
             }
-            
-            controlledState.value = newState
-        }
+            .sink { stateSequence.fulfill(with: $0) }
         
-        stateSequence.observe(controlledState)
         stateSequence.wait(timeout: 5, enforceOrder: true)
-        
-        controlledState.remove(observer: self)
-        sut.useCase.state.remove(observer: self)
+        observer.cancel()
     }
 }
 
