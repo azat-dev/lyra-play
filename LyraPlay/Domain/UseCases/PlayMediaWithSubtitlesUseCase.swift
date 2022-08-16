@@ -113,6 +113,8 @@ public protocol PlayMediaWithSubtitlesUseCaseInput: AnyObject {
 public protocol PlayMediaWithSubtitlesUseCaseOutput: AnyObject {
     
     var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseState, Never> { get }
+    
+    var willChangeSubtitlesPosition: PassthroughSubject<WillChangeSubtitlesPositionData, Never> { get }
 }
 
 public protocol PlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCaseOutput, PlayMediaWithSubtitlesUseCaseInput {
@@ -129,14 +131,23 @@ public final class DefaultPlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesU
     private let loadSubtitlesUseCase: LoadSubtitlesUseCase
     
     public var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseState, Never> = .init(.initial)
+    public var willChangeSubtitlesPosition =  PassthroughSubject<WillChangeSubtitlesPositionData, Never>()
     
     private var playSubtitlesObserver: AnyCancellable?
+    private var subtitlesChangesObserver: AnyCancellable?
     private var playMediaObserver: AnyCancellable?
     
     private var playSubtitlesUseCase: PlaySubtitlesUseCase? {
         
         didSet {
+            
             playSubtitlesObserver?.cancel()
+            subtitlesChangesObserver?.cancel()
+            
+            subtitlesChangesObserver = playSubtitlesUseCase?.willChangePosition.sink { [weak self] in
+                self?.willChangeSubtitlesPosition.send($0)
+            }
+            
             playSubtitlesObserver = playSubtitlesUseCase?.state.sink { [weak self] in self?.updateSubtitlesPosition($0) }
         }
     }
@@ -163,6 +174,7 @@ public final class DefaultPlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesU
     deinit {
         playSubtitlesObserver?.cancel()
         playMediaObserver?.cancel()
+        subtitlesChangesObserver?.cancel()
     }
 }
 
@@ -221,7 +233,6 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
     }
     
     public func play(atTime: TimeInterval) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        
         
         switch state.value {
             
