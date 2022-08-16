@@ -10,11 +10,26 @@ import Combine
 
 // MARK: - Interfaces
 
-public enum PlaySubtitlesUseCaseState: Equatable {
+public struct WillChangeSubtitlesPositionData: Equatable {
+    
+    public var from: SubtitlesPosition?
+    public var to: SubtitlesPosition?
+    
+    public init(
+        from: SubtitlesPosition? = nil,
+        to: SubtitlesPosition? = nil
+    ) {
+        
+        self.from = from
+        self.to = to
+    }
+    
+}
 
+public enum PlaySubtitlesUseCaseState: Equatable {
+    
     case initial
     case playing(position: SubtitlesPosition?)
-    case playingWillChangePosition(from: SubtitlesPosition?, to: SubtitlesPosition?)
     case paused(position: SubtitlesPosition?)
     case stopped
     case finished
@@ -23,33 +38,33 @@ public enum PlaySubtitlesUseCaseState: Equatable {
 extension PlaySubtitlesUseCaseState {
     
     public var position: SubtitlesPosition? {
-
+        
         switch self {
-
+            
         case .initial, .stopped, .finished:
             return nil
-
-        case .playing(let position), .paused(let position), .playingWillChangePosition(let position, _):
+            
+        case .playing(let position), .paused(let position):
             return position
         }
     }
 }
 
 public struct SubtitlesPosition: Equatable, Comparable {
-
+    
     public var sentenceIndex: Int
     public var timeMarkIndex: Int?
-
+    
     public init(
         sentenceIndex: Int,
         timeMarkIndex: Int?
     ) {
-
+        
         self.sentenceIndex = sentenceIndex
         self.timeMarkIndex = timeMarkIndex
     }
-
-        public static func sentence(_ index: Int) -> Self {
+    
+    public static func sentence(_ index: Int) -> Self {
         return .init(sentenceIndex: index, timeMarkIndex: nil)
     }
     
@@ -68,19 +83,21 @@ public struct SubtitlesPosition: Equatable, Comparable {
 }
 
 public protocol PlaySubtitlesUseCaseInput {
-
+    
     func play() -> Void
     
     func play(atTime: TimeInterval) -> Void
-
+    
     func pause() -> Void
-
+    
     func stop() -> Void
 }
 
 public protocol PlaySubtitlesUseCaseOutput {
-
+    
     var state: CurrentValueSubject<PlaySubtitlesUseCaseState, Never> { get }
+    
+    var willChangePosition: PassthroughSubject<WillChangeSubtitlesPositionData, Never> { get }
 }
 
 public protocol PlaySubtitlesUseCase: AnyObject, PlaySubtitlesUseCaseOutput, PlaySubtitlesUseCaseInput {
@@ -89,21 +106,23 @@ public protocol PlaySubtitlesUseCase: AnyObject, PlaySubtitlesUseCaseOutput, Pla
 // MARK: - Implementations
 
 public final class DefaultPlaySubtitlesUseCase: PlaySubtitlesUseCase {
-
+    
     // MARK: - Properties
-
+    
     private let subtitlesIterator: SubtitlesIterator
     private let scheduler: Scheduler
-
+    
     public let state = CurrentValueSubject<PlaySubtitlesUseCaseState, Never>(.initial)
-
+    public let willChangePosition: PassthroughSubject<WillChangeSubtitlesPositionData, Never> = .init()
+    
+    
     // MARK: - Initializers
-
+    
     public init(
         subtitlesIterator: SubtitlesIterator,
         scheduler: Scheduler
     ) {
-
+        
         self.subtitlesIterator = subtitlesIterator
         self.scheduler = scheduler
     }
@@ -112,11 +131,11 @@ public final class DefaultPlaySubtitlesUseCase: PlaySubtitlesUseCase {
 // MARK: - Input methods
 
 extension DefaultPlaySubtitlesUseCase {
-
+    
     private func didChangePosition() {
         
         let isLast = subtitlesIterator.getTimeOfNextEvent() == nil
-
+        
         guard !isLast else {
             
             state.value = .finished
@@ -135,9 +154,11 @@ extension DefaultPlaySubtitlesUseCase {
             return
         }
         
-        state.value = .playingWillChangePosition(
-            from: currentPosition,
-            to: nextPosition
+        willChangePosition.send(
+            .init(
+                from: currentPosition,
+                to: nextPosition
+            )
         )
     }
     
@@ -162,19 +183,19 @@ extension DefaultPlaySubtitlesUseCase {
     }
     
     public func play(atTime time: TimeInterval) -> Void {
-    
+        
         scheduler.stop()
         play(from: time)
     }
-
+    
     public func pause() -> Void {
-
+        
         scheduler.pause()
         state.value = .paused(position: self.subtitlesIterator.currentPosition)
     }
-
+    
     public func stop() -> Void {
-
+        
         scheduler.stop()
         let _ = subtitlesIterator.beginNextExecution(from: 0)
         state.value = .stopped

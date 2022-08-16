@@ -137,7 +137,6 @@ public final class DefaultPlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesU
         
         didSet {
             playSubtitlesObserver?.cancel()
-            
             playSubtitlesObserver = playSubtitlesUseCase?.state.sink { [weak self] in self?.updateSubtitlesPosition($0) }
         }
     }
@@ -168,6 +167,126 @@ public final class DefaultPlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesU
 }
 
 // MARK: - Input methods
+
+extension DefaultPlayMediaWithSubtitlesUseCase {
+    
+    public func prepare(params session: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+        
+        state.value = .loading(session: session)
+        
+        let loadMediaResult = await playMediaUseCase.prepare(mediaId: session.mediaId)
+        
+        guard case .success = loadMediaResult else {
+            
+            state.value = .loadFailed(session: session)
+            return .failure(map(error: loadMediaResult.error!))
+        }
+        
+        let loadSubtitlesResult = await loadSubtitlesUseCase.load(
+            for: session.mediaId,
+            language: session.subtitlesLanguage
+        )
+        
+        guard case .success(let subtitles) = loadSubtitlesResult else {
+            
+            state.value = .loaded(session: session, subtitlesState: nil)
+            return .success(())
+        }
+        
+        playSubtitlesUseCase = playSubtitlesUseCaseFactory.create(with: subtitles)
+        
+        self.state.value = .loaded(
+            session: session,
+            subtitlesState: .init(
+                position: nil,
+                subtitles: subtitles
+            )
+        )
+        
+        return .success(())
+    }
+    
+    public func play() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+        
+        switch state.value {
+            
+        case .initial, .loading, .loadFailed:
+            return .failure(.noActiveMedia)
+            
+        default:
+            break
+        }
+        
+        return map(result: await playMediaUseCase.play())
+    }
+    
+    public func play(atTime: TimeInterval) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+        
+        
+        switch state.value {
+            
+        case .initial, .loading, .loadFailed:
+            return .failure(.noActiveMedia)
+            
+        default:
+            return map(result: await playMediaUseCase.play(atTime: atTime))
+        }
+    }
+    
+    public func pause() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+        
+        guard case .playing = state.value else {
+            return .failure(.noActiveMedia)
+        }
+        
+        return map(result: await playMediaUseCase.pause())
+    }
+    
+    private func releaseResources() {
+        
+        playSubtitlesUseCase?.stop()
+        playSubtitlesUseCase = nil
+    }
+    
+    private func stopLoading() {
+        
+        releaseResources()
+    }
+    
+    public func stop() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+        
+        switch state.value {
+            
+        case .initial, .stopped, .loadFailed:
+            break
+            
+        case .loading:
+            stopLoading()
+            
+        case .loaded:
+            releaseResources()
+            
+        case .playing, .interrupted, .paused, .finished:
+            
+            let result = await playMediaUseCase.stop()
+            return map(result: result)
+        }
+        
+        return .success(())
+    }
+    
+    private func map(result: Result<Void, PlayMediaUseCaseError>) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+        
+        guard case .success = result else {
+            return .failure(map(error: result.error!))
+        }
+        
+        return .success(())
+    }
+}
+
+// MARK: - Helpers
+
 
 extension DefaultPlayMediaWithSubtitlesUseCase {
     
@@ -253,125 +372,6 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
         case .paused, .interrupted:
             playSubtitlesUseCase?.pause()
         }
-    }
-    
-    public func prepare(params session: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        
-        state.value = .loading(session: session)
-        
-        let loadMediaResult = await playMediaUseCase.prepare(mediaId: session.mediaId)
-        
-        guard case .success = loadMediaResult else {
-            
-            state.value = .loadFailed(session: session)
-            return .failure(map(error: loadMediaResult.error!))
-        }
-        
-        let loadSubtitlesResult = await loadSubtitlesUseCase.load(
-            for: session.mediaId,
-            language: session.subtitlesLanguage
-        )
-        
-        guard case .success(let subtitles) = loadSubtitlesResult else {
-            
-            state.value = .loaded(session: session, subtitlesState: nil)
-            return .success(())
-        }
-        
-        playSubtitlesUseCase = playSubtitlesUseCaseFactory.create(with: subtitles)
-        
-        self.state.value = .loaded(
-            session: session,
-            subtitlesState: .init(
-                position: nil,
-                subtitles: subtitles
-            )
-        )
-        
-        return .success(())
-    }
-    
-    public func play() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        
-        switch state.value {
-            
-        case .initial, .loading, .loadFailed:
-            return .failure(.noActiveMedia)
-            
-        default:
-            break
-        }
-        
-        let resultPlayMedia = await playMediaUseCase.play()
-        return map(result: resultPlayMedia)
-    }
-    
-    public func play(atTime: TimeInterval) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        
-        
-        switch state.value {
-            
-        case .initial, .loading, .loadFailed:
-            return .failure(.noActiveMedia)
-            
-        default:
-            break
-        }
-        
-        let resultPlayMedia = await playMediaUseCase.play(atTime: atTime)
-        return map(result: resultPlayMedia)
-    }
-    
-    public func pause() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        
-        guard case .playing = state.value else {
-            return .failure(.noActiveMedia)
-        }
-        
-        let pauseResult = await playMediaUseCase.pause()
-        return map(result: pauseResult)
-    }
-    
-    private func releaseResources() {
-        
-        playSubtitlesUseCase?.stop()
-        playSubtitlesUseCase = nil
-    }
-    
-    private func stopLoading() {
-        
-        releaseResources()
-    }
-    
-    public func stop() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        
-        switch state.value {
-            
-        case .initial, .stopped, .loadFailed:
-            break
-            
-        case .loading:
-            stopLoading()
-            
-        case .loaded:
-            releaseResources()
-            
-        case .playing, .interrupted, .paused, .finished:
-            
-            let result = await playMediaUseCase.stop()
-            return map(result: result)
-        }
-        
-        return .success(())
-    }
-    
-    private func map(result: Result<Void, PlayMediaUseCaseError>) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        
-        guard case .success = result else {
-            return .failure(map(error: result.error!))
-        }
-        
-        return .success(())
     }
 }
 
