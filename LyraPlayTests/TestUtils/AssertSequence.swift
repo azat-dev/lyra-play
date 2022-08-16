@@ -52,7 +52,9 @@ class AssertSequence<T: Equatable> {
             fatalError("Not implemented")
         }
         
-        testCase.wait(for: [expectation], timeout: timeout, enforceOrder: enforceOrder)
+        if !expectedValues.isEmpty {
+            testCase.wait(for: [expectation], timeout: timeout, enforceOrder: enforceOrder)
+        }
         
         AssertEqualReadable(receivedValues, expectedValues, file: file, line: line)
     }

@@ -9,17 +9,30 @@ import Foundation
 
 // MARK: - Interfaces
 
-public protocol Scheduler: AnyObject {
+public protocol SchedulerOutput {
     
-    func execute(timeline: TimeLineIterator, from: TimeInterval, block: @escaping (TimeInterval) -> Void)
+    var isActive: Bool { get }
+}
+
+public protocol SchedulerInput {
+    
+    typealias DidChangeCallback = (TimeInterval) -> Void
+    typealias WillChangeCallback = (_ from: TimeInterval?, _ to: TimeInterval?) -> Void
+    
+    var isActive: Bool { get }
+    
+    func execute(timeline: TimeLineIterator, from: TimeInterval, didChange: @escaping DidChangeCallback, willChange: WillChangeCallback?)
+    
+    func execute(timeline: TimeLineIterator, from: TimeInterval, didChange: @escaping DidChangeCallback)
     
     func stop()
     
     func pause()
     
     func resume()
-    
-    var isActive: Bool { get }
+}
+
+public protocol Scheduler: AnyObject, SchedulerInput, SchedulerOutput {
 }
 
 // MARK: - Implementations
@@ -50,144 +63,140 @@ extension DefaultScheduler: Scheduler {
         defer { semaphore.signal() }
         
         return currentSession != nil
-        
     }
     
-    private func setNextTimer(block: @escaping Callback, lastTimeMark: TimeInterval = 0, delta: TimeInterval = 0) {
+    private func isSessionChanged(session: Session?) -> Bool {
         
         semaphore.wait()
+        defer { semaphore.signal() }
         
-        guard let currentSession = currentSession else {
-            semaphore.signal()
-            return
-        }
+        return currentSession !== session
+    }
+    
+    @discardableResult
+    private func updateSession(_ update: (Session?) -> Session?) -> Session? {
         
-        semaphore.signal()
+        semaphore.wait()
+        defer { semaphore.signal() }
         
-        guard let nextTimeMark = currentSession.timeline.getTimeOfNextEvent() else {
+        currentSession = update(currentSession)
+        return currentSession
+    }
+    
+    private func getSession() -> Session? {
+        
+        semaphore.wait()
+        defer { semaphore.signal() }
+        
+        return currentSession
+    }
+    
+    private func setNextTimer(from baseTime: TimeInterval, delta: TimeInterval = 0) {
+        
+        guard
+            let currentSession = getSession(),
+            let nextTimeMark = currentSession.timeline.getTimeOfNextEvent()
+        else {
             return
         }
         
         let triggerTime = Date.now
-        let timeOffset = nextTimeMark - lastTimeMark - delta
-        
-        semaphore.wait()
-        self.currentSession?.lastIterationStartTime = triggerTime
-        semaphore.signal()
+        let timeOffset = nextTimeMark - baseTime - delta
         
         timer.executeAfter(timeOffset) { [weak self] in
         
-            guard let self = self else {
+            guard
+                let self = self,
+                !self.isSessionChanged(session: currentSession)
+            else {
+                return
+            }
+            
+            currentSession.willChange?(currentSession.timeline.lastEventTime, nextTimeMark)
+            if self.isSessionChanged(session: currentSession) {
                 return
             }
             
             self.semaphore.wait()
-
-            guard let currentSession = self.currentSession else {
-                self.semaphore.signal()
-                return
-            }
-            
-            self.semaphore.signal()
             let _ = currentSession.timeline.moveToNextEvent()
-
-            self.semaphore.wait()
-            self.currentSession?.lastIterationStartTime = nil
-            self.currentSession?.lastTimeMark = nextTimeMark
-            
-            let prevSession = currentSession
-            
             self.semaphore.signal()
+            
+            currentSession.didChange(nextTimeMark)
+
+            if self.isSessionChanged(session: currentSession) {
+                return
+            }
             
             let timeDelta = Date.now.timeIntervalSince(triggerTime) - timeOffset
-            block(nextTimeMark)
-
-            
-            self.semaphore.wait()
-            
-            let isSessionChanged = self.currentSession !== prevSession
-            self.semaphore.signal()
-
-            guard !isSessionChanged else {
-                return
-            }
-            
             self.setNextTimer(
-                block: block,
-                lastTimeMark: nextTimeMark,
+                from: nextTimeMark,
                 delta: timeDelta
             )
         }
     }
     
-    public func execute(timeline: TimeLineIterator, from time: TimeInterval, block: @escaping (TimeInterval) -> Void) {
+    public func execute(timeline: TimeLineIterator, from: TimeInterval, didChange: @escaping DidChangeCallback) {
+        execute(timeline: timeline, from: from, didChange: didChange, willChange: nil)
+    }
+    
+    public func execute(timeline: TimeLineIterator, from time: TimeInterval, didChange: @escaping DidChangeCallback, willChange: WillChangeCallback?) {
         
-        semaphore.wait()
-        
-        timer.cancel()
-        
-        currentSession = .init(
-            lastIterationStartTime: nil,
-            lastTimeMark: 0,
-            timeline: timeline,
-            block: block
-        )
-        
-        semaphore.signal()
+        let session = updateSession { _ -> Session in
+            
+            timer.cancel()
+
+            return .init(
+                timeline: timeline,
+                didChange: didChange,
+                willChange: willChange
+            )
+        }
         
         guard let currentTimeMark = timeline.beginNextExecution(from: time) else {
-
-            setNextTimer(block: block)
+            
+            setNextTimer(from: time)
             return
         }
         
         if time == currentTimeMark {
             
-            semaphore.wait()
-            currentSession?.lastIterationStartTime = nil
-            currentSession?.lastTimeMark = currentTimeMark
-            let prevSession = currentSession
-            semaphore.signal()
+            session?.willChange?(nil, currentTimeMark)
             
+            if self.isSessionChanged(session: session) {
+                return
+            }
             
-            block(currentTimeMark)
+            session?.didChange(currentTimeMark)
             
-            semaphore.wait()
-            let isSessionChanged = prevSession !== self.currentSession
-            semaphore.signal()
-            
-            if isSessionChanged {
+            if self.isSessionChanged(session: session) {
                 return
             }
         }
         
-        setNextTimer(block: block)
+        setNextTimer(from: time)
     }
     
     public func stop() {
         
-        defer { semaphore.signal() }
-        semaphore.wait()
-        
-        currentSession = nil
-        timer.cancel()
+        updateSession { session -> Session? in
+            
+            timer.cancel()
+            return nil
+        }
     }
     
     public func pause() {
         
-        semaphore.wait()
-        
-        guard let currentSession = currentSession else {
-            semaphore.signal()
-            return
+        updateSession { session -> Session? in
+     
+            timer.cancel()
+            
+            guard let currentSession = session else {
+                return session
+            }
+            
+            return currentSession.paused()
         }
-        
-
-        self.currentSession = .init(from: currentSession)
-        self.currentSession?.pausedAt = .now
-
-        timer.cancel()
-        semaphore.signal()
     }
     
     public func resume() {
@@ -200,15 +209,12 @@ extension DefaultScheduler: Scheduler {
         }
         
         timer.cancel()
-
-        let elapsedTime = currentSession.getElapsedTime()
         
-        self.currentSession = .init(from: currentSession)
-        self.currentSession?.pausedAt = nil
-        self.currentSession?.lastIterationStartTime = nil
+        let elapsedTime = currentSession.elapsedTime
+        self.currentSession = Session(from: currentSession)
         
         semaphore.signal()
-        setNextTimer(block: currentSession.block, lastTimeMark: elapsedTime)
+        setNextTimer(from: elapsedTime)
     }
 }
 
@@ -216,43 +222,59 @@ extension DefaultScheduler {
     
     private class Session {
         
-        var lastIterationStartTime: Date? = nil
-        var lastTimeMark: TimeInterval = 0
-        var pausedAt: Date? = nil
-        var timeline: TimeLineIterator
-        var block: (TimeInterval) -> Void
+        let timeline: TimeLineIterator
+        var didChangeOriginal: Scheduler.DidChangeCallback
+        var willChange: Scheduler.WillChangeCallback?
         
-        init(
-            lastIterationStartTime: Date? = nil,
-            lastTimeMark: TimeInterval,
-            timeline: TimeLineIterator,
-            block: @escaping DefaultScheduler.Callback
-        ) {
-            self.lastIterationStartTime = lastIterationStartTime
-            self.lastTimeMark = lastTimeMark
-            self.block = block
-            self.timeline = timeline
-        }
+        var updatedAt: Date?
+        var elapsedTime: TimeInterval = 0
         
-        init(from source: Session) {
+        lazy var didChange: Scheduler.DidChangeCallback = {
             
-            self.lastIterationStartTime = source.lastIterationStartTime
-            self.timeline = source.timeline
-            self.lastTimeMark = source.lastTimeMark
-            self.pausedAt = source.pausedAt
-            self.block = source.block
-        }
-        
-        func getElapsedTime() -> TimeInterval {
-
-            guard
-                let lastIterationStartTime = lastIterationStartTime,
-                let pausedAt = pausedAt
-            else {
-                return lastTimeMark
+            return {[weak self] time in
+                
+                self?.didGoThrough(timeMark: time)
+                self?.didChangeOriginal(time)
             }
+        } ()
+
+        required init(
+            timeline: TimeLineIterator,
+            didChange: @escaping Scheduler.DidChangeCallback,
+            willChange: Scheduler.WillChangeCallback?
+        ) {
+
+            self.timeline = timeline
+            self.didChangeOriginal = didChange
+            self.willChange = willChange
+        }
+        
+        convenience init(from source: Session) {
             
-            return lastTimeMark + pausedAt.timeIntervalSince(lastIterationStartTime)
+            self.init(
+                timeline: source.timeline,
+                didChange: source.didChangeOriginal,
+                willChange: source.willChange
+            )
+        }
+        
+        private func didGoThrough(timeMark: TimeInterval) {
+            
+            elapsedTime = timeMark
+            updatedAt = .now
+        }
+        
+        func paused() -> Session {
+            
+            guard let updatedAt = updatedAt else {
+                return self
+            }
+
+            let newSession = Session(from: self)
+            newSession.elapsedTime = elapsedTime + Date.now.timeIntervalSince(updatedAt)
+            newSession.updatedAt = .now
+            
+            return newSession
         }
     }
 }

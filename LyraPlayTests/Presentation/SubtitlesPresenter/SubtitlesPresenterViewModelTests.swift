@@ -20,7 +20,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     
     func createSUT(subtitles: Subtitles) -> SUT {
 
-        let scheduler = SchedulerMock()
+        let scheduler = DefaultScheduler(timer: ActionTimerMock())
         
         let timeSlotsParser = SubtitlesTimeSlotsParser()
         
@@ -255,25 +255,6 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     }
 }
 
-// MARK: - Mocks
-
-final class SchedulerMock: Scheduler {
-    
-    var isActive: Bool = false
-    
-    func execute(timeline: TimeLineIterator, from: TimeInterval, block: @escaping (TimeInterval) -> Void) {
-        
-    }
-    
-    func stop() {
-    }
-    
-    func pause() {
-    }
-    
-    func resume() {
-    }
-}
 
 // MARK: - Helper Types
 
