@@ -142,25 +142,28 @@ public final class DefaultSubtitlesIterator: SubtitlesIterator {
         if let lastItem = items.last,
            lastItem.time < time {
             
-            currentIndex = items.count - 1
-            return lastItem.time
+            let index = items.count - 2
+            
+            if index < 0 {
+                currentIndex = nil
+                return lastEventTime
+            }
+            
+            currentIndex = index
+            return lastEventTime
         }
         
         for index in 0..<numberOfItems {
             
             let item = items[index]
             
-            if
-                let timeRange = item.timeRange,
-                timeRange.contains(time)
-            {
-                currentIndex = index
-                return lastEventTime
-            }
-            
-            if item.time == time {
+            if item.time >= time {
                 
-                currentIndex = index
+                if index == 0 {
+                    return nil
+                }
+
+                currentIndex = index - 1
                 return lastEventTime
             }
         }

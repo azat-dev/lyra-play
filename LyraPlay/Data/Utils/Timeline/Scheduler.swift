@@ -103,8 +103,8 @@ extension DefaultScheduler: Scheduler {
         let triggerTime = Date.now
         let timeOffset = nextTimeMark - baseTime - delta
         
-        timer.executeAfter(timeOffset) { [weak self] in
-        
+        let action = { [weak self] in
+            
             guard
                 let self = self,
                 !self.isSessionChanged(session: currentSession)
@@ -112,7 +112,7 @@ extension DefaultScheduler: Scheduler {
                 return
             }
             
-            currentSession.willChange?(currentSession.timeline.lastEventTime, nextTimeMark)
+            currentSession.willChange?(currentSession.prevTimeMark, nextTimeMark)
             if self.isSessionChanged(session: currentSession) {
                 return
             }
@@ -133,6 +133,14 @@ extension DefaultScheduler: Scheduler {
                 delta: timeDelta
             )
         }
+
+        if timeOffset <= 0 {
+            
+            action()
+            return
+        }
+        
+        timer.executeAfter(timeOffset, block: action)
     }
     
     public func execute(timeline: TimeLineIterator, from: TimeInterval, didChange: @escaping DidChangeCallback) {
@@ -152,27 +160,7 @@ extension DefaultScheduler: Scheduler {
             )
         }
         
-        guard let currentTimeMark = timeline.beginNextExecution(from: time) else {
-            
-            setNextTimer(from: time)
-            return
-        }
-        
-        if time == currentTimeMark {
-            
-            session?.willChange?(nil, currentTimeMark)
-            
-            if self.isSessionChanged(session: session) {
-                return
-            }
-            
-            session?.didChange(currentTimeMark)
-            
-            if self.isSessionChanged(session: session) {
-                return
-            }
-        }
-        
+        timeline.beginNextExecution(from: time)
         setNextTimer(from: time)
     }
     
@@ -212,6 +200,7 @@ extension DefaultScheduler: Scheduler {
         
         let elapsedTime = currentSession.elapsedTime
         self.currentSession = Session(from: currentSession)
+        self.currentSession?.prevTimeMark = currentSession.prevTimeMark
         
         semaphore.signal()
         setNextTimer(from: elapsedTime)
@@ -228,12 +217,13 @@ extension DefaultScheduler {
         
         var updatedAt: Date?
         var elapsedTime: TimeInterval = 0
+        var prevTimeMark: TimeInterval? = nil
         
         lazy var didChange: Scheduler.DidChangeCallback = {
             
             return {[weak self] time in
                 
-                self?.didGoThrough(timeMark: time)
+                self?.wentThrough(timeMark: time)
                 self?.didChangeOriginal(time)
             }
         } ()
@@ -258,8 +248,9 @@ extension DefaultScheduler {
             )
         }
         
-        private func didGoThrough(timeMark: TimeInterval) {
+        private func wentThrough(timeMark: TimeInterval) {
             
+            prevTimeMark = timeMark
             elapsedTime = timeMark
             updatedAt = .now
         }
@@ -273,6 +264,7 @@ extension DefaultScheduler {
             let newSession = Session(from: self)
             newSession.elapsedTime = elapsedTime + Date.now.timeIntervalSince(updatedAt)
             newSession.updatedAt = .now
+            newSession.prevTimeMark = prevTimeMark
             
             return newSession
         }

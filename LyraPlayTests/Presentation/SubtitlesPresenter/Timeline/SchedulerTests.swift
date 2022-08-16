@@ -467,14 +467,39 @@ final class TimeLineIteratorMock: TimeLineIterator {
     }
     
     func beginNextExecution(from time: TimeInterval) -> TimeInterval? {
+
+        let numberOfItems = timeMarks.count
         
-        let recentIndex = timeMarks.lastIndex { $0 <= time }
-        
-        guard let recentIndex = recentIndex else {
-            return nil
+        if let lastItem = timeMarks.last,
+           lastItem < time {
+            
+            let index = timeMarks.count - 2
+            
+            if index < 0 {
+                currentIndex = -1
+                return lastEventTime
+            }
+            
+            currentIndex = index
+            return lastEventTime
         }
         
-        currentIndex = recentIndex
+        for index in 0..<numberOfItems {
+            
+            let timeMark = timeMarks[index]
+            
+            if timeMark >= time {
+                
+                if index == 0 {
+                    return nil
+                }
+
+                currentIndex = index - 1
+                return lastEventTime
+            }
+        }
+
+        currentIndex = -1
         return lastEventTime
     }
     

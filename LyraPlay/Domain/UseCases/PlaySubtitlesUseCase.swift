@@ -14,7 +14,7 @@ public enum PlaySubtitlesUseCaseState: Equatable {
 
     case initial
     case playing(position: SubtitlesPosition?)
-    case playingChangingPosition(from: SubtitlesPosition?, to: SubtitlesPosition?)
+    case playingWillChangePosition(from: SubtitlesPosition?, to: SubtitlesPosition?)
     case paused(position: SubtitlesPosition?)
     case stopped
     case finished
@@ -29,7 +29,7 @@ extension PlaySubtitlesUseCaseState {
         case .initial, .stopped, .finished:
             return nil
 
-        case .playing(let position), .paused(let position), .playingChangingPosition(let position, _):
+        case .playing(let position), .paused(let position), .playingWillChangePosition(let position, _):
             return position
         }
     }
@@ -112,10 +112,10 @@ public final class DefaultPlaySubtitlesUseCase: PlaySubtitlesUseCase {
 // MARK: - Input methods
 
 extension DefaultPlaySubtitlesUseCase {
-    
-    private func moveToNextEvent() {
+
+    private func didChangePosition() {
         
-        let isLast = self.subtitlesIterator.getTimeOfNextEvent() == nil
+        let isLast = subtitlesIterator.getTimeOfNextEvent() == nil
 
         guard !isLast else {
             
@@ -123,26 +123,48 @@ extension DefaultPlaySubtitlesUseCase {
             return
         }
         
-        state.value = .playingChangingPosition(from: state.value.position, to: subtitlesIterator.currentPosition)
         state.value = .playing(position: subtitlesIterator.currentPosition)
+    }
+    
+    private func willChangePosition(fromTime: TimeInterval?) {
+        
+        let currentPosition = fromTime == nil ? nil : subtitlesIterator.currentPosition
+        let nextPosition = subtitlesIterator.getNextPosition()
+        
+        if currentPosition == nextPosition {
+            return
+        }
+        
+        state.value = .playingWillChangePosition(
+            from: currentPosition,
+            to: nextPosition
+        )
+    }
+    
+    private func play(from fromTime: TimeInterval) {
+        
+        scheduler.execute(
+            timeline: subtitlesIterator,
+            from: fromTime,
+            didChange: { [weak self] _ in self?.didChangePosition() },
+            willChange: { [weak self] fromTime, _ in self?.willChangePosition(fromTime: fromTime) }
+        )
     }
     
     public func play() -> Void {
         
         if scheduler.isActive {
-
             scheduler.resume()
             return
         }
         
-        scheduler.execute(timeline: subtitlesIterator, from: 0) { [weak self] _ in self?.moveToNextEvent() }
+        play(from: 0)
     }
     
     public func play(atTime time: TimeInterval) -> Void {
     
         scheduler.stop()
-
-        scheduler.execute(timeline: subtitlesIterator, from: time) { [weak self] _ in self?.moveToNextEvent() }
+        play(from: time)
     }
 
     public func pause() -> Void {
@@ -154,7 +176,7 @@ extension DefaultPlaySubtitlesUseCase {
     public func stop() -> Void {
 
         scheduler.stop()
-        subtitlesIterator.beginNextExecution(from: 0)
+        let _ = subtitlesIterator.beginNextExecution(from: 0)
         state.value = .stopped
     }
 }
