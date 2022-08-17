@@ -19,11 +19,8 @@ public func AssertEqualReadable<T>(
     let receivedValue = try! expression1()
     let expectedValue = try! expression2()
     
-    var receivedValueDumped = String()
-    dump(receivedValue, to: &receivedValueDumped)
-    
-    var expectedValueDumped = String()
-    dump(expectedValue, to: &expectedValueDumped)
+    let receivedValueDumped = dumpValue(receivedValue)
+    let expectedValueDumped = dumpValue(expectedValue)
     
     var errorText = message()
     
@@ -42,18 +39,56 @@ public func AssertEqualReadable<T>(
         line: line
     )
     
-    var request = URLRequest(url: .init(string: "http://localhost:8080/logs/dump")!)
-    request.httpMethod = "POST"
-    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    if receivedValueDumped == expectedValueDumped {
+        return
+    }
     
-    let data: [String: String] = [
-        "method": "AssertEqualReadable",
-        "receivedValue": receivedValueDumped,
-        "expectedValue": expectedValueDumped,
-        "file": String(describing: file),
-        "line": String(line)
-    ]
+    logChanges(
+        receivedValueDumped: receivedValueDumped,
+        expectedValueDumped: expectedValueDumped,
+        file: file,
+        line: line
+    )
+}
+
+func dumpValue<T>(_ value: T) -> String {
     
-    request.httpBody = try? JSONSerialization.data(withJSONObject: data)
-    URLSession.shared.dataTask(with: request).resume();
+    var dumped = String()
+    dump(value, to: &dumped)
+    
+    return dumped
+}
+
+func logChanges(receivedValueDumped: String, expectedValueDumped: String, file: StaticString = #filePath, line: UInt = #line) {
+
+    let semaphore = DispatchSemaphore(value: 0)
+    
+    Task(priority: .medium) {
+        
+        defer { semaphore.signal() }
+
+        var request = URLRequest(url: .init(string: "http://localhost:8080/logs/dump")!)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let data: [String: String] = [
+            "method": "AssertEqualReadable",
+            "receivedValue": receivedValueDumped,
+            "expectedValue": expectedValueDumped,
+            "file": String(describing: file),
+            "line": String(line)
+        ]
+        
+        request.httpBody = try? JSONSerialization.data(withJSONObject: data)
+        
+        await withCheckedContinuation({ continiuation in
+            
+            URLSession.shared.dataTask(with: request) { _, _, _ in
+                
+                continiuation.resume()
+            }.resume()
+        })
+    }
+    
+    semaphore.wait()
 }

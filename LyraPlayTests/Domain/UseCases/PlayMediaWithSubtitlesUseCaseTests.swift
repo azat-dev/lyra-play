@@ -210,6 +210,109 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         stateObserver.cancel()
         subtitlesChangesObserver.cancel()
     }
+
+    func test_play__finish_media_before_subtitles() async throws {
+        
+        let sut = createSUT()
+        
+        let subtitles = Subtitles(duration: 4, sentences: [
+            .anySentence(at: 0),
+            .anySentence(at: 1),
+        ])
+        
+        sut.loadSubtitlesUseCase.willReturn = { _, _ in  .success(subtitles) }
+        sut.playMediaUseCase.prepareWillReturn = { _ in .success(()) }
+        
+        let sessionParams = anySessionParams()
+
+        let finishAtIndex = 4
+        
+        testAction(
+            sut: sut,
+            session: sessionParams,
+            subtitles: subtitles,
+            action: {
+                Task {
+                    
+                    let _ = await sut.useCase.prepare(params: sessionParams)
+                    
+                    let result = sut.useCase.play()
+                    try AssertResultSucceded(result)
+                }
+            },
+            waitFor: 1,
+            expectedStateItems: [
+                
+                .initial,
+                .loading(session: sessionParams),
+                .loaded(session: sessionParams, subtitlesState: .init(position: nil, subtitles: subtitles)),
+                .playing(session: sessionParams, subtitlesState: .init(position: nil, subtitles: subtitles)),
+                .playing(session: sessionParams, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
+                .finished(session: sessionParams),
+            ],
+            expecteSubtitlesChanges: [
+                .init(from: nil, to: .sentence(0)),
+                .init(from: .sentence(0), to: nil),
+            ],
+            controlFlow: { index, _ in
+                
+                if index == finishAtIndex {
+                    sut.playMediaUseCase.finish()
+                }
+            }
+        )
+    }
+    
+    func test_play__finish_subtitles_before_media() async throws {
+        
+        let sut = createSUT()
+        
+        let subtitles = Subtitles(duration: 4, sentences: [
+            .anySentence(at: 0),
+        ])
+        
+        sut.loadSubtitlesUseCase.willReturn = { _, _ in  .success(subtitles) }
+        sut.playMediaUseCase.prepareWillReturn = { _ in .success(()) }
+        
+        let sessionParams = anySessionParams()
+
+        let finishAtIndex = 4
+        
+        testAction(
+            sut: sut,
+            session: sessionParams,
+            subtitles: subtitles,
+            action: {
+                Task {
+                    
+                    let _ = await sut.useCase.prepare(params: sessionParams)
+                    
+                    let result = sut.useCase.play()
+                    try AssertResultSucceded(result)
+                }
+            },
+            waitFor: 1,
+            expectedStateItems: [
+                
+                .initial,
+                .loading(session: sessionParams),
+                .loaded(session: sessionParams, subtitlesState: .init(position: nil, subtitles: subtitles)),
+                .playing(session: sessionParams, subtitlesState: .init(position: nil, subtitles: subtitles)),
+                .playing(session: sessionParams, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
+                .finished(session: sessionParams),
+            ],
+            expecteSubtitlesChanges: [
+                .init(from: nil, to: .sentence(0)),
+                .init(from: .sentence(0), to: nil),
+            ],
+            controlFlow: { index, _ in
+                
+                if index == finishAtIndex {
+                    sut.playMediaUseCase.finish()
+                }
+            }
+        )
+    }
     
     func test__sync_subtitles_state() async throws {
         
@@ -261,24 +364,24 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
             expecteSubtitlesChanges: [
                 .init(from: nil, to: .sentence(0)),
                 .init(from: .sentence(0), to: .sentence(1)),
-            ],
-            controlFlow: { index, state in
-                
-                switch index {
-                
-                case pauseIndex:
-                    let _ = sut.useCase.pause()
-
-                case playIndex:
-                    let _ = sut.useCase.play()
-
-                case stopIndex:
-                    let _ = sut.useCase.stop()
-
-                default:
-                    break
-                }
-            }
+            ]
+//            controlFlow: { index, state in
+//
+//                switch index {
+//
+//                case pauseIndex:
+//                    let _ = sut.useCase.pause()
+//
+//                case playIndex:
+//                    let _ = sut.useCase.play()
+//
+//                case stopIndex:
+//                    let _ = sut.useCase.stop()
+//
+//                default:
+//                    break
+//                }
+//            }
         )
     }
 }

@@ -136,8 +136,7 @@ extension DefaultPlaySubtitlesUseCase {
         
         let isLast = subtitlesIterator.getTimeOfNextEvent() == nil
         
-        guard !isLast else {
-            
+        if isLast {
             state.value = .finished
             return
         }

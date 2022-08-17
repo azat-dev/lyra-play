@@ -24,8 +24,6 @@ public struct SubtitlesItem {
 public protocol SubtitlesIterator: TimeLineIterator {
     
     var currentPosition: SubtitlesPosition? { get }
-
-    var currentItem: SubtitlesItem? { get }
     
     var currentTimeRange: Range<TimeInterval>? { get }
     
@@ -36,174 +34,142 @@ public protocol SubtitlesIterator: TimeLineIterator {
 
 public final class DefaultSubtitlesIterator: SubtitlesIterator {
     
-    private struct Item {
-    
-        var time: TimeInterval
-        var timeRange: Range<TimeInterval>? = nil
-        var position: SubtitlesPosition? = nil
-    }
-
-    
     // MARK: - Properties
     
-    private let subtitles: Subtitles
-
     private let subtitlesTimeSlots: [SubtitlesTimeSlot]
     
-    private var currentIndex: Int? = nil
-
-    private var items: [Item]
+    private var currentIndex = -1
     
-    private var currentIteratorItem: Item? {
-        
-        guard let currentIndex = currentIndex else {
-            return nil
-        }
-        
-        if currentIndex >=  items.count {
-            return nil
-        }
+    private lazy var endIndex: Int = {
+        subtitlesTimeSlots.count
+    }()
+    
+    private lazy var lastItem: SubtitlesTimeSlot = {
+        return .init(timeRange: endTime..<endTime)
+    }()
+    
+    private var currentIteratorItem: SubtitlesTimeSlot? {
 
-        return items[currentIndex]
+        if currentIndex < 0 || currentIndex > endIndex {
+            return nil
+        }
+        
+        if currentIndex == endIndex {
+            return lastItem
+        }
+        
+        return subtitlesTimeSlots[currentIndex]
     }
     
-    public var lastEventTime: TimeInterval? { currentIteratorItem?.time }
+    private lazy var endTime: TimeInterval = {
+        
+        guard let lastSlot = subtitlesTimeSlots.last else {
+            return 0
+        }
+        
+        return lastSlot.timeRange.upperBound
+    } ()
     
-    public var currentPosition: SubtitlesPosition? { currentIteratorItem?.position }
+    public var lastEventTime: TimeInterval? { currentIteratorItem?.timeRange.lowerBound }
+    
+    public var currentPosition: SubtitlesPosition? { currentIteratorItem?.subtitlesPosition }
     
     public var currentTimeRange: Range<TimeInterval>? { currentIteratorItem?.timeRange }
     
-    public var currentItem: SubtitlesItem? {
-        
-        guard let currentPosition = currentPosition else {
-            return nil
-        }
-
-        let sentence = subtitles.sentences[currentPosition.sentenceIndex]
-        
-        guard
-            let timeMarkIndex = currentPosition.timeMarkIndex,
-            let timeMarks = sentence.timeMarks
-        else {
-            return .init(sentence: sentence)
-        }
-        
-        return .init(
-            sentence: sentence,
-            timeMarkInsideSentence: timeMarks[timeMarkIndex]
-        )
-    }
-    
-    
-    private var sentences: [Subtitles.Sentence] { subtitles.sentences }
     
     // MARK: - Initializers
     
-    public init(subtitles: Subtitles, subtitlesTimeSlots: [SubtitlesTimeSlot]) {
+    public init(subtitlesTimeSlots: [SubtitlesTimeSlot]) {
         
-        self.subtitles = subtitles
         self.subtitlesTimeSlots = subtitlesTimeSlots
-        
-        self.items = Self.getItems(subtitles: subtitles, subtitlesTimeSlots: subtitlesTimeSlots)
     }
     
     // MARK: - Methods
     
-    private static func getItems(subtitles: Subtitles, subtitlesTimeSlots: [SubtitlesTimeSlot]) -> [Item] {
-        
-        var items = [Item]()
-
-        for timeSlot in subtitlesTimeSlots {
-            
-            items.append(
-                .init(
-                    time: timeSlot.timeRange.lowerBound,
-                    timeRange: timeSlot.timeRange,
-                    position: timeSlot.subtitlesPosition
-                )
-            )
-        }
-        
-        if
-            let lastTimeSlot = subtitlesTimeSlots.last,
-            lastTimeSlot.timeRange.upperBound != lastTimeSlot.timeRange.lowerBound
-        {
-            
-            items.append(.init(time: lastTimeSlot.timeRange.upperBound))
-        }
-        
-        return items
-    }
-
     public func beginNextExecution(from time: TimeInterval) -> TimeInterval? {
-
-        let numberOfItems = items.count
         
-        if let lastItem = items.last,
-           lastItem.time < time {
+        let subtitlesEndTime = self.endTime
+        
+        if time >= subtitlesEndTime {
             
-            let index = items.count - 2
-            
-            if index < 0 {
-                currentIndex = nil
-                return lastEventTime
-            }
-            
-            currentIndex = index
+            currentIndex = endIndex - 1
             return lastEventTime
         }
         
+        let numberOfItems = subtitlesTimeSlots.count
+        
         for index in 0..<numberOfItems {
             
-            let item = items[index]
+            let item = subtitlesTimeSlots[index]
             
-            if item.time >= time {
+            if item.timeRange.lowerBound >= time {
                 
                 if index == 0 {
                     return nil
                 }
-
+                
                 currentIndex = index - 1
                 return lastEventTime
             }
         }
+        
+        currentIndex = endIndex - 1
+        return lastEventTime
+    }
+    
+    private func getNextIndex() -> Int? {
+        
+        let nextIndex = currentIndex + 1
 
-        currentIndex = nil
-        return nil
+        if nextIndex > endIndex {
+            return nil
+        }
+
+        if nextIndex == endIndex {
+            return nextIndex
+        }
+        
+        return nextIndex
     }
     
     public func getTimeOfNextEvent() -> TimeInterval? {
         
-        let nextIndex = (currentIndex ?? -1) + 1
-        
-        guard nextIndex < items.count else {
+        guard let nextIndex = getNextIndex() else {
             return nil
         }
-        
-        return items[nextIndex].time
+
+        if nextIndex == endIndex {
+            return endTime
+        }
+
+        return subtitlesTimeSlots[nextIndex].timeRange.lowerBound
     }
     
     public func getNextPosition() -> SubtitlesPosition? {
         
-        let nextIndex = (currentIndex ?? -1) + 1
-        
-        guard nextIndex < items.count else {
-            return nil
-        }
-        
-        return items[nextIndex].position
-    }
-    
-    public func moveToNextEvent() -> TimeInterval? {
-        
-        let nextIndex = (currentIndex ?? -1) + 1
-        
-        guard nextIndex < items.count else {
-            currentIndex = nextIndex
+        guard let nextIndex = getNextIndex() else {
             return nil
         }
 
+        if nextIndex == endIndex {
+            return nil
+        }
+        
+        return subtitlesTimeSlots[nextIndex].subtitlesPosition
+    }
+    
+    public func moveToNextEvent() -> TimeInterval? {
+
+        guard let nextIndex = getNextIndex() else {
+            return nil
+        }
+
+        if nextIndex == endIndex {
+            currentIndex = nextIndex
+            return nil
+        }
+        
         currentIndex = nextIndex
-        return items[nextIndex].time
+        return lastEventTime
     }
 }

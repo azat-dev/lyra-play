@@ -10,70 +10,31 @@ import XCTest
 import LyraPlay
 
 class SubtitlesIteratorTests: XCTestCase {
-
+    
     typealias SUT = SubtitlesIterator
-
-    func createSUT(subtitles: Subtitles) -> SUT {
-
-        let timeSlotsParser = SubtitlesTimeSlotsParser()
+    
+    func createSUT(timeSlots: [SubtitlesTimeSlot]) -> SUT {
         
-        let subtitlesIterator = DefaultSubtitlesIterator(
-            subtitles: subtitles,
-            subtitlesTimeSlots: timeSlotsParser.parse(from: subtitles)
-        )
+        let subtitlesIterator = DefaultSubtitlesIterator(subtitlesTimeSlots: timeSlots)
         detectMemoryLeak(instance: subtitlesIterator)
-
+        
         return subtitlesIterator
     }
-
-    private func timeMark(at: TimeInterval) -> Subtitles.TimeMark {
-
-        let text = ""
-        let dummyRange = (text.startIndex..<text.endIndex)
-
-        return .init(
-            startTime: at,
-            duration: nil,
-            range: dummyRange
-        )
-    }
-
-    func getTestSubtitles() -> Subtitles {
-
-        let dummyText = ""
-        let dummyRange = (dummyText.startIndex..<dummyText.endIndex)
-
-        return Subtitles(
-            duration: 3.5,
-            sentences: [
-                .anySentence(at: 0.0),
-                .anySentence(at: 2.0),
-                .anySentence(
-                    at: 3.0,
-                    timeMarks: [
-                        .init(startTime: 3.0, range: dummyRange),
-                        .init(startTime: 3.2, range: dummyRange)
-                    ]
-                ),
-                .anySentence(
-                    at: 3.0,
-                    timeMarks: [
-                        .init(startTime: 3.1, range: dummyRange)
-                    ]
-                )
-            ]
-        )
-    }
     
-    func test_getTimeOfNextEvent(
-        subtitles: Subtitles,
+    func testIteration(
+        startTime: TimeInterval?,
+        timeSlots: [SubtitlesTimeSlot],
         expectedItems: [TimeInterval?],
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
-
-        let sut = createSUT(subtitles: subtitles)
+        
+        let sut = createSUT(timeSlots: timeSlots)
         var receivedItems = [TimeInterval?]()
+        
+        if let startTime = startTime {
+            let _ = sut.beginNextExecution(from: startTime)
+        }
         
         while true {
             
@@ -82,7 +43,6 @@ class SubtitlesIteratorTests: XCTestCase {
             
             AssertEqualReadable(.init(from: sut), prevState)
             let _ = sut.moveToNextEvent()
-            
             
             receivedItems.append(time)
             
@@ -94,11 +54,11 @@ class SubtitlesIteratorTests: XCTestCase {
         AssertEqualReadable(receivedItems, expectedItems, file: file, line: line)
     }
     
-    func test_getTimeOfNextEvent__with_empty_subtitle() async throws {
-
-        let subtitles = Subtitles(duration: 0, sentences: [])
-        test_getTimeOfNextEvent(
-            subtitles: subtitles,
+    func test_iteration__empty() async throws {
+        
+        testIteration(
+            startTime: nil,
+            timeSlots: [],
             expectedItems: [
                 0,
                 nil
@@ -106,192 +66,63 @@ class SubtitlesIteratorTests: XCTestCase {
         )
     }
     
-    func test_getTimeOfNextEvent__receive_end_time_at_the_end() async throws {
+    func test_iteration__empty_with_offset() async throws {
         
-        let subtitles = Subtitles(duration: 10, sentences: [])
-        test_getTimeOfNextEvent(
-            subtitles: subtitles,
+        testIteration(
+            startTime: 100,
+            timeSlots: [],
             expectedItems: [
                 0,
+                nil
+            ]
+        )
+    }
+    
+    func test_iteration__not_empty_without_offset() async throws {
+        
+        testIteration(
+            startTime: nil,
+            timeSlots: [
+                .init(timeRange: 0..<5),
+                .init(timeRange: 5..<10, subtitlesPosition: .sentence(1))
+            ],
+            expectedItems: [
+                0,
+                5,
                 10,
                 nil
             ]
         )
     }
     
-    func test_getTimeOfNextEvent__not_empty_subtitles() async throws {
-
-        let subtitles = Subtitles(duration: 10, sentences: [
-            .anySentence(at: 1),
-        ])
-        let sut = createSUT(subtitles: subtitles)
-
-        let prevState = ExpectedSubtitlesIteratorOutput(from: sut)
-        let result = sut.getTimeOfNextEvent()
+    func test_iteration__not_empty_with_offset() async throws {
         
-        XCTAssertEqual(result, 0)
-        AssertEqualReadable(.init(from: sut), prevState)
-    }
-    
-    func test_moveToNextEvent(
-        subtitles: Subtitles,
-        expectedItems: [ExpectedSubtitlesIteratorOutput],
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) {
-
-        let sut = createSUT(subtitles: subtitles)
-        var receivedItems = [ExpectedSubtitlesIteratorOutput]()
-        
-        while true {
-            
-            let item = sut.moveToNextEvent()
-            receivedItems.append(.init(from: sut))
-            
-            if item == nil {
-                break
-            }
-        }
-        
-        AssertEqualReadable(receivedItems, expectedItems, file: file, line: line)
-    }
-    
-    func test_moveToNextEvent__with_empty_subtitles() async throws {
-
-        let subtitles = Subtitles(duration: 0, sentences: [])
-        test_moveToNextEvent(
-            subtitles: subtitles,
+        testIteration(
+            startTime: 5,
+            timeSlots: [
+                .init(timeRange: 0..<5),
+                .init(timeRange: 5..<10, subtitlesPosition: .sentence(1))
+            ],
             expectedItems: [
-                .init(time: 0, timeRange: (0..<0)),
-                .init(time: nil)
+                5,
+                10,
+                nil
             ]
         )
-    }
-    
-    func test_moveToNextEvent__with_simple_subtitles() async throws {
-
-        let subtitles = Subtitles(duration: 3, sentences: [
-            .anySentence(at: 1),
-            .anySentence(at: 2),
-        ])
         
-        test_moveToNextEvent(
-            subtitles: subtitles,
+        testIteration(
+            startTime: 10,
+            timeSlots: [
+                .init(timeRange: 0..<5),
+                .init(timeRange: 5..<10, subtitlesPosition: .sentence(1))
+            ],
             expectedItems: [
-                .init(
-                    time: 0,
-                    timeRange: (0..<1),
-                    position: .nilValue()
-                ),
-                .init(
-                    time: 1,
-                    timeRange: (1..<2),
-                    position: .sentence(0)
-                ),
-                .init(
-                    time: 2,
-                    timeRange: (2..<3),
-                    position: .sentence(1)
-                ),
-                .init(time: 3),
-                .init(time: nil)
+                10,
+                nil
             ]
         )
-    }
-    
-    func test_beginNextExecution__empty_subtitles() {
-        
-        let subtitles = Subtitles(duration: 0, sentences: [])
-        
-        let sut = createSUT(subtitles: subtitles)
-        let _ = sut.beginNextExecution(from: 0)
-        
-        let expectedResult = ExpectedSubtitlesIteratorOutput(time: nil, timeRange: nil)
-        AssertEqualReadable(.init(from: sut), expectedResult)
-    }
-    
-    func test_beginNextExecution__empty_subtitles_with_offset() {
-        
-        let subtitles = Subtitles(duration: 0, sentences: [])
-        
-        let sut = createSUT(subtitles: subtitles)
-        let _ = sut.beginNextExecution(from: 100)
-        
-        let expectedResult = ExpectedSubtitlesIteratorOutput(time: 0, timeRange: (0..<0))
-        AssertEqualReadable(.init(from: sut), expectedResult)
-        
-        let nextTime = sut.getTimeOfNextEvent()
-        XCTAssertNil(nextTime)
-    }
-    
-    func test_beginNextExecution__not_empty_subtitles_exact_time_match() {
-        
-        let subtitles = Subtitles(duration: 10, sentences: [
-            .anySentence(at: 0),
-            .anySentence(at: 1),
-            .anySentence(at: 2),
-        ])
-        
-        let sut = createSUT(subtitles: subtitles)
-        let _ = sut.beginNextExecution(from: 1.5)
-        
-        let expectedResult = ExpectedSubtitlesIteratorOutput(
-            time: 1,
-            timeRange: (1..<2),
-            position: .sentence(1)
-        )
-        AssertEqualReadable(.init(from: sut), expectedResult)
-        
-        let nextTime = sut.getTimeOfNextEvent()
-        XCTAssertEqual(nextTime, 2)
-    }
-    
-    func test_beginNextExecution__not_empty_subtitles_between() {
-        
-        let subtitles = Subtitles(duration: 10, sentences: [
-            .anySentence(at: 0),
-            .anySentence(at: 1),
-            .anySentence(at: 2),
-        ])
-        
-        let sut = createSUT(subtitles: subtitles)
-        let _ = sut.beginNextExecution(from: 1.5)
-        
-        let expectedResult = ExpectedSubtitlesIteratorOutput(
-            time: 1,
-            timeRange: (1..<2),
-            position: .sentence(1)
-        )
-        AssertEqualReadable(.init(from: sut), expectedResult)
-        
-        let nextTime = sut.getTimeOfNextEvent()
-        XCTAssertEqual(nextTime, 2)
-    }
-    
-    func test_beginNextExecution__not_empty_subtitles_end() {
-        
-        let subtitles = Subtitles(duration: 10, sentences: [
-            .anySentence(at: 0),
-            .anySentence(at: 1),
-            .anySentence(at: 2),
-        ])
-        
-        let sut = createSUT(subtitles: subtitles)
-        let _ = sut.beginNextExecution(from: 10)
-        
-        let expectedResult = ExpectedSubtitlesIteratorOutput(
-            time: 2,
-            timeRange: 2..<10,
-            position: .sentence(2)
-        )
-        AssertEqualReadable(.init(from: sut), expectedResult)
-        
-        let nextTime = sut.getTimeOfNextEvent()
-        XCTAssertEqual(nextTime, 10)
     }
 }
-
-// MARK: - Helpers
 
 struct ExpectedSubtitlesIteratorOutput: Equatable {
     
@@ -311,7 +142,7 @@ struct ExpectedSubtitlesIteratorOutput: Equatable {
     }
     
     init(from iterator: SubtitlesIterator) {
-
+        
         time = iterator.lastEventTime
         timeRange = iterator.currentTimeRange
         position = .init(from: iterator.currentPosition)

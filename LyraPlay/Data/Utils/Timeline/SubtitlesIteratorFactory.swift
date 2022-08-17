@@ -25,7 +25,6 @@ public final class DefaultSubtitlesIteratorFactory: SubtitlesIteratorFactory {
         let timeSlotsParser = SubtitlesTimeSlotsParser()
         
         return DefaultSubtitlesIterator(
-            subtitles: subtitles,
             subtitlesTimeSlots: timeSlotsParser.parse(from: subtitles)
         )
     }
