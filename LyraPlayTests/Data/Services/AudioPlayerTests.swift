@@ -131,10 +131,7 @@ class AudioPlayerTests: XCTestCase {
             }
             
             if case .playing = state {
-
-                Task {
-                    audioPlayer.stop()
-                }
+                let _ = audioPlayer.stop()
             }
         }
         
