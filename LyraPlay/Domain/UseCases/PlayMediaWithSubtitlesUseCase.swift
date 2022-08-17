@@ -96,6 +96,8 @@ public struct PlayMediaWithSubtitlesSessionParams: Equatable {
         self.subtitlesLanguage = subtitlesLanguage
     }
 }
+
+
 public protocol PlayMediaWithSubtitlesUseCaseInput: AnyObject {
     
     func prepare(params: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
@@ -136,6 +138,8 @@ public final class DefaultPlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesU
     private var subtitlesChangesObserver: AnyCancellable?
     private var playMediaObserver: AnyCancellable?
     
+    private var stateHash = UUID()
+    
     private var playSubtitlesUseCase: PlaySubtitlesUseCase? {
         
         didSet {
@@ -175,6 +179,14 @@ public final class DefaultPlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesU
         playMediaObserver?.cancel()
         subtitlesChangesObserver?.cancel()
     }
+    
+    private func isStateUpdated(hash: UUID) -> Bool {
+        return hash != stateHash
+    }
+    
+    private func updateStateHash() {
+        stateHash = UUID()
+    }
 }
 
 // MARK: - Input methods
@@ -183,6 +195,7 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
     
     public func prepare(params session: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
+        updateStateHash()
         state.value = .loading(session: session)
         
         let loadMediaResult = await playMediaUseCase.prepare(mediaId: session.mediaId)
@@ -228,6 +241,7 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
             break
         }
         
+        updateStateHash()
         return playMediaUseCase.play().mapResult()
     }
     
@@ -239,6 +253,7 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
             return .failure(.noActiveMedia)
             
         default:
+            updateStateHash()
             return playMediaUseCase.play(atTime: atTime).mapResult()
         }
     }
@@ -249,6 +264,7 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
             return .failure(.noActiveMedia)
         }
         
+        updateStateHash()
         return playMediaUseCase.pause().mapResult()
     }
     
@@ -264,6 +280,8 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
     }
     
     public func stop() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+     
+        updateStateHash()
         
         switch state.value {
             
@@ -341,6 +359,18 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
             state.value = .paused(session: session, subtitlesState: currentState.subtitlesState, time: time)
             
         case .finished:
+            
+            let stateHash = self.stateHash
+            
+            if let currentPosition = currentState.subtitlesState?.position {
+                
+                willChangeSubtitlesPosition.send(.init(from: currentPosition, to: nil))
+    
+                if isStateUpdated(hash: stateHash) {
+                    return
+                }
+            }
+            
             state.value = .finished(session: session)
         }
     }

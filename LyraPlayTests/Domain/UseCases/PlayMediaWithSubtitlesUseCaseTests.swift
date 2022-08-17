@@ -364,24 +364,24 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
             expecteSubtitlesChanges: [
                 .init(from: nil, to: .sentence(0)),
                 .init(from: .sentence(0), to: .sentence(1)),
-            ]
-//            controlFlow: { index, state in
-//
-//                switch index {
-//
-//                case pauseIndex:
-//                    let _ = sut.useCase.pause()
-//
-//                case playIndex:
-//                    let _ = sut.useCase.play()
-//
-//                case stopIndex:
-//                    let _ = sut.useCase.stop()
-//
-//                default:
-//                    break
-//                }
-//            }
+            ],
+            controlFlow: { index, state in
+
+                switch index {
+
+                case pauseIndex:
+                    let _ = sut.useCase.pause()
+
+                case playIndex:
+                    let _ = sut.useCase.play()
+
+                case stopIndex:
+                    let _ = sut.useCase.stop()
+
+                default:
+                    break
+                }
+            }
         )
     }
 }
