@@ -130,8 +130,8 @@ public final class DefaultPlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesU
     private let playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory
     private let loadSubtitlesUseCase: LoadSubtitlesUseCase
     
-    public var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseState, Never> = .init(.initial)
-    public var willChangeSubtitlesPosition =  PassthroughSubject<WillChangeSubtitlesPositionData, Never>()
+    public let state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseState, Never> = .init(.initial)
+    public let willChangeSubtitlesPosition =  PassthroughSubject<WillChangeSubtitlesPositionData, Never>()
     
     private var playSubtitlesObserver: AnyCancellable?
     private var subtitlesChangesObserver: AnyCancellable?

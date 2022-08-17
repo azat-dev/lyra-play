@@ -16,9 +16,11 @@ public final class DefaultAudioService: NSObject, AudioService, AVAudioPlayerDel
     
     // MARK: - Properties
     
-    private let audioSession: AVAudioSession
+    private var audioSession: AVAudioSession {
+        AVAudioSession.sharedInstance()
+    }
+    
     private var player: AVAudioPlayer?
-    private let commandCenter: MPRemoteCommandCenter
     
     private var playerIsPlayingObserver: NSKeyValueObservation? = nil
     
@@ -28,10 +30,7 @@ public final class DefaultAudioService: NSObject, AudioService, AVAudioPlayerDel
     
     public override init() {
         
-        self.audioSession = AVAudioSession.sharedInstance()
         self.player = nil
-        self.commandCenter = MPRemoteCommandCenter.shared()
-        
         super.init()
         
         do {
@@ -46,8 +45,6 @@ public final class DefaultAudioService: NSObject, AudioService, AVAudioPlayerDel
         } catch {
             print("Failed to set audio session category.")
         }
-        
-        setupRemoteControls()
     }
 }
 
@@ -232,93 +229,4 @@ extension DefaultAudioService {
         self.state.value = .stopped
         return .success(())
     }
-}
-
-extension DefaultAudioService {
-    
-    func setupRemoteControls() {
-        
-        commandCenter.playCommand.addTarget { [unowned self] event in
-            
-            guard let player = self.player else {
-                return .commandFailed
-            }
-            
-            
-            player.play()
-            
-            switch self.state.value {
-                
-            case .paused(let session, _),
-                    .interrupted(let session, _):
-                self.state.value = .playing(session: session)
-                
-            default:
-                break
-            }
-            
-            return .success
-        }
-        
-        commandCenter.pauseCommand.addTarget { [unowned self] event in
-            
-            guard let player = self.player else {
-                return .commandFailed
-            }
-            
-            if player.rate != 1.0 {
-                return .commandFailed
-            }
-            
-            player.pause()
-            
-            switch self.state.value {
-                
-            case .playing(let session),
-                    .interrupted(let session, _),
-                    .paused(let session, _):
-                self.state.value = .paused(session: session, time: player.currentTime)
-                
-            default:
-                break
-            }
-            
-            return .success
-        }
-        
-        commandCenter.changePlaybackPositionCommand.addTarget { event in
-            return .success
-        }
-        
-        commandCenter.skipBackwardCommand.addTarget {[weak self] event in
-            
-            guard
-                let self = self,
-                let player = self.player
-            else {
-                return .commandFailed
-            }
-            
-            let currentTime = player.currentTime
-            
-            if currentTime - 10 > 0 {
-                player.play(atTime: player.currentTime - 10)
-            }
-            
-            return .success
-        }
-        
-        commandCenter.skipForwardCommand.addTarget { event in
-            return .success
-        }
-        
-        commandCenter.nextTrackCommand.addTarget { event in
-            return .success
-        }
-        
-        commandCenter.previousTrackCommand.addTarget { event in
-            return .success
-        }
-    }
-    
 }
