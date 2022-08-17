@@ -23,7 +23,7 @@ final class PlayMediaUseCaseMock: PlayMediaUseCase {
     
     var prepareWillReturn: ((_ mediaId: UUID) -> Result<Void, PlayMediaUseCaseError>)?
     
-    func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError> {
+    func prepare(mediaId: UUID) -> Result<Void, PlayMediaUseCaseError> {
         
         if let prepareWillReturn = prepareWillReturn {
             
@@ -43,35 +43,35 @@ final class PlayMediaUseCaseMock: PlayMediaUseCase {
         return .success(())
     }
     
-    func play() async -> Result<Void, PlayMediaUseCaseError> {
+    func play() -> Result<Void, PlayMediaUseCaseError> {
         
         guard let currentTrackId = currentTrackId else {
             return .failure(.noActiveTrack)
         }
         
-        await currentPlayerStateUseCase?.setTrack(trackId: currentTrackId)
-        currentPlayerStateUseCase?.state.value = .playing
+//        await currentPlayerStateUseCase?.setTrack(trackId: currentTrackId)
+//        currentPlayerStateUseCase?.state.value = .playing
         
         self.state.value = .playing(mediaId: currentTrackId)
         
         return .success(())
     }
     
-    func play(atTime: TimeInterval) async -> Result<Void, PlayMediaUseCaseError> {
+    func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError> {
         
         guard let currentTrackId = currentTrackId else {
             return .failure(.noActiveTrack)
         }
         
-        await currentPlayerStateUseCase?.setTrack(trackId: currentTrackId)
-        currentPlayerStateUseCase?.state.value = .playing
+//        await currentPlayerStateUseCase?.setTrack(trackId: currentTrackId)
+//        currentPlayerStateUseCase?.state.value = .playing
         
         self.state.value = .playing(mediaId: currentTrackId)
         
         return .success(())
     }
     
-    func pause() async -> Result<Void, PlayMediaUseCaseError> {
+    func pause() -> Result<Void, PlayMediaUseCaseError> {
         
         guard  currentTrackId != nil else {
             return .failure(.noActiveTrack)
@@ -82,7 +82,7 @@ final class PlayMediaUseCaseMock: PlayMediaUseCase {
         return .success(())
     }
     
-    func stop() async -> Result<Void, PlayMediaUseCaseError> {
+    func stop() -> Result<Void, PlayMediaUseCaseError> {
         
         currentTrackId = nil
         state.value = .stopped

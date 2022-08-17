@@ -52,17 +52,17 @@ public enum AudioServiceState: Equatable {
 
 public protocol AudioServiceInput {
 
-    func prepare(fileId: String, data trackData: Data) async -> Result<Void, AudioServiceError>
+    func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioServiceError>
     
-    func play() async -> Result<Void, AudioServiceError>
+    func play() -> Result<Void, AudioServiceError>
     
-    func play(atTime: TimeInterval) async -> Result<Void, AudioServiceError>
+    func play(atTime: TimeInterval) -> Result<Void, AudioServiceError>
     
     func playAndWaitForEnd() async -> Result<Void, AudioServiceError>
 
-    func pause() async -> Result<Void, AudioServiceError>
+    func pause() -> Result<Void, AudioServiceError>
 
-    func stop() async -> Result<Void, AudioServiceError>
+    func stop() -> Result<Void, AudioServiceError>
 }
 
 public protocol AudioServiceOutput {

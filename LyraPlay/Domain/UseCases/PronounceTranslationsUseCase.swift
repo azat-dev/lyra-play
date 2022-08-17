@@ -97,7 +97,7 @@ extension DefaultPronounceTranslationsUseCase {
         
         if let originalData = converted.original {
             
-            let prepareResult = await audioService.prepare(
+            let prepareResult = audioService.prepare(
                 fileId: translation.translationId.uuidString,
                 data: originalData
             )
@@ -112,12 +112,12 @@ extension DefaultPronounceTranslationsUseCase {
             }
             
             // Clean finished result
-            let _ = await audioService.stop()
+            let _ = audioService.stop()
         }
         
         if let translatedData = converted.translated {
             
-            let prepareResult = await audioService.prepare(
+            let prepareResult = audioService.prepare(
                 fileId: translation.translationId.uuidString,
                 data: translatedData
             )
@@ -139,7 +139,6 @@ extension DefaultPronounceTranslationsUseCase {
     
     public func pronounceGroup(translations: [SubtitlesTranslationItem]) async -> Void {
         
-        
         for index in 0..<translations.count {
             
             let translation = translations[index]
@@ -157,29 +156,15 @@ extension DefaultPronounceTranslationsUseCase {
     
     public func pause() -> Void {
         
-        switch state.value {
-            
-        case .paused, .stopped, .finished:
-            break
-            
-        case .playing:
-            Task {
-                await audioService.pause()
-            }
+        guard case .playing = state.value else {
+            return
         }
+        
+        let _ = audioService.pause()
     }
     
     public func stop() -> Void {
         
-        switch state.value {
-            
-        case .stopped, .finished:
-            break
-            
-        case .paused, .playing:
-            Task {
-                await audioService.stop()
-            }
-        }
+        let _ = audioService.stop()
     }
 }

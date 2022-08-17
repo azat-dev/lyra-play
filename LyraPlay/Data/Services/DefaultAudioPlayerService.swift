@@ -77,7 +77,7 @@ extension DefaultAudioService {
 
 extension DefaultAudioService {
     
-    public func prepare(fileId: String, data trackData: Data) async -> Result<Void, AudioServiceError> {
+    public func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioServiceError> {
         
         try? audioSession.setActive(true)
         
@@ -87,7 +87,7 @@ extension DefaultAudioService {
             player.delegate = self
             
             self.player = player
-
+            
             player.prepareToPlay()
             self.state.value = .loaded(session: .init(fileId: fileId))
             
@@ -101,7 +101,7 @@ extension DefaultAudioService {
         return .success(())
     }
     
-    public func play() async -> Result<Void, AudioServiceError> {
+    public func play() -> Result<Void, AudioServiceError> {
         
         guard
             let player = self.player,
@@ -119,13 +119,13 @@ extension DefaultAudioService {
         return .success(())
     }
     
-    public func play(atTime: TimeInterval) async -> Result<Void, AudioServiceError> {
-
+    public func play(atTime: TimeInterval) -> Result<Void, AudioServiceError> {
+        
         guard
             let player = self.player,
             let session = state.value.session
         else {
-
+            
             return .failure(.noActiveFile)
         }
         
@@ -140,20 +140,20 @@ extension DefaultAudioService {
     public func playAndWaitForEnd() async -> Result<Void, AudioServiceError> {
         
         guard let currentSession = state.value.session else {
-
+            
             return .failure(.noActiveFile)
         }
-
+        
         var stateCancellation: AnyCancellable?
         defer { stateCancellation?.cancel() }
         
         var isFinished = false
         var isSetupCall = true
         
-        let result: Result<Void, AudioServiceError> = await withCheckedContinuation { continuation  in
+        return await withCheckedContinuation { continuation  in
             
             stateCancellation = state.sink { state in
-
+                
                 if isSetupCall {
                     isSetupCall = false
                     return
@@ -193,22 +193,16 @@ extension DefaultAudioService {
                 }
             }
             
-            Task {
-                
-                let result = await self.play()
-                
-                guard case .success = result else {
-                    continuation.resume(returning: result)
-                    return
-                }
+            let result = self.play()
+            
+            guard case .success = result else {
+                continuation.resume(returning: result)
+                return
             }
         }
-        
-        
-        return result
     }
     
-    public func pause() async -> Result<Void, AudioServiceError> {
+    public func pause() -> Result<Void, AudioServiceError> {
         
         guard
             let player = player
@@ -226,14 +220,13 @@ extension DefaultAudioService {
         return .success(())
     }
     
-    public func stop() async -> Result<Void, AudioServiceError> {
+    public func stop() -> Result<Void, AudioServiceError> {
         
         guard let player = player else {
             return .failure(.noActiveFile)
         }
         
         player.stop()
-        
         self.player = nil
         
         self.state.value = .stopped

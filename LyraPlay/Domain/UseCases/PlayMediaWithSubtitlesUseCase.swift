@@ -101,13 +101,13 @@ public protocol PlayMediaWithSubtitlesUseCaseInput: AnyObject {
     
     func prepare(params: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
     
-    func play() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
+    func play() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
     
-    func play(atTime: TimeInterval) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
+    func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
     
-    func pause() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
+    func pause() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
     
-    func stop() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
+    func stop() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
 }
 
 public protocol PlayMediaWithSubtitlesUseCaseOutput: AnyObject {
@@ -191,7 +191,7 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
         guard case .success = loadMediaResult else {
             
             state.value = .loadFailed(session: session)
-            return .failure(map(error: loadMediaResult.error!))
+            return loadMediaResult.mapResult()
         }
         
         let loadSubtitlesResult = await loadSubtitlesUseCase.load(
@@ -218,7 +218,7 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
         return .success(())
     }
     
-    public func play() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+    public func play() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         switch state.value {
             
@@ -229,10 +229,10 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
             break
         }
         
-        return map(result: await playMediaUseCase.play())
+        return playMediaUseCase.play().mapResult()
     }
     
-    public func play(atTime: TimeInterval) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+    public func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         switch state.value {
             
@@ -240,17 +240,17 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
             return .failure(.noActiveMedia)
             
         default:
-            return map(result: await playMediaUseCase.play(atTime: atTime))
+            return playMediaUseCase.play(atTime: atTime).mapResult()
         }
     }
     
-    public func pause() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+    public func pause() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         guard case .playing = state.value else {
             return .failure(.noActiveMedia)
         }
         
-        return map(result: await playMediaUseCase.pause())
+        return playMediaUseCase.pause().mapResult()
     }
     
     private func releaseResources() {
@@ -264,7 +264,7 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
         releaseResources()
     }
     
-    public func stop() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+    public func stop() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         switch state.value {
             
@@ -279,17 +279,7 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
             
         case .playing, .interrupted, .paused, .finished:
             
-            let result = await playMediaUseCase.stop()
-            return map(result: result)
-        }
-        
-        return .success(())
-    }
-    
-    private func map(result: Result<Void, PlayMediaUseCaseError>) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        
-        guard case .success = result else {
-            return .failure(map(error: result.error!))
+            return playMediaUseCase.stop().mapResult()
         }
         
         return .success(())
@@ -386,13 +376,13 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
     }
 }
 
-// MARK: - Error Mappings
+// MARK: - Error Mapping
 
-extension DefaultPlayMediaWithSubtitlesUseCase {
+fileprivate extension PlayMediaUseCaseError {
     
-    private func map(error: PlayMediaUseCaseError) -> PlayMediaWithSubtitlesUseCaseError {
+    func map() -> PlayMediaWithSubtitlesUseCaseError {
         
-        switch error {
+        switch self {
             
         case .noActiveTrack:
             return .noActiveMedia
@@ -403,5 +393,19 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
         case .internalError(let error):
             return .internalError(error)
         }
+    }
+}
+
+// MARK: - Result Mapping
+
+fileprivate extension Result where Failure == PlayMediaUseCaseError  {
+    
+    func mapResult() -> Result<Success, PlayMediaWithSubtitlesUseCaseError> {
+        
+        guard case .success(let value) = self else {
+            return .failure(self.error!.map())
+        }
+        
+        return .success(value)
     }
 }

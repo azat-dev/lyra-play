@@ -160,7 +160,7 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         let stateSequence = self.expectSequence(expectedStateItems)
         let disposable = sut.useCase.state.sink { stateSequence.fulfill(with: $0) }
         
-        let result = await sut.useCase.play()
+        let result = sut.useCase.play()
         let error = try AssertResultFailed(result)
         
         guard case .noActiveMedia = error else {
@@ -241,7 +241,7 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
                     
                     let _ = await sut.useCase.prepare(params: sessionParams)
                     
-                    let result = await sut.useCase.play()
+                    let result = sut.useCase.play()
                     try AssertResultSucceded(result)
                 }
             },
@@ -267,17 +267,14 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
                 switch index {
                 
                 case pauseIndex:
-                    Task {
-                        let _ = await sut.useCase.pause()
-                    }
+                    let _ = sut.useCase.pause()
+
                 case playIndex:
-                    Task {
-                        let _ = await sut.useCase.play()
-                    }
+                    let _ = sut.useCase.play()
+
                 case stopIndex:
-                    Task {
-                        let _ = await sut.useCase.stop()
-                    }
+                    let _ = sut.useCase.stop()
+
                 default:
                     break
                 }

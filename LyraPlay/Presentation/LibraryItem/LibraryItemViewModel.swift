@@ -161,12 +161,12 @@ extension DefaultLibraryItemViewModel {
      
         if self.isPlaying.value {
             
-            let _ = await playMediaUseCase.pause()
+            let _ = playMediaUseCase.pause()
             return
         }
         
         let _ = await playMediaUseCase.prepare(mediaId: trackId)
-        let _ = await playMediaUseCase.play()
+        let _ = playMediaUseCase.play()
         await loadSubtitles()
     }
     

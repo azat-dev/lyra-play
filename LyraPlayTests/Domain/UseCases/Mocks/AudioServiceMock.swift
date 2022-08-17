@@ -19,13 +19,13 @@ class AudioServiceMock: AudioService {
     
     public var currentFileId: String?
     
-    func prepare(fileId: String, data trackData: Data) async -> Result<Void, AudioServiceError> {
+    func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioServiceError> {
         
         currentFileId = fileId
         return .success(())
     }
     
-    func play() async -> Result<Void, AudioServiceError> {
+    func play() -> Result<Void, AudioServiceError> {
         
         guard let currentFileId = currentFileId else {
             return .failure(.noActiveFile)
@@ -35,9 +35,9 @@ class AudioServiceMock: AudioService {
         return .success(())
     }
     
-    func play(atTime: TimeInterval) async -> Result<Void, AudioServiceError> {
+    func play(atTime: TimeInterval) -> Result<Void, AudioServiceError> {
         
-        return await play()
+        return play()
     }
 
     
@@ -52,7 +52,7 @@ class AudioServiceMock: AudioService {
         return .success(())
     }
     
-    func pause() async -> Result<Void, AudioServiceError> {
+    func pause() -> Result<Void, AudioServiceError> {
         
         switch self.state.value {
             
@@ -70,7 +70,7 @@ class AudioServiceMock: AudioService {
         }
     }
     
-    func stop() async -> Result<Void, AudioServiceError> {
+    func stop() -> Result<Void, AudioServiceError> {
         
         self.state.value = .stopped
         return .success(())

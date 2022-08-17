@@ -232,7 +232,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
                 
             }.sink { stateSequence.fulfill(with: $0) }
         
-        let result = await sut.useCase.play()
+        let result = sut.useCase.play()
         
         try AssertResultSucceded(result)
         
@@ -325,7 +325,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
                 
             }.sink { stateSequence.fulfill(with: $0) }
         
-        let result = await sut.useCase.play()
+        let result = sut.useCase.play()
         
         try AssertResultSucceded(result)
         

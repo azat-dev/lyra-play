@@ -118,7 +118,7 @@ extension LibraryItemViewController {
         
         viewModel.subtitlesPresenterViewModel.observe(on: self, queue: .main) { [weak self] model in
             
-            guard let model = model else {
+            guard model != nil else {
                 self?.hideSubtitles()
                 return
             }

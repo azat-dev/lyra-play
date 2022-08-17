@@ -46,13 +46,13 @@ public protocol PlayMediaUseCaseInput {
     
     func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError>
     
-    func play() async -> Result<Void, PlayMediaUseCaseError>
+    func play() -> Result<Void, PlayMediaUseCaseError>
     
-    func play(atTime: TimeInterval) async -> Result<Void, PlayMediaUseCaseError>
+    func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError>
     
-    func pause() async -> Result<Void, PlayMediaUseCaseError>
+    func pause() -> Result<Void, PlayMediaUseCaseError>
     
-    func stop() async -> Result<Void, PlayMediaUseCaseError>
+    func stop() -> Result<Void, PlayMediaUseCaseError>
 }
 
 public protocol PlayMediaUseCaseOutput {
@@ -150,82 +150,69 @@ extension DefaultPlayMediaUseCase {
         guard case .success(let trackData) = loadResult else {
             
             state.value = .failedLoad(mediaId: mediaId)
-            return .failure(map(error: loadResult.error!))
+            return .failure(loadResult.error!.map())
         }
         
-        let prepareResult = await audioService.prepare(fileId: mediaId.uuidString, data: trackData)
+        let prepareResult = audioService.prepare(fileId: mediaId.uuidString, data: trackData)
         
         guard case .success = prepareResult else {
             
             state.value = .failedLoad(mediaId: mediaId)
-            return .failure(map(error: loadResult.error!))
+            return .failure(loadResult.error!.map())
         }
         
         state.value = .loaded(mediaId: mediaId)
         return .success(())
     }
     
-    private func play(at time: TimeInterval?) async -> Result<Void, PlayMediaUseCaseError> {
+    private func play(at time: TimeInterval?) -> Result<Void, PlayMediaUseCaseError> {
 
         guard case .loaded = self.state.value else {
             return .failure(.noActiveTrack)
         }
         
-        let playResult: Result<Void, AudioServiceError>
-        
         if let time = time {
-            playResult = await audioService.play(atTime: time)
-        } else {
-            playResult = await audioService.play()
+            return audioService.play(atTime: time).mapResult()
         }
         
-        guard case .success = playResult else {
-            return .failure(map(error: playResult.error!))
-        }
-        
-        return .success(())
+        return audioService.play().mapResult()
     }
     
-    public func play() async -> Result<Void, PlayMediaUseCaseError> {
+    public func play() -> Result<Void, PlayMediaUseCaseError> {
         
         switch self.state.value {
             
         case .interrupted, .paused, .loaded:
-            return await play(at: nil)
+            return play(at: nil)
             
         default:
             return .failure(.noActiveTrack)
         }
     }
     
-    public func play(atTime: TimeInterval) async -> Result<Void, PlayMediaUseCaseError> {
+    public func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError> {
         
-        return await play(at: atTime)
+        return play(at: atTime)
     }
     
-    public func pause() async -> Result<Void, PlayMediaUseCaseError> {
+    public func pause() -> Result<Void, PlayMediaUseCaseError> {
         
-        let pauseResult = await audioService.pause()
-        
-        guard case .success = pauseResult else {
-            return .failure(map(error: pauseResult.error!))
-        }
-        
-        return .success(())
+        return audioService.pause().mapResult()
     }
     
-    public func stop() async -> Result<Void, PlayMediaUseCaseError> {
+    public func stop() -> Result<Void, PlayMediaUseCaseError> {
         
-        fatalError("Not implemented")
+        return audioService.stop().mapResult()
     }
 }
-// MARK: - Error Mappings
 
-extension DefaultPlayMediaUseCase {
+// MARK: - Error Mapping
+
+fileprivate extension AudioServiceError {
     
-    private func map(error: AudioServiceError) -> PlayMediaUseCaseError {
+    func map() -> PlayMediaUseCaseError {
         
-        switch error {
+        switch self {
             
         case .internalError(let err):
             return .internalError(err)
@@ -237,14 +224,33 @@ extension DefaultPlayMediaUseCase {
             return .internalError(nil)
         }
     }
+}
+
+fileprivate extension LoadTrackUseCaseError {
     
-    private func map(error: LoadTrackUseCaseError) -> PlayMediaUseCaseError {
+    func map() -> PlayMediaUseCaseError {
         
-        switch error {
+        switch self {
+            
         case .trackNotFound:
             return .trackNotFound
+            
         case .internalError(let err):
             return .internalError(err)
         }
+    }
+}
+
+// MARK: - Result Mapping
+
+fileprivate extension Result where Failure == AudioServiceError  {
+    
+    func mapResult() -> Result<Success, PlayMediaUseCaseError> {
+        
+        guard case .success(let value) = self else {
+            return .failure(self.error!.map())
+        }
+        
+        return .success(value)
     }
 }
