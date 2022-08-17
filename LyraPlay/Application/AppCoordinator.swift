@@ -42,9 +42,9 @@ final class DefaultAppCoordinator: AppCoordinator {
         return DefaultNowPlayingInfoService()
     } ()
     
-    private lazy var audioService: AudioService = {
+    private lazy var audioPlayer: AudioPlayer = {
         
-        return DefaultAudioService()
+        return DefaultAudioPlayer()
     } ()
     
     private lazy var loadTrackUseCase: LoadTrackUseCase = {
@@ -58,7 +58,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     private lazy var currentPlayerStateUseCase: CurrentPlayerStateUseCase = {
         
         let currentState = DefaultCurrentPlayerStateUseCase(
-            audioService: audioService,
+            audioPlayer: audioPlayer,
             showMediaInfoUseCase: showMediaInfoUseCase
         )
         
@@ -77,7 +77,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     private lazy var playMediaUseCase: PlayMediaUseCase = {
         
         return DefaultPlayMediaUseCase(
-            audioService: audioService,
+            audioPlayer: audioPlayer,
             loadTrackUseCase: loadTrackUseCase
         )
     } ()

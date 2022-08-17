@@ -69,35 +69,35 @@ public final class DefaultPlayMediaUseCase: PlayMediaUseCase {
     
     // MARK: - Properties
     
-    private let audioService: AudioService
+    private let audioPlayer: AudioPlayer
     private let loadTrackUseCase: LoadTrackUseCase
     
     public let state = CurrentValueSubject<PlayMediaUseCaseState, Never>(.initial)
     
     private var currentMediaId: UUID?
     
-    private var observeAudioServiceCanellation: AnyCancellable?
+    private var observeAudioPlayerCanellation: AnyCancellable?
     
     // MARK: - Initializers
     
     public init(
-        audioService: AudioService,
+        audioPlayer: AudioPlayer,
         loadTrackUseCase: LoadTrackUseCase
     ) {
         
-        self.audioService = audioService
+        self.audioPlayer = audioPlayer
         self.loadTrackUseCase = loadTrackUseCase
         
-        observeAudioServiceCanellation = observe(audioService: audioService)
+        observeAudioPlayerCanellation = observe(audioPlayer: audioPlayer)
     }
     
     deinit {
-        observeAudioServiceCanellation?.cancel()
+        observeAudioPlayerCanellation?.cancel()
     }
     
-    private func observe(audioService: AudioService) -> AnyCancellable {
+    private func observe(audioPlayer: AudioPlayer) -> AnyCancellable {
         
-        return audioService.state.sink { [weak self] audioServiceState in
+        return audioPlayer.state.sink { [weak self] audioPlayerState in
             
             guard
                 let self = self,
@@ -106,12 +106,12 @@ public final class DefaultPlayMediaUseCase: PlayMediaUseCase {
                 return
             }
             
-            guard currentMediaId.uuidString == audioServiceState.session?.fileId else {
+            guard currentMediaId.uuidString == audioPlayerState.session?.fileId else {
                 self.state.value = .stopped
                 return
             }
             
-            switch audioServiceState {
+            switch audioPlayerState {
                 
             case .initial:
                 break
@@ -153,7 +153,7 @@ extension DefaultPlayMediaUseCase {
             return .failure(loadResult.error!.map())
         }
         
-        let prepareResult = audioService.prepare(fileId: mediaId.uuidString, data: trackData)
+        let prepareResult = audioPlayer.prepare(fileId: mediaId.uuidString, data: trackData)
         
         guard case .success = prepareResult else {
             
@@ -172,10 +172,10 @@ extension DefaultPlayMediaUseCase {
         }
         
         if let time = time {
-            return audioService.play(atTime: time).mapResult()
+            return audioPlayer.play(atTime: time).mapResult()
         }
         
-        return audioService.play().mapResult()
+        return audioPlayer.play().mapResult()
     }
     
     public func play() -> Result<Void, PlayMediaUseCaseError> {
@@ -197,18 +197,18 @@ extension DefaultPlayMediaUseCase {
     
     public func pause() -> Result<Void, PlayMediaUseCaseError> {
         
-        return audioService.pause().mapResult()
+        return audioPlayer.pause().mapResult()
     }
     
     public func stop() -> Result<Void, PlayMediaUseCaseError> {
         
-        return audioService.stop().mapResult()
+        return audioPlayer.stop().mapResult()
     }
 }
 
 // MARK: - Error Mapping
 
-fileprivate extension AudioServiceError {
+fileprivate extension AudioPlayerError {
     
     func map() -> PlayMediaUseCaseError {
         
@@ -243,7 +243,7 @@ fileprivate extension LoadTrackUseCaseError {
 
 // MARK: - Result Mapping
 
-fileprivate extension Result where Failure == AudioServiceError  {
+fileprivate extension Result where Failure == AudioPlayerError  {
     
     func mapResult() -> Result<Success, PlayMediaUseCaseError> {
         

@@ -1,5 +1,5 @@
 //
-//  AudioServiceMock.swift
+//  AudioPlayerMock.swift
 //  LyraPlayTests
 //
 //  Created by Azat Kaiumov on 05.07.22.
@@ -10,22 +10,22 @@ import Combine
 
 import LyraPlay
 
-class AudioServiceMock: AudioService {
+class AudioPlayerMock: AudioPlayer {
     
     
-    public var state: CurrentValueSubject<AudioServiceState, Never> = .init(.initial)
+    public var state: CurrentValueSubject<AudioPlayerState, Never> = .init(.initial)
     
     public var currentTime = Observable(0.0)
     
     public var currentFileId: String?
     
-    func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioServiceError> {
+    func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioPlayerError> {
         
         currentFileId = fileId
         return .success(())
     }
     
-    func play() -> Result<Void, AudioServiceError> {
+    func play() -> Result<Void, AudioPlayerError> {
         
         guard let currentFileId = currentFileId else {
             return .failure(.noActiveFile)
@@ -35,13 +35,13 @@ class AudioServiceMock: AudioService {
         return .success(())
     }
     
-    func play(atTime: TimeInterval) -> Result<Void, AudioServiceError> {
+    func play(atTime: TimeInterval) -> Result<Void, AudioPlayerError> {
         
         return play()
     }
 
     
-    func playAndWaitForEnd() async -> Result<Void, AudioServiceError> {
+    func playAndWaitForEnd() async -> Result<Void, AudioPlayerError> {
         
         guard let currentFileId = currentFileId else {
             return .failure(.noActiveFile)
@@ -52,7 +52,7 @@ class AudioServiceMock: AudioService {
         return .success(())
     }
     
-    func pause() -> Result<Void, AudioServiceError> {
+    func pause() -> Result<Void, AudioPlayerError> {
         
         switch self.state.value {
             
@@ -70,7 +70,7 @@ class AudioServiceMock: AudioService {
         }
     }
     
-    func stop() -> Result<Void, AudioServiceError> {
+    func stop() -> Result<Void, AudioPlayerError> {
         
         self.state.value = .stopped
         return .success(())

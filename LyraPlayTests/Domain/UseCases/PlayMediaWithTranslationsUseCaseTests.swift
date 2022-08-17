@@ -26,10 +26,10 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         let loadSubtitlesUseCase = LoadSubtitlesUseCaseMock()
         
         let textToSpeechConverter = TextToSpeechConverterMock()
-        let audioServiceMock = AudioServiceMock()
+        let audioPlayerMock = AudioPlayerMock()
         let pronounceTranslationsUseCase = DefaultPronounceTranslationsUseCase(
             textToSpeechConverter: textToSpeechConverter,
-            audioService: audioServiceMock
+            audioPlayer: audioPlayerMock
         )
         
         let provideTranslationsToPlayUseCase = ProvideTranslationsToPlayUseCaseMock()

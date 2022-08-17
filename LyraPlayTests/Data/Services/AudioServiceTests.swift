@@ -1,5 +1,5 @@
 //
-//  AudioServiceTests.swift
+//  AudioPlayerTests.swift
 //  LyraPlayTests
 //
 //  Created by Azat Kaiumov on 05.07.22.
@@ -10,13 +10,13 @@ import Foundation
 import XCTest
 import LyraPlay
 
-class AudioServiceTests: XCTestCase {
+class AudioPlayerTests: XCTestCase {
 
-    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> AudioService {
+    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> AudioPlayer {
 
-        let audioService = DefaultAudioService()
-        detectMemoryLeak(instance: audioService, file: file, line: line)
-        return audioService
+        let audioPlayer = DefaultAudioPlayer()
+        detectMemoryLeak(instance: audioPlayer, file: file, line: line)
+        return audioPlayer
     }
     
     private func getTestFile(name: String = "test_music_with_tags") throws -> Data {
@@ -29,16 +29,16 @@ class AudioServiceTests: XCTestCase {
     
     func test_play() async throws {
         
-        let audioService = createSUT()
+        let audioPlayer = createSUT()
     
         let fileId1 = "test1"
         let fileId2 = "test2"
         
-        let session1 = AudioServiceSession(fileId: fileId1)
-        let session2 = AudioServiceSession(fileId: fileId2)
+        let session1 = AudioPlayerSession(fileId: fileId1)
+        let session2 = AudioPlayerSession(fileId: fileId2)
         
         let stateSequence = self.expectSequence([
-            AudioServiceState.initial,
+            AudioPlayerState.initial,
             .loaded(session: session1),
             .playing(session: session1),
             .loaded(session: session2),
@@ -46,23 +46,23 @@ class AudioServiceTests: XCTestCase {
             .finished(session: session2)
         ])
         
-        let observer = stateSequence.observe(audioService.state)
+        let observer = stateSequence.observe(audioPlayer.state)
         
         let data = try getTestFile()
         let shortData = try getTestFile(name: "test_music_with_tags_short")
         
-        let prepareResult1 = audioService.prepare(fileId: fileId1, data: data)
+        let prepareResult1 = audioPlayer.prepare(fileId: fileId1, data: data)
         try AssertResultSucceded(prepareResult1)
         
-        let result1 = audioService.play()
+        let result1 = audioPlayer.play()
         try AssertResultSucceded(result1)
         
         sleep(1)
         
-        let prepareResult2 = audioService.prepare(fileId: fileId2, data: shortData)
+        let prepareResult2 = audioPlayer.prepare(fileId: fileId2, data: shortData)
         try AssertResultSucceded(prepareResult2)
         
-        let result2 = audioService.play()
+        let result2 = audioPlayer.play()
         try AssertResultSucceded(result2)
         
         sleep(1)
@@ -73,16 +73,16 @@ class AudioServiceTests: XCTestCase {
     
     func test_playAndWaitForEnd__success() async throws {
         
-        let audioService = createSUT()
+        let audioPlayer = createSUT()
     
         let fileId1 = "test1"
         let fileId2 = "test2"
         
-        let session1 = AudioServiceSession(fileId: fileId1)
-        let session2 = AudioServiceSession(fileId: fileId2)
+        let session1 = AudioPlayerSession(fileId: fileId1)
+        let session2 = AudioPlayerSession(fileId: fileId2)
         
         let stateSequence = self.expectSequence([
-            AudioServiceState.initial,
+            AudioPlayerState.initial,
             .loaded(session: session1),
             .playing(session: session1),
             .finished(session: session1),
@@ -91,26 +91,26 @@ class AudioServiceTests: XCTestCase {
             .finished(session: session2)
         ])
         
-        let observer = stateSequence.observe(audioService.state)
+        let observer = stateSequence.observe(audioPlayer.state)
         
         let shortData = try getTestFile(name: "test_music_with_tags_short")
         
-        let prepareResult1 = audioService.prepare(fileId: fileId1, data: shortData)
+        let prepareResult1 = audioPlayer.prepare(fileId: fileId1, data: shortData)
         try AssertResultSucceded(prepareResult1)
         
-        let result = await audioService.playAndWaitForEnd()
+        let result = await audioPlayer.playAndWaitForEnd()
         
         try AssertResultSucceded(result)
-        XCTAssertEqual(audioService.state.value, .finished(session: .init(fileId: fileId1)))
+        XCTAssertEqual(audioPlayer.state.value, .finished(session: .init(fileId: fileId1)))
         
         
-        let prepareResult2 = audioService.prepare(fileId: fileId2, data: shortData)
+        let prepareResult2 = audioPlayer.prepare(fileId: fileId2, data: shortData)
         try AssertResultSucceded(prepareResult2)
         
-        let result2 = await audioService.playAndWaitForEnd()
+        let result2 = await audioPlayer.playAndWaitForEnd()
         
         try AssertResultSucceded(result2)
-        XCTAssertEqual(audioService.state.value, .finished(session: .init(fileId: fileId2)))
+        XCTAssertEqual(audioPlayer.state.value, .finished(session: .init(fileId: fileId2)))
         
         stateSequence.wait(timeout: 0, enforceOrder: true)
         observer.cancel()
@@ -118,29 +118,29 @@ class AudioServiceTests: XCTestCase {
     
     func test_playAndWaitForEnd__interrupted() async throws {
         
-        let audioService = createSUT()
+        let audioPlayer = createSUT()
     
         let fileId = "test1"
         
         let shortData = try getTestFile(name: "test_music_with_tags_short")
 
-        let cancellation = audioService.state.sink { [weak audioService] state in
+        let cancellation = audioPlayer.state.sink { [weak audioPlayer] state in
 
-            guard let audioService = audioService else {
+            guard let audioPlayer = audioPlayer else {
                 return
             }
             
             if case .playing = state {
 
                 Task {
-                    audioService.stop()
+                    audioPlayer.stop()
                 }
             }
         }
         
-        let _ = audioService.prepare(fileId: fileId, data: shortData)
+        let _ = audioPlayer.prepare(fileId: fileId, data: shortData)
         
-        let result = await audioService.playAndWaitForEnd()
+        let result = await audioPlayer.playAndWaitForEnd()
         let error = try AssertResultFailed(result)
 
         guard case .waitIsInterrupted = error else {

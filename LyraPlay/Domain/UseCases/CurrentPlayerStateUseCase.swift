@@ -43,8 +43,8 @@ public protocol CurrentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput {
 
 public final class DefaultCurrentPlayerStateUseCase: CurrentPlayerStateUseCase {
     
-    private let audioService: AudioServiceOutput
-    private var audioServiceCancellation: AnyCancellable?
+    private let audioPlayer: AudioPlayerOutput
+    private var audioPlayerCancellation: AnyCancellable?
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
     
     private var prevTrackId: String?
@@ -55,18 +55,18 @@ public final class DefaultCurrentPlayerStateUseCase: CurrentPlayerStateUseCase {
     public var volume = Observable(0.0)
     
     public init(
-        audioService: AudioServiceOutput,
+        audioPlayer: AudioPlayerOutput,
         showMediaInfoUseCase: ShowMediaInfoUseCase
     ) {
         
-        self.audioService = audioService
+        self.audioPlayer = audioPlayer
         self.showMediaInfoUseCase = showMediaInfoUseCase
         
-        bind(to: audioService)
+        bind(to: audioPlayer)
     }
     
     deinit {
-        audioServiceCancellation?.cancel()
+        audioPlayerCancellation?.cancel()
     }
     
     private func updateTrackInfo(trackId: UUID) async {
@@ -83,9 +83,9 @@ public final class DefaultCurrentPlayerStateUseCase: CurrentPlayerStateUseCase {
         self.info.value = mediaInfo
     }
     
-    public func bind(to audioService: AudioServiceOutput) {
+    public func bind(to audioPlayer: AudioPlayerOutput) {
         
-        audioServiceCancellation = audioService.state.sink { [weak self] state in
+        audioPlayerCancellation = audioPlayer.state.sink { [weak self] state in
 
             guard let self = self else {
                 return

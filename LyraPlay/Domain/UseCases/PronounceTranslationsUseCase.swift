@@ -51,7 +51,7 @@ public final class DefaultPronounceTranslationsUseCase: PronounceTranslationsUse
     // MARK: - Properties
     
     private let textToSpeechConverter: TextToSpeechConverter
-    private let audioService: AudioService
+    private let audioPlayer: AudioPlayer
     
     public let state = CurrentValueSubject<PronounceTranslationsUseCaseState, Never>(.stopped)
     
@@ -59,11 +59,11 @@ public final class DefaultPronounceTranslationsUseCase: PronounceTranslationsUse
     
     public init(
         textToSpeechConverter: TextToSpeechConverter,
-        audioService: AudioService
+        audioPlayer: AudioPlayer
     ) {
         
         self.textToSpeechConverter = textToSpeechConverter
-        self.audioService = audioService
+        self.audioPlayer = audioPlayer
     }
 }
 
@@ -97,7 +97,7 @@ extension DefaultPronounceTranslationsUseCase {
         
         if let originalData = converted.original {
             
-            let prepareResult = audioService.prepare(
+            let prepareResult = audioPlayer.prepare(
                 fileId: translation.translationId.uuidString,
                 data: originalData
             )
@@ -106,18 +106,18 @@ extension DefaultPronounceTranslationsUseCase {
                 return false
             }
             
-            let result = await audioService.playAndWaitForEnd()
+            let result = await audioPlayer.playAndWaitForEnd()
             guard case .success = result else {
                 return false
             }
             
             // Clean finished result
-            let _ = audioService.stop()
+            let _ = audioPlayer.stop()
         }
         
         if let translatedData = converted.translated {
             
-            let prepareResult = audioService.prepare(
+            let prepareResult = audioPlayer.prepare(
                 fileId: translation.translationId.uuidString,
                 data: translatedData
             )
@@ -160,11 +160,11 @@ extension DefaultPronounceTranslationsUseCase {
             return
         }
         
-        let _ = audioService.pause()
+        let _ = audioPlayer.pause()
     }
     
     public func stop() -> Void {
         
-        let _ = audioService.stop()
+        let _ = audioPlayer.stop()
     }
 }

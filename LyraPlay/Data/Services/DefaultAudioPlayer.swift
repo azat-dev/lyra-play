@@ -1,5 +1,5 @@
 //
-//  DefaultAudioService.swift
+//  DefaultAudioPlayer.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 29.06.22.
@@ -12,7 +12,7 @@ import Combine
 
 // MARK: - Implementations
 
-public final class DefaultAudioService: NSObject, AudioService, AVAudioPlayerDelegate {
+public final class DefaultAudioPlayer: NSObject, AudioPlayer, AVAudioPlayerDelegate {
     
     // MARK: - Properties
     
@@ -24,7 +24,7 @@ public final class DefaultAudioService: NSObject, AudioService, AVAudioPlayerDel
     
     private var playerIsPlayingObserver: NSKeyValueObservation? = nil
     
-    public let state: CurrentValueSubject<AudioServiceState, Never> = .init(.initial)
+    public let state: CurrentValueSubject<AudioPlayerState, Never> = .init(.initial)
     
     // MARK: - Initializers
     
@@ -50,7 +50,7 @@ public final class DefaultAudioService: NSObject, AudioService, AVAudioPlayerDel
 
 // MARK: - Input methods
 
-extension DefaultAudioService {
+extension DefaultAudioPlayer {
     
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully: Bool) {
         
@@ -72,9 +72,9 @@ extension DefaultAudioService {
     }
 }
 
-extension DefaultAudioService {
+extension DefaultAudioPlayer {
     
-    public func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioServiceError> {
+    public func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioPlayerError> {
         
         try? audioSession.setActive(true)
         
@@ -98,7 +98,7 @@ extension DefaultAudioService {
         return .success(())
     }
     
-    public func play() -> Result<Void, AudioServiceError> {
+    public func play() -> Result<Void, AudioPlayerError> {
         
         guard
             let player = self.player,
@@ -116,7 +116,7 @@ extension DefaultAudioService {
         return .success(())
     }
     
-    public func play(atTime: TimeInterval) -> Result<Void, AudioServiceError> {
+    public func play(atTime: TimeInterval) -> Result<Void, AudioPlayerError> {
         
         guard
             let player = self.player,
@@ -134,7 +134,7 @@ extension DefaultAudioService {
         return .success(())
     }
     
-    public func playAndWaitForEnd() async -> Result<Void, AudioServiceError> {
+    public func playAndWaitForEnd() async -> Result<Void, AudioPlayerError> {
         
         guard let currentSession = state.value.session else {
             
@@ -199,7 +199,7 @@ extension DefaultAudioService {
         }
     }
     
-    public func pause() -> Result<Void, AudioServiceError> {
+    public func pause() -> Result<Void, AudioPlayerError> {
         
         guard
             let player = player
@@ -217,7 +217,7 @@ extension DefaultAudioService {
         return .success(())
     }
     
-    public func stop() -> Result<Void, AudioServiceError> {
+    public func stop() -> Result<Void, AudioPlayerError> {
         
         guard let player = player else {
             return .failure(.noActiveFile)

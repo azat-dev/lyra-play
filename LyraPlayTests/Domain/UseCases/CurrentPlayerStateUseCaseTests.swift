@@ -15,17 +15,17 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
     
     typealias SUT = (
         useCase: CurrentPlayerStateUseCase,
-        audioService: AudioServiceMock,
+        audioPlayer: AudioPlayerMock,
         showMediaInfoUseCase: ShowMediaInfoUseCaseMock
     )
     
     func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
         
         let showMediaInfoUseCase = ShowMediaInfoUseCaseMock()
-        let audioService = AudioServiceMock()
+        let audioPlayer = AudioPlayerMock()
         
         let useCase = DefaultCurrentPlayerStateUseCase(
-            audioService: audioService,
+            audioPlayer: audioPlayer,
             showMediaInfoUseCase: showMediaInfoUseCase
         )
         
@@ -33,7 +33,7 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         
         return (
             useCase,
-            audioService,
+            audioPlayer,
             showMediaInfoUseCase
         )
     }
@@ -74,12 +74,12 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         trackIdSequence.observe(sut.useCase.info, mapper: { $0?.id })
         playerStateSequence.observe(sut.useCase.state)
         
-        let _ = sut.audioService.prepare(
+        let _ = sut.audioPlayer.prepare(
             fileId: track.id,
             data: Data()
         )
         
-        let resultPlay = sut.audioService.play()
+        let resultPlay = sut.audioPlayer.play()
         
         try AssertResultSucceded(resultPlay)
         
@@ -100,14 +100,14 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         playerStateSequence.observe(sut.useCase.state)
         trackIdSequence.observe(sut.useCase.info, mapper: { $0?.id })
 
-        let _ = sut.audioService.prepare(
+        let _ = sut.audioPlayer.prepare(
             fileId: track.id,
             data: Data()
         )
-        let resultPlay = sut.audioService.play()
+        let resultPlay = sut.audioPlayer.play()
         try AssertResultSucceded(resultPlay)
 
-        let resultPause = sut.audioService.pause()
+        let resultPause = sut.audioPlayer.pause()
         try AssertResultSucceded(resultPause)
 
         trackIdSequence.wait(timeout: 3, enforceOrder: true)
@@ -141,7 +141,7 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
             
             controlledPlayerState.value = state
             
-            let resultStop = sut.audioService.stop()
+            let resultStop = sut.audioPlayer.stop()
             try! AssertResultSucceded(resultStop)
         }
         
@@ -154,12 +154,12 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
             dump(info)
         }
         
-        let _ = sut.audioService.prepare(
+        let _ = sut.audioPlayer.prepare(
             fileId: track.id,
             data: Data()
         )
 
-        let resultPlay = sut.audioService.play()
+        let resultPlay = sut.audioPlayer.play()
         try AssertResultSucceded(resultPlay)
 
         trackIdSequence.wait(timeout: 3, enforceOrder: true)
@@ -184,20 +184,20 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         playerStateSequence.observe(sut.useCase.state)
         trackIdSequence.observe(sut.useCase.info, mapper: { $0?.id })
 
-        let _ = sut.audioService.prepare(
+        let _ = sut.audioPlayer.prepare(
             fileId: track1.id,
             data: Data()
         )
         
-        let resultPlay1 = sut.audioService.play()
+        let resultPlay1 = sut.audioPlayer.play()
         try AssertResultSucceded(resultPlay1)
 
-        let _ = sut.audioService.prepare(
+        let _ = sut.audioPlayer.prepare(
             fileId: track2.id,
             data: Data()
         )
         
-        let resultPlay2 = sut.audioService.play()
+        let resultPlay2 = sut.audioPlayer.play()
         try AssertResultSucceded(resultPlay2)
 
         trackIdSequence.wait(timeout: 3, enforceOrder: true)
