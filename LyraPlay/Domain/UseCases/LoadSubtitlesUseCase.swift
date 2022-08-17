@@ -23,7 +23,7 @@ public protocol LoadSubtitlesUseCase {
 // MARK: - Implementations
 
 public final class DefaultLoadSubtitlesUseCase: LoadSubtitlesUseCase {
-
+    
     
     private let subtitlesRepository: SubtitlesRepository
     private let subtitlesFiles: FilesRepository
@@ -40,36 +40,6 @@ public final class DefaultLoadSubtitlesUseCase: LoadSubtitlesUseCase {
         self.subtitlesParser = subtitlesParser
     }
     
-    private static func map(_ error: SubtitlesRepositoryError) -> LoadSubtitlesUseCaseError {
-        
-        switch error {
-        case .itemNotFound:
-            return .itemNotFound
-            
-        case .internalError(let err):
-            return .internalError(err)
-        }
-    }
-    
-    private static func map(_ error: FilesRepositoryError) -> LoadSubtitlesUseCaseError {
-
-        switch error {
-        case .fileNotFound:
-            return .itemNotFound
-            
-        case .internalError(let err):
-            return .internalError(err)
-        }
-    }
-    
-    private static func map(_ error: SubtitlesParserError) -> LoadSubtitlesUseCaseError {
-
-        switch error {
-        case .internalError(let err):
-            return .internalError(err)
-        }
-    }
-    
     public func load(for mediaFileId: UUID, language: String) async -> Result<Subtitles, LoadSubtitlesUseCaseError> {
         
         let resultInfo = await subtitlesRepository.fetch(
@@ -78,9 +48,8 @@ public final class DefaultLoadSubtitlesUseCase: LoadSubtitlesUseCase {
         )
         
         guard case .success(let subtitlesInfo) = resultInfo else {
-
-            let mappedError = Self.map(resultInfo.error!)
-            return .failure(mappedError)
+            
+            return .failure(resultInfo.error!.map())
         }
         
         let fileName = subtitlesInfo.file
@@ -89,8 +58,7 @@ public final class DefaultLoadSubtitlesUseCase: LoadSubtitlesUseCase {
         
         guard case .success(let fileData) = fileResult else {
             
-            let mappedError = Self.map(fileResult.error!)
-            return .failure(mappedError)
+            return .failure(fileResult.error!.map())
         }
         
         guard let text = String(data: fileData, encoding: .utf8) else {
@@ -98,14 +66,54 @@ public final class DefaultLoadSubtitlesUseCase: LoadSubtitlesUseCase {
         }
         
         let parseResult = await subtitlesParser.parse(text)
-
+        
         guard case .success(let subtitles) = parseResult else {
-
-            let mappedError = Self.map(parseResult.error!)
-            return .failure(mappedError)
+            
+            return .failure(parseResult.error!.map())
         }
         
         return .success(subtitles)
     }
 }
 
+// MARK: - Map Errors
+
+fileprivate extension SubtitlesRepositoryError {
+    
+    func map() -> LoadSubtitlesUseCaseError {
+        
+        switch self {
+            
+        case .itemNotFound:
+            return .itemNotFound
+            
+        case .internalError(let err):
+            return .internalError(err)
+        }
+    }
+}
+
+fileprivate extension FilesRepositoryError {
+    
+    func map() -> LoadSubtitlesUseCaseError {
+        
+        switch self {
+        case .fileNotFound:
+            return .itemNotFound
+            
+        case .internalError(let err):
+            return .internalError(err)
+        }
+    }
+}
+
+fileprivate extension SubtitlesParserError {
+    
+    func map() -> LoadSubtitlesUseCaseError {
+        
+        switch self {
+        case .internalError(let err):
+            return .internalError(err)
+        }
+    }
+}
