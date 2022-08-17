@@ -50,6 +50,9 @@
 		AA252C9C2874E302001B7AEE /* XCTestCase+MemoryLeakDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA252C9B2874E302001B7AEE /* XCTestCase+MemoryLeakDetection.swift */; };
 		AA26B06828A6CC5D002E4920 /* PlayMediaWithSubtitlesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA26B06728A6CC5D002E4920 /* PlayMediaWithSubtitlesUseCase.swift */; };
 		AA26B06A28A6CC8E002E4920 /* PlayMediaWithSubtitlesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA26B06928A6CC8E002E4920 /* PlayMediaWithSubtitlesUseCaseTests.swift */; };
+		AA273A1828ACD30700119088 /* AudioSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA273A1728ACD30700119088 /* AudioSessionTests.swift */; };
+		AA273A1A28ACD75500119088 /* AudioSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA273A1928ACD75500119088 /* AudioSession.swift */; };
+		AA273A1C28ACD8E100119088 /* DefaultAudioSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA273A1B28ACD8E100119088 /* DefaultAudioSession.swift */; };
 		AA2895A92876EAA100B168C4 /* LyraPlay.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AA2895A72876EAA100B168C4 /* LyraPlay.xcdatamodeld */; };
 		AA2895AB28772B0100B168C4 /* ImportSubtitlesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2895AA28772B0100B168C4 /* ImportSubtitlesUseCaseTests.swift */; };
 		AA2895AD287742FC00B168C4 /* ImportSubtitlesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2895AC287742FC00B168C4 /* ImportSubtitlesUseCase.swift */; };
@@ -257,6 +260,9 @@
 		AA252C9B2874E302001B7AEE /* XCTestCase+MemoryLeakDetection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+MemoryLeakDetection.swift"; sourceTree = "<group>"; };
 		AA26B06728A6CC5D002E4920 /* PlayMediaWithSubtitlesUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayMediaWithSubtitlesUseCase.swift; sourceTree = "<group>"; };
 		AA26B06928A6CC8E002E4920 /* PlayMediaWithSubtitlesUseCaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayMediaWithSubtitlesUseCaseTests.swift; sourceTree = "<group>"; };
+		AA273A1728ACD30700119088 /* AudioSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSessionTests.swift; sourceTree = "<group>"; };
+		AA273A1928ACD75500119088 /* AudioSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioSession.swift; sourceTree = "<group>"; };
+		AA273A1B28ACD8E100119088 /* DefaultAudioSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultAudioSession.swift; sourceTree = "<group>"; };
 		AA2895A82876EAA100B168C4 /* LyraPlay.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LyraPlay.xcdatamodel; sourceTree = "<group>"; };
 		AA2895AA28772B0100B168C4 /* ImportSubtitlesUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportSubtitlesUseCaseTests.swift; sourceTree = "<group>"; };
 		AA2895AC287742FC00B168C4 /* ImportSubtitlesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportSubtitlesUseCase.swift; sourceTree = "<group>"; };
@@ -514,6 +520,7 @@
 			isa = PBXGroup;
 			children = (
 				AA252C9928747520001B7AEE /* AudioServiceTests.swift */,
+				AA273A1728ACD30700119088 /* AudioSessionTests.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -582,6 +589,7 @@
 		AA3BAB26286CC623005EE01E /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				AA273A1928ACD75500119088 /* AudioSession.swift */,
 				AA3BAB27286CC646005EE01E /* AudioPlayerService.swift */,
 			);
 			path = Services;
@@ -591,6 +599,7 @@
 			isa = PBXGroup;
 			children = (
 				AA3BAB2D286CC79F005EE01E /* DefaultAudioPlayerService.swift */,
+				AA273A1B28ACD8E100119088 /* DefaultAudioSession.swift */,
 				AA731CBC2870395B0044412F /* NowPlayingInfoService.swift */,
 			);
 			path = Services;
@@ -1254,8 +1263,10 @@
 				AA0D3F8328762698006717B9 /* SubtitlesRepository.swift in Sources */,
 				AA0F69BC287F4F0D00BD13DB /* SubtitlesPresenterView.swift in Sources */,
 				AA0DADFF28A1896000B11B95 /* PronounceTranslationsUseCase.swift in Sources */,
+				AA273A1C28ACD8E100119088 /* DefaultAudioSession.swift in Sources */,
 				AACEA32B2869ED5800111565 /* AudioFilesBrowserCell.swift in Sources */,
 				AA2895A92876EAA100B168C4 /* LyraPlay.xcdatamodeld in Sources */,
+				AA273A1A28ACD75500119088 /* AudioSession.swift in Sources */,
 				AAA87987289E643100E04CA9 /* TranslationItemPosition.swift in Sources */,
 				AACEA31C2869ABEB00111565 /* AudioFilesBrowserViewModel.swift in Sources */,
 				AA3B59CA2887011400F68AF8 /* DictionaryRepository.swift in Sources */,
@@ -1385,6 +1396,7 @@
 				AACEA3152869A32A00111565 /* AudioLibraryRepositoryMock.swift in Sources */,
 				AAF2EEBE287DF75700894F71 /* ActionTimerFactoryTests.swift in Sources */,
 				AA0DADFD28A1893A00B11B95 /* PronounceTranslationsUseCaseTests.swift in Sources */,
+				AA273A1828ACD30700119088 /* AudioSessionTests.swift in Sources */,
 				AA252C9A28747520001B7AEE /* AudioServiceTests.swift in Sources */,
 				AACEA3202869AC5B00111565 /* AudioFilesBrowserViewModelTests.swift in Sources */,
 				AA2DD32628A2F5B20053A17A /* PlayMediaWithTranslationsUseCaseTests.swift in Sources */,
