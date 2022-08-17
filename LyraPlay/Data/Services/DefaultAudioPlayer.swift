@@ -15,11 +15,8 @@ import Combine
 public final class DefaultAudioPlayer: NSObject, AudioPlayer, AVAudioPlayerDelegate {
     
     // MARK: - Properties
-    
-    private var audioSession: AVAudioSession {
-        AVAudioSession.sharedInstance()
-    }
-    
+
+    private let audioSession: AudioSession
     private var player: AVAudioPlayer?
     
     private var playerIsPlayingObserver: NSKeyValueObservation? = nil
@@ -28,23 +25,10 @@ public final class DefaultAudioPlayer: NSObject, AudioPlayer, AVAudioPlayerDeleg
     
     // MARK: - Initializers
     
-    public override init() {
+    public init(audioSession: AudioSession) {
         
+        self.audioSession = audioSession
         self.player = nil
-        super.init()
-        
-        do {
-            // Set the audio session category, mode, and options.
-            try audioSession.setCategory(
-                .playback,
-                mode: .spokenAudio,
-                policy: .longFormAudio,
-                options: [
-                ]
-            )
-        } catch {
-            print("Failed to set audio session category.")
-        }
     }
 }
 
@@ -76,7 +60,7 @@ extension DefaultAudioPlayer {
     
     public func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioPlayerError> {
         
-        try? audioSession.setActive(true)
+        audioSession.activate()
         
         do {
             
@@ -108,7 +92,7 @@ extension DefaultAudioPlayer {
             return .failure(.noActiveFile)
         }
         
-        try? audioSession.setActive(true)
+        audioSession.activate()
         
         player.play()
         self.state.value = .playing(session: session)
@@ -126,7 +110,7 @@ extension DefaultAudioPlayer {
             return .failure(.noActiveFile)
         }
         
-        try? audioSession.setActive(true)
+        audioSession.activate()
         
         player.play(atTime: atTime)
         self.state.value = .playing(session: session)
@@ -207,6 +191,7 @@ extension DefaultAudioPlayer {
             return .failure(.noActiveFile)
         }
         
+        audioSession.deactivate()
         player.pause()
         
         guard case .playing(let session) = state.value else {
@@ -223,6 +208,7 @@ extension DefaultAudioPlayer {
             return .failure(.noActiveFile)
         }
         
+        audioSession.deactivate()
         player.stop()
         self.player = nil
         
