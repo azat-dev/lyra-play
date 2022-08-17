@@ -20,8 +20,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         let provideTranslationsForSubtitlesUseCase = ProvideTranslationsForSubtitlesUseCaseMock()
         
         let useCase = DefaultProvideTranslationsToPlayUseCase(
-            provideTranslationsForSubtitlesUseCase: provideTranslationsForSubtitlesUseCase,
-            minNumberOfItemsToQueue: 1
+            provideTranslationsForSubtitlesUseCase: provideTranslationsForSubtitlesUseCase
         )
         detectMemoryLeak(instance: useCase)
         
@@ -147,7 +146,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         
         guard fromSentenceIndex < subtitles.sentences.count else {
             
-            let translation = await sut.useCase.getTranslationsToPlay(for: .sentence(fromSentenceIndex))
+            let translation = sut.useCase.getTranslationsToPlay(for: .sentence(fromSentenceIndex))
             receivedOutputs.append(translation)
     
             AssertEqualReadable(receivedOutputs, expectedOutputs, file: file, line: line)
@@ -158,7 +157,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
             
             let sentence = subtitles.sentences[sentenceIndex]
             
-            let translation = await sut.useCase.getTranslationsToPlay(for: .sentence(sentenceIndex))
+            let translation = sut.useCase.getTranslationsToPlay(for: .sentence(sentenceIndex))
             receivedOutputs.append(translation)
             
             guard let timeMarks = sentence.timeMarks else {
@@ -167,7 +166,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
             
             for timeMarkIndex in 0..<timeMarks.count {
                 
-                let translation = await sut.useCase.getTranslationsToPlay(for: .init(sentenceIndex: sentenceIndex, timeMarkIndex: timeMarkIndex))
+                let translation = sut.useCase.getTranslationsToPlay(for: .init(sentenceIndex: sentenceIndex, timeMarkIndex: timeMarkIndex))
                 
                 receivedOutputs.append(translation)
             }
@@ -175,7 +174,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         
         if fromSentenceIndex > subtitles.sentences.count {
             
-            let translation = await sut.useCase.getTranslationsToPlay(for: .sentence(fromSentenceIndex))
+            let translation = sut.useCase.getTranslationsToPlay(for: .sentence(fromSentenceIndex))
             receivedOutputs.append(translation)
         }
         

@@ -342,7 +342,7 @@ final class ProvideTranslationsToPlayUseCaseMock: ProvideTranslationsToPlayUseCa
     
     var willReturnGetTranslationsToPlay: GetTranslationsToPlayCallback = { _ in nil }
     
-    func getTranslationsToPlay(for position: SubtitlesPosition) async -> TranslationsToPlay? {
+    func getTranslationsToPlay(for position: SubtitlesPosition) -> TranslationsToPlay? {
         return willReturnGetTranslationsToPlay(position)
     }
     

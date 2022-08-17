@@ -50,7 +50,7 @@ extension PlaySubtitlesUseCaseState {
     }
 }
 
-public struct SubtitlesPosition: Equatable, Comparable {
+public struct SubtitlesPosition: Equatable, Comparable, Hashable {
     
     public var sentenceIndex: Int
     public var timeMarkIndex: Int?
