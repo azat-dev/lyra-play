@@ -25,7 +25,6 @@ public enum PlayMediaUseCaseState: Equatable {
     case failedLoad(mediaId: UUID)
     case playing(mediaId: UUID)
     case stopped
-    case interrupted(mediaId: UUID, time: TimeInterval)
     case paused(mediaId: UUID, time: TimeInterval)
     case finished(mediaId: UUID)
     
@@ -36,7 +35,7 @@ public enum PlayMediaUseCaseState: Equatable {
         case .initial, .stopped:
             return nil
             
-        case .loading(let mediaId), .loaded(let mediaId), .playing(let mediaId), .interrupted(let mediaId, _), .paused(let mediaId, _), .finished(let mediaId), .failedLoad(let mediaId):
+        case .loading(let mediaId), .loaded(let mediaId), .playing(let mediaId), .paused(let mediaId, _), .finished(let mediaId), .failedLoad(let mediaId):
             return mediaId
         }
     }
@@ -125,9 +124,6 @@ public final class DefaultPlayMediaUseCase: PlayMediaUseCase {
             case .playing:
                 self.state.value = .playing(mediaId: currentMediaId)
                 
-            case .interrupted(_, let time):
-                self.state.value = .interrupted(mediaId: currentMediaId, time: time)
-                
             case .paused(_, let time):
                 self.state.value = .paused(mediaId: currentMediaId, time: time)
                 
@@ -182,7 +178,7 @@ extension DefaultPlayMediaUseCase {
         
         switch self.state.value {
             
-        case .interrupted, .paused, .loaded:
+        case .paused, .loaded:
             return play(at: nil)
             
         default:

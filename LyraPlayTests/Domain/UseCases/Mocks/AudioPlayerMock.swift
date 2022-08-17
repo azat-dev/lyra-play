@@ -60,7 +60,7 @@ class AudioPlayerMock: AudioPlayer {
             
             return .failure(.noActiveFile)
             
-        case .paused(let session, _), .playing(let session), .interrupted(let session, _):
+        case .paused(let session, _), .playing(let session):
             
             self.state.value = .paused(session: session, time: currentTime.value)
             return .success(())

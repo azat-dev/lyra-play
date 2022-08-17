@@ -103,8 +103,7 @@ public final class DefaultCurrentPlayerStateUseCase: CurrentPlayerStateUseCase {
                 newOutputState = .playing
                 newTrackId = stateData.fileId
                 
-            case .paused(let data, let time),
-                    .interrupted(let data, let time):
+            case .paused(let data, let time):
                 
                 newOutputState = .paused
                 newTrackId = data.fileId

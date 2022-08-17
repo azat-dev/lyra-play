@@ -50,8 +50,6 @@ public enum PlayMediaWithTranslationsUseCaseState: Equatable {
     
     case pronouncingTranslations(session: PlayMediaWithTranslationsSession, subtitlesState: SubtitlesState?, data: PronounceTranslationsUseCaseStateData)
     
-    case interrupted(session: PlayMediaWithTranslationsSession, subtitlesState: SubtitlesState?, time: TimeInterval)
-    
     case paused(session: PlayMediaWithTranslationsSession, subtitlesState: SubtitlesState?, time: TimeInterval)
     
     case stopped(session: PlayMediaWithTranslationsSession)
@@ -68,7 +66,7 @@ extension PlayMediaWithTranslationsUseCaseState {
         case .initial:
             return nil
             
-        case .loading(let session), .loadFailed(let session), .loaded(let session, _), .playing(let session, _), .pronouncingTranslations(let session, _, _), .paused(let session, _, _), .interrupted(let session, _, _), .stopped(let session), .finished(let session):
+        case .loading(let session), .loadFailed(let session), .loaded(let session, _), .playing(let session, _), .pronouncingTranslations(let session, _, _), .paused(let session, _, _), .stopped(let session), .finished(let session):
             
             return session
         }
@@ -257,9 +255,6 @@ extension DefaultPlayMediaWithTranslationsUseCase {
             }
             
             state.value = .playing(session: session, subtitlesState: subtitlesState)
-            
-        case .interrupted(_, let subtitlesState, let time):
-            state.value = .interrupted(session: session, subtitlesState: subtitlesState, time: time)
             
         case .paused(_, let subtitlesState, let time):
             state.value = .paused(session: session, subtitlesState: subtitlesState, time: time)

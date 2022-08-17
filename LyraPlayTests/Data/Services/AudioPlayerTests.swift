@@ -116,7 +116,7 @@ class AudioPlayerTests: XCTestCase {
         observer.cancel()
     }
     
-    func test_playAndWaitForEnd__interrupted() async throws {
+    func test_playAndWaitForEnd__stop() async throws {
         
         let audioPlayer = createSUT()
     

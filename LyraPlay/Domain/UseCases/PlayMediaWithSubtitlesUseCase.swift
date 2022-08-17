@@ -24,7 +24,6 @@ public enum PlayMediaWithSubtitlesUseCaseState: Equatable {
     case loadFailed(session: PlayMediaWithSubtitlesSessionParams)
     case loaded(session: PlayMediaWithSubtitlesSessionParams, subtitlesState: SubtitlesState?)
     case playing(session: PlayMediaWithSubtitlesSessionParams, subtitlesState: SubtitlesState?)
-    case interrupted(session: PlayMediaWithSubtitlesSessionParams, subtitlesState: SubtitlesState?, time: TimeInterval)
     case paused(session: PlayMediaWithSubtitlesSessionParams, subtitlesState: SubtitlesState?, time: TimeInterval)
     case stopped(session: PlayMediaWithSubtitlesSessionParams)
     case finished(session: PlayMediaWithSubtitlesSessionParams)
@@ -40,7 +39,7 @@ extension PlayMediaWithSubtitlesUseCaseState {
             return nil
             
         case .loading(let session), .loadFailed(let session),
-                .loaded(let session, _), .playing(let session, _), .interrupted(let session, _, _),
+                .loaded(let session, _), .playing(let session, _),
                 .paused(let session, _, _), .finished(let session), .stopped(let session):
             
             return session
@@ -54,7 +53,7 @@ extension PlayMediaWithSubtitlesUseCaseState {
         case .initial, .loading, .loadFailed, .stopped, .finished:
             return nil
             
-        case .loaded(_, let subtitlesState), .playing(_, let subtitlesState), .interrupted(_, let subtitlesState, _), .paused(_, let subtitlesState, _):
+        case .loaded(_, let subtitlesState), .playing(_, let subtitlesState), .paused(_, let subtitlesState, _):
             
             return subtitlesState
         }
@@ -277,7 +276,7 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
         case .loaded:
             releaseResources()
             
-        case .playing, .interrupted, .paused, .finished:
+        case .playing, .paused, .finished:
             
             return playMediaUseCase.stop().mapResult()
         }
@@ -311,9 +310,6 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
         case .playing(let session, _):
             state.value = .playing(session: session, subtitlesState: newSubtitlesState)
             
-        case .interrupted(let session, _, let time):
-            state.value = .interrupted(session: session, subtitlesState: newSubtitlesState, time: time)
-            
         case .paused(let session, _, let time):
             state.value = .paused(session: session, subtitlesState: newSubtitlesState, time: time)
             
@@ -341,15 +337,7 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
         case .playing:
             state.value = .playing(session: session, subtitlesState: currentState.subtitlesState)
             
-        case .interrupted(_, let time):
-            state.value = .interrupted(
-                session: session,
-                subtitlesState: currentState.subtitlesState,
-                time: time
-            )
-            
         case .paused(_, let time):
-            
             state.value = .paused(session: session, subtitlesState: currentState.subtitlesState, time: time)
             
         case .finished:
@@ -370,7 +358,7 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
         case .stopped, .finished:
             playSubtitlesUseCase?.stop()
             
-        case .paused, .interrupted:
+        case .paused:
             playSubtitlesUseCase?.pause()
         }
     }

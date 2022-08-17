@@ -44,7 +44,7 @@ extension DefaultAudioPlayer {
         
         switch self.state.value {
             
-        case .initial, .stopped, .finished, .interrupted, .paused, .loaded:
+        case .initial, .stopped, .finished, .paused, .loaded:
             print("Wrong state")
             dump(self.state.value)
             break

@@ -31,7 +31,6 @@ public enum AudioPlayerState: Equatable {
     case stopped
     case loaded(session: AudioPlayerSession)
     case playing(session: AudioPlayerSession)
-    case interrupted(session: AudioPlayerSession, time: TimeInterval)
     case paused(session: AudioPlayerSession, time: TimeInterval)
     case finished(session: AudioPlayerSession)
     
@@ -42,7 +41,7 @@ public enum AudioPlayerState: Equatable {
         case .initial, .stopped:
             return nil
 
-        case .playing(let session), .loaded(let session), .interrupted(let session, _), .paused(let session, _), .finished(let session):
+        case .playing(let session), .loaded(let session), .paused(let session, _), .finished(let session):
             return session
         }
     }
