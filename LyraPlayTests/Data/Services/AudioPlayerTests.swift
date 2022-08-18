@@ -148,4 +148,68 @@ class AudioPlayerTests: XCTestCase {
         
         cancellation.cancel()
     }
+    
+    func test_play__stream() async throws {
+        
+        let audioPlayer = createSUT()
+    
+        let fileId1 = "test1"
+        let fileId2 = "test2"
+        
+        let session1 = AudioPlayerSession(fileId: fileId1)
+        let session2 = AudioPlayerSession(fileId: fileId2)
+        
+        let stateSequence = self.expectSequence([
+            AudioPlayerState.initial,
+            .loaded(session: session1),
+            .playing(session: session1),
+            .finished(session: session1),
+            .loaded(session: session2),
+            .playing(session: session2),
+            .finished(session: session2)
+        ])
+        
+        let observer = stateSequence.observe(audioPlayer.state)
+        
+        let iteratedStateSequence = self.expectSequence([
+            AudioPlayerState.playing(session: session1),
+            .finished(session: session1),
+            .playing(session: session2),
+            .finished(session: session2)
+        ])
+        
+        let shortData = try getTestFile(name: "test_music_with_tags_short")
+        
+        let prepareResult1 = audioPlayer.prepare(fileId: fileId1, data: shortData)
+        try AssertResultSucceded(prepareResult1)
+        
+        do {
+        
+            for try await state in audioPlayer.playAndWaitForEnd() {
+                iteratedStateSequence.fulfill(with: state)
+            }
+            
+        } catch {
+            
+            XCTFail("Throw an error")
+        }
+        
+        let prepareResult2 = audioPlayer.prepare(fileId: fileId2, data: shortData)
+        try AssertResultSucceded(prepareResult2)
+        
+        do {
+        
+            for try await state in audioPlayer.playAndWaitForEnd() {
+                iteratedStateSequence.fulfill(with: state)
+            }
+            
+        } catch {
+            
+            XCTFail("Throw an error")
+        }
+
+        iteratedStateSequence.wait(timeout: 0, enforceOrder: true)
+        stateSequence.wait(timeout: 0, enforceOrder: true)
+        observer.cancel()
+    }
 }

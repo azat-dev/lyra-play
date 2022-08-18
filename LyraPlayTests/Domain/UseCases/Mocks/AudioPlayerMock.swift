@@ -12,7 +12,6 @@ import LyraPlay
 
 class AudioPlayerMock: AudioPlayer {
     
-    
     public var state: CurrentValueSubject<AudioPlayerState, Never> = .init(.initial)
     
     public var currentTime = Observable(0.0)
@@ -51,6 +50,23 @@ class AudioPlayerMock: AudioPlayer {
         self.state.value = .finished(session: .init(fileId: currentFileId))
         return .success(())
     }
+    
+    func playAndWaitForEnd() -> AsyncThrowingStream<AudioPlayerState, Error> {
+        
+        return AsyncThrowingStream { continuation in
+        
+            guard let currentFileId = currentFileId else {
+                continuation.finish(throwing: AudioPlayerError.noActiveFile)
+                return
+            }
+            
+            continuation.yield(.playing(session: .init(fileId: currentFileId)))
+            continuation.yield(.finished(session: .init(fileId: currentFileId)))
+            continuation.finish()
+        }
+    }
+    
+    
     
     func pause() -> Result<Void, AudioPlayerError> {
         

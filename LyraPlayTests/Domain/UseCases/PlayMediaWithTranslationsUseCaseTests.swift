@@ -34,7 +34,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         
         let provideTranslationsToPlayUseCase = ProvideTranslationsToPlayUseCaseMock()
         
-        let subtitlesTimer = ActionTimerMock()
+        let subtitlesTimer = ActionTimerMock2()
         
         let subtitlesScheduler = DefaultScheduler(timer: subtitlesTimer)
         
@@ -112,10 +112,18 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
     ) async throws {
         
         sut.playMediaUseCase.prepareWillReturn = { _ in isMediaExist ? .success(()) : .failure(.trackNotFound) }
-        sut.loadSubtitlesUseCase.willReturn = { _, _ in subtitles == nil ? .failure(.itemNotFound) : .success(subtitles!)}
+        sut.loadSubtitlesUseCase.willReturn = { _, _ in
+            
+            if let subtitles = subtitles {
+                return .success(subtitles)
+            }
+            
+            return .failure(.itemNotFound)
+        }
+        
         let stateSequence = self.expectSequence(expectedStateItems)
         
-        let observer = stateSequence.observe(sut.useCase.state)
+        let observer = stateSequence.observe(sut.useCase.state.publisher)
         defer { observer.cancel() }
         
         let result = await sut.useCase.prepare(session: session)
@@ -218,7 +226,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         ]
         
         let stateSequence = expectSequence(expectedStateItems)
-        let observer = sut.useCase.state
+        let observer = sut.useCase.state.publisher
             .enumerated()
             .map { index, item in
                 
@@ -240,49 +248,20 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         observer.cancel()
     }
     
-    func test_play__with_subtitles_and_translations() async throws {
+    func test_play__with_subtitles_without_translations() async throws {
         
         let sut = createSUT()
         
-        let session = anySession()
-        
-        let translationItem1 = SubtitlesTranslationItem(
-            dictionaryItemId: UUID(),
-            translationId: UUID(),
-            originalText: "apple",
-            translatedText: "яблоко"
-        )
-        
-        sut.provideTranslationsToPlayUseCase.willReturnGetTranslationsToPlay = { position in
-
-            switch position {
-            
-            case .sentence(0):
-                return .init(position: position, data: .groupAfterSentence(items: [translationItem1]))
-                
-            case .init(sentenceIndex: 1, timeMarkIndex: 1):
-                return .init(position: position, data: .single(translation: translationItem1))
-
-            case .sentence(2):
-                return .init(position: position, data: .groupAfterSentence(items: [translationItem1]))
-
-            default:
-                return nil
-            }
-        }
         
         let subtitles = Subtitles(
             duration: 10,
             sentences: [
                 .anySentence(at: 0),
-                .anySentence(at: 1, timeMarks: [
-                    .anyTimeMark(at: 1.1),
-                    .anyTimeMark(at: 1.2),
-                    .anyTimeMark(at: 1.3),
-                ]),
+                .anySentence(at: 1),
                 .anySentence(at: 2),
             ]
         )
+        let session = anySession()
         
         try await prepare(
             sut: sut,
@@ -292,10 +271,93 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             expectedStateItems: [
                 .initial,
                 .loading(session: session),
-                .loaded(session: session, subtitlesState: nil),
+                .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
             ]
         )
         
+        let expectedStateItems: [PlayMediaWithTranslationsUseCaseState] = [
+            .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
+            .playing(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
+            .playing(session: session, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
+            .playing(session: session, subtitlesState: .init(position: .sentence(1), subtitles: subtitles)),
+            .playing(session: session, subtitlesState: .init(position: .sentence(2), subtitles: subtitles)),
+        ]
+        
+        let stateSequence = expectSequence(expectedStateItems)
+        let observer = stateSequence.observe(sut.useCase.state.publisher)
+        let result = sut.useCase.play()
+        
+        try AssertResultSucceded(result)
+        
+        stateSequence.wait(timeout: 3, enforceOrder: true)
+        observer.cancel()
+    }
+    
+    func test_play__with_subtitles_with_translations() async throws {
+        
+        let sut = createSUT()
+        
+        let translation1 = SubtitlesTranslationItem(
+            dictionaryItemId: UUID(),
+            translationId: UUID(),
+            originalText: "apple",
+            translatedText: "яблоко"
+        )
+        
+        let translation2 = SubtitlesTranslationItem(
+            dictionaryItemId: UUID(),
+            translationId: UUID(),
+            originalText: "good",
+            translatedText: "хорошо"
+        )
+        
+        
+        let translations: [TranslationsToPlay] = [
+            .init(
+                position: .sentence(0),
+                data: .groupAfterSentence(
+                    items: [
+                        translation1,
+                        translation2
+                    ]
+                )
+            ),
+            .init(
+                position: .init(sentenceIndex: 1, timeMarkIndex: 1),
+                data: .single(translation: translation2)
+            )
+        ]
+        
+        sut.provideTranslationsToPlayUseCase.willReturnGetTranslationsToPlay = translations
+        
+        let subtitles = Subtitles(
+            duration: 10,
+            sentences: [
+                .anySentence(at: 0),
+                .anySentence(
+                    at: 1,
+                    timeMarks: [
+                        .anyTimeMark(at: 1.1),
+                        .anyTimeMark(at: 1.2),
+                        .anyTimeMark(at: 1.3),
+                    ]
+                ),
+                .anySentence(at: 2),
+            ]
+        )
+        let session = anySession()
+        
+        try await prepare(
+            sut: sut,
+            session: session,
+            subtitles: subtitles,
+            isMediaExist: true,
+            expectedStateItems: [
+                .initial,
+                .loading(session: session),
+                .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
+            ]
+        )
         
         let expectedStateItems: [PlayMediaWithTranslationsUseCaseState] = [
             .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
@@ -304,27 +366,29 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             .pronouncingTranslations(
                 session: session,
                 subtitlesState: .init(position: .sentence(0), subtitles: subtitles),
-                data: .group(translations: [translationItem1], currentTranslationIndex: 0)
+                data: .group(translations: [translation1, translation2], currentTranslationIndex: 0)
             ),
+            .pronouncingTranslations(
+                session: session,
+                subtitlesState: .init(position: .sentence(0), subtitles: subtitles),
+                data: .group(translations: [translation1, translation2], currentTranslationIndex: 1)
+            ),
+            .playing(session: session, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
             .playing(session: session, subtitlesState: .init(position: .sentence(1), subtitles: subtitles)),
-            .finished(session: session)
+            .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 0), subtitles: subtitles)),
+            .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 1), subtitles: subtitles)),
+            .pronouncingTranslations(
+                session: session,
+                subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 1), subtitles: subtitles),
+                data: .single(translation: translation2)
+            ),
+            .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 1), subtitles: subtitles)),
+            .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 2), subtitles: subtitles)),
+            .playing(session: session, subtitlesState: .init(position: .sentence(2), subtitles: subtitles)),
         ]
         
         let stateSequence = expectSequence(expectedStateItems)
-        let observer = sut.useCase.state
-            .enumerated()
-            .map { index, item in
-                
-                if index == 4 {
-                    Task {
-                        sut.playMediaUseCase.finish()
-                    }
-                }
-                
-                return item
-                
-            }.sink { stateSequence.fulfill(with: $0) }
-        
+        let observer = stateSequence.observe(sut.useCase.state.publisher)
         let result = sut.useCase.play()
         
         try AssertResultSucceded(result)
@@ -338,12 +402,10 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
 
 final class ProvideTranslationsToPlayUseCaseMock: ProvideTranslationsToPlayUseCase {
     
-    typealias GetTranslationsToPlayCallback = (_ position: SubtitlesPosition) -> TranslationsToPlay?
+    var willReturnGetTranslationsToPlay = [TranslationsToPlay]()
     
-    var willReturnGetTranslationsToPlay: GetTranslationsToPlayCallback = { _ in nil }
-    
-    func getTranslationsToPlay(for position: SubtitlesPosition) -> TranslationsToPlay? {
-        return willReturnGetTranslationsToPlay(position)
+    func getTranslationsToPlay(for position: SubtitlesPosition) -> TranslationsToPlayData? {
+        return willReturnGetTranslationsToPlay.first(where: { $0.position == position })?.data
     }
     
     func prepare(params: AdvancedPlayerSession) async {

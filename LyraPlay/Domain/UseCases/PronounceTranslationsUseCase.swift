@@ -14,11 +14,12 @@ import AVFAudio
 public enum PronounceTranslationsUseCaseStateData: Equatable {
     
     case single(translation: SubtitlesTranslationItem)
-    case group(translations: [SubtitlesTranslationItem], currentTranslationIndex: Int)
+    case group(translations: [SubtitlesTranslationItem], currentTranslationIndex: Int?)
 }
 
 public enum PronounceTranslationsUseCaseState: Equatable {
     
+    case loading(PronounceTranslationsUseCaseStateData)
     case playing(PronounceTranslationsUseCaseStateData)
     case paused(PronounceTranslationsUseCaseStateData)
     case stopped
@@ -27,9 +28,9 @@ public enum PronounceTranslationsUseCaseState: Equatable {
 
 public protocol PronounceTranslationsUseCaseInput {
     
-    func pronounceSingle(translation: SubtitlesTranslationItem) async -> Void
+    func pronounceSingle(translation: SubtitlesTranslationItem) -> AsyncThrowingStream<PronounceTranslationsUseCaseState, Error>
     
-    func pronounceGroup(translations: [SubtitlesTranslationItem]) async -> Void
+    func pronounceGroup(translations: [SubtitlesTranslationItem]) -> AsyncThrowingStream<PronounceTranslationsUseCaseState, Error>
     
     func pause() -> Void
     
@@ -71,6 +72,16 @@ public final class DefaultPronounceTranslationsUseCase: PronounceTranslationsUse
 
 extension DefaultPronounceTranslationsUseCase {
     
+    private enum PronounciationState {
+        case converting
+        case failed
+        case loading
+        case playing
+        case paused
+        case stopped
+        case finished
+    }
+    
     private func convert(translation: SubtitlesTranslationItem) async -> (original: Data?, translated: Data?) {
         
         let results = await [
@@ -91,67 +102,172 @@ extension DefaultPronounceTranslationsUseCase {
         )
     }
     
-    private func pronounce(translation: SubtitlesTranslationItem) async -> Bool {
+    
+    private func pronounce(translation: SubtitlesTranslationItem) -> AsyncThrowingStream<PronounciationState, Error> {
         
-        let converted = await convert(translation: translation)
-        
-        if let originalData = converted.original {
+        return AsyncThrowingStream { continuation in
             
-            let prepareResult = audioPlayer.prepare(
-                fileId: translation.translationId.uuidString,
-                data: originalData
-            )
-            
-            guard case .success = prepareResult else {
-                return false
+            Task {
+                
+                continuation.onTermination = { _ in
+                    let _ = self.audioPlayer.stop()
+                }
+                
+                continuation.yield(.converting)
+                
+                let converted = await convert(translation: translation)
+                
+                guard
+                    let originalData = converted.original,
+                    let translationData = converted.translated
+                else {
+                    continuation.finish(throwing: NSError())
+                    return
+                }
+                
+                var prepareResult = audioPlayer.prepare(
+                    fileId: translation.translationId.uuidString,
+                    data: originalData
+                )
+                
+                guard case .success = prepareResult else {
+                    continuation.finish(throwing: NSError())
+                    return
+                }
+                
+                continuation.yield(.playing)
+                
+                for try await playerState in audioPlayer.playAndWaitForEnd() {
+                    
+                    switch playerState {
+                        
+                    case .stopped:
+                        continuation.yield(.stopped)
+                        continuation.finish()
+                        
+                    case .paused:
+                        continuation.yield(.paused)
+                        continuation.finish()
+                        return
+                        
+                    default:
+                        break
+                    }
+                }
+                
+                prepareResult = audioPlayer.prepare(
+                    fileId: translation.translationId.uuidString,
+                    data: translationData
+                )
+                
+                guard case .success = prepareResult else {
+                    continuation.finish(throwing: NSError())
+                    return
+                }
+                
+                for try await playerState in audioPlayer.playAndWaitForEnd() {
+                    
+                    switch playerState {
+                        
+                    case .stopped:
+                        continuation.yield(.stopped)
+                        continuation.finish()
+                        
+                    case .paused:
+                        continuation.yield(.paused)
+                        continuation.finish()
+                        return
+
+                    default:
+                        break
+                    }
+                }
+                
+                continuation.yield(.finished)
+                continuation.finish()
             }
-            
-            let result = await audioPlayer.playAndWaitForEnd()
-            guard case .success = result else {
-                return false
-            }
-            
-            // Clean finished result
-            let _ = audioPlayer.stop()
         }
-        
-        if let translatedData = converted.translated {
-            
-            let prepareResult = audioPlayer.prepare(
-                fileId: translation.translationId.uuidString,
-                data: translatedData
-            )
-            
-            guard case .success = prepareResult else {
-                return false
-            }
-        }
-        
-        return true
     }
     
-    public func pronounceSingle(translation: SubtitlesTranslationItem) async -> Void {
+    public func pronounceSingle(translation: SubtitlesTranslationItem) -> AsyncThrowingStream<PronounceTranslationsUseCaseState, Error> {
         
-        state.value = .playing(.single(translation: translation))
-        let _ = await pronounce(translation: translation)
-        state.value = .finished
-    }
-    
-    public func pronounceGroup(translations: [SubtitlesTranslationItem]) async -> Void {
-        
-        for index in 0..<translations.count {
+        return AsyncThrowingStream { continuation in
             
-            let translation = translations[index]
-            
-            state.value = .playing(.group(translations: translations, currentTranslationIndex: index))
-            let success = await pronounce(translation: translation)
-            
-            if !success {
-                break
+            Task {
+                
+                for try await state in pronounce(translation: translation) {
+                    
+                    switch state {
+                    case .converting, .loading:
+                        continue
+                        
+                    case .failed:
+                        continuation.finish(throwing: NSError())
+                        return
+
+                    case .playing:
+                        continuation.yield(.playing(.single(translation: translation)))
+                    
+                    case .paused:
+                        continuation.yield(.paused(.single(translation: translation)))
+                        continuation.finish()
+                        return
+                    
+                    case .stopped:
+                        
+                        continuation.yield(.stopped)
+                        continuation.finish()
+                        return
+                    
+                    case .finished:
+                        
+                        continuation.yield(.finished)
+                        continuation.finish()
+                        return
+                    }
+                }
             }
         }
+    }
+    
+    public func pronounceGroup(translations: [SubtitlesTranslationItem]) -> AsyncThrowingStream<PronounceTranslationsUseCaseState, Error> {
         
-        state.value = .finished
+        return AsyncThrowingStream { continuation in
+            
+            Task {
+                for translationIndex in 0..<translations.count {
+                    
+                    let translation = translations[translationIndex]
+                    continuation.yield(.playing(.group(translations: translations, currentTranslationIndex: translationIndex)))
+                    
+                    for try await state in pronounce(translation: translation) {
+                        
+                        switch state {
+                        case .converting, .loading, .finished, .playing:
+                            continue
+                            
+                        case .failed:
+                            continuation.finish(throwing: NSError())
+                            return
+
+                        case .paused:
+                            continuation.yield(.paused(.group(translations: translations, currentTranslationIndex: translationIndex)))
+                            continuation.finish()
+                            return
+                        
+                        case .stopped:
+                            
+                            continuation.yield(.stopped)
+                            continuation.finish()
+                            return
+                        }
+                    }
+                }
+                
+                continuation.yield(.finished)
+                continuation.finish()
+            }
+        }
     }
     
     public func pause() -> Void {

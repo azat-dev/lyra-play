@@ -36,7 +36,7 @@ public protocol ProvideTranslationsToPlayUseCaseInput {
 
 public protocol ProvideTranslationsToPlayUseCaseOutput {
     
-    func getTranslationsToPlay(for position: SubtitlesPosition) -> TranslationsToPlay?
+    func getTranslationsToPlay(for position: SubtitlesPosition) -> TranslationsToPlayData?
 }
 
 public protocol ProvideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCaseOutput, ProvideTranslationsToPlayUseCaseInput {
@@ -195,8 +195,8 @@ extension DefaultProvideTranslationsToPlayUseCase {
         }
     }
     
-    public func getTranslationsToPlay(for position: SubtitlesPosition) -> TranslationsToPlay? {
+    public func getTranslationsToPlay(for position: SubtitlesPosition) -> TranslationsToPlayData? {
         
-        return items[position]
+        return items[position]?.data
     }
 }

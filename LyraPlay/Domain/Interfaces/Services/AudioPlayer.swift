@@ -58,6 +58,8 @@ public protocol AudioPlayerInput {
     func play(atTime: TimeInterval) -> Result<Void, AudioPlayerError>
     
     func playAndWaitForEnd() async -> Result<Void, AudioPlayerError>
+    
+    func playAndWaitForEnd() -> AsyncThrowingStream<AudioPlayerState, Error>
 
     func pause() -> Result<Void, AudioPlayerError>
 

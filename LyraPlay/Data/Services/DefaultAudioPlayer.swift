@@ -74,6 +74,7 @@ extension DefaultAudioPlayer {
             
         } catch {
             
+            audioSession.deactivate()
             state.value = .initial
             print("*** Unable to set up the audio player: \(error.localizedDescription) ***")
             return .failure(.internalError(error))
@@ -182,6 +183,44 @@ extension DefaultAudioPlayer {
             }
         }
     }
+    
+    
+    public func playAndWaitForEnd() -> AsyncThrowingStream<AudioPlayerState, Error> {
+        
+        return AsyncThrowingStream { continuation in
+    
+            guard state.value.session != nil else {
+                
+                continuation.finish(throwing: AudioPlayerError.noActiveFile)
+                return
+            }
+
+            let subscription = state.dropFirst().sink { value in
+                
+                continuation.yield(value)
+                
+                if case .stopped = value {
+                    continuation.finish()
+                    return
+                }
+                
+                if case .finished = value {
+                    continuation.finish()
+                }
+            }
+            
+            continuation.onTermination = { _ in
+                subscription.cancel()
+            }
+            
+            if case .failure(let error) = play() {
+                
+                continuation.finish(throwing: error)
+                return
+            }
+        }
+    }
+    
     
     public func pause() -> Result<Void, AudioPlayerError> {
         
