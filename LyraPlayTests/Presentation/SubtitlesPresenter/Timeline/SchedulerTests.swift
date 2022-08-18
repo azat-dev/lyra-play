@@ -295,6 +295,35 @@ class SchedulerTests: XCTestCase {
         
         wait(for: [elementAfterPauseExpectation], timeout: 0.1)
     }
+    
+    func test_pause_resume__on_will_change() async throws {
+        
+        let sut = createSUT()
+        let scheduler = sut.scheduler
+        
+        testIteration(
+            sut: sut,
+            timeMarks: [1, 2, 3, 4],
+            expectedDidChangeItems: [1, 2, 3, 4],
+            expectedWillChangeItems: [
+                .init(from: nil, to: 1),
+                .init(from: 1, to: 2),
+                .init(from: 2, to: 3),
+                .init(from: 3, to: 4),
+            ],
+            startFrom: 1,
+            waitFor: 0.5,
+            actionsOnWillChange: { [weak scheduler] fromTime, _ in
+                
+                if fromTime == 2 {
+                    scheduler?.pause()
+                    DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.1) { [weak scheduler] in
+                        scheduler?.resume()
+                    }
+                }
+            }
+        )
+    }
 }
 
 // MARK: - Helpers

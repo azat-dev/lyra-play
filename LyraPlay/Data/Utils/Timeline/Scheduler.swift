@@ -111,8 +111,16 @@ extension DefaultScheduler: Scheduler {
             else {
                 return
             }
+
+            self.semaphore.wait()
+            let isWillChangeExecuted = currentSession.lastWillChange == currentSession.prevTimeMark
+            self.semaphore.signal()
             
-            currentSession.willChange?(currentSession.prevTimeMark, nextTimeMark)
+            if !isWillChangeExecuted {
+                
+                currentSession.willChange(currentSession.prevTimeMark, nextTimeMark)
+            }
+            
             if self.isSessionChanged(session: currentSession) {
                 return
             }
@@ -149,7 +157,7 @@ extension DefaultScheduler: Scheduler {
     
     public func execute(timeline: TimeLineIterator, from time: TimeInterval, didChange: @escaping DidChangeCallback, willChange: WillChangeCallback?) {
         
-        let session = updateSession { _ -> Session in
+        let _ = updateSession { _ -> Session in
             
             timer.cancel()
 
@@ -160,7 +168,7 @@ extension DefaultScheduler: Scheduler {
             )
         }
         
-        timeline.beginNextExecution(from: time)
+        let _ = timeline.beginNextExecution(from: time)
         setNextTimer(from: time)
     }
     
@@ -201,6 +209,7 @@ extension DefaultScheduler: Scheduler {
         let elapsedTime = currentSession.elapsedTime
         self.currentSession = Session(from: currentSession)
         self.currentSession?.prevTimeMark = currentSession.prevTimeMark
+        self.currentSession?.lastWillChange = currentSession.lastWillChange
         
         semaphore.signal()
         setNextTimer(from: elapsedTime)
@@ -213,11 +222,12 @@ extension DefaultScheduler {
         
         let timeline: TimeLineIterator
         var didChangeOriginal: Scheduler.DidChangeCallback
-        var willChange: Scheduler.WillChangeCallback?
+        var willChangeOriginal: Scheduler.WillChangeCallback?
         
         var updatedAt: Date?
         var elapsedTime: TimeInterval = 0
         var prevTimeMark: TimeInterval? = nil
+        var lastWillChange: TimeInterval? = .infinity
         
         lazy var didChange: Scheduler.DidChangeCallback = {
             
@@ -225,6 +235,15 @@ extension DefaultScheduler {
                 
                 self?.wentThrough(timeMark: time)
                 self?.didChangeOriginal(time)
+            }
+        } ()
+        
+        lazy var willChange: Scheduler.WillChangeCallback = {
+            
+            return {[weak self] from, to in
+                
+                self?.lastWillChange = from
+                self?.willChangeOriginal?(from, to)
             }
         } ()
 
@@ -236,7 +255,7 @@ extension DefaultScheduler {
 
             self.timeline = timeline
             self.didChangeOriginal = didChange
-            self.willChange = willChange
+            self.willChangeOriginal = willChange
         }
         
         convenience init(from source: Session) {
@@ -244,7 +263,7 @@ extension DefaultScheduler {
             self.init(
                 timeline: source.timeline,
                 didChange: source.didChangeOriginal,
-                willChange: source.willChange
+                willChange: source.willChangeOriginal
             )
         }
         
@@ -265,6 +284,7 @@ extension DefaultScheduler {
             newSession.elapsedTime = elapsedTime + Date.now.timeIntervalSince(updatedAt)
             newSession.updatedAt = .now
             newSession.prevTimeMark = prevTimeMark
+            newSession.lastWillChange = lastWillChange
             
             return newSession
         }
