@@ -120,6 +120,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         )
     } ()
     
+    
     private lazy var imagesRepository: FilesRepository = {
         
         let url = try! FileManager.default.url(
@@ -203,6 +204,64 @@ final class DefaultAppCoordinator: AppCoordinator {
             subtitlesParser: subtitlesParser
         )
     } ()
+    
+    
+    private lazy var playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory = {
+        
+        return DefaultPlaySubtitlesUseCaseFactory(
+            subtitlesIteratorFactory: DefaultSubtitlesIteratorFactory(),
+            scheduler: DefaultScheduler(timer: DefaultActionTimer())
+        )
+    } ()
+        
+    private lazy var playMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCase = {
+        
+        return DefaultPlayMediaWithSubtitlesUseCase(
+            playMediaUseCase: playMediaUseCase,
+            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
+            loadSubtitlesUseCase: loadSubtitlesUseCase
+        )
+    } ()
+    
+    private lazy var dictionaryRepository: DictionaryRepository = {
+        return CoreDataDictionaryRepository(coreDataStore: coreDataStore)
+    } ()
+    
+    private lazy var provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase = {
+        
+        return DefaultProvideTranslationsForSubtitlesUseCase(
+            dictionaryRepository: dictionaryRepository,
+            textSplitter: DefaultTextSplitter(),
+            lemmatizer: DefaultLemmatizer()
+        )
+    } ()
+    
+    private lazy var provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase = {
+        
+        return DefaultProvideTranslationsToPlayUseCase(
+            provideTranslationsForSubtitlesUseCase: provideTranslationsForSubtitlesUseCase
+        )
+    } ()
+    
+    private lazy var pronounceTranslationsUseCase: PronounceTranslationsUseCase = {
+        
+        return DefaultPronounceTranslationsUseCase(
+            textToSpeechConverter: DefaultTextToSpeechConverter(),
+            audioPlayer: DefaultAudioPlayer(audioSession: audioSession)
+        )
+    } ()
+    
+    
+    private lazy var playMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCase = {
+        
+        return DefaultPlayMediaWithTranslationsUseCase(
+            playMediaWithSubtitlesUseCase: playMediaWithSubtitlesUseCase,
+            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
+            provideTranslationsToPlayUseCase: provideTranslationsToPlayUseCase,
+            pronounceTranslationsUseCase: pronounceTranslationsUseCase
+        )
+    } ()
+    
     
     init(navigationController: UINavigationController) {
         
