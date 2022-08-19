@@ -112,11 +112,8 @@ public final class DefaultPlayMediaUseCase: PlayMediaUseCase {
             
             switch audioPlayerState {
                 
-            case .initial:
+            case .initial, .loaded:
                 break
-                
-            case .loaded:
-                self.state.value = .loaded(mediaId: currentMediaId)
                 
             case .stopped:
                 self.state.value = .stopped
@@ -163,7 +160,7 @@ extension DefaultPlayMediaUseCase {
     
     private func play(at time: TimeInterval?) -> Result<Void, PlayMediaUseCaseError> {
 
-        guard case .loaded = self.state.value else {
+        guard state.value.mediaId != nil else {
             return .failure(.noActiveTrack)
         }
         

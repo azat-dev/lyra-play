@@ -21,6 +21,7 @@ class AudioPlayerMock: AudioPlayer {
     func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioPlayerError> {
         
         currentFileId = fileId
+        state.value = .loaded(session: .init(fileId: fileId))
         return .success(())
     }
     
@@ -65,8 +66,6 @@ class AudioPlayerMock: AudioPlayer {
             continuation.finish()
         }
     }
-    
-    
     
     func pause() -> Result<Void, AudioPlayerError> {
         
