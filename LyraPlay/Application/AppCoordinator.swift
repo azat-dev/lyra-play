@@ -341,7 +341,7 @@ extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
             coordnator: self,
             showMediaInfoUseCase: showMediaInfoUseCase,
             currentPlayerStateUseCase: currentPlayerStateUseCase,
-            playMediaUseCase: playMediaUseCase,
+            playMediaUseCase: playMediaWithTranslationsUseCase,
             importSubtitlesUseCase: importSubtitlesUseCase,
             loadSubtitlesUseCase: loadSubtitlesUseCase
         )
