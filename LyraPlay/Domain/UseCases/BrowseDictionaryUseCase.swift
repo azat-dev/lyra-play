@@ -33,6 +33,16 @@ public struct BrowseListDictionaryItem: Equatable {
     }
 }
 
+private extension BrowseListDictionaryItem {
+    
+    init(_ item: DictionaryItem) {
+        
+        id = item.id!
+        originalText = item.originalText
+        translatedText = item.translations.first?.text ?? ""
+    }
+}
+
 public protocol BrowseDictionaryUseCase {
 
     func listItems() async -> Result<[BrowseListDictionaryItem], BrowseDictionaryUseCaseError>
@@ -57,11 +67,32 @@ public final class DefaultBrowseDictionaryUseCase: BrowseDictionaryUseCase {
 
     public func listItems() async -> Result<[BrowseListDictionaryItem], BrowseDictionaryUseCaseError> {
 
-        fatalError("Not implemented")
+        let result = await dictionaryRepository.listItems()
+        
+        guard case .success(let items) = result else {
+            return .failure(result.error!.map())
+        }
+        
+        return .success(items.map(BrowseListDictionaryItem.init))
     }
+}
 
-    public func getItem() async -> Result<DictionaryItem, BrowseDictionaryUseCaseError> {
+// MARK: - Error Mappings
 
-        fatalError("Not implemented")
+fileprivate extension DictionaryRepositoryError {
+    
+    func map() -> BrowseDictionaryUseCaseError {
+        
+        switch self {
+            
+        case .internalError(let error):
+            return .internalError(error)
+            
+        case .itemNotFound:
+            return .itemNotFound
+            
+        case .itemMustBeUnique:
+            return .internalError(nil)
+        }
     }
 }
