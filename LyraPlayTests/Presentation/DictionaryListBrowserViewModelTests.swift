@@ -34,6 +34,8 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
         )
     }
     
+    // MARK: - Helpers
+    
     private func observeStates(
         _ sut: SUT,
         timeout: TimeInterval = 1,
@@ -80,12 +82,33 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
         }
     }
     
-    func test_load__emptyList() async throws {
+    private func anyBrowseListDictionaryItem() -> BrowseListDictionaryItem {
+        
+        return .init(
+            id: UUID(),
+            originalText: UUID().uuidString,
+            translatedText: UUID().uuidString
+        )
+    }
+    
+    private func givenNotEmptyList(_ sut: SUT) -> [BrowseListDictionaryItem] {
+        
+        let items = [
+            anyBrowseListDictionaryItem(),
+            anyBrowseListDictionaryItem()
+        ]
+        
+        sut.browseDictionaryUseCase.willReturnItems = items
+        return items
+    }
+    
+    // MARK: - Test Methods
+    
+    func test_load__empty_list() async throws {
         
         // Given
         // Empty list
         let sut = createSUT()
-        
         let assertStatesEqualTo = try observeStates(sut)
         
         // When
@@ -98,6 +121,26 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
             .init(isLoading: false, changeEvent: nil),
         ])
     }
+    
+    func test_load__not_empty_list() async throws {
+        
+        let sut = createSUT()
+
+        // Given
+        let items = givenNotEmptyList(sut)
+
+        let assertStatesEqualTo = try observeStates(sut)
+        
+        // When
+        await sut.viewModel.load()
+        
+        // Then
+        await assertStatesEqualTo([
+            .init(isLoading: true, changeEvent: nil),
+            .init(isLoading: true, changeEvent: .loaded(items: items.map { $0.id })),
+            .init(isLoading: false, changeEvent: nil),
+        ])
+    }
 }
 
 // MARK: - Helpers
@@ -107,9 +150,9 @@ extension DictionaryListBrowserViewModelTests {
     private struct ExpectedState: Equatable {
         
         var isLoading: Bool
-        var changeEvent: DictionaryListBrowserChangeEvent?
+        var changeEvent: ExpectedChange?
 
-        init(isLoading: Bool, changeEvent: DictionaryListBrowserChangeEvent?) {
+        init(isLoading: Bool, changeEvent: ExpectedChange?) {
             self.isLoading = isLoading
             self.changeEvent = changeEvent
         }
@@ -117,7 +160,24 @@ extension DictionaryListBrowserViewModelTests {
         init(_ sut: SUT, changeEvent: DictionaryListBrowserChangeEvent? = nil) {
             
             self.isLoading = sut.viewModel.isLoading.value
-            self.changeEvent = changeEvent
+            self.changeEvent = .create(from: changeEvent)
+        }
+    }
+    
+    private enum ExpectedChange: Equatable {
+        
+        case loaded(items: [UUID])
+        
+        static func create(from item: DictionaryListBrowserChangeEvent?) -> Self? {
+            
+            guard let item = item else {
+                return nil
+            }
+            
+            switch item {
+            case .loaded(let items):
+                return .loaded(items: items.map { $0.id })
+            }
         }
     }
 }
