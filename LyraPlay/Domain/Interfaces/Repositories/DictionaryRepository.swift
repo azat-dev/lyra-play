@@ -35,4 +35,6 @@ public protocol DictionaryRepository {
     func deleteItem(id: UUID) async -> Result<Void, DictionaryRepositoryError>
     
     func searchItems(with: [DictionaryItemFilter]) async -> Result<[DictionaryItem], DictionaryRepositoryError>
+    
+    func listItems() async -> Result<[DictionaryItem], DictionaryRepositoryError>
 }

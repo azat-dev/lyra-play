@@ -12,7 +12,9 @@ import CoreData
 
 class CoreDataDictionaryRepositoryTests: XCTestCase {
     
-    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> DictionaryRepository{
+    typealias SUT = DictionaryRepository
+    
+    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
 
         let storeURL = URL(fileURLWithPath: "/dev/null")
         let coreDataStore = try! CoreDataStore(storeURL: storeURL)
@@ -150,7 +152,6 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
             XCTFail("Wrong error type \(error)")
             return
         }
-        
     }
     
     func test_deleteItem__not_existing() async throws {
@@ -231,5 +232,56 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
         let receivedLemmas = items.map { $0.lemma }
         AssertEqualReadable(receivedLemmas.sorted(), expectedLemmas.sorted())
+    }
+    
+    func test_listItems__empty_repository() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        // Empty repository
+        
+        // When
+        let result = await sut.listItems()
+        let items = try AssertResultSucceded(result)
+        
+        // Then
+        AssertEqualReadable(items.map { $0.id }, [])
+    }
+
+    func givenPopulatedRepository(_ sut: SUT) async throws -> [DictionaryItem] {
+        
+        var items = [DictionaryItem]()
+        let numberOfItems = 3
+        
+        for index in 0..<numberOfItems {
+    
+            let dictionaryItem = anyNewDictionaryItem(suffix: String(index))
+            let putResult = await sut.putItem(dictionaryItem)
+            try AssertResultSucceded(putResult)
+            
+            items.append(dictionaryItem)
+        }
+        
+        return items
+    }
+    
+    func test_listItems__not_empty_repository() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        let dictionaryItems = try await givenPopulatedRepository(sut)
+        
+        // When
+        let result = await sut.listItems()
+        let items = try AssertResultSucceded(result)
+        
+        // Then
+        let sortedDictionaryItems = dictionaryItems.sorted { $0.originalText < $1.originalText }
+        AssertEqualReadable(
+            items.map { $0.id },
+            sortedDictionaryItems.map { $0.id }
+        )
     }
 }

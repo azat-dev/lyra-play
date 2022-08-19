@@ -57,6 +57,7 @@ public final class DefaultBrowseDictionaryUseCase: BrowseDictionaryUseCase {
 
     public func listItems() async -> Result<[BrowseListDictionaryItem], BrowseDictionaryUseCaseError> {
 
+        dictionaryRepository.searchItems(with: [])
         fatalError("Not implemented")
     }
 

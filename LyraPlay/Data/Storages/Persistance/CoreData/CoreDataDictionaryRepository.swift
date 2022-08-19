@@ -224,4 +224,8 @@ public final class CoreDataDictionaryRepository: DictionaryRepository {
         let items = managedItems.map { $0.toDomain() }
         return .success(items)
     }
+    
+    public func listItems() async -> Result<[DictionaryItem], DictionaryRepositoryError> {
+        fatalError()
+    }
 }
