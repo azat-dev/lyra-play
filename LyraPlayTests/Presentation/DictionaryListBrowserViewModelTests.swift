@@ -22,7 +22,7 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
         let browseDictionaryUseCase = BrowseDictionaryUseCaseMock()
         
         let viewModel = DefaultDictionaryListBrowserViewModel(
-            dictionaryListBrowserCoordinator: dictionaryListBrowserCoordinator,
+            coordinator: dictionaryListBrowserCoordinator,
             browseDictionaryUseCase: browseDictionaryUseCase
         )
         detectMemoryLeak(instance: viewModel)

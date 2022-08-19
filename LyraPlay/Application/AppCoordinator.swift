@@ -262,6 +262,11 @@ final class DefaultAppCoordinator: AppCoordinator {
         )
     } ()
     
+    private lazy var browseDictionaryUseCase: BrowseDictionaryUseCase = {
+      
+        return DefaultBrowseDictionaryUseCase(dictionaryRepository: dictionaryRepository)
+    } ()
+    
     
     init(navigationController: UINavigationController) {
         
@@ -275,6 +280,15 @@ final class DefaultAppCoordinator: AppCoordinator {
             browseFilesUseCase: browseFilesUseCase,
             importFileUseCase: importFileUseCase,
             playMediaUseCase: playMediaUseCase
+        )
+        return factory.build()
+    }
+    
+    func makeDictionaryListBrowserVC() -> DictionaryListBrowserViewController {
+        
+        let factory = DictionaryListBrowserViewControllerFactory(
+            coordinator: self,
+            browseDictionaryUseCase: browseDictionaryUseCase
         )
         return factory.build()
     }
@@ -308,7 +322,8 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     func start() {
         
-        let vc = makeAudioFilesBrowserVC()
+//        let vc = makeAudioFilesBrowserVC()
+        let vc = makeDictionaryListBrowserVC()
         navigationController.pushViewController(vc, animated: false)
     }
 }
@@ -363,4 +378,10 @@ extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
         topViewController?.modalPresentationStyle = .pageSheet
         topViewController?.present(vc, animated: true)
     }
+}
+
+
+// MARK: - DictionaryListBrowserCoordinator
+
+extension DefaultAppCoordinator: DictionaryListBrowserCoordinator {
 }

@@ -1,15 +1,15 @@
 //
-//  AudioFilesBrowserCell+Styles.swift
+//  DictionaryListBrowserCell+Styles.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 28.06.22.
+//  Created by Azat Kaiumov on 19.08.22.
 //
 
 import Foundation
 import UIKit
 
-extension AudioFilesBrowserCell {
-    
+extension DictionaryListBrowserCell {
+
     final class Styles {
         
         private static let secondaryTextColor = UIColor(named: "Color.Text.Secondary")
@@ -22,12 +22,6 @@ extension AudioFilesBrowserCell {
             contentView.backgroundColor = .clear
         }
         
-        static func apply(coverImageView: UIImageView) {
-        
-            coverImageView.layer.cornerRadius = 5
-            coverImageView.clipsToBounds = true
-        }
-
         static func apply(titleLabel: UILabel) {
             
             titleLabel.numberOfLines = 1
@@ -45,3 +39,4 @@ extension AudioFilesBrowserCell {
         }
     }
 }
+

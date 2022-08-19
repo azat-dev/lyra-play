@@ -19,7 +19,7 @@ public enum DictionaryListBrowserChangeEvent: Equatable {
     case loaded(items: [DictionaryListBrowserItemViewModel])
 }
 
-public struct DictionaryListBrowserItemViewModel: Equatable {
+public struct DictionaryListBrowserItemViewModel: Equatable, Hashable {
 
     public var id: UUID
     public var title: String
@@ -59,7 +59,7 @@ public final class DefaultDictionaryListBrowserViewModel: DictionaryListBrowserV
 
     // MARK: - Properties
 
-    private let dictionaryListBrowserCoordinator: DictionaryListBrowserCoordinator
+    private let coordinator: DictionaryListBrowserCoordinator
     private let browseDictionaryUseCase: BrowseDictionaryUseCase
 
     public let isLoading = CurrentValueSubject<Bool, Never>(true)
@@ -68,11 +68,11 @@ public final class DefaultDictionaryListBrowserViewModel: DictionaryListBrowserV
     // MARK: - Initializers
 
     public init(
-        dictionaryListBrowserCoordinator: DictionaryListBrowserCoordinator,
+        coordinator: DictionaryListBrowserCoordinator,
         browseDictionaryUseCase: BrowseDictionaryUseCase
     ) {
 
-        self.dictionaryListBrowserCoordinator = dictionaryListBrowserCoordinator
+        self.coordinator = coordinator
         self.browseDictionaryUseCase = browseDictionaryUseCase
     }
 }

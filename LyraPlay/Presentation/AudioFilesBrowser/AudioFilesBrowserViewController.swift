@@ -128,7 +128,7 @@ extension AudioFilesBrowserViewController {
     }
 }
 
-// MARK: - Layout
+// MARK: - Table View
 
 extension AudioFilesBrowserViewController: AudioFilesBrowserUpdateDelegate {
     
