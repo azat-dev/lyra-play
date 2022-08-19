@@ -36,7 +36,7 @@ class PlayMediaUseCaseTests: XCTestCase {
             loadTrackUseCase
         )
     }
-
+    
     private func observeStates(
         _ sut: SUT,
         timeout: TimeInterval = 1,
@@ -51,12 +51,12 @@ class PlayMediaUseCaseTests: XCTestCase {
             }
         
         return { expectedStates in
-
+            
             observer.cancel()
             let sequence = self.expectSequence(expectedStates)
             
             result.forEach { sequence.fulfill(with: $0) }
-
+            
             let sequenceObserver = sut.useCase.state.dropFirst().sink { state in
                 sequence.fulfill(with: .init(from: sut))
             }
@@ -100,7 +100,6 @@ class PlayMediaUseCaseTests: XCTestCase {
         try await waitForState(sut, where: { $0 == .playing(mediaId: mediaId) })
     }
     
-    
     private func givenPaused(_ sut: SUT, mediaId: UUID) async throws {
         
         let result = sut.useCase.pause()
@@ -122,13 +121,13 @@ class PlayMediaUseCaseTests: XCTestCase {
         
         // Given
         let sut = createSUT()
-
+        
         // When
         let result = await sut.useCase.prepare(mediaId: UUID())
         
         // Then
         let error = try AssertResultFailed(result)
-
+        
         guard case .trackNotFound = error else {
             XCTFail("Wrong error type \(error)")
             return
@@ -146,7 +145,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         // When
         let statesToObserver = try observeStates(sut)
         let result = await sut.useCase.prepare(mediaId: mediaId)
-
+        
         // Then
         try AssertResultSucceded(result)
         await statesToObserver([
@@ -179,7 +178,7 @@ class PlayMediaUseCaseTests: XCTestCase {
     func test_pause__not_active_media() async throws {
         
         let sut = createSUT()
-
+        
         // Given
         
         // When
