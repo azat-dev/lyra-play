@@ -36,7 +36,7 @@ public struct DictionaryListBrowserItemViewModel: Equatable {
 
 public protocol DictionaryListBrowserViewModelInput {
 
-    func load()
+    func load() async
 }
 
 
@@ -78,7 +78,25 @@ public final class DefaultDictionaryListBrowserViewModel: DictionaryListBrowserV
 
 extension DefaultDictionaryListBrowserViewModel {
 
-    public func load() {
+    private func map(_ item: BrowseListDictionaryItem) -> DictionaryListBrowserItemViewModel {
         
+        return .init(title: item.originalText, description: item.translatedText)
+    }
+    
+    public func load() async {
+     
+        if !isLoading.value {
+            isLoading.value = true
+        }
+        
+        let result = await browseDictionaryUseCase.listItems()
+        
+        guard case .success(let loadedItems) = result else {
+            // TODO: Show error message
+            return
+        }
+        
+        listChanged.send(.loaded(items: loadedItems.map(self.map)))
+        isLoading.value = false
     }
 }

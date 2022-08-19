@@ -89,7 +89,7 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
         let assertStatesEqualTo = try observeStates(sut)
         
         // When
-        sut.viewModel.load()
+        await sut.viewModel.load()
         
         // Then
         await assertStatesEqualTo([
