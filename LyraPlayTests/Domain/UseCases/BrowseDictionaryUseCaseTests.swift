@@ -80,7 +80,6 @@ class BrowseDictionaryUseCaseTests: XCTestCase {
         let result = await sut.useCase.listItems()
         
         // Then
-        
         let sortedDictionaryItems = dictionaryItems.sorted(by: { $0.originalText < $1.originalText })
         let receivedItems = try AssertResultSucceded(result)
         
