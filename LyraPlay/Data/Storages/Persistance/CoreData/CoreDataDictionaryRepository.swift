@@ -226,6 +226,30 @@ public final class CoreDataDictionaryRepository: DictionaryRepository {
     }
     
     public func listItems() async -> Result<[DictionaryItem], DictionaryRepositoryError> {
-        fatalError()
+        
+        let action: CoreDataStore.ActionCallBack<[ManagedDictionaryItem]> = { context in
+            
+            let request = ManagedDictionaryItem.fetchRequest()
+            
+            request.resultType = .managedObjectResultType
+            request.sortDescriptors = [
+                .init(key: #keyPath(ManagedDictionaryItem.originalText), ascending: true)
+            ]
+            
+            return try context.fetch(request)
+        }
+
+        var managedItems: [ManagedDictionaryItem]
+        
+        do {
+            
+            managedItems = try coreDataStore.performSync(action)
+            
+        } catch {
+            return .failure(.internalError(error))
+        }
+        
+        let items = managedItems.map { $0.toDomain() }
+        return .success(items)
     }
 }

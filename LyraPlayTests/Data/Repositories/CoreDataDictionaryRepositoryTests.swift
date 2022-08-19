@@ -252,15 +252,15 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
     func givenPopulatedRepository(_ sut: SUT) async throws -> [DictionaryItem] {
         
         var items = [DictionaryItem]()
-        let numberOfItems = 3
+        let numberOfItems = 10
         
-        for index in 0..<numberOfItems {
+        for _ in 0..<numberOfItems {
     
-            let dictionaryItem = anyNewDictionaryItem(suffix: String(index))
+            let dictionaryItem = anyNewDictionaryItem(suffix: UUID().uuidString)
             let putResult = await sut.putItem(dictionaryItem)
-            try AssertResultSucceded(putResult)
+            let savedItem = try AssertResultSucceded(putResult)
             
-            items.append(dictionaryItem)
+            items.append(savedItem)
         }
         
         return items
