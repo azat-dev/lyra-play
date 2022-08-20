@@ -97,8 +97,27 @@ extension DictionaryListBrowserViewController {
 // MARK: - Setup Views
 
 extension DictionaryListBrowserViewController {
+
+    @objc
+    private func didAddItem() {
+        
+        viewModel.addNewItem()
+    }
     
+    private func setupNavigatioBar() {
+        
+        let addButton = UIBarButtonItem(
+            barButtonSystemItem: .add,
+            target: self,
+            action: #selector(Self.didAddItem)
+        )
+        
+        navigationItem.rightBarButtonItem = addButton
+    }
+
     private func setupViews() {
+        
+        setupNavigatioBar()
         
         self.tableView.register(
             DictionaryListBrowserCell.self,

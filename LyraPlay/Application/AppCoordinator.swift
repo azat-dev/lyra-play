@@ -384,4 +384,51 @@ extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
 // MARK: - DictionaryListBrowserCoordinator
 
 extension DefaultAppCoordinator: DictionaryListBrowserCoordinator {
+    
+    func addNewDictionaryItem(completion: @escaping (DictionaryItem) -> Void) {
+        
+        let alert = UIAlertController(title: "New dictionary item", message: "", preferredStyle: .alert)
+        
+        alert.addTextField()
+        alert.addTextField()
+        
+        alert.addAction(.init(title: "Cancel", style: .cancel))
+        
+        let saveAction = UIAlertAction(title: "Submit", style: .default) { [weak self, weak alert] action in
+            
+            guard
+                let self = self,
+                let originalText = alert?.textFields?[0].text,
+                let translatedText = alert?.textFields?[1].text
+            else {
+                return
+            }
+            
+            let lemmatizer = DefaultLemmatizer()
+
+            let newItem = DictionaryItem(
+                id: nil,
+                createdAt: nil,
+                updatedAt: nil,
+                originalText: originalText,
+                lemma: lemmatizer.lemmatize(text: originalText).first?.lemma ?? originalText,
+                language: "English",
+                translations: [
+                    .init(id: UUID(), text: translatedText)
+                ]
+            )
+            
+            Task {
+                
+                await self.dictionaryRepository.putItem(newItem)
+                completion(newItem)
+            }
+            
+        }
+        
+        alert.addAction(saveAction)
+        
+        let topViewController = self.navigationController.topViewController
+        topViewController?.present(alert, animated: true)
+    }
 }

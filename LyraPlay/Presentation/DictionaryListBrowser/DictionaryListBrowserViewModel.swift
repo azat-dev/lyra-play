@@ -12,25 +12,26 @@ import Combine
 
 public protocol DictionaryListBrowserCoordinator {
     
+    func addNewDictionaryItem(completion: @escaping (DictionaryItem) -> Void)
 }
 
 public enum DictionaryListBrowserChangeEvent: Equatable {
-
+    
     case loaded(items: [DictionaryListBrowserItemViewModel])
 }
 
 public struct DictionaryListBrowserItemViewModel: Equatable, Hashable {
-
+    
     public var id: UUID
     public var title: String
     public var description: String
-
+    
     public init(
         id: UUID,
         title: String,
         description: String
     ) {
-
+        
         self.id = id
         self.title = title
         self.description = description
@@ -38,15 +39,17 @@ public struct DictionaryListBrowserItemViewModel: Equatable, Hashable {
 }
 
 public protocol DictionaryListBrowserViewModelInput {
-
+    
     func load() async
+    
+    func addNewItem()
 }
 
 
 public protocol DictionaryListBrowserViewModelOutput {
-
+    
     var isLoading: CurrentValueSubject<Bool, Never> { get }
-
+    
     var listChanged: PassthroughSubject<DictionaryListBrowserChangeEvent, Never> { get }
 }
 
@@ -56,22 +59,22 @@ public protocol DictionaryListBrowserViewModel: DictionaryListBrowserViewModelOu
 // MARK: - Implementations
 
 public final class DefaultDictionaryListBrowserViewModel: DictionaryListBrowserViewModel {
-
+    
     // MARK: - Properties
-
+    
     private let coordinator: DictionaryListBrowserCoordinator
     private let browseDictionaryUseCase: BrowseDictionaryUseCase
-
+    
     public let isLoading = CurrentValueSubject<Bool, Never>(true)
     public let listChanged: PassthroughSubject<DictionaryListBrowserChangeEvent, Never> = .init()
-
+    
     // MARK: - Initializers
-
+    
     public init(
         coordinator: DictionaryListBrowserCoordinator,
         browseDictionaryUseCase: BrowseDictionaryUseCase
     ) {
-
+        
         self.coordinator = coordinator
         self.browseDictionaryUseCase = browseDictionaryUseCase
     }
@@ -80,7 +83,7 @@ public final class DefaultDictionaryListBrowserViewModel: DictionaryListBrowserV
 // MARK: - Input Methods
 
 extension DefaultDictionaryListBrowserViewModel {
-
+    
     private func map(_ item: BrowseListDictionaryItem) -> DictionaryListBrowserItemViewModel {
         
         return .init(
@@ -91,7 +94,7 @@ extension DefaultDictionaryListBrowserViewModel {
     }
     
     public func load() async {
-     
+        
         if !isLoading.value {
             isLoading.value = true
         }
@@ -105,5 +108,14 @@ extension DefaultDictionaryListBrowserViewModel {
         
         listChanged.send(.loaded(items: loadedItems.map(self.map)))
         isLoading.value = false
+    }
+    
+    public func addNewItem() {
+
+        coordinator.addNewDictionaryItem { _ in
+            Task {
+                await self.load()
+            }
+        }
     }
 }

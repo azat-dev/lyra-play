@@ -141,6 +141,21 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
             .init(isLoading: false, changeEvent: nil),
         ])
     }
+    
+    func test_addItem() {
+        
+        // Given
+        let sut = createSUT()
+        
+        let expectation = expectation(description: "Will call coordinator")
+        sut.dictionaryListBrowserCoordinator.willAddNewDictionaryItem = { _ in expectation.fulfill() }
+        
+        // When
+        sut.viewModel.addNewItem()
+        
+        // Then
+        wait(for: [expectation], timeout: 1)
+    }
 }
 
 // MARK: - Helpers
@@ -186,6 +201,14 @@ extension DictionaryListBrowserViewModelTests {
 
 final class DictionaryListBrowserCoordinatorMock: DictionaryListBrowserCoordinator {
     
+    typealias AddNewDictionaryItemCallback = (_ completion: (DictionaryItem) -> Void) -> Void
+    
+    var willAddNewDictionaryItem: AddNewDictionaryItemCallback = { _ in }
+    
+    
+    func addNewDictionaryItem(completion: @escaping (DictionaryItem) -> Void) {
+        willAddNewDictionaryItem(completion)
+    }
 }
 
 // MARK: - Mocks
