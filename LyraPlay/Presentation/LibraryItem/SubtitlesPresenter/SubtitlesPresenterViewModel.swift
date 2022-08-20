@@ -62,7 +62,6 @@ public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewMod
         self.subtitles = subtitles
         
         self.subtitlesIterator = DefaultSubtitlesIterator(
-            subtitles: subtitles,
             subtitlesTimeSlots: subtitlesTimeSlots
         )
         

@@ -6,6 +6,8 @@
 //
 
 import XCTest
+import Combine
+
 import LyraPlay
 
 class PlaySubtitlesUseCaseTests: XCTestCase {
@@ -13,8 +15,8 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
     typealias SUT = (
         useCase: PlaySubtitlesUseCase,
         subtitlesIterator: SubtitlesIterator,
-        scheduler: Scheduler,
-        timer: ActionTimerMock
+        scheduler: LyraPlay.Scheduler,
+        timer: ActionTimer
     )
     
     func createSUT(subtitles: Subtitles, file: StaticString = #filePath, line: UInt = #line) -> SUT {
@@ -22,10 +24,9 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let timeSlotsParser = SubtitlesTimeSlotsParser()
         
         let subtitlesIterator = DefaultSubtitlesIterator(
-            subtitles: subtitles,
             subtitlesTimeSlots: timeSlotsParser.parse(from: subtitles)
         )
-        let timer = ActionTimerMock()
+        let timer = ActionTimerMock2()
         
         let scheduler = DefaultScheduler(timer: timer)
         
@@ -42,6 +43,8 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
             timer
         )
     }
+    
+    // MARK: - Helpers
     
     func emptySubtitles() -> Subtitles {
         return .init(duration: 0, sentences: [])
@@ -74,241 +77,345 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         return .init()
     }
     
+    private func observeStates(
+        _ sut: SUT,
+        timeout: TimeInterval = 1,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws -> (([PlaySubtitlesUseCaseState]) async -> Void) {
+        
+        var result = [PlaySubtitlesUseCaseState]()
+        let observer = sut.useCase.state
+            .sink { state in
+                result.append(state)
+            }
+        
+        return { expectedStates in
+            
+            observer.cancel()
+            let sequence = self.expectSequence(expectedStates)
+            
+            result.forEach { sequence.fulfill(with: $0) }
+            
+            let sequenceObserver = sut.useCase.state.dropFirst().sink { state in
+                sequence.fulfill(with: state)
+            }
+            
+            sequence.wait(timeout: timeout, enforceOrder: true, file: file, line: line)
+            sequenceObserver.cancel()
+        }
+    }
+    
+    private func observeChanges(
+        _ sut: SUT,
+        timeout: TimeInterval = 1,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws -> (([WillChangeSubtitlesPositionData]) async -> Void) {
+        
+        var result = [WillChangeSubtitlesPositionData]()
+        let observer = sut.useCase.willChangePosition
+            .sink { state in
+                result.append(state)
+            }
+        
+        return { expectedStates in
+            
+            observer.cancel()
+            let sequence = self.expectSequence(expectedStates)
+            
+            result.forEach { sequence.fulfill(with: $0) }
+            
+            let sequenceObserver = sut.useCase.willChangePosition.dropFirst().sink { state in
+                sequence.fulfill(with: state)
+            }
+            
+            sequence.wait(timeout: timeout, enforceOrder: true, file: file, line: line)
+            sequenceObserver.cancel()
+        }
+    }
+    
+    private func waitForState(_ sut: SUT, where whereState: (PlaySubtitlesUseCaseState) -> Bool) async throws {
+        
+        for try await state in sut.useCase.state.values {
+            if whereState(state) {
+                return
+            }
+        }
+        
+        XCTFail("Can't achive state")
+    }
+    
+    private func givenPlaying(_ sut: SUT) async throws {
+        
+        sut.useCase.play()
+        
+        try await waitForState(
+            sut,
+            where: { state in
+                if case .playing = state {
+                    return true
+                }
+                
+                return false
+            }
+        )
+    }
+    
+    private func givenStopped(_ sut: SUT) async throws {
+        
+        try await givenPlaying(sut)
+        sut.useCase.stop()
+        
+        try await waitForState(
+            sut,
+            where: { state in
+                if case .stopped = state {
+                    return true
+                }
+                
+                return false
+            }
+        )
+    }
+    
+    private func givenPaused(_ sut: SUT) async throws {
+        
+        try await givenPlaying(sut)
+        sut.useCase.pause()
+        
+        try await waitForState(
+            sut,
+            where: { state in
+                if case .paused = state {
+                    return true
+                }
+                
+                return false
+            }
+        )
+    }
+    
+    // MARK: - Test Methods
+    
     func test_play__empty_subtitles__from_begining() async throws {
         
+        // Given
         let sut = createSUT(subtitles: emptySubtitles())
         
-        let stateSequence = self.expectSequence([
-            PlaySubtitlesUseCaseState.initial,
+        let assertStatesEqualTo = try observeStates(sut)
+        let assertChangesEqualTo = try observeChanges(sut)
+        
+        // When
+        sut.useCase.play()
+        
+        // Then
+        await assertStatesEqualTo([
+            .initial,
             .finished
         ])
         
-        let observer = stateSequence.observe(sut.useCase.state)
-        sut.useCase.play(atTime: 0)
-        
-        stateSequence.wait(timeout: 1, enforceOrder: true)
-        observer.cancel()
+        await assertChangesEqualTo([])
     }
     
     func test_play__empty_subtitles__with_offset() async throws {
         
+        // Given
         let sut = createSUT(subtitles: emptySubtitles())
         
-        let stateSequence = self.expectSequence([ PlaySubtitlesUseCaseState.initial ])
-        let observer = stateSequence.observe(sut.useCase.state)
+        let assertStatesEqualTo = try observeStates(sut)
+        let assertChangesEqualTo = try observeChanges(sut)
         
+        // When
         sut.useCase.play(atTime: 100)
         
-        stateSequence.wait(timeout: 1, enforceOrder: true)
-        observer.cancel()
+        // Then
+        await assertStatesEqualTo([
+            .initial,
+            .finished
+        ])
+        
+        await assertChangesEqualTo([])
     }
     
-    func test_play__not_empty_subtitles__from_beginning() async throws {
+    func test_play__not_empty_subtitles__from_zero() async throws {
         
+        // Given
         let sut = createSUT(subtitles: anySubtitles())
         
-        let expectedStateItems: [PlaySubtitlesUseCaseState] = [
+        let assertStatesEqualTo = try observeStates(sut)
+        let assertChangesEqualTo = try observeChanges(sut)
+        
+        // When
+        sut.useCase.play(atTime: 0)
+        
+        // Then
+        await assertStatesEqualTo([
             .initial,
             .playing(position: .sentence(0)),
             .playing(position: .sentence(1)),
             .finished
-        ]
+        ])
         
-        let stateSequence = self.expectSequence(expectedStateItems)
-        let observer = stateSequence.observe(sut.useCase.state)
+        await assertChangesEqualTo([
+            .init(from: nil, to: .sentence(0)),
+            .init(from: .sentence(0), to: .sentence(1)),
+            .init(from: .sentence(1), to: nil)
+        ])
+    }
+    
+    func test_play__not_empty_subtitles__from_beginning() async throws {
         
-        sut.useCase.play(atTime: 0)
-        stateSequence.wait(timeout: 1, enforceOrder: true)
+        // Given
+        let sut = createSUT(subtitles: anySubtitles())
         
-        observer.cancel()
+        let assertStatesEqualTo = try observeStates(sut)
+        let assertChangesEqualTo = try observeChanges(sut)
+        
+        // When
+        sut.useCase.play()
+        
+        // Then
+        await assertStatesEqualTo([
+            .initial,
+            .playing(position: .sentence(0)),
+            .playing(position: .sentence(1)),
+            .finished
+        ])
+        
+        await assertChangesEqualTo([
+            .init(from: nil, to: .sentence(0)),
+            .init(from: .sentence(0), to: .sentence(1)),
+            .init(from: .sentence(1), to: nil)
+        ])
     }
     
     func test_play__not_empty_subtitles__with_offset() async throws {
         
+        // Given
         let sut = createSUT(subtitles: anySubtitles())
         
-        let expectedStateItems: [PlaySubtitlesUseCaseState] = [
+        let assertStatesEqualTo = try observeStates(sut)
+        let assertChangesEqualTo = try observeChanges(sut)
+        
+        // When
+        sut.useCase.play(atTime: 0.1)
+        
+        // Then
+        await assertStatesEqualTo([
             .initial,
             .playing(position: .sentence(1)),
             .finished
-        ]
+        ])
         
-        let stateSequence = self.expectSequence(expectedStateItems)
-        let observer = stateSequence.observe(sut.useCase.state)
-        
-        sut.useCase.play(atTime: 0.1)
-        stateSequence.wait(timeout: 1, enforceOrder: true)
-        observer.cancel()
+        await assertChangesEqualTo([
+            .init(from: nil, to: .sentence(1)),
+            .init(from: .sentence(1), to: nil),
+        ])
     }
     
     func test_pause__stopped() async throws {
         
         let sut = createSUT(subtitles: anySubtitles())
         
-        let expectedStateItems: [PlaySubtitlesUseCaseState] = [
-            .initial,
-            .playing(position: .sentence(0)),
+        // Given
+        try await givenStopped(sut)
+        
+        let assertStatesEqualTo = try observeStates(sut)
+        let assertChangesEqualTo = try observeChanges(sut)
+        
+        // When
+        sut.useCase.pause()
+        
+        // Then
+        await assertStatesEqualTo([
             .stopped,
             .paused(position: .sentence(0))
-        ]
-        
-        let stateSequence = self.expectSequence(expectedStateItems)
-        
-        let stopAtIndex = 1
-        let pauseAtIndex = stopAtIndex + 1
-        
-        let observer = sut.useCase.state
-            .enumerated()
-            .map { index, item in
-                
-                switch index {
-                    
-                case stopAtIndex:
-                    Task { sut.useCase.stop() }
-                    
-                case pauseAtIndex:
-                    Task { sut.useCase.pause() }
-                    
-                default:
-                    break
-                }
-                
-                return item
-            }
-            .sink { value in
-                stateSequence.fulfill(with: value)
-            }
-        
-        sut.useCase.play(atTime: 0)
-        stateSequence.wait(timeout: 1, enforceOrder: true)
-
-        observer.cancel()
+        ])
+        await assertChangesEqualTo([])
     }
     
     func test_pause__playing() async throws {
         
         let sut = createSUT(subtitles: anySubtitles())
         
-        let stateSequence = self.expectSequence([
-            
-            PlaySubtitlesUseCaseState.initial,
+        // Given
+        try await givenPlaying(sut)
+        
+        let assertStatesEqualTo = try observeStates(sut)
+        let assertChangesEqualTo = try observeChanges(sut)
+        
+        // When
+        sut.useCase.pause()
+        
+        // Then
+        await assertStatesEqualTo([
             .playing(position: .sentence(0)),
             .paused(position: .sentence(0))
         ])
-        
-        let pauseAtIndex = 1
-        
-        let observer = sut.useCase.state
-            .enumerated()
-            .map { index, item in
-                
-                if index == pauseAtIndex {
-                    Task { sut.useCase.pause() }
-                }
-                
-                return item
-            }
-            .sink { value in
-                stateSequence.fulfill(with: value)
-            }
-        
-        sut.useCase.play(atTime: 0)
-        stateSequence.wait(timeout: 1, enforceOrder: true)
-        observer.cancel()
+        await assertChangesEqualTo([])
     }
     
     func test_stop__not_playing() async throws {
         
         let sut = createSUT(subtitles: anySubtitles())
         
-        let expectedStateItems: [PlaySubtitlesUseCaseState] = [
+        // Given
+        
+        let assertStatesEqualTo = try observeStates(sut)
+        let assertChangesEqualTo = try observeChanges(sut)
+        
+        // When
+        sut.useCase.stop()
+        
+        // Then
+        await assertStatesEqualTo([
             .initial,
             .stopped
-        ]
-        
-        let stateSequence = self.expectSequence(expectedStateItems)
-        let observer = stateSequence.observe(sut.useCase.state)
-        
-        sut.useCase.stop()
-        stateSequence.wait(timeout: 1, enforceOrder: true)
-        observer.cancel()
+        ])
+        await assertChangesEqualTo([])
     }
     
     func test_stop__playing() async throws {
         
         let sut = createSUT(subtitles: anySubtitles())
         
-        let expectedStateItems: [PlaySubtitlesUseCaseState] = [
-            .initial,
+        // Given
+        try await givenPlaying(sut)
+        
+        let assertStatesEqualTo = try observeStates(sut)
+        let assertChangesEqualTo = try observeChanges(sut)
+        
+        // When
+        sut.useCase.stop()
+        
+        // Then
+        await assertStatesEqualTo([
             .playing(position: .sentence(0)),
             .stopped
-        ]
-        
-        let stateSequence = self.expectSequence(expectedStateItems)
-        
-        let stopAtIndex = 1
-        
-        let observer = sut.useCase.state
-            .enumerated()
-            .map { index, item in
-                
-                if index == stopAtIndex {
-                    Task { sut.useCase.stop() }
-                }
-                
-                return item
-            }
-            .sink { value in
-                stateSequence.fulfill(with: value)
-            }
-        
-        sut.useCase.play(atTime: 0)
-        stateSequence.wait(timeout: 2, enforceOrder: true)
-        
-        observer.cancel()
+        ])
+        await assertChangesEqualTo([])
     }
     
     func test_stop__paused() async throws {
         
         let sut = createSUT(subtitles: anySubtitles())
         
-        let expectedStateItems: [PlaySubtitlesUseCaseState] = [
-            .initial,
-            .playing(position: .sentence(0)),
+        // Given
+        try await givenPaused(sut)
+        
+        let assertStatesEqualTo = try observeStates(sut)
+        let assertChangesEqualTo = try observeChanges(sut)
+        
+        // When
+        sut.useCase.stop()
+        
+        // Then
+        await assertStatesEqualTo([
             .paused(position: .sentence(0)),
             .stopped
-        ]
-        let stateSequence = self.expectSequence(expectedStateItems)
-        
-        let pauseAtIndex = 1
-        let stopAtIndex = pauseAtIndex + 1
-        
-        let observer = sut.useCase.state
-            .enumerated()
-            .map { index, item in
-                
-                switch index {
-                    
-                case pauseAtIndex:
-                    Task { sut.useCase.pause() }
-                    
-                case stopAtIndex:
-                    Task { sut.useCase.stop() }
-                    
-                default:
-                    break
-                }
-                
-                return item
-            }
-            .sink { value in
-                stateSequence.fulfill(with: value)
-            }
-        
-        sut.useCase.play(atTime: 0)
-        stateSequence.wait(timeout: 1, enforceOrder: true)
-        
-        observer.cancel()
+        ])
+        await assertChangesEqualTo([])
     }
 }
 

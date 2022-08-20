@@ -12,7 +12,7 @@ public final class LibraryItemViewControllerFactory {
     private var coordinator: LibraryItemCoordinator
     private var showMediaInfoUseCase: ShowMediaInfoUseCase
     private var currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput
-    private var playMediaUseCase: PlayMediaUseCase
+    private var playMediaUseCase: PlayMediaWithTranslationsUseCase
     private var importSubtitlesUseCase: ImportSubtitlesUseCase
     private var loadSubtitlesUseCase: LoadSubtitlesUseCase
     
@@ -20,7 +20,7 @@ public final class LibraryItemViewControllerFactory {
         coordnator: LibraryItemCoordinator,
         showMediaInfoUseCase: ShowMediaInfoUseCase,
         currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput,
-        playMediaUseCase: PlayMediaUseCase,
+        playMediaUseCase: PlayMediaWithTranslationsUseCase,
         importSubtitlesUseCase: ImportSubtitlesUseCase,
         loadSubtitlesUseCase: LoadSubtitlesUseCase
     ) {

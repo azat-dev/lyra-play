@@ -42,9 +42,14 @@ final class DefaultAppCoordinator: AppCoordinator {
         return DefaultNowPlayingInfoService()
     } ()
     
-    private lazy var audioService: AudioService = {
-        
-        return DefaultAudioService()
+    private lazy var audioSession: DefaultAudioSession = {
+
+        return DefaultAudioSession()
+    } ()
+    
+    private lazy var audioPlayer: AudioPlayer = {
+
+        return DefaultAudioPlayer(audioSession: audioSession)
     } ()
     
     private lazy var loadTrackUseCase: LoadTrackUseCase = {
@@ -58,7 +63,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     private lazy var currentPlayerStateUseCase: CurrentPlayerStateUseCase = {
         
         let currentState = DefaultCurrentPlayerStateUseCase(
-            audioService: audioService,
+            audioPlayer: audioPlayer,
             showMediaInfoUseCase: showMediaInfoUseCase
         )
         
@@ -77,7 +82,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     private lazy var playMediaUseCase: PlayMediaUseCase = {
         
         return DefaultPlayMediaUseCase(
-            audioService: audioService,
+            audioPlayer: audioPlayer,
             loadTrackUseCase: loadTrackUseCase
         )
     } ()
@@ -114,6 +119,7 @@ final class DefaultAppCoordinator: AppCoordinator {
             defaultImage: UIImage(systemName: "lock")!.pngData()!
         )
     } ()
+    
     
     private lazy var imagesRepository: FilesRepository = {
         
@@ -199,6 +205,69 @@ final class DefaultAppCoordinator: AppCoordinator {
         )
     } ()
     
+    
+    private lazy var playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory = {
+        
+        return DefaultPlaySubtitlesUseCaseFactory(
+            subtitlesIteratorFactory: DefaultSubtitlesIteratorFactory(),
+            scheduler: DefaultScheduler(timer: DefaultActionTimer())
+        )
+    } ()
+        
+    private lazy var playMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCase = {
+        
+        return DefaultPlayMediaWithSubtitlesUseCase(
+            playMediaUseCase: playMediaUseCase,
+            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
+            loadSubtitlesUseCase: loadSubtitlesUseCase
+        )
+    } ()
+    
+    private lazy var dictionaryRepository: DictionaryRepository = {
+        return CoreDataDictionaryRepository(coreDataStore: coreDataStore)
+    } ()
+    
+    private lazy var provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase = {
+        
+        return DefaultProvideTranslationsForSubtitlesUseCase(
+            dictionaryRepository: dictionaryRepository,
+            textSplitter: DefaultTextSplitter(),
+            lemmatizer: DefaultLemmatizer()
+        )
+    } ()
+    
+    private lazy var provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase = {
+        
+        return DefaultProvideTranslationsToPlayUseCase(
+            provideTranslationsForSubtitlesUseCase: provideTranslationsForSubtitlesUseCase
+        )
+    } ()
+    
+    private lazy var pronounceTranslationsUseCase: PronounceTranslationsUseCase = {
+        
+        return DefaultPronounceTranslationsUseCase(
+            textToSpeechConverter: DefaultTextToSpeechConverter(),
+            audioPlayer: DefaultAudioPlayer(audioSession: audioSession)
+        )
+    } ()
+    
+    
+    private lazy var playMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCase = {
+        
+        return DefaultPlayMediaWithTranslationsUseCase(
+            playMediaWithSubtitlesUseCase: playMediaWithSubtitlesUseCase,
+            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
+            provideTranslationsToPlayUseCase: provideTranslationsToPlayUseCase,
+            pronounceTranslationsUseCase: pronounceTranslationsUseCase
+        )
+    } ()
+    
+    private lazy var browseDictionaryUseCase: BrowseDictionaryUseCase = {
+      
+        return DefaultBrowseDictionaryUseCase(dictionaryRepository: dictionaryRepository)
+    } ()
+    
+    
     init(navigationController: UINavigationController) {
         
         self.navigationController = navigationController
@@ -211,6 +280,15 @@ final class DefaultAppCoordinator: AppCoordinator {
             browseFilesUseCase: browseFilesUseCase,
             importFileUseCase: importFileUseCase,
             playMediaUseCase: playMediaUseCase
+        )
+        return factory.build()
+    }
+    
+    func makeDictionaryListBrowserVC() -> DictionaryListBrowserViewController {
+        
+        let factory = DictionaryListBrowserViewControllerFactory(
+            coordinator: self,
+            browseDictionaryUseCase: browseDictionaryUseCase
         )
         return factory.build()
     }
@@ -244,8 +322,15 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     func start() {
         
-        let vc = makeAudioFilesBrowserVC()
-        navigationController.pushViewController(vc, animated: false)
+        let tabBarVC = UITabBarController()
+        
+        tabBarVC.viewControllers = [
+            makeAudioFilesBrowserVC(),
+            makeDictionaryListBrowserVC()
+        ]
+        
+        tabBarVC.selectedViewController = tabBarVC.viewControllers?.first
+        navigationController.pushViewController(tabBarVC, animated: false)
     }
 }
 
@@ -277,7 +362,7 @@ extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
             coordnator: self,
             showMediaInfoUseCase: showMediaInfoUseCase,
             currentPlayerStateUseCase: currentPlayerStateUseCase,
-            playMediaUseCase: playMediaUseCase,
+            playMediaUseCase: playMediaWithTranslationsUseCase,
             importSubtitlesUseCase: importSubtitlesUseCase,
             loadSubtitlesUseCase: loadSubtitlesUseCase
         )
@@ -298,5 +383,58 @@ extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
         let topViewController = self.navigationController.topViewController
         topViewController?.modalPresentationStyle = .pageSheet
         topViewController?.present(vc, animated: true)
+    }
+}
+
+
+// MARK: - DictionaryListBrowserCoordinator
+
+extension DefaultAppCoordinator: DictionaryListBrowserCoordinator {
+    
+    func addNewDictionaryItem(completion: @escaping (DictionaryItem) -> Void) {
+        
+        let alert = UIAlertController(title: "New dictionary item", message: "", preferredStyle: .alert)
+        
+        alert.addTextField()
+        alert.addTextField()
+        
+        alert.addAction(.init(title: "Cancel", style: .cancel))
+        
+        let saveAction = UIAlertAction(title: "Submit", style: .default) { [weak self, weak alert] action in
+            
+            guard
+                let self = self,
+                let originalText = alert?.textFields?[0].text,
+                let translatedText = alert?.textFields?[1].text
+            else {
+                return
+            }
+            
+            let lemmatizer = DefaultLemmatizer()
+
+            let newItem = DictionaryItem(
+                id: nil,
+                createdAt: nil,
+                updatedAt: nil,
+                originalText: originalText,
+                lemma: lemmatizer.lemmatize(text: originalText).first?.lemma ?? originalText,
+                language: "English",
+                translations: [
+                    .init(id: UUID(), text: translatedText)
+                ]
+            )
+            
+            Task {
+                
+                await self.dictionaryRepository.putItem(newItem)
+                completion(newItem)
+            }
+            
+        }
+        
+        alert.addAction(saveAction)
+        
+        let topViewController = self.navigationController.topViewController
+        topViewController?.present(alert, animated: true)
     }
 }

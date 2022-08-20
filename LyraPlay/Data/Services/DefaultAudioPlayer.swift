@@ -1,5 +1,5 @@
 //
-//  DefaultAudioService.swift
+//  DefaultAudioPlayer.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 29.06.22.
@@ -12,48 +12,29 @@ import Combine
 
 // MARK: - Implementations
 
-public final class DefaultAudioService: NSObject, AudioService, AVAudioPlayerDelegate {
+public final class DefaultAudioPlayer: NSObject, AudioPlayer, AVAudioPlayerDelegate {
     
     // MARK: - Properties
-    
-    private let audioSession: AVAudioSession
+
+    private let audioSession: AudioSession
     private var player: AVAudioPlayer?
-    private let commandCenter: MPRemoteCommandCenter
     
     private var playerIsPlayingObserver: NSKeyValueObservation? = nil
     
-    public let state: CurrentValueSubject<AudioServiceState, Never> = .init(.initial)
+    public let state: CurrentValueSubject<AudioPlayerState, Never> = .init(.initial)
     
     // MARK: - Initializers
     
-    public override init() {
+    public init(audioSession: AudioSession) {
         
-        self.audioSession = AVAudioSession.sharedInstance()
+        self.audioSession = audioSession
         self.player = nil
-        self.commandCenter = MPRemoteCommandCenter.shared()
-        
-        super.init()
-        
-        do {
-            // Set the audio session category, mode, and options.
-            try audioSession.setCategory(
-                .playback,
-                mode: .spokenAudio,
-                policy: .longFormAudio,
-                options: [
-                ]
-            )
-        } catch {
-            print("Failed to set audio session category.")
-        }
-        
-        setupRemoteControls()
     }
 }
 
 // MARK: - Input methods
 
-extension DefaultAudioService {
+extension DefaultAudioPlayer {
     
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully: Bool) {
         
@@ -63,7 +44,7 @@ extension DefaultAudioService {
         
         switch self.state.value {
             
-        case .initial, .stopped, .finished, .interrupted, .paused, .loaded:
+        case .initial, .stopped, .finished, .paused, .loaded:
             print("Wrong state")
             dump(self.state.value)
             break
@@ -75,11 +56,11 @@ extension DefaultAudioService {
     }
 }
 
-extension DefaultAudioService {
+extension DefaultAudioPlayer {
     
-    public func prepare(fileId: String, data trackData: Data) async -> Result<Void, AudioServiceError> {
+    public func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioPlayerError> {
         
-        try? audioSession.setActive(true)
+        audioSession.activate()
         
         do {
             
@@ -87,12 +68,13 @@ extension DefaultAudioService {
             player.delegate = self
             
             self.player = player
-
+            
             player.prepareToPlay()
             self.state.value = .loaded(session: .init(fileId: fileId))
             
         } catch {
             
+            audioSession.deactivate()
             state.value = .initial
             print("*** Unable to set up the audio player: \(error.localizedDescription) ***")
             return .failure(.internalError(error))
@@ -101,7 +83,7 @@ extension DefaultAudioService {
         return .success(())
     }
     
-    public func play() async -> Result<Void, AudioServiceError> {
+    public func play() -> Result<Void, AudioPlayerError> {
         
         guard
             let player = self.player,
@@ -111,7 +93,7 @@ extension DefaultAudioService {
             return .failure(.noActiveFile)
         }
         
-        try? audioSession.setActive(true)
+        audioSession.activate()
         
         player.play()
         self.state.value = .playing(session: session)
@@ -119,17 +101,17 @@ extension DefaultAudioService {
         return .success(())
     }
     
-    public func play(atTime: TimeInterval) async -> Result<Void, AudioServiceError> {
-
+    public func play(atTime: TimeInterval) -> Result<Void, AudioPlayerError> {
+        
         guard
             let player = self.player,
             let session = state.value.session
         else {
-
+            
             return .failure(.noActiveFile)
         }
         
-        try? audioSession.setActive(true)
+        audioSession.activate()
         
         player.play(atTime: atTime)
         self.state.value = .playing(session: session)
@@ -137,23 +119,23 @@ extension DefaultAudioService {
         return .success(())
     }
     
-    public func playAndWaitForEnd() async -> Result<Void, AudioServiceError> {
+    public func playAndWaitForEnd() async -> Result<Void, AudioPlayerError> {
         
         guard let currentSession = state.value.session else {
-
+            
             return .failure(.noActiveFile)
         }
-
+        
         var stateCancellation: AnyCancellable?
         defer { stateCancellation?.cancel() }
         
         var isFinished = false
         var isSetupCall = true
         
-        let result: Result<Void, AudioServiceError> = await withCheckedContinuation { continuation  in
+        return await withCheckedContinuation { continuation  in
             
             stateCancellation = state.sink { state in
-
+                
                 if isSetupCall {
                     isSetupCall = false
                     return
@@ -193,22 +175,54 @@ extension DefaultAudioService {
                 }
             }
             
-            Task {
-                
-                let result = await self.play()
-                
-                guard case .success = result else {
-                    continuation.resume(returning: result)
-                    return
-                }
+            let result = self.play()
+            
+            guard case .success = result else {
+                continuation.resume(returning: result)
+                return
             }
         }
-        
-        
-        return result
     }
     
-    public func pause() async -> Result<Void, AudioServiceError> {
+    
+    public func playAndWaitForEnd() -> AsyncThrowingStream<AudioPlayerState, Error> {
+        
+        return AsyncThrowingStream { continuation in
+    
+            guard state.value.session != nil else {
+                
+                continuation.finish(throwing: AudioPlayerError.noActiveFile)
+                return
+            }
+
+            let subscription = state.dropFirst().sink { value in
+                
+                continuation.yield(value)
+                
+                if case .stopped = value {
+                    continuation.finish()
+                    return
+                }
+                
+                if case .finished = value {
+                    continuation.finish()
+                }
+            }
+            
+            continuation.onTermination = { _ in
+                subscription.cancel()
+            }
+            
+            if case .failure(let error) = play() {
+                
+                continuation.finish(throwing: error)
+                return
+            }
+        }
+    }
+    
+    
+    public func pause() -> Result<Void, AudioPlayerError> {
         
         guard
             let player = player
@@ -216,6 +230,7 @@ extension DefaultAudioService {
             return .failure(.noActiveFile)
         }
         
+        audioSession.deactivate()
         player.pause()
         
         guard case .playing(let session) = state.value else {
@@ -226,106 +241,17 @@ extension DefaultAudioService {
         return .success(())
     }
     
-    public func stop() async -> Result<Void, AudioServiceError> {
+    public func stop() -> Result<Void, AudioPlayerError> {
         
         guard let player = player else {
             return .failure(.noActiveFile)
         }
         
+        audioSession.deactivate()
         player.stop()
-        
         self.player = nil
         
         self.state.value = .stopped
         return .success(())
     }
-}
-
-extension DefaultAudioService {
-    
-    func setupRemoteControls() {
-        
-        commandCenter.playCommand.addTarget { [unowned self] event in
-            
-            guard let player = self.player else {
-                return .commandFailed
-            }
-            
-            
-            player.play()
-            
-            switch self.state.value {
-                
-            case .paused(let session, _),
-                    .interrupted(let session, _):
-                self.state.value = .playing(session: session)
-                
-            default:
-                break
-            }
-            
-            return .success
-        }
-        
-        commandCenter.pauseCommand.addTarget { [unowned self] event in
-            
-            guard let player = self.player else {
-                return .commandFailed
-            }
-            
-            if player.rate != 1.0 {
-                return .commandFailed
-            }
-            
-            player.pause()
-            
-            switch self.state.value {
-                
-            case .playing(let session),
-                    .interrupted(let session, _),
-                    .paused(let session, _):
-                self.state.value = .paused(session: session, time: player.currentTime)
-                
-            default:
-                break
-            }
-            
-            return .success
-        }
-        
-        commandCenter.changePlaybackPositionCommand.addTarget { event in
-            return .success
-        }
-        
-        commandCenter.skipBackwardCommand.addTarget {[weak self] event in
-            
-            guard
-                let self = self,
-                let player = self.player
-            else {
-                return .commandFailed
-            }
-            
-            let currentTime = player.currentTime
-            
-            if currentTime - 10 > 0 {
-                player.play(atTime: player.currentTime - 10)
-            }
-            
-            return .success
-        }
-        
-        commandCenter.skipForwardCommand.addTarget { event in
-            return .success
-        }
-        
-        commandCenter.nextTrackCommand.addTarget { event in
-            return .success
-        }
-        
-        commandCenter.previousTrackCommand.addTarget { event in
-            return .success
-        }
-    }
-    
 }

@@ -36,7 +36,7 @@ public protocol ProvideTranslationsToPlayUseCaseInput {
 
 public protocol ProvideTranslationsToPlayUseCaseOutput {
     
-    func getTranslationsToPlay(for position: SubtitlesPosition) async -> TranslationsToPlay?
+    func getTranslationsToPlay(for position: SubtitlesPosition) -> TranslationsToPlayData?
 }
 
 public protocol ProvideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCaseOutput, ProvideTranslationsToPlayUseCaseInput {
@@ -50,24 +50,20 @@ public final class DefaultProvideTranslationsToPlayUseCase: ProvideTranslationsT
     
     // MARK: - Properties
     
-    private let minNumberOfItemsToQueue: Int
-    
     private let provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase
-    
-    private var queueItems = [TranslationsToPlay]()
-    
+
     private var subtitles: Subtitles!
     
     private var subtitlesTimeSlots: [SentenceIndex: [SubtitlesTimeSlot]]!
     
+    private var items = [SubtitlesPosition: TranslationsToPlay]()
+    
     // MARK: - Initializers
     
     public init(
-        provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase,
-        minNumberOfItemsToQueue: Int = 3
+        provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase
     ) {
         
-        self.minNumberOfItemsToQueue = minNumberOfItemsToQueue
         self.provideTranslationsForSubtitlesUseCase = provideTranslationsForSubtitlesUseCase
     }
 }
@@ -94,7 +90,7 @@ extension DefaultProvideTranslationsToPlayUseCase {
         return result
     }
     
-    private func getNextItems(sentenceIndex: Int) async -> [TranslationsToPlay] {
+    private func getGroupedTranslations(sentenceIndex: Int) async -> [TranslationsToPlay] {
         
         var items = [TranslationsToPlay]()
         
@@ -172,71 +168,35 @@ extension DefaultProvideTranslationsToPlayUseCase {
         return items
     }
     
-    private func getNextChunk(from sentenceIndex: Int) async -> [TranslationsToPlay] {
-        
-        var chunk = [TranslationsToPlay]()
-        
-        for index in sentenceIndex..<min(subtitles.sentences.count, sentenceIndex + minNumberOfItemsToQueue) {
-            
-            chunk.append(contentsOf: await getNextItems(sentenceIndex: index))
-        }
-        
-        return chunk
-    }
-    
     public func prepare(params: AdvancedPlayerSession) async -> Void {
         
-        queueItems = [TranslationsToPlay]()
         subtitles = params.subtitles
+        
+        await provideTranslationsForSubtitlesUseCase.prepare(options: params)
         
         // FIXME: Make timeSlots dependency
         let parser = SubtitlesTimeSlotsParser()
         let timeSlots = parser.parse(from: params.subtitles)
         subtitlesTimeSlots = Self.groupTimeSlotsBySentences(timeSlots: timeSlots)
         
-        await provideTranslationsForSubtitlesUseCase.prepare(options: params)
-        queueItems = await getNextChunk(from: 0)
+        let numberOfSentences = params.subtitles.sentences.count
+        
+        for sentenceIndex in 0..<numberOfSentences {
+            
+            let translations = await getGroupedTranslations(sentenceIndex: sentenceIndex)
+        
+            if Task.isCancelled {
+                return
+            }
+            
+            translations.forEach { translation in
+                items[translation.position] = translation
+            }
+        }
     }
     
-    public func getTranslationsToPlay(for position: SubtitlesPosition) async -> TranslationsToPlay? {
+    public func getTranslationsToPlay(for position: SubtitlesPosition) -> TranslationsToPlayData? {
         
-        guard position.sentenceIndex < subtitles.sentences.count else {
-            return nil
-        }
-        
-        if let firstItem = queueItems.first {
-            
-            if firstItem.position < position {
-
-                queueItems = await getNextChunk(from: position.sentenceIndex)
-            }
-            
-        } else {
-            
-            queueItems = await getNextChunk(from: position.sentenceIndex)
-        }
-        
-        while !queueItems.isEmpty {
-            
-            guard let queueItem = queueItems.first else {
-                break
-            }
-            
-            if queueItem.position == position {
-                
-                queueItems.removeFirst()
-                return queueItem
-            }
-            
-            if position < queueItem.position {
-                
-                queueItems.removeFirst()
-                continue
-            }
-            
-            break
-        }
-        
-        return nil
+        return items[position]?.data
     }
 }

@@ -13,12 +13,12 @@ class PlaySubtitlesUseCaseFactoryTests: XCTestCase {
     typealias SUT = (
         useCase: PlaySubtitlesUseCaseFactory,
         subtitlesIteratorFactory: SubtitlesIteratorFactory,
-        scheduler: SchedulerMock
+        scheduler: Scheduler
     )
     
     func createSUT() -> SUT {
         
-        let scheduler = SchedulerMock()
+        let scheduler = DefaultScheduler(timer: ActionTimerMock())
         let subtitlesIteratorFactory = DefaultSubtitlesIteratorFactory()
         
         let useCase = DefaultPlaySubtitlesUseCaseFactory(

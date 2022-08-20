@@ -51,7 +51,7 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
     private let trackId: UUID
     private let coordinator: LibraryItemCoordinator
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
-    private let playMediaUseCase: PlayMediaUseCase
+    private let playMediaUseCase: PlayMediaWithTranslationsUseCase
     private let currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput
     private let importSubtitlesUseCase: ImportSubtitlesUseCase
     private let loadSubtitlesUseCase: LoadSubtitlesUseCase
@@ -65,7 +65,7 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
         coordinator: LibraryItemCoordinator,
         showMediaInfoUseCase: ShowMediaInfoUseCase,
         currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput,
-        playMediaUseCase: PlayMediaUseCase,
+        playMediaUseCase: PlayMediaWithTranslationsUseCase,
         importSubtitlesUseCase: ImportSubtitlesUseCase,
         loadSubtitlesUseCase: LoadSubtitlesUseCase
     ) {
@@ -161,12 +161,18 @@ extension DefaultLibraryItemViewModel {
      
         if self.isPlaying.value {
             
-            let _ = await playMediaUseCase.pause()
+            let _ = playMediaUseCase.pause()
             return
         }
         
-        let _ = await playMediaUseCase.prepare(mediaId: trackId)
-        let _ = await playMediaUseCase.play()
+        let _ = await playMediaUseCase.prepare(
+            session: .init(
+                mediaId: trackId,
+                learningLanguage: "English",
+                nativeLanguage: "English"
+            )
+        )
+        let _ = playMediaUseCase.play()
         await loadSubtitles()
     }
     

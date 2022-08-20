@@ -12,7 +12,9 @@ import CoreData
 
 class CoreDataDictionaryRepositoryTests: XCTestCase {
     
-    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> DictionaryRepository{
+    typealias SUT = DictionaryRepository
+    
+    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
 
         let storeURL = URL(fileURLWithPath: "/dev/null")
         let coreDataStore = try! CoreDataStore(storeURL: storeURL)
@@ -22,46 +24,11 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         return repository
     }
     
-    
-    func anyTranslationId() -> UUID {
-        return .init(uuidString: "00000000-0000-0000-0000-000000000000")!
-    }
-    
-    func anyTranslation(text: String = "translation", position: TranslationItemPosition? = nil) -> TranslationItem {
-        return TranslationItem(
-            id: anyTranslationId(),
-            text: text,
-            position: position
-        )
-    }
-    
-    private func anyNewDictionaryItem(suffix: String = "") -> DictionaryItem {
-        
-        return DictionaryItem(
-            id: nil,
-            originalText: "originalText" + suffix,
-            lemma: "lemma" + suffix,
-            language: "English" + suffix,
-            translations: [
-                anyTranslation(text: "text1" + suffix),
-                anyTranslation(text: "text2" + suffix, position: .init(sentenceIndex: 0, textRange: 0..<10))
-            ]
-        )
-    }
-    
-    private func anyExistingDictonaryItem() -> DictionaryItem {
-        
-        var item = anyNewDictionaryItem()
-        item.id = UUID()
-        
-        return item
-    }
-    
     func test_putItem_getItem__new_item() async throws {
         
         let sut = createSUT()
         
-        let item = anyNewDictionaryItem()
+        let item: DictionaryItem = .anyNewDictionaryItem()
         
         let putResult = await sut.putItem(item)
         let savedItem = try AssertResultSucceded(putResult)
@@ -95,7 +62,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
         let sut = createSUT()
         
-        let item = anyExistingDictonaryItem()
+        let item: DictionaryItem = .anyExistingDictonaryItem()
         
         let putResult = await sut.putItem(item)
         let error = try AssertResultFailed(putResult)
@@ -110,14 +77,14 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
         let sut = createSUT()
         
-        let item = anyNewDictionaryItem(suffix: "1")
+        let item = DictionaryItem.anyNewDictionaryItem(suffix: "1")
         
         let putResult = await sut.putItem(item)
         let savedItem = try AssertResultSucceded(putResult)
         
         let itemId = savedItem.id!
 
-        var updatedItemData = anyNewDictionaryItem(suffix: "2")
+        var updatedItemData = DictionaryItem.anyNewDictionaryItem(suffix: "2")
         updatedItemData.id = itemId
         
         
@@ -137,7 +104,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
         let sut = createSUT()
         
-        let item = anyNewDictionaryItem()
+        let item: DictionaryItem = .anyNewDictionaryItem()
         
         let putResult = await sut.putItem(item)
         try AssertResultSucceded(putResult)
@@ -150,7 +117,6 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
             XCTFail("Wrong error type \(error)")
             return
         }
-        
     }
     
     func test_deleteItem__not_existing() async throws {
@@ -171,7 +137,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
         let sut = createSUT()
         
-        let item = anyNewDictionaryItem()
+        let item: DictionaryItem = .anyNewDictionaryItem()
         
         let putResult = await sut.putItem(item)
         let savedItem = try AssertResultSucceded(putResult)
@@ -219,7 +185,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
         for index in 0..<numberOfItems {
     
-            let dictionaryItem = anyNewDictionaryItem(suffix: String(index))
+            let dictionaryItem: DictionaryItem = .anyNewDictionaryItem(suffix: String(index))
             let putResult = await sut.putItem(dictionaryItem)
             try AssertResultSucceded(putResult)
         }
@@ -231,5 +197,56 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
         let receivedLemmas = items.map { $0.lemma }
         AssertEqualReadable(receivedLemmas.sorted(), expectedLemmas.sorted())
+    }
+    
+    func test_listItems__empty_repository() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        // Empty repository
+        
+        // When
+        let result = await sut.listItems()
+        let items = try AssertResultSucceded(result)
+        
+        // Then
+        AssertEqualReadable(items.map { $0.id }, [])
+    }
+
+    func givenPopulatedRepository(_ sut: SUT) async throws -> [DictionaryItem] {
+        
+        var items = [DictionaryItem]()
+        let numberOfItems = 10
+        
+        for _ in 0..<numberOfItems {
+    
+            let dictionaryItem: DictionaryItem = .anyNewDictionaryItem(suffix: UUID().uuidString)
+            let putResult = await sut.putItem(dictionaryItem)
+            let savedItem = try AssertResultSucceded(putResult)
+            
+            items.append(savedItem)
+        }
+        
+        return items
+    }
+    
+    func test_listItems__not_empty_repository() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        let dictionaryItems = try await givenPopulatedRepository(sut)
+        
+        // When
+        let result = await sut.listItems()
+        let items = try AssertResultSucceded(result)
+        
+        // Then
+        let sortedDictionaryItems = dictionaryItems.sorted { $0.originalText < $1.originalText }
+        AssertEqualReadable(
+            items.map { $0.id },
+            sortedDictionaryItems.map { $0.id }
+        )
     }
 }

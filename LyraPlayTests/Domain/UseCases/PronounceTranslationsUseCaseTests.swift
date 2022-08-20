@@ -13,24 +13,24 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
     typealias SUT = (
         useCase: PronounceTranslationsUseCase,
         textToSpeechConverter: TextToSpeechConverter,
-        audioService: AudioServiceMock
+        audioPlayer: AudioPlayerMock
     )
     
     func createSUT() -> SUT {
         
         let textToSpeechConverter = TextToSpeechConverterMock()
-        let audioService = AudioServiceMock()
+        let audioPlayer = AudioPlayerMock()
         
         let useCase = DefaultPronounceTranslationsUseCase(
             textToSpeechConverter: textToSpeechConverter,
-            audioService: audioService
+            audioPlayer: audioPlayer
         )
         detectMemoryLeak(instance: useCase)
         
         return (
             useCase,
             textToSpeechConverter,
-            audioService
+            audioPlayer
         )
     }
     

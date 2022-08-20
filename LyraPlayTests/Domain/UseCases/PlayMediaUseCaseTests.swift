@@ -6,39 +6,126 @@
 //
 
 import XCTest
+import Combine
 import LyraPlay
 
 class PlayMediaUseCaseTests: XCTestCase {
     
+    // MARK: - Helpers
+    
     typealias SUT = (
         useCase: PlayMediaUseCase,
-        audioService: AudioServiceMock,
+        audioPlayer: AudioPlayerMock,
         loadTrackUseCase: LoadTrackUseCaseMock
     )
     
     func createSUT() -> SUT {
         
-        let audioService = AudioServiceMock()
+        let audioPlayer = AudioPlayerMock()
         let loadTrackUseCase = LoadTrackUseCaseMock()
         
         let useCase = DefaultPlayMediaUseCase(
-            audioService: audioService,
+            audioPlayer: audioPlayer,
             loadTrackUseCase: loadTrackUseCase
         )
         detectMemoryLeak(instance: useCase)
         
         return (
             useCase,
-            audioService,
+            audioPlayer,
             loadTrackUseCase
         )
     }
     
-    func test_prepare__not_existing_track() async throws {
+    private func observeStates(
+        _ sut: SUT,
+        timeout: TimeInterval = 1,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws -> (([ExpectedState]) async -> Void) {
         
+        var result = [ExpectedState]()
+        let observer = sut.useCase.state
+            .sink { state in
+                result.append(.init(from: sut))
+            }
+        
+        return { expectedStates in
+            
+            observer.cancel()
+            let sequence = self.expectSequence(expectedStates)
+            
+            result.forEach { sequence.fulfill(with: $0) }
+            
+            let sequenceObserver = sut.useCase.state.dropFirst().sink { state in
+                sequence.fulfill(with: .init(from: sut))
+            }
+            
+            sequence.wait(timeout: timeout, enforceOrder: true, file: file, line: line)
+            sequenceObserver.cancel()
+        }
+    }
+    
+    private func waitForState(_ sut: SUT, where whereState: (PlayMediaUseCaseState) -> Bool) async throws {
+        
+        for try await state in sut.useCase.state.values {
+            if whereState(state) {
+                return
+            }
+        }
+        
+        throw NSError(domain: "Can't achive state", code: 0)
+    }
+    
+    private func givenMediaExists(_ sut: SUT, mediaId: UUID) {
+        
+        sut.loadTrackUseCase.tracks[mediaId] = mediaId.uuidString.data(using: .utf8)
+    }
+    
+    private func givenPrepared(_ sut: SUT, mediaId: UUID) async throws {
+        
+        givenMediaExists(sut, mediaId: mediaId)
+        
+        let result = await sut.useCase.prepare(mediaId: mediaId)
+        try AssertResultSucceded(result)
+        
+        try await waitForState(sut, where: { $0 == .loaded(mediaId: mediaId) })
+    }
+    
+    private func givenPlayingState(_ sut: SUT, mediaId: UUID) async throws {
+        
+        let result = sut.useCase.play()
+        try AssertResultSucceded(result)
+        
+        try await waitForState(sut, where: { $0 == .playing(mediaId: mediaId) })
+    }
+    
+    private func givenPaused(_ sut: SUT, mediaId: UUID) async throws {
+        
+        let result = sut.useCase.pause()
+        try AssertResultSucceded(result)
+        
+        try await waitForState(sut, where: { state in
+            
+            if case .paused = state {
+                return true
+            }
+            
+            return false
+        })
+    }
+    
+    // MARK: - Test Methods
+    
+    func test_prepare__not_existing_media() async throws {
+        
+        // Given
         let sut = createSUT()
         
+        // When
         let result = await sut.useCase.prepare(mediaId: UUID())
+        
+        // Then
         let error = try AssertResultFailed(result)
         
         guard case .trackNotFound = error else {
@@ -47,195 +134,157 @@ class PlayMediaUseCaseTests: XCTestCase {
         }
     }
     
-    private func setUpTracks(loadTrackUseCase: LoadTrackUseCaseMock) {
-        
-        for _ in 0..<5 {
-            
-            let id = UUID()
-            loadTrackUseCase.tracks[id] = id.uuidString.data(using: .utf8)
-        }
-    }
-    
-    func test_prepare__existing_track() async throws {
+    func test_prepare__existing_media() async throws {
         
         let sut = createSUT()
         
-        setUpTracks(loadTrackUseCase: sut.loadTrackUseCase)
+        // Given
+        let mediaId = UUID()
+        givenMediaExists(sut, mediaId: mediaId)
         
-        let track = sut.loadTrackUseCase.tracks.first!
-        let trackId = track.0
+        // When
+        let statesToObserver = try observeStates(sut)
+        let result = await sut.useCase.prepare(mediaId: mediaId)
         
-        let expectedStateItems: [PlayMediaUseCaseState] = [
-            .initial,
-            .loading(mediaId: trackId),
-            .loaded(mediaId: trackId),
-        ]
-        
-        let stateSequence = self.expectSequence(expectedStateItems)
-        let observer = stateSequence.observe(sut.useCase.state)
-        
-        let result = await sut.useCase.prepare(mediaId: trackId)
+        // Then
         try AssertResultSucceded(result)
-        
-        stateSequence.wait(timeout: 3, enforceOrder: true)
-        observer.cancel()
+        await statesToObserver([
+            .init(.initial, audioPlayer: .initial),
+            .init(.loading(mediaId: mediaId), audioPlayer: .initial),
+            .init(.loaded(mediaId: mediaId), audioPlayer: .loaded(session: .init(fileId: mediaId.uuidString))),
+        ])
     }
     
-    func test_play__existing_track() async throws {
-
+    func test_play__existing_media() async throws {
+        
         let sut = createSUT()
+        let mediaId = UUID()
         
-        setUpTracks(loadTrackUseCase: sut.loadTrackUseCase)
+        // Given
+        try await givenPrepared(sut, mediaId: mediaId)
+        let result = sut.useCase.play()
         
-        let track = sut.loadTrackUseCase.tracks.first!
-        let trackId = track.0
-        
-        let audioServiceStateSequence = self.expectSequence([
-            
-            AudioServiceState.initial,
-            .playing(session: .init(fileId: trackId.uuidString)),
-        ])
-        
-        let audioServiceObserver = audioServiceStateSequence.observe(sut.audioService.state)
-        
-        let expectedStateItems: [PlayMediaUseCaseState] = [
-            .initial,
-            .loading(mediaId: trackId),
-            .loaded(mediaId: trackId),
-            .playing(mediaId: trackId),
-//            .finished(mediaId: trackId)
-        ]
-        
-        let stateSequence = self.expectSequence(expectedStateItems)
-        let stateObserver = stateSequence.observe(sut.useCase.state)
-        
-        let _ = await sut.useCase.prepare(mediaId: trackId)
-        let result = await sut.useCase.play()
+        // Then
         try AssertResultSucceded(result)
-        
-        audioServiceStateSequence.wait(timeout: 3, enforceOrder: true)
-        stateSequence.wait(timeout: 3, enforceOrder: true)
-        
-        audioServiceObserver.cancel()
-        stateObserver.cancel()
+        AssertEqualReadable(
+            ExpectedState(from: sut),
+            .init(
+                .playing(mediaId: mediaId),
+                audioPlayer: .playing(session: .init(fileId: mediaId.uuidString))
+            )
+        )
     }
     
-    func test_pause__not_active_track() async throws {
-
+    func test_pause__not_active_media() async throws {
+        
         let sut = createSUT()
         
+        // Given
         
-        let audioServiceStateSequence = self.expectSequence([
-            AudioServiceState.initial,
-        ])
-        
-        let audioServiceObserver = audioServiceStateSequence.observe(sut.audioService.state)
-        
-        let expectedStateItems: [PlayMediaUseCaseState] = [
-            .initial,
-        ]
-        
-        let stateSequence = self.expectSequence(expectedStateItems)
-        let stateObserver = stateSequence.observe(sut.useCase.state)
-        
-        let result = await sut.useCase.pause()
+        // When
+        let result = sut.useCase.pause()
         let error = try AssertResultFailed(result)
         
+        // Then
         guard case .noActiveTrack = error else {
             XCTFail("Wrong error type \(result)")
             return
         }
-        
-        audioServiceStateSequence.wait(timeout: 3, enforceOrder: true)
-        stateSequence.wait(timeout: 3, enforceOrder: true)
-        
-        audioServiceObserver.cancel()
-        stateObserver.cancel()
     }
     
-    func test_pause__active_track() async throws {
+    func test_pause__active_media() async throws {
         
         let sut = createSUT()
+        let mediaId = UUID()
         
-        setUpTracks(loadTrackUseCase: sut.loadTrackUseCase)
+        // Given
+        try await givenPrepared(sut, mediaId: mediaId)
+        try await givenPlayingState(sut, mediaId: mediaId)
         
-        let track = sut.loadTrackUseCase.tracks.first!
-        let trackId = track.0
-        
-        let expectedStateItems: [PlayMediaUseCaseState] = [
-            .initial,
-            .loading(mediaId: trackId),
-            .loaded(mediaId: trackId),
-            .playing(mediaId: trackId),
-            .paused(mediaId: trackId, time: 0)
-        ]
-        
-        let stateSequence = self.expectSequence(expectedStateItems)
-        let stateObserver = stateSequence.observe(sut.useCase.state)
-        
-        let audioServiceStateSequence = self.expectSequence([
-            
-            AudioServiceState.initial,
-            .playing(session: .init(fileId: trackId.uuidString)),
-            .paused(session: .init(fileId: trackId.uuidString), time: 0)
-        ])
-        
-        let audioServiceObserver = audioServiceStateSequence.observe(sut.audioService.state)
-
-        let _ = await sut.useCase.prepare(mediaId: trackId)
-        let _ = await sut.useCase.play()
-        let result = await sut.useCase.pause()
+        // When
+        let result = sut.useCase.pause()
         try AssertResultSucceded(result)
-
-        audioServiceStateSequence.wait(timeout: 3, enforceOrder: true)
-        stateSequence.wait(timeout: 3, enforceOrder: true)
         
-        audioServiceObserver.cancel()
-        stateObserver.cancel()
+        // Then
+        AssertEqualReadable(
+            ExpectedState(from: sut),
+            .init(
+                .paused(mediaId: mediaId, time: 0),
+                audioPlayer: .paused(session: .init(fileId: mediaId.uuidString), time: 0)
+            )
+        )
     }
     
-    func test_change_active_track() async throws {
+    func test_play__paused_media() async throws {
         
         let sut = createSUT()
+        let mediaId = UUID()
         
-        setUpTracks(loadTrackUseCase: sut.loadTrackUseCase)
+        // Given
+        try await givenPrepared(sut, mediaId: mediaId)
+        try await givenPlayingState(sut, mediaId: mediaId)
+        try await givenPaused(sut, mediaId: mediaId)
         
-        let tracks = Array(sut.loadTrackUseCase.tracks.keys)
-        let trackId1 = tracks[0]
-        let trackId2 = tracks[1]
+        // When
+        let result = sut.useCase.play()
+        try AssertResultSucceded(result)
         
-        let expectedStateItems: [PlayMediaUseCaseState] = [
-            .initial,
-            .loading(mediaId: trackId1),
-            .loaded(mediaId: trackId1),
-            .playing(mediaId: trackId1),
-            .loading(mediaId: trackId2),
-            .loaded(mediaId: trackId2),
-            .playing(mediaId: trackId2),
-        ]
+        // Then
+        AssertEqualReadable(
+            ExpectedState(from: sut),
+            .init(
+                .playing(mediaId: mediaId),
+                audioPlayer: .playing(session: .init(fileId: mediaId.uuidString))
+            )
+        )
+    }
+    
+    func test_change_active_media() async throws {
         
-        let stateSequence = self.expectSequence(expectedStateItems)
-        let stateObserver = stateSequence.observe(sut.useCase.state)
+        let sut = createSUT()
+        let mediaId1 = UUID()
+        let mediaId2 = UUID()
         
-        let audioServiceStateSequence = self.expectSequence([
+        // Given
+        try await givenPrepared(sut, mediaId: mediaId1)
+        try await givenPlayingState(sut, mediaId: mediaId1)
+        try await givenPrepared(sut, mediaId: mediaId2)
+        
+        // When
+        let result = sut.useCase.play()
+        try AssertResultSucceded(result)
+        
+        // Then
+        AssertEqualReadable(
+            ExpectedState(from: sut),
+            .init(
+                .playing(mediaId: mediaId2),
+                audioPlayer: .playing(session: .init(fileId: mediaId2.uuidString))
+            )
+        )
+    }
+}
+
+// MARK: - Helpers
+
+extension PlayMediaUseCaseTests {
+    
+    struct ExpectedState: Equatable {
+        
+        var useCaseState: PlayMediaUseCaseState
+        var audioPlayerState: AudioPlayerState
+        
+        
+        public init(_ useCaseState: PlayMediaUseCaseState, audioPlayer: AudioPlayerState) {
             
-            AudioServiceState.initial,
-            .playing(session: .init(fileId: trackId1.uuidString)),
-            .playing(session: .init(fileId: trackId2.uuidString)),
-        ])
+            self.useCaseState = useCaseState
+            self.audioPlayerState = audioPlayer
+        }
         
-        let audioServiceObserver = audioServiceStateSequence.observe(sut.audioService.state)
-        
-        let _ = await sut.useCase.prepare(mediaId: trackId1)
-        let _ = await sut.useCase.play()
-        
-        let _ = await sut.useCase.prepare(mediaId: trackId2)
-        let _ = await sut.useCase.play()
-        
-        audioServiceStateSequence.wait(timeout: 10, enforceOrder: true)
-        stateSequence.wait(timeout: 3, enforceOrder: true)
-        
-        audioServiceObserver.cancel()
-        stateObserver.cancel()
+        public init(from sut: SUT) {
+            
+            self.useCaseState = sut.useCase.state.value
+            self.audioPlayerState = sut.audioPlayer.state.value
+        }
     }
 }
