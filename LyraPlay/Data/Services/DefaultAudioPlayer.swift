@@ -60,8 +60,6 @@ extension DefaultAudioPlayer {
     
     public func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioPlayerError> {
         
-        audioSession.activate()
-        
         do {
             
             let player = try AVAudioPlayer(data: trackData)
@@ -74,7 +72,6 @@ extension DefaultAudioPlayer {
             
         } catch {
             
-            audioSession.deactivate()
             state.value = .initial
             print("*** Unable to set up the audio player: \(error.localizedDescription) ***")
             return .failure(.internalError(error))
@@ -230,8 +227,8 @@ extension DefaultAudioPlayer {
             return .failure(.noActiveFile)
         }
         
-        audioSession.deactivate()
         player.pause()
+        audioSession.deactivate()
         
         guard case .playing(let session) = state.value else {
             return .success(())
@@ -247,8 +244,8 @@ extension DefaultAudioPlayer {
             return .failure(.noActiveFile)
         }
         
-        audioSession.deactivate()
         player.stop()
+        audioSession.deactivate()
         self.player = nil
         
         self.state.value = .stopped
