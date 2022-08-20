@@ -322,9 +322,15 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     func start() {
         
-//        let vc = makeAudioFilesBrowserVC()
-        let vc = makeDictionaryListBrowserVC()
-        navigationController.pushViewController(vc, animated: false)
+        let tabBarVC = UITabBarController()
+        
+        tabBarVC.viewControllers = [
+            makeAudioFilesBrowserVC(),
+            makeDictionaryListBrowserVC()
+        ]
+        
+        tabBarVC.selectedViewController = tabBarVC.viewControllers?.first
+        navigationController.pushViewController(tabBarVC, animated: false)
     }
 }
 
