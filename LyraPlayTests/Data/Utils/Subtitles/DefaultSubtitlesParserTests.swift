@@ -64,7 +64,7 @@ class DefaultSubtitlesParserTests: XCTestCase {
         ])
 
         // When
-        let result = await sut.parser.parse(text, fileName: "filename.test2")
+        let result = await sut.parser.parse(text, fileName: "filename.test1")
         
         // Then
         try AssertResultSucceded(result)

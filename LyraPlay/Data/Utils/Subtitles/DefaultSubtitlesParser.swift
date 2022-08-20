@@ -26,6 +26,12 @@ public final class DefaultSubtitlesParser: SubtitlesParser {
     
     public func parse(_ text: String, fileName: String) async -> Result<Subtitles, SubtitlesParserError> {
         
-        return .failure(.internalError(nil))
+        let fileExtension = URL(fileURLWithPath: fileName).pathExtension.lowercased()
+        
+        guard let parser = parsers[".\(fileExtension)"] else {
+            return .failure(.internalError(nil))
+        }
+        
+        return await parser.parse(text, fileName: fileName)
     }
 }
