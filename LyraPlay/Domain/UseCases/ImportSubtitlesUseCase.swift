@@ -45,7 +45,7 @@ public final class DefaultImportSubtitlesUseCase: ImportSubtitlesUseCase {
     
     public func importFile(trackId: UUID, language: String, fileName: String, data: Data) async -> Result<Void, ImportSubtitlesUseCaseError> {
         
-        let fileExtension = URL(fileURLWithPath: fileName).pathExtension.lowercased()
+        let fileExtension = "." + URL(fileURLWithPath: fileName).pathExtension.lowercased()
         
         guard supportedExtensions.contains(fileExtension) else {
             return .failure(.formatNotSupported)
