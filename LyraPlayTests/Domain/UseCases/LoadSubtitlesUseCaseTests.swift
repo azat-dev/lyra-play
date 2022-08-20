@@ -80,7 +80,7 @@ class LoadSubtitlesUseCaseTests: XCTestCase {
         
         let _ = await sut.subtitlesFiles.putFile(name: "test", data: brokenData)
 
-        sut.subtitlesParser.resolve = { text in
+        sut.subtitlesParser.resolve = { text, _ in
             return .failure(.internalError(nil))
         }
 
@@ -115,7 +115,7 @@ class LoadSubtitlesUseCaseTests: XCTestCase {
         )
         
         let _ = await sut.subtitlesFiles.putFile(name: "test", data: Data())
-        sut.subtitlesParser.resolve = { text in .success(expectedSubtitles) }
+        sut.subtitlesParser.resolve = { text, _ in .success(expectedSubtitles) }
 
         let result = await sut.useCase.load(for: trackId, language: anyLanguage())
         let loadedSubtitles = try AssertResultSucceded(result)

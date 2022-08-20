@@ -28,21 +28,26 @@ public final class DefaultImportSubtitlesUseCase: ImportSubtitlesUseCase {
     private let subtitlesRepository: SubtitlesRepository
     private let subtitlesFilesRepository: FilesRepository
     private let subtitlesParser: SubtitlesParser
+    private let supportedExtensions: [String]
     
     public init(
         subtitlesRepository: SubtitlesRepository,
         subtitlesParser: SubtitlesParser,
-        subtitlesFilesRepository: FilesRepository
+        subtitlesFilesRepository: FilesRepository,
+        supportedExtensions: [String]
     ) {
         
         self.subtitlesRepository = subtitlesRepository
         self.subtitlesParser = subtitlesParser
         self.subtitlesFilesRepository = subtitlesFilesRepository
+        self.supportedExtensions = supportedExtensions
     }
     
     public func importFile(trackId: UUID, language: String, fileName: String, data: Data) async -> Result<Void, ImportSubtitlesUseCaseError> {
         
-        guard !fileName.hasPrefix(".lrc") else {
+        let fileExtension = URL(fileURLWithPath: fileName).pathExtension.lowercased()
+        
+        guard supportedExtensions.contains(fileExtension) else {
             return .failure(.formatNotSupported)
         }
         
@@ -50,15 +55,13 @@ public final class DefaultImportSubtitlesUseCase: ImportSubtitlesUseCase {
             return .failure(.wrongData)
         }
         
-        let parseResult = await subtitlesParser.parse(text)
+        let parseResult = await subtitlesParser.parse(text, fileName: fileName)
         
         guard case .success = parseResult else {
             return .failure(.wrongData)
         }
         
-        let fileName = "\(trackId)/\(language).lrc"
-        
-        print(fileName)
+        let fileName = "\(trackId)/\(language)\(fileExtension)"
         
         let resultSaveFile = await subtitlesFilesRepository.putFile(
             name: fileName,

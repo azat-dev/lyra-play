@@ -162,6 +162,8 @@
 		AAA87993289EF0B600E04CA9 /* ProvideTranslationsToPlayUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA87992289EF0B600E04CA9 /* ProvideTranslationsToPlayUseCase.swift */; };
 		AAB4483428B12192004CB9F9 /* SubRipFileFormatParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB4483328B12192004CB9F9 /* SubRipFileFormatParserTests.swift */; };
 		AAB4483628B1242F004CB9F9 /* SubRipFileFormatParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB4483528B1242F004CB9F9 /* SubRipFileFormatParser.swift */; };
+		AAB4483828B1576E004CB9F9 /* DefaultSubtitlesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB4483728B1576E004CB9F9 /* DefaultSubtitlesParser.swift */; };
+		AAB4483A28B15827004CB9F9 /* DefaultSubtitlesParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB4483928B15827004CB9F9 /* DefaultSubtitlesParserTests.swift */; };
 		AABB49E628AFDFAF0088484B /* BrowseDictionaryUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB49E528AFDFAF0088484B /* BrowseDictionaryUseCaseTests.swift */; };
 		AABB49E828AFDFC00088484B /* BrowseDictionaryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB49E728AFDFC00088484B /* BrowseDictionaryUseCase.swift */; };
 		AABB49EA28AFF50E0088484B /* Dictionary+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB49E928AFF50E0088484B /* Dictionary+Helpers.swift */; };
@@ -391,6 +393,8 @@
 		AAA87992289EF0B600E04CA9 /* ProvideTranslationsToPlayUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProvideTranslationsToPlayUseCase.swift; sourceTree = "<group>"; };
 		AAB4483328B12192004CB9F9 /* SubRipFileFormatParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubRipFileFormatParserTests.swift; sourceTree = "<group>"; };
 		AAB4483528B1242F004CB9F9 /* SubRipFileFormatParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubRipFileFormatParser.swift; sourceTree = "<group>"; };
+		AAB4483728B1576E004CB9F9 /* DefaultSubtitlesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSubtitlesParser.swift; sourceTree = "<group>"; };
+		AAB4483928B15827004CB9F9 /* DefaultSubtitlesParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSubtitlesParserTests.swift; sourceTree = "<group>"; };
 		AABB49E528AFDFAF0088484B /* BrowseDictionaryUseCaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseDictionaryUseCaseTests.swift; sourceTree = "<group>"; };
 		AABB49E728AFDFC00088484B /* BrowseDictionaryUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseDictionaryUseCase.swift; sourceTree = "<group>"; };
 		AABB49E928AFF50E0088484B /* Dictionary+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Helpers.swift"; sourceTree = "<group>"; };
@@ -1121,6 +1125,7 @@
 			children = (
 				AAFB979A2875C60F007A76A7 /* LyricsParserTests.swift */,
 				AAB4483328B12192004CB9F9 /* SubRipFileFormatParserTests.swift */,
+				AAB4483928B15827004CB9F9 /* DefaultSubtitlesParserTests.swift */,
 				AA0D3F7C2875F811006717B9 /* DurationParserTests.swift */,
 				AA369EA328845F2700FDAD27 /* TextSplitterTests.swift */,
 				AAC8E0EF288B10AF001A274A /* LemmatizerTests.swift */,
@@ -1133,6 +1138,7 @@
 			children = (
 				AAFB97A02875D0FD007A76A7 /* LyricsParser.swift */,
 				AAB4483528B1242F004CB9F9 /* SubRipFileFormatParser.swift */,
+				AAB4483728B1576E004CB9F9 /* DefaultSubtitlesParser.swift */,
 				AA0D3F7A2875F7A8006717B9 /* DurationParser.swift */,
 			);
 			path = Subtitles;
@@ -1407,6 +1413,7 @@
 				AAF2EEC0287DF83F00894F71 /* ActionTimerFactory.swift in Sources */,
 				AAA87993289EF0B600E04CA9 /* ProvideTranslationsToPlayUseCase.swift in Sources */,
 				AACEA32F286A418600111565 /* FilePickerViewController.swift in Sources */,
+				AAB4483828B1576E004CB9F9 /* DefaultSubtitlesParser.swift in Sources */,
 				AACCE806288815C0002EA7C5 /* ManagedDictionaryItem+CoreDataClass.swift in Sources */,
 				AA4F96FF286E32710087F45A /* PlayerViewController+Layout.swift in Sources */,
 				AA598D1C2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift in Sources */,
@@ -1447,6 +1454,7 @@
 				AA731CD22870D25C0044412F /* LibraryItemViewModelTests.swift in Sources */,
 				AA2A6DE128984A9200AE5E75 /* AssertEqualReadable.swift in Sources */,
 				AA252C9728744481001B7AEE /* LoadTrackUseCaseMock.swift in Sources */,
+				AAB4483A28B15827004CB9F9 /* DefaultSubtitlesParserTests.swift in Sources */,
 				AABB49E628AFDFAF0088484B /* BrowseDictionaryUseCaseTests.swift in Sources */,
 				AA190E6F287ABC9C000514AB /* SubtitlesPresenterViewModelTests.swift in Sources */,
 				AABB49EF28AFFE3C0088484B /* DictionaryListBrowserViewModelTests.swift in Sources */,

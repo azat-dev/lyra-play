@@ -29,7 +29,8 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         let useCase = DefaultImportSubtitlesUseCase(
             subtitlesRepository: subtitlesRepository,
             subtitlesParser: subtitlesParser,
-            subtitlesFilesRepository: subtitlesFilesRepository
+            subtitlesFilesRepository: subtitlesFilesRepository,
+            supportedExtensions: [".lrc"]
         )
         
         detectMemoryLeak(instance: useCase)
@@ -57,7 +58,7 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         let testFileName = "test.lrc"
         
         
-        subtitlesParser.resolve = { _ in
+        subtitlesParser.resolve = { _, _ in
             return .success(.init(duration: 0, sentences: []))
         }
         
@@ -102,7 +103,7 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         let trackId = UUID()
         let testFileName = "test.lrc"
         
-        subtitlesParser.resolve = { _ in .success(.init(duration: 0, sentences: [])) }
+        subtitlesParser.resolve = { _, _ in .success(.init(duration: 0, sentences: [])) }
         
         let _ = await useCase.importFile(
             trackId: trackId,

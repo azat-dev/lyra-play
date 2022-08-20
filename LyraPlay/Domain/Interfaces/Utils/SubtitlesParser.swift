@@ -14,5 +14,5 @@ public enum SubtitlesParserError: Error {
 
 public protocol SubtitlesParser {
     
-    func parse(_ text: String) async -> Result<Subtitles, SubtitlesParserError>
+    func parse(_ text: String, fileName: String) async -> Result<Subtitles, SubtitlesParserError>
 }

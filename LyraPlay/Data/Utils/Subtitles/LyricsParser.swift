@@ -263,12 +263,11 @@ public class LyricsParser: SubtitlesParser {
         return .empty
     }
     
-    public func parse(_ text: String) async -> Result<Subtitles, SubtitlesParserError> {
+    public func parse(_ text: String, fileName: String) async -> Result<Subtitles, SubtitlesParserError> {
         
         var duration: TimeInterval = 0.0
         var sentences = [Subtitles.Sentence]()
         let splittedText = text.split(separator: "\n")
-        
         
         for line in splittedText {
             

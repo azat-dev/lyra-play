@@ -69,7 +69,7 @@ extension SubRipFileFormatParser {
         return Int(positionText)
     }
     
-    public func parse(_ text: String) async -> Result<Subtitles, SubtitlesParserError> {
+    public func parse(_ text: String, fileName: String) async -> Result<Subtitles, SubtitlesParserError> {
         
         var sentences = [Subtitles.Sentence]()
         let splittedText = text.components(separatedBy: .newlines)

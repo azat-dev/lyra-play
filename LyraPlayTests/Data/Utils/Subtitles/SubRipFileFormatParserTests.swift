@@ -36,7 +36,7 @@ class SubRipFileFormatParserTests: XCTestCase {
         let text = ""
 
         // When
-        let result = await sut.parser.parse(text)
+        let result = await sut.parser.parse(text, fileName: "filename.srt")
         let parsedSubtitles = try AssertResultSucceded(result)
         
         // Thne
@@ -62,7 +62,7 @@ class SubRipFileFormatParserTests: XCTestCase {
         """
         
         // When
-        let result = await sut.parser.parse(text)
+        let result = await sut.parser.parse(text, fileName: "test.srt")
         
         // Then
         let subtitlesResult = try AssertResultSucceded(result)

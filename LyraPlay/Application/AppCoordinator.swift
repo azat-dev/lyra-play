@@ -193,7 +193,8 @@ final class DefaultAppCoordinator: AppCoordinator {
         return DefaultImportSubtitlesUseCase(
             subtitlesRepository: subtitlesRepository,
             subtitlesParser: subtitlesParser,
-            subtitlesFilesRepository: subtitlesFilesRepository
+            subtitlesFilesRepository: subtitlesFilesRepository,
+            supportedExtensions: [".srt", ".lrc"]
         )
     } ()
     
@@ -348,7 +349,7 @@ extension DefaultAppCoordinator: LibraryItemCoordinator {
         
         openFilePicker(
             multiple: true,
-            documentTypes: ["com.azatkaiumov.lrc"],
+            documentTypes: ["com.azatkaiumov.subtitles"],
             completion: { completion($0?.first) }
         )
     }

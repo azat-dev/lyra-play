@@ -65,7 +65,7 @@ public final class DefaultLoadSubtitlesUseCase: LoadSubtitlesUseCase {
             return .failure(.internalError(nil))
         }
         
-        let parseResult = await subtitlesParser.parse(text)
+        let parseResult = await subtitlesParser.parse(text, fileName: fileName)
         
         guard case .success(let subtitles) = parseResult else {
             
