@@ -279,7 +279,7 @@ extension DefaultProvideTranslationsForSubtitlesUseCase {
         var searchFilters = [DictionaryItemFilter]()
         
         for lemma in uniqueLemmas {
-            searchFilters.append(.init(lemma: lemma))
+            searchFilters.append(.lemma(lemma))
         }
         
         let searchResult = await dictionaryRepository.searchItems(with: searchFilters)

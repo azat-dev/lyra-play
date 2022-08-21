@@ -9,14 +9,10 @@ import Foundation
 
 // MARK: - Interfaces
 
-public struct DictionaryItemFilter: Hashable {
+public enum DictionaryItemFilter: Hashable, Equatable {
     
-    public var lemma: String?
-    
-    public init(lemma: String) {
-        
-        self.lemma = lemma
-    }
+    case lemma(String)
+    case originalText(String)
 }
 
 public enum DictionaryRepositoryError: Error {

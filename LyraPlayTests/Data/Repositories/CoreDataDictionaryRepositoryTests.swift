@@ -24,47 +24,80 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         return repository
     }
     
+    // MARK: - Helpers
+    
+    func givenPopulatedRepository(_ sut: SUT) async throws -> [DictionaryItem] {
+        
+        var items = [DictionaryItem]()
+        let numberOfItems = 10
+        
+        for _ in 0..<numberOfItems {
+    
+            let dictionaryItem: DictionaryItem = .anyNewDictionaryItem(suffix: UUID().uuidString)
+            let putResult = await sut.putItem(dictionaryItem)
+            let savedItem = try AssertResultSucceded(putResult)
+            
+            items.append(savedItem)
+        }
+        
+        return items
+    }
+    
+    // MARK: - Test Methods
+    
     func test_putItem_getItem__new_item() async throws {
-        
+    
         let sut = createSUT()
+
+        // Given
+        let newItem: DictionaryItem = .anyNewDictionaryItem()
+
+        // When
+        let putResult = await sut.putItem(newItem)
         
-        let item: DictionaryItem = .anyNewDictionaryItem()
-        
-        let putResult = await sut.putItem(item)
+        // Then
         let savedItem = try AssertResultSucceded(putResult)
         
         XCTAssertNotNil(savedItem.id)
         XCTAssertNotNil(savedItem.createdAt)
         XCTAssertNil(savedItem.updatedAt)
-        XCTAssertEqual(savedItem.originalText, item.originalText)
-        XCTAssertEqual(savedItem.lemma, item.lemma)
-        XCTAssertEqual(savedItem.language, item.language)
-        XCTAssertEqual(item.translations.count, item.translations.count)
-        AssertEqualReadable(item.translations, item.translations)
+        XCTAssertEqual(savedItem.originalText, newItem.originalText)
+        XCTAssertEqual(savedItem.lemma, newItem.lemma)
+        XCTAssertEqual(savedItem.language, newItem.language)
+        XCTAssertEqual(newItem.translations.count, newItem.translations.count)
+        AssertEqualReadable(newItem.translations, newItem.translations)
         
         
+        // Given
         let itemId = savedItem.id!
         
+        // When
         let getResult = await sut.getItem(id: itemId)
+        
+        // Then
         let receivedItem = try AssertResultSucceded(getResult)
         
         XCTAssertEqual(receivedItem.id, itemId)
         XCTAssertEqual(receivedItem.createdAt, savedItem.createdAt)
         XCTAssertNil(receivedItem.updatedAt)
-        XCTAssertEqual(receivedItem.originalText, item.originalText)
-        XCTAssertEqual(receivedItem.lemma, item.lemma)
-        XCTAssertEqual(receivedItem.language, item.language)
-        XCTAssertEqual(receivedItem.translations.count, item.translations.count)
-        AssertEqualReadable(receivedItem.translations, item.translations)
+        XCTAssertEqual(receivedItem.originalText, newItem.originalText)
+        XCTAssertEqual(receivedItem.lemma, newItem.lemma)
+        XCTAssertEqual(receivedItem.language, newItem.language)
+        XCTAssertEqual(receivedItem.translations.count, newItem.translations.count)
+        AssertEqualReadable(receivedItem.translations, newItem.translations)
     }
     
     func test_putItem__update_not_existing_item() async throws {
         
         let sut = createSUT()
         
-        let item: DictionaryItem = .anyExistingDictonaryItem()
+        // Given
+        let notExistingItem: DictionaryItem = .anyExistingDictonaryItem()
         
-        let putResult = await sut.putItem(item)
+        // When
+        let putResult = await sut.putItem(notExistingItem)
+        
+        // Then
         let error = try AssertResultFailed(putResult)
 
         guard case .itemNotFound = error else {
@@ -77,22 +110,22 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
         let sut = createSUT()
         
-        let item = DictionaryItem.anyNewDictionaryItem(suffix: "1")
-        
-        let putResult = await sut.putItem(item)
-        let savedItem = try AssertResultSucceded(putResult)
-        
-        let itemId = savedItem.id!
+        // Given
+        let existingItems = try await givenPopulatedRepository(sut)
+        let existingItem = existingItems.first!
+        let itemId = existingItem.id!
 
+        // When
         var updatedItemData = DictionaryItem.anyNewDictionaryItem(suffix: "2")
         updatedItemData.id = itemId
         
-        
         let updatedItemResult = await sut.putItem(updatedItemData)
+        
+        // Then
         let updatedItem = try AssertResultSucceded(updatedItemResult)
         
         XCTAssertEqual(updatedItem.id, itemId)
-        XCTAssertEqual(updatedItem.createdAt, savedItem.createdAt)
+        XCTAssertEqual(updatedItem.createdAt, existingItem.createdAt)
         XCTAssertNotNil(updatedItem.updatedAt)
         XCTAssertEqual(updatedItem.originalText, updatedItemData.originalText)
         XCTAssertEqual(updatedItem.language, updatedItemData.language)
@@ -123,7 +156,13 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
         let sut = createSUT()
         
-        let deleteResult = await sut.deleteItem(id: UUID())
+        // Given
+        let notExistingItemId = UUID()
+        
+        // When
+        let deleteResult = await sut.deleteItem(id: notExistingItemId)
+
+        // Then
         let error = try AssertResultFailed(deleteResult)
 
         guard case .itemNotFound = error else {
@@ -137,17 +176,18 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         
         let sut = createSUT()
         
-        let item: DictionaryItem = .anyNewDictionaryItem()
+        // Given
+        let items = try await givenPopulatedRepository(sut)
         
-        let putResult = await sut.putItem(item)
-        let savedItem = try AssertResultSucceded(putResult)
+        let existingItem = items.first!
+        let existingItemId = existingItem.id!
         
-        let itemId = savedItem.id!
-        
-        let deleteResult = await sut.deleteItem(id: itemId)
+        // When
+        let deleteResult = await sut.deleteItem(id: existingItemId)
         try AssertResultSucceded(deleteResult)
 
-        let getResult = await sut.getItem(id: itemId)
+        // Then
+        let getResult = await sut.getItem(id: existingItemId)
         let error = try AssertResultFailed(getResult)
         
         guard case .itemNotFound = error else {
@@ -158,41 +198,41 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
     
     func test_searchItems__not_existing() async throws {
         
+        // Given
+        // Empty repository
         let sut = createSUT()
         
+        // When
+
         let itemsFilters: [DictionaryItemFilter] = [
-            .init(lemma: "do"),
-            .init(lemma: "you"),
+            .lemma("do"),
+            .lemma("you"),
         ]
-        
         let result = await sut.searchItems(with: itemsFilters)
+
+        // Then
         let items = try AssertResultSucceded(result)
-        
         XCTAssertTrue(items.isEmpty)
     }
     
     func test_searchItems() async throws {
         
+        // Given
         let sut = createSUT()
-        
-        let numberOfItems = 10
+        let _ = try await givenPopulatedRepository(sut)
         let expectedLemmas = ["lemma0", "lemma1"]
         
+        // When
         let itemsFilters: [DictionaryItemFilter] = [
-            .init(lemma: "lemma0"),
-            .init(lemma: "lemma1"),
+            .lemma("lemma0"),
+            .lemma("lemma1"),
+            .originalText("originalText2")
         ]
-        
-        for index in 0..<numberOfItems {
-    
-            let dictionaryItem: DictionaryItem = .anyNewDictionaryItem(suffix: String(index))
-            let putResult = await sut.putItem(dictionaryItem)
-            try AssertResultSucceded(putResult)
-        }
         
         let searchResult = await sut.searchItems(with: itemsFilters)
         let items = try AssertResultSucceded(searchResult)
         
+        // Then
         XCTAssertEqual(items.count, expectedLemmas.count)
         
         let receivedLemmas = items.map { $0.lemma }
@@ -214,23 +254,6 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         AssertEqualReadable(items.map { $0.id }, [])
     }
 
-    func givenPopulatedRepository(_ sut: SUT) async throws -> [DictionaryItem] {
-        
-        var items = [DictionaryItem]()
-        let numberOfItems = 10
-        
-        for _ in 0..<numberOfItems {
-    
-            let dictionaryItem: DictionaryItem = .anyNewDictionaryItem(suffix: UUID().uuidString)
-            let putResult = await sut.putItem(dictionaryItem)
-            let savedItem = try AssertResultSucceded(putResult)
-            
-            items.append(savedItem)
-        }
-        
-        return items
-    }
-    
     func test_listItems__not_empty_repository() async throws {
         
         let sut = createSUT()

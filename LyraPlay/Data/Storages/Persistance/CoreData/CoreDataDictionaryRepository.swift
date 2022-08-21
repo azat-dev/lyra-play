@@ -183,11 +183,17 @@ public final class CoreDataDictionaryRepository: DictionaryRepository {
                 template += "%K = %@"
             }
             
-            if let lemma = itemFilter.lemma {
-
+            switch itemFilter {
+                
+            case .lemma(let lemma):
                 appendTemplate()
                 arguments.append(#keyPath(ManagedDictionaryItem.lemma))
                 arguments.append(lemma)
+                
+            case .originalText(let originalText):
+                appendTemplate()
+                arguments.append(#keyPath(ManagedDictionaryItem.originalText))
+                arguments.append(originalText)
             }
             
             return NSPredicate(format: "(\(template))", argumentArray: arguments)
