@@ -42,6 +42,8 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         )
     }
     
+    // MARK: - Helpers
+    
     func anyPlayerSession(mediaId: UUID, subtitles: Subtitles) -> AdvancedPlayerSession {
         return .init(
             mediaId: mediaId,
@@ -103,25 +105,34 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         )
     }
     
+    // MARK: - Test Methods
+    
     func test_prepare__empty_subtitles() async throws {
         
         let sut = createSUT()
         
+        // Given
         let mediaId = anyMediaId()
-        let testOptions = anyPlayerSession(mediaId: mediaId, subtitles: emptySubtitles())
+        let testOptions = anyPlayerSession(
+            mediaId: mediaId,
+            subtitles: emptySubtitles()
+        )
         
+        // When
         await sut.useCase.prepare(
             options: testOptions
         )
     }
     
-    func test_getTranslations__by_lemma() async throws {
+    func test_getTranslations__by_lemmas_and_original_texts() async throws {
         
         let sut = createSUT()
         
+        // Given
         let sentences = [
             "Apple, pear",
-            "Banana"
+            "Banana",
+            "orange"
         ]
         
         let subtitles = anySubtitles(sentences: sentences)
@@ -135,31 +146,55 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
             ])
         )
         
-        let savedDictionaryItem = try AssertResultSucceded(putTranslationResult)
+        let savedDictionaryItemWithLemma = try AssertResultSucceded(putTranslationResult)
         
+        let putTranslationWithoutLemmaResult = await sut.dictionaryRepository.putItem(
+            anyDictionaryItem(
+                originalText: "banana",
+                lemma: "",
+                translations: [
+                anyTranslationItem(text: "translatedbanana")
+            ])
+        )
+        
+        let savedDictionaryItemWithoutLemma = try AssertResultSucceded(putTranslationWithoutLemmaResult)
+        
+        // When
         await sut.useCase.prepare(options: anyPlayerSession(mediaId: anyMediaId(), subtitles: subtitles))
         let receivedItems = await sut.useCase.getTranslations(
             sentenceIndex: 0
         )
         
+        // Then
         let expectedItems: [SubtitlesTranslation] = [
             .init(
                 textRange: sentences[0].range(of: "Apple")!,
                 translation: .init(
-                    dictionaryItemId: savedDictionaryItem.id!,
+                    dictionaryItemId: savedDictionaryItemWithLemma.id!,
                     translationId: anyTranslationId(),
-                    originalText: savedDictionaryItem.originalText,
+                    originalText: savedDictionaryItemWithLemma.originalText,
                     translatedText: "translatedapple"
+                )
+            ),
+            .init(
+                textRange: sentences[1].range(of: "Banana")!,
+                translation: .init(
+                    dictionaryItemId: savedDictionaryItemWithoutLemma.id!,
+                    translationId: anyTranslationId(),
+                    originalText: savedDictionaryItemWithoutLemma.originalText,
+                    translatedText: "translatedbanana"
                 )
             )
         ]
+        
         AssertEqualReadable(receivedItems, expectedItems)
     }
     
     func test_getTranslations__with_text_ranges() async throws {
         
         let sut = createSUT()
-        
+
+        // Given
         let sentence1 = "Apple, pear, apple"
         let sentence2 = "banana apple"
         
@@ -199,8 +234,10 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         let translationWithLemma = translations[0]
         let translationWithRange = translations[1]
         
+        // When
         await sut.useCase.prepare(options: anyPlayerSession(mediaId: anyMediaId(), subtitles: subtitles))
         
+        // Then
         let expectedItems1: [SubtitlesTranslation] = [
             .init(
                 textRange: sentence1.range(of: "Apple")!,
