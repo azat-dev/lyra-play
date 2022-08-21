@@ -168,7 +168,6 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         )
         
         let savedDictionaryItemWithoutLemma = try AssertResultSucceded(putTranslationWithoutLemmaResult)
-        dump(savedDictionaryItemWithoutLemma)
         await sut.useCase.prepare(options: anyPlayerSession(mediaId: anyMediaId(), subtitles: subtitles))
         
         // When
