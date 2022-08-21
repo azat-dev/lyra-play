@@ -180,7 +180,7 @@ public final class CoreDataDictionaryRepository: DictionaryRepository {
                     template += " AND "
                 }
                 
-                template += "%K = %@"
+                template += "%K ==[c] %@"
             }
             
             switch itemFilter {
