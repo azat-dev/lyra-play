@@ -21,24 +21,31 @@ class LemmatizerTests: XCTestCase {
         return lemmatizer
     }
     
-    
-    func testLemmatizeEmptyText() async throws {
+    func test_lemmatize__empty_text() async throws {
 
         let sut = createSUT()
         
-        let text = ""
-        let result = sut.lemmatize(text: text)
+        // Given
+        let emptyText = ""
         
-        XCTAssertEqual(result.map { ExpectedLemma(from: $0, text: text) }, [])
+        // When
+        let result = sut.lemmatize(text: emptyText)
+        
+        // Then
+        let receivedItems = result.map { ExpectedLemma(from: $0, text: emptyText) }
+        XCTAssertEqual(receivedItems, [])
     }
     
-    func testLemmatize() async throws {
+    func test_lemmatize__not_empty_text() async throws {
 
-        let text = "What is she doing? She speaks English very well"
+        // Given
+        let notEmptyText = "What is she doing? She speaks English very well"
         let sut = createSUT()
         
-        let result = sut.lemmatize(text: text)
+        // When
+        let result = sut.lemmatize(text: notEmptyText)
         
+        // Then
         let expectedItems: [ExpectedLemma] = [
             
             .init(lemma: "what", text: "What"),
@@ -53,7 +60,8 @@ class LemmatizerTests: XCTestCase {
             .init(lemma: "well", text: "well"),
         ]
         
-        XCTAssertEqual(result.map { .init(from: $0, text: text) }, expectedItems)
+        let receivedItems = result.map { ExpectedLemma(from: $0, text: notEmptyText) }
+        AssertEqualReadable(receivedItems, expectedItems)
     }
 }
 
@@ -61,10 +69,10 @@ class LemmatizerTests: XCTestCase {
 
 struct ExpectedLemma: Equatable {
     
-    var lemma: String?
+    var lemma: String
     var text: String
     
-    init(lemma: String? = nil, text: String) {
+    init(lemma: String, text: String) {
         
         self.lemma = lemma
         self.text = text

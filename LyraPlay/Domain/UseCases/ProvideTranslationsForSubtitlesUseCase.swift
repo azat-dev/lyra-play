@@ -267,10 +267,12 @@ extension DefaultProvideTranslationsForSubtitlesUseCase {
         
         let sentencesWithLemmas = lemmatizeSubtitles(options.subtitles)
         var uniqueLemmas = Set<String>()
+        var uniqueWords = Set<String>()
         
-        sentencesWithLemmas.forEach { sentence in
-            sentence.forEach { lemmaItem in
-                uniqueLemmas.insert(lemmaItem.lemma.lowercased())
+        sentencesWithLemmas.forEach { sentenceItems in
+            sentenceItems.forEach { item in
+                
+                uniqueLemmas.insert(item.lemma.lowercased())
             }
         }
         
