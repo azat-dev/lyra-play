@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 // MARK: - Interfaces
 
@@ -59,6 +60,7 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
     public var isPlaying: Observable<Bool> = Observable(false)
     public var info: Observable<LibraryItemInfoPresentation?> = Observable(nil)
     public var subtitlesPresenterViewModel: Observable<SubtitlesPresenterViewModel?> = Observable(nil)
+    private var subtitlesObserver: AnyCancellable?
     
     public init(
         trackId: UUID,
@@ -105,6 +107,10 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
             self?.updatePlayingState()
         }
     }
+    
+    deinit {
+        subtitlesObserver?.cancel()
+    }
 }
 
 // MARK: - Input
@@ -123,27 +129,6 @@ extension DefaultLibraryItemViewModel {
             coverImage: info.coverImage,
             duration: formatDuration(info.duration)
         )
-    }
-    
-    private func loadSubtitles() async {
-
-        let result = await loadSubtitlesUseCase.load(for: trackId, language: "English")
-
-        let subtitles = try! result.get()
-        
-        let timeSlotsParser = SubtitlesTimeSlotsParser()
-
-        let subtitlesViewModel = DefaultSubtitlesPresenterViewModel(
-            subtitles: subtitles,
-            subtitlesTimeSlots: timeSlotsParser.parse(from: subtitles)
-        )
-        
-        Task {
-            
-            await subtitlesViewModel.load()
-            await subtitlesViewModel.play(at: 0.0)
-        }
-        subtitlesPresenterViewModel.value = subtitlesViewModel
     }
     
     public func load() async {
@@ -172,8 +157,14 @@ extension DefaultLibraryItemViewModel {
                 nativeLanguage: "English"
             )
         )
+        
+        subtitlesPresenterViewModel.value = DefaultSubtitlesPresenterViewModel()
+        
+        subtitlesObserver = playMediaUseCase.state.publisher.sink { state in
+            self.subtitlesPresenterViewModel.value?.update(with: state.subtitlesState)
+        }
+        
         let _ = playMediaUseCase.play()
-        await loadSubtitles()
     }
     
     
