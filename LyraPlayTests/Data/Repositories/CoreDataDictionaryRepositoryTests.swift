@@ -276,7 +276,7 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         expectedLemmas.forEach { itemsFilters.append(.lemma($0)) }
         expectedOriginalTexts.forEach { itemsFilters.append(.originalText($0)) }
         
-        for index in 0..<1500 {
+        for _ in 0..<1500 {
             itemsFilters.append(.lemma(UUID().uuidString))
         }
         
