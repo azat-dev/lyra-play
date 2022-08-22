@@ -261,6 +261,55 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         )
     }
     
+    func test_searchItems__large_condition() async throws {
+        
+        // Given
+        let sut = createSUT()
+        let existingItems = try await givenPopulatedRepository(sut)
+        
+        let expectedLemmas = [
+            existingItems[0].lemma.uppercased(),
+            existingItems[1].lemma,
+        ]
+        let expectedLemmasLowercased = expectedLemmas.map { $0.lowercased() }
+        
+        let expectedOriginalTexts = [
+            existingItems[2].originalText,
+            existingItems[3].originalText.uppercased(),
+        ]
+        let expectedOriginalTextsLowercased = expectedOriginalTexts.map { $0.lowercased() }
+        
+        
+        var itemsFilters = [DictionaryItemFilter]()
+        expectedLemmas.forEach { itemsFilters.append(.lemma($0)) }
+        expectedOriginalTexts.forEach { itemsFilters.append(.originalText($0)) }
+        
+        for index in 0..<1500 {
+            itemsFilters.append(.lemma(UUID().uuidString))
+        }
+        
+        // When
+        let searchResult = await sut.searchItems(with: itemsFilters)
+        let items = try AssertResultSucceded(searchResult)
+        
+        // Then
+        let receivedLemmas = items.map { $0.lemma.lowercased() }
+            .filter { expectedLemmasLowercased.contains($0) }
+        
+        let receivedOriginalTexts = items.map { $0.originalText.lowercased() }
+            .filter { expectedOriginalTextsLowercased.contains($0)}
+        
+        
+        // Search by lemma is case insessitive
+        AssertEqualReadable(receivedLemmas.sorted(), expectedLemmasLowercased.sorted())
+        
+        // Search by original text is case insesitive
+        AssertEqualReadable(
+            receivedOriginalTexts.sorted(),
+            expectedOriginalTextsLowercased.sorted()
+        )
+    }
+    
     func test_listItems__empty_repository() async throws {
         
         let sut = createSUT()
