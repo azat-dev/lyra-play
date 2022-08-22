@@ -166,68 +166,83 @@ public final class CoreDataDictionaryRepository: DictionaryRepository {
         return .success(())
     }
     
-    private static func predicate(for itemsFilters: [DictionaryItemFilter]) -> NSPredicate {
+    private static func predicate(for itemsFilter: DictionaryItemFilter) -> NSPredicate {
+
+        var key: String
+        var value: Any
         
-        let predicates = itemsFilters.map { itemFilter -> NSPredicate in
+        switch itemsFilter {
             
-            var arguments: [Any] = []
-            var template = ""
+        case .lemma(let lemma):
+            key = #keyPath(ManagedDictionaryItem.lemma)
+            value = lemma
             
-            let appendTemplate = {
-                
-                if !template.isEmpty {
-                    
-                    template += " AND "
-                }
-                
-                template += "%K ==[c] %@"
-            }
-            
-            switch itemFilter {
-                
-            case .lemma(let lemma):
-                appendTemplate()
-                arguments.append(#keyPath(ManagedDictionaryItem.lemma))
-                arguments.append(lemma)
-                
-            case .originalText(let originalText):
-                appendTemplate()
-                arguments.append(#keyPath(ManagedDictionaryItem.originalText))
-                arguments.append(originalText)
-            }
-            
-            return NSPredicate(format: "(\(template))", argumentArray: arguments)
+        case .originalText(let originalText):
+            key = #keyPath(ManagedDictionaryItem.originalText)
+            value = originalText
         }
         
-        return NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
+        return NSComparisonPredicate(
+            leftExpression: .init(forKeyPath: key),
+            rightExpression: .init(forConstantValue: value),
+            modifier: .any,
+            type: .equalTo,
+            options: .caseInsensitive
+        )
     }
     
-    public func searchItems(with itemsFilters: [DictionaryItemFilter]) async -> Result<[DictionaryItem], DictionaryRepositoryError> {
+    private func searchItems(with predicates: [NSPredicate]) async throws -> [ManagedDictionaryItem] {
         
-        let predicate = Self.predicate(for: itemsFilters)
+        var predicate: NSPredicate
+        
+        if predicates.count == 1 {
+            
+            predicate = predicates.first!
+
+        } else {
+            predicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
+        }
         
         let action: CoreDataStore.ActionCallBack<[ManagedDictionaryItem]> = { context in
             
             let request = ManagedDictionaryItem.fetchRequest()
             
-            request.fetchLimit = itemsFilters.count
             request.predicate = predicate
             request.resultType = .managedObjectResultType
             
             return try context.fetch(request)
         }
 
-        var managedItems: [ManagedDictionaryItem]
+        return try coreDataStore.performSync(action)
+    }
+    
+    public func searchItems(with itemsFilters: [DictionaryItemFilter]) async -> Result<[DictionaryItem], DictionaryRepositoryError> {
+
+        let predicatesLimit = 800
+        var predicates = [NSPredicate]()
         
-        do {
+        var itemsById = [UUID: ManagedDictionaryItem]()
+        
+        for filter in itemsFilters {
             
-            managedItems = try coreDataStore.performSync(action)
+            let predicate = Self.predicate(for: filter)
+            predicates.append(predicate)
             
-        } catch {
-            return .failure(.internalError(error))
+            if predicates.count >= predicatesLimit {
+                
+                do {
+                    
+                    let foundItems = try await searchItems(with: predicates)
+                    foundItems.forEach { itemsById[$0.id!] = $0 }
+                    predicates.removeAll()
+                
+                } catch {
+                    return .failure(.internalError(error))
+                }
+            }
         }
         
-        let items = managedItems.map { $0.toDomain() }
+        let items = [DictionaryItem](itemsById.values.map { $0.toDomain() })
         return .success(items)
     }
     
