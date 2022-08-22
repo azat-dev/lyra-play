@@ -116,7 +116,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         return DefaultShowMediaInfoUseCase(
             audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository,
-            defaultImage: UIImage(systemName: "lock")!.pngData()!
+            defaultImage: UIImage(named: "Image.CoverPlaceholder")!.pngData()!
         )
     } ()
     
@@ -443,7 +443,6 @@ extension DefaultAppCoordinator: DictionaryListBrowserCoordinator {
                 await self.dictionaryRepository.putItem(newItem)
                 completion(newItem)
             }
-            
         }
         
         alert.addAction(saveAction)

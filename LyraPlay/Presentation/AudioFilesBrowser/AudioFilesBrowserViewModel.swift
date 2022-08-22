@@ -50,7 +50,7 @@ public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel
     
     public var isLoading: Observable<Bool>
     public weak var filesDelegate: AudioFilesBrowserUpdateDelegate?
-    private var stubItemImage = UIImage(systemName: "music.note")!
+    private var stubItemImage = UIImage(named: "Image.CoverPlaceholder")!
     
     public init(
         coordinator: AudioFilesBrowserCoordinator,
