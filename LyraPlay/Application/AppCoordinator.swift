@@ -344,6 +344,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         ]
         
         tabBarVC.selectedViewController = tabBarVC.viewControllers?.first
+        navigationController.isNavigationBarHidden = true
         navigationController.pushViewController(tabBarVC, animated: false)
     }
 }
