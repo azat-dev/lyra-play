@@ -219,29 +219,25 @@ public final class CoreDataDictionaryRepository: DictionaryRepository {
     public func searchItems(with itemsFilters: [DictionaryItemFilter]) async -> Result<[DictionaryItem], DictionaryRepositoryError> {
 
         let predicatesLimit = 800
-        var predicates = [NSPredicate]()
-        
         var itemsById = [UUID: ManagedDictionaryItem]()
+        var chunkOffset = 0
         
-        for filter in itemsFilters {
+        while chunkOffset < itemsFilters.count {
             
-            let predicate = Self.predicate(for: filter)
-            predicates.append(predicate)
+            let chunkEnd = min(chunkOffset + predicatesLimit, itemsFilters.count)
+            let predicates = itemsFilters[chunkOffset..<chunkEnd].map { Self.predicate(for: $0) }
             
-            if predicates.count >= predicatesLimit {
+            do {
                 
-                do {
-                    
-                    let foundItems = try await searchItems(with: predicates)
-                    foundItems.forEach { itemsById[$0.id!] = $0 }
-                    predicates.removeAll()
+                let foundItems = try await self.searchItems(with: predicates)
+                foundItems.forEach { itemsById[$0.id!] = $0 }
                 
-                } catch {
-                    return .failure(.internalError(error))
-                }
+            } catch {
+                return .failure(.internalError(error))
             }
+            chunkOffset += predicates.count
         }
-        
+
         let items = [DictionaryItem](itemsById.values.map { $0.toDomain() })
         return .success(items)
     }

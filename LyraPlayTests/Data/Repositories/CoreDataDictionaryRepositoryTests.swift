@@ -26,11 +26,9 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
     
     // MARK: - Helpers
     
-    func givenPopulatedRepository(_ sut: SUT) async throws -> [DictionaryItem] {
+    func givenPopulatedRepository(_ sut: SUT, numberOfItems: Int = 10) async throws -> [DictionaryItem] {
         
         var items = [DictionaryItem]()
-        let numberOfItems = 10
-        
         for _ in 0..<numberOfItems {
     
             let dictionaryItem: DictionaryItem = .anyNewDictionaryItem(suffix: UUID().uuidString)
@@ -221,16 +219,10 @@ class CoreDataDictionaryRepositoryTests: XCTestCase {
         let sut = createSUT()
         let existingItems = try await givenPopulatedRepository(sut)
         
-        let expectedLemmas = [
-            existingItems[0].lemma.uppercased(),
-            existingItems[1].lemma,
-        ]
+        let expectedLemmas = existingItems.map { $0.lemma.uppercased() }
         let expectedLemmasLowercased = expectedLemmas.map { $0.lowercased() }
         
-        let expectedOriginalTexts = [
-            existingItems[2].originalText,
-            existingItems[3].originalText.uppercased(),
-        ]
+        let expectedOriginalTexts = existingItems.map { $0.originalText.uppercased() }
         let expectedOriginalTextsLowercased = expectedOriginalTexts.map { $0.lowercased() }
         
         
