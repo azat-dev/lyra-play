@@ -14,7 +14,7 @@ class AudioPlayerTests: XCTestCase {
 
     func createSUT(file: StaticString = #filePath, line: UInt = #line) -> AudioPlayer {
 
-        let audioPlayer = DefaultAudioPlayer(audioSession: DefaultAudioSession())
+        let audioPlayer = AudioPlayerImpl(audioSession: DefaultAudioSession())
         detectMemoryLeak(instance: audioPlayer, file: file, line: line)
         return audioPlayer
     }

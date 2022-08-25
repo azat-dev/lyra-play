@@ -85,7 +85,7 @@
 		AA3BAB22286C7D32005EE01E /* KeyValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB21286C7D32005EE01E /* KeyValueStore.swift */; };
 		AA3BAB25286C7EE2005EE01E /* UserDefaultsKeyValueStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB24286C7EE2005EE01E /* UserDefaultsKeyValueStoreTests.swift */; };
 		AA3BAB28286CC646005EE01E /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB27286CC646005EE01E /* AudioPlayer.swift */; };
-		AA3BAB2E286CC79F005EE01E /* DefaultAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB2D286CC79F005EE01E /* DefaultAudioPlayer.swift */; };
+		AA3BAB2E286CC79F005EE01E /* AudioPlayerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB2D286CC79F005EE01E /* AudioPlayerImpl.swift */; };
 		AA415084286B0987004549F4 /* AssertResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA415083286B0987004549F4 /* AssertResult.swift */; };
 		AA415088286B2BA4004549F4 /* test_cover_image.png in Resources */ = {isa = PBXBuildFile; fileRef = AA415087286B2BA4004549F4 /* test_cover_image.png */; };
 		AA41508A286B2ECA004549F4 /* FilesRepositoryMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA415089286B2ECA004549F4 /* FilesRepositoryMock.swift */; };
@@ -312,7 +312,7 @@
 		AA3BAB21286C7D32005EE01E /* KeyValueStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyValueStore.swift; sourceTree = "<group>"; };
 		AA3BAB24286C7EE2005EE01E /* UserDefaultsKeyValueStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeyValueStoreTests.swift; sourceTree = "<group>"; };
 		AA3BAB27286CC646005EE01E /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
-		AA3BAB2D286CC79F005EE01E /* DefaultAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultAudioPlayer.swift; sourceTree = "<group>"; };
+		AA3BAB2D286CC79F005EE01E /* AudioPlayerImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerImpl.swift; sourceTree = "<group>"; };
 		AA415083286B0987004549F4 /* AssertResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssertResult.swift; sourceTree = "<group>"; };
 		AA415087286B2BA4004549F4 /* test_cover_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test_cover_image.png; sourceTree = "<group>"; };
 		AA415089286B2ECA004549F4 /* FilesRepositoryMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesRepositoryMock.swift; sourceTree = "<group>"; };
@@ -632,7 +632,7 @@
 		AA3BAB2C286CC76E005EE01E /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				AA3BAB2D286CC79F005EE01E /* DefaultAudioPlayer.swift */,
+				AA3BAB2D286CC79F005EE01E /* AudioPlayerImpl.swift */,
 				AA273A1B28ACD8E100119088 /* DefaultAudioSession.swift */,
 				AA731CBC2870395B0044412F /* NowPlayingInfoService.swift */,
 			);
@@ -1409,7 +1409,7 @@
 				AA4F9703286E32870087F45A /* PlayerViewControllerFactory.swift in Sources */,
 				AA3785992885EFD300FF3B66 /* EnhancedLayoutManager.swift in Sources */,
 				AA41508E286B647D004549F4 /* AudioFilesBrowserCell+Layout.swift in Sources */,
-				AA3BAB2E286CC79F005EE01E /* DefaultAudioPlayer.swift in Sources */,
+				AA3BAB2E286CC79F005EE01E /* AudioPlayerImpl.swift in Sources */,
 				AAF2EEC0287DF83F00894F71 /* ActionTimerFactory.swift in Sources */,
 				AAA87993289EF0B600E04CA9 /* ProvideTranslationsToPlayUseCase.swift in Sources */,
 				AACEA32F286A418600111565 /* FilePickerViewController.swift in Sources */,

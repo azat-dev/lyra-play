@@ -1,5 +1,5 @@
 //
-//  DefaultAudioPlayer.swift
+//  AudioPlayerImpl.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 29.06.22.
@@ -12,7 +12,7 @@ import Combine
 
 // MARK: - Implementations
 
-public final class DefaultAudioPlayer: NSObject, AudioPlayer, AVAudioPlayerDelegate {
+public final class AudioPlayerImpl: NSObject, AudioPlayer, AVAudioPlayerDelegate {
     
     // MARK: - Properties
 
@@ -34,7 +34,7 @@ public final class DefaultAudioPlayer: NSObject, AudioPlayer, AVAudioPlayerDeleg
 
 // MARK: - Input methods
 
-extension DefaultAudioPlayer {
+extension AudioPlayerImpl {
     
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully: Bool) {
         
@@ -56,7 +56,7 @@ extension DefaultAudioPlayer {
     }
 }
 
-extension DefaultAudioPlayer {
+extension AudioPlayerImpl {
     
     public func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioPlayerError> {
         

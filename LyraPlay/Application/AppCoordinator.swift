@@ -49,7 +49,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var audioPlayer: AudioPlayer = {
 
-        return DefaultAudioPlayer(audioSession: audioSession)
+        return AudioPlayerImpl(audioSession: audioSession)
     } ()
     
     private lazy var loadTrackUseCase: LoadTrackUseCase = {
@@ -255,7 +255,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         
         return DefaultPronounceTranslationsUseCase(
             textToSpeechConverter: DefaultTextToSpeechConverter(),
-            audioPlayer: DefaultAudioPlayer(audioSession: audioSession)
+            audioPlayer: AudioPlayerImpl(audioSession: audioSession)
         )
     } ()
     
