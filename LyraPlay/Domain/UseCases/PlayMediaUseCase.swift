@@ -64,7 +64,7 @@ public protocol PlayMediaUseCase: PlayMediaUseCaseOutput, PlayMediaUseCaseInput 
 
 // MARK: - Implementations
 
-public final class DefaultPlayMediaUseCase: PlayMediaUseCase {
+public final class PlayMediaUseCaseImpl: PlayMediaUseCase {
     
     // MARK: - Properties
     
@@ -133,7 +133,7 @@ public final class DefaultPlayMediaUseCase: PlayMediaUseCase {
 
 // MARK: - Input methods
 
-extension DefaultPlayMediaUseCase {
+extension PlayMediaUseCaseImpl {
     
     public func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError> {
         

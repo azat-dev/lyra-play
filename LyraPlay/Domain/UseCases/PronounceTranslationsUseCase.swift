@@ -47,7 +47,7 @@ public protocol PronounceTranslationsUseCase: PronounceTranslationsUseCaseOutput
 
 // MARK: - Implementations
 
-public final class DefaultPronounceTranslationsUseCase: PronounceTranslationsUseCase {
+public final class PronounceTranslationsUseCaseImpl: PronounceTranslationsUseCase {
     
     // MARK: - Properties
     
@@ -70,7 +70,7 @@ public final class DefaultPronounceTranslationsUseCase: PronounceTranslationsUse
 
 // MARK: - Input methods
 
-extension DefaultPronounceTranslationsUseCase {
+extension PronounceTranslationsUseCaseImpl {
     
     private enum PronounciationState {
         case converting

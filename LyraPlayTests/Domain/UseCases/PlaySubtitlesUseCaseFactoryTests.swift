@@ -18,10 +18,10 @@ class PlaySubtitlesUseCaseFactoryTests: XCTestCase {
     
     func createSUT() -> SUT {
         
-        let scheduler = DefaultScheduler(timer: ActionTimerMock())
-        let subtitlesIteratorFactory = DefaultSubtitlesIteratorFactory()
+        let scheduler = SchedulerImpl(timer: ActionTimerMock())
+        let subtitlesIteratorFactory = SubtitlesIteratorFactoryImpl()
         
-        let useCase = DefaultPlaySubtitlesUseCaseFactory(
+        let useCase = PlaySubtitlesUseCaseFactoryImpl(
             subtitlesIteratorFactory: subtitlesIteratorFactory,
             scheduler: scheduler
         )

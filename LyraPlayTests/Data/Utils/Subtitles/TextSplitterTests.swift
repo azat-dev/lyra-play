@@ -15,7 +15,7 @@ class TextSplitterTests: XCTestCase {
     
     func createSUT() -> SUT {
         
-        let textSplitter = DefaultTextSplitter()
+        let textSplitter = TextSplitterImpl()
         detectMemoryLeak(instance: textSplitter)
         
         return textSplitter

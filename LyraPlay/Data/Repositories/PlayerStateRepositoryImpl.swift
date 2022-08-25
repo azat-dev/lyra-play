@@ -1,5 +1,5 @@
 //
-//  DefaultPlayerStateRepository.swift
+//  PlayerStateRepositoryImpl.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 29.06.22.
@@ -35,7 +35,7 @@ private extension LastPlayerState {
     }
 }
 
-public final class DefaultPlayerStateRepository: PlayerStateRepository {
+public final class PlayerStateRepositoryImpl: PlayerStateRepository {
 
     private let keyValueStore: KeyValueStore
     private let key: String

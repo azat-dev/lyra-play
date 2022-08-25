@@ -41,7 +41,7 @@ public protocol CurrentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput {
 
 // MARK: - Implementations
 
-public final class DefaultCurrentPlayerStateUseCase: CurrentPlayerStateUseCase {
+public final class CurrentPlayerStateUseCaseImpl: CurrentPlayerStateUseCase {
     
     private let audioPlayer: AudioPlayerOutput
     private var audioPlayerCancellation: AnyCancellable?

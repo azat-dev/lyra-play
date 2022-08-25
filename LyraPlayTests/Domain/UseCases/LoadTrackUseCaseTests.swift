@@ -23,7 +23,7 @@ class LoadTrackUseCaseTests: XCTestCase {
         let audioFilesRepository = FilesRepositoryMock()
         let audioLibraryRepository = AudioLibraryRepositoryMock()
         
-        let useCase = DefaultLoadTrackUseCase(
+        let useCase = LoadTrackUseCaseImpl(
             audioLibraryRepository: audioLibraryRepository,
             audioFilesRepository: audioFilesRepository
         )

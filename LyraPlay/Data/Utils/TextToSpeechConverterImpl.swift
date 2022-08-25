@@ -1,5 +1,5 @@
 //
-//  DefaultTextToSpeechConverter.swift
+//  TextToSpeechConverterImpl.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 08.08.22.
@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-public final class DefaultTextToSpeechConverter: TextToSpeechConverter {
+public final class TextToSpeechConverterImpl: TextToSpeechConverter {
     
     let synthesizer = AVSpeechSynthesizer()
     

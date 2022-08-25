@@ -24,7 +24,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         let audioLibraryRepository = AudioLibraryRepositoryMock()
         let imagesRepository = FilesRepositoryMock()
         
-        let useCase = DefaultBrowseAudioLibraryUseCase(
+        let useCase = BrowseAudioLibraryUseCaseImpl(
             audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository
         )
@@ -32,7 +32,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         let tagsParser = TagsParserMock()
         let audioFilesRepository = FilesRepositoryMock()
         
-        let importFileUseCase = DefaultImportAudioFileUseCase(
+        let importFileUseCase = ImportAudioFileUseCaseImpl(
             audioLibraryRepository: audioLibraryRepository,
             audioFilesRepository: audioFilesRepository,
             imagesRepository: imagesRepository,
@@ -41,7 +41,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         
         let coordinator = AudioFilesBrowserCoordinatorMock()
         
-        let viewModel = DefaultAudioFilesBrowserViewModel(
+        let viewModel = AudioFilesBrowserViewModelImpl(
             coordinator: coordinator,
             browseUseCase: useCase,
             importFileUseCase: importFileUseCase,

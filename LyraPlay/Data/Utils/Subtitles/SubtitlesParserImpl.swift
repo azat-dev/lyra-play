@@ -1,5 +1,5 @@
 //
-//  DefaultSubtitlesParser.swift
+//  SubtitlesParser.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 20.08.22.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class DefaultSubtitlesParser: SubtitlesParser {
+public final class SubtitlesParserImpl: SubtitlesParser {
     
     public typealias FileExtension = String
     

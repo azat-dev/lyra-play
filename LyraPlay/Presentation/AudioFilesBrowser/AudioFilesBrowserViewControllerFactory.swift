@@ -29,7 +29,7 @@ final class AudioFilesBrowserViewControllerFactory {
     
     func build() -> AudioFilesBrowserViewController {
         
-        let viewModel = DefaultAudioFilesBrowserViewModel(
+        let viewModel = AudioFilesBrowserViewModelImpl(
             coordinator: coordinator,
             browseUseCase: browseFilesUseCase,
             importFileUseCase: importFileUseCase,

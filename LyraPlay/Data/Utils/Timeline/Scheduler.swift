@@ -37,7 +37,7 @@ public protocol Scheduler: AnyObject, SchedulerInput, SchedulerOutput {
 
 // MARK: - Implementations
 
-public final class DefaultScheduler {
+public final class SchedulerImpl {
     
     typealias Callback = (TimeInterval) -> Void
     
@@ -55,7 +55,7 @@ public final class DefaultScheduler {
 
 // MARK: - Methods
 
-extension DefaultScheduler: Scheduler {
+extension SchedulerImpl: Scheduler {
     
     public var isActive: Bool {
         
@@ -216,7 +216,7 @@ extension DefaultScheduler: Scheduler {
     }
 }
 
-extension DefaultScheduler {
+extension SchedulerImpl {
     
     private class Session {
         

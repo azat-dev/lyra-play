@@ -26,7 +26,7 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         let subtitlesParser = SubtitlesParserMock()
         let subtitlesFilesRepository = FilesRepositoryMock()
         
-        let useCase = DefaultImportSubtitlesUseCase(
+        let useCase = ImportSubtitlesUseCaseImpl(
             subtitlesRepository: subtitlesRepository,
             subtitlesParser: subtitlesParser,
             subtitlesFilesRepository: subtitlesFilesRepository,

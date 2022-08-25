@@ -32,7 +32,7 @@ public protocol Lemmatizer {
 
 // MARK: - Implementations
 
-public final class DefaultLemmatizer: Lemmatizer {
+public final class LemmatizerImpl: Lemmatizer {
     
     public init() {}
     

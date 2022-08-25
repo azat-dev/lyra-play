@@ -16,7 +16,7 @@ public protocol PlaySubtitlesUseCaseFactory {
 
 // MARK: - Implementations
 
-public final class DefaultPlaySubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory {
+public final class PlaySubtitlesUseCaseFactoryImpl: PlaySubtitlesUseCaseFactory {
 
     // MARK: - Properties
 
@@ -38,7 +38,7 @@ public final class DefaultPlaySubtitlesUseCaseFactory: PlaySubtitlesUseCaseFacto
 
     public func create(with subtitles: Subtitles) -> PlaySubtitlesUseCase {
 
-        return DefaultPlaySubtitlesUseCase(
+        return PlaySubtitlesUseCaseImpl(
             subtitlesIterator: subtitlesIteratorFactory.create(for: subtitles),
             scheduler: scheduler
         )

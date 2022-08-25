@@ -21,7 +21,7 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
         let dictionaryListBrowserCoordinator = DictionaryListBrowserCoordinatorMock()
         let browseDictionaryUseCase = BrowseDictionaryUseCaseMock()
         
-        let viewModel = DefaultDictionaryListBrowserViewModel(
+        let viewModel = DictionaryListBrowserViewModelImpl(
             coordinator: dictionaryListBrowserCoordinator,
             browseDictionaryUseCase: browseDictionaryUseCase
         )

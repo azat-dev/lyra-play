@@ -68,7 +68,7 @@ public protocol ProvideTranslationsForSubtitlesUseCase: ProvideTranslationsForSu
 
 // MARK: - Implementations
 
-public final class DefaultProvideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase {
+public final class ProvideTranslationsForSubtitlesUseCaseImpl: ProvideTranslationsForSubtitlesUseCase {
     
     // MARK: - Properties
     
@@ -96,7 +96,7 @@ public final class DefaultProvideTranslationsForSubtitlesUseCase: ProvideTransla
 
 // MARK: - Input methods
 
-extension DefaultProvideTranslationsForSubtitlesUseCase {
+extension ProvideTranslationsForSubtitlesUseCaseImpl {
     
     private func lemmatizeSubtitles(_ subtitles: Subtitles) -> [[LemmaItem]] {
         
@@ -374,7 +374,7 @@ extension DefaultProvideTranslationsForSubtitlesUseCase {
 }
 // MARK: - Output methods
 
-extension DefaultProvideTranslationsForSubtitlesUseCase {
+extension ProvideTranslationsForSubtitlesUseCaseImpl {
     
     public func getTranslations(sentenceIndex: Int) async -> [SubtitlesTranslation] {
         

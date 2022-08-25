@@ -18,7 +18,7 @@ public final class PlayerViewControllerFactory {
     
     public func build() -> PlayerViewController {
         
-        let viewModel = DefaultPlayerViewModel(
+        let viewModel = PlayerViewModelImpl(
             playMediaUseCase: playMediaUseCase
         )
         

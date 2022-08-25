@@ -22,7 +22,7 @@ public protocol LoadSubtitlesUseCase {
 
 // MARK: - Implementations
 
-public final class DefaultLoadSubtitlesUseCase: LoadSubtitlesUseCase {
+public final class LoadSubtitlesUseCaseImpl: LoadSubtitlesUseCase {
     
     
     private let subtitlesRepository: SubtitlesRepository

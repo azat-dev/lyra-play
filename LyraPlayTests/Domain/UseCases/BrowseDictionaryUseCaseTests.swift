@@ -22,7 +22,7 @@ class BrowseDictionaryUseCaseTests: XCTestCase {
         
         let dictionaryRepository = CoreDataDictionaryRepository(coreDataStore: coreDataStore)
         
-        let useCase = DefaultBrowseDictionaryUseCase(
+        let useCase = BrowseDictionaryUseCaseImpl(
             dictionaryRepository: dictionaryRepository
         )
         detectMemoryLeak(instance: useCase)

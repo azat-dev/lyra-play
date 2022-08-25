@@ -27,14 +27,14 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         
         let subtitlesTimer = ActionTimerMock2()
         
-        let playSubtitlesUseCaseFactory = DefaultPlaySubtitlesUseCaseFactory(
-            subtitlesIteratorFactory: DefaultSubtitlesIteratorFactory(),
-            scheduler: DefaultScheduler(timer: subtitlesTimer)
+        let playSubtitlesUseCaseFactory = PlaySubtitlesUseCaseFactoryImpl(
+            subtitlesIteratorFactory: SubtitlesIteratorFactoryImpl(),
+            scheduler: SchedulerImpl(timer: subtitlesTimer)
         )
         
         let loadSubtitlesUseCase = LoadSubtitlesUseCaseMock()
         
-        let useCase = DefaultPlayMediaWithSubtitlesUseCase(
+        let useCase = PlayMediaWithSubtitlesUseCaseImpl(
             playMediaUseCase: playMediaUseCase,
             playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
             loadSubtitlesUseCase: loadSubtitlesUseCase

@@ -18,7 +18,7 @@ class PlayerViewModelTests: XCTestCase {
 //    override func setUp() async throws {
 //        
 //        playMediaUseCase = PlayMediaUseCaseMock()
-//        playerViewModel = DefaultPlayerViewModel(playMediaUseCase: playMediaUseCase)
+//        playerViewModel = PlayerViewModelImpl(playMediaUseCase: playMediaUseCase)
 //    }
 //    
 //

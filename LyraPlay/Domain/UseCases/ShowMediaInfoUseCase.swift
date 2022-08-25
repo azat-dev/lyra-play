@@ -48,7 +48,7 @@ public protocol ShowMediaInfoUseCase {
 // MARK: - Implementations
 
 
-public final class DefaultShowMediaInfoUseCase: ShowMediaInfoUseCase {
+public final class ShowMediaInfoUseCaseImpl: ShowMediaInfoUseCase {
     
     private var audioLibraryRepository: AudioLibraryRepository
     private var imagesRepository: FilesRepository

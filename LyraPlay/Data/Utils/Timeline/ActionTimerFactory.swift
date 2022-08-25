@@ -16,12 +16,12 @@ public protocol ActionTimerFactory {
 
 // MARK: - Implementations
 
-public final class DefaultActionTimerFactory: ActionTimerFactory {
+public final class ActionTimerFactoryImpl: ActionTimerFactory {
     
     public init() { }
     
     public func create() -> ActionTimer {
         
-        return DefaultActionTimer()
+        return ActionTimerImpl()
     }
 }

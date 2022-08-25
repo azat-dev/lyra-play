@@ -40,7 +40,7 @@ public protocol PlayerViewModel: PlayerViewModelOutput, PlayerViewModelInput {
 
 // MARK: - Implementations
 
-public final class DefaultPlayerViewModel: PlayerViewModel {
+public final class PlayerViewModelImpl: PlayerViewModel {
 
     private let playMediaUseCase: PlayMediaUseCase
     

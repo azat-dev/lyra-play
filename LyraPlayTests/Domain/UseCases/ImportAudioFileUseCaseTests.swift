@@ -28,7 +28,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         let imagesRepository = FilesRepositoryMock()
         let audioFilesRepository = FilesRepositoryMock()
         
-        let importAudioFileUseCase = DefaultImportAudioFileUseCase(
+        let importAudioFileUseCase = ImportAudioFileUseCaseImpl(
             audioLibraryRepository: audioLibraryRepository,
             audioFilesRepository: audioFilesRepository,
             imagesRepository: imagesRepository,

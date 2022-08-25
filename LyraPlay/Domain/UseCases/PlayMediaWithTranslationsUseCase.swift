@@ -109,7 +109,7 @@ public protocol PlayMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCa
 
 // MARK: - Implementations
 
-public final class DefaultPlayMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCase {
+public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase {
     
     // MARK: - Properties
     
@@ -158,7 +158,7 @@ public final class DefaultPlayMediaWithTranslationsUseCase: PlayMediaWithTransla
 
 // MARK: - Input methods
 
-extension DefaultPlayMediaWithTranslationsUseCase {
+extension PlayMediaWithTranslationsUseCaseImpl {
     
     public func prepare(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
@@ -230,7 +230,7 @@ extension DefaultPlayMediaWithTranslationsUseCase {
 
 // MARK: - Update state
 
-extension DefaultPlayMediaWithTranslationsUseCase {
+extension PlayMediaWithTranslationsUseCaseImpl {
     
     private func updateState(_ newState: PlayMediaWithSubtitlesUseCaseState) {
         
@@ -262,7 +262,7 @@ extension DefaultPlayMediaWithTranslationsUseCase {
 
 // MARK: - Playing translations
 
-extension DefaultPlayMediaWithTranslationsUseCase {
+extension PlayMediaWithTranslationsUseCaseImpl {
 
     private func pronounceCurrentTranslationItem(_ translations: TranslationsToPlayData) -> AsyncThrowingStream<PronounceTranslationsUseCaseState, Error> {
         

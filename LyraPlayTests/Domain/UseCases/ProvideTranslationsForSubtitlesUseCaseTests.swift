@@ -24,10 +24,10 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         
         let dictionaryRepository = CoreDataDictionaryRepository(coreDataStore: coreDataStore)
         
-        let textSplitter = DefaultTextSplitter()
-        let lemmatizer = DefaultLemmatizer()
+        let textSplitter = TextSplitterImpl()
+        let lemmatizer = LemmatizerImpl()
         
-        let useCase = DefaultProvideTranslationsForSubtitlesUseCase(
+        let useCase = ProvideTranslationsForSubtitlesUseCaseImpl(
             dictionaryRepository: dictionaryRepository,
             textSplitter: textSplitter,
             lemmatizer: lemmatizer

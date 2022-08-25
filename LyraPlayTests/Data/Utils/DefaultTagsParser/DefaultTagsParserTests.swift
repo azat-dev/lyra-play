@@ -1,5 +1,5 @@
 //
-//  DefaultTagsParserTests.swift
+//  TagsParserImplTests.swift
 //  LyraPlayTests
 //
 //  Created by Azat Kaiumov on 22.06.22.
@@ -8,11 +8,11 @@
 import XCTest
 @testable import LyraPlay
 
-class DefatulTagsParserTests: XCTestCase {
+class TagsParserImplTests: XCTestCase {
     
     func createSUT() -> TagsParser {
         
-        let tagsParser = DefaultTagsParser()
+        let tagsParser = TagsParserImpl()
         detectMemoryLeak(instance: tagsParser)
         
         return tagsParser

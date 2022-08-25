@@ -21,7 +21,7 @@ public protocol NowPlayingInfoService {
 
 // MARK: - Implementations
 
-public final class DefaultNowPlayingInfoService: NowPlayingInfoService {
+public final class NowPlayingInfoServiceImpl: NowPlayingInfoService {
     
     public init() {}
     

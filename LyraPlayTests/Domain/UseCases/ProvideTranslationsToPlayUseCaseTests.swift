@@ -19,7 +19,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         
         let provideTranslationsForSubtitlesUseCase = ProvideTranslationsForSubtitlesUseCaseMock()
         
-        let useCase = DefaultProvideTranslationsToPlayUseCase(
+        let useCase = ProvideTranslationsToPlayUseCaseImpl(
             provideTranslationsForSubtitlesUseCase: provideTranslationsForSubtitlesUseCase
         )
         detectMemoryLeak(instance: useCase)

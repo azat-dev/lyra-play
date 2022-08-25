@@ -17,7 +17,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     
     func createSUT() -> SUT {
         
-        let viewModel = DefaultSubtitlesPresenterViewModel()
+        let viewModel = SubtitlesPresenterViewModelImpl()
         detectMemoryLeak(instance: viewModel)
         
         return viewModel

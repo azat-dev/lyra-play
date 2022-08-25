@@ -33,7 +33,7 @@ public protocol SubtitlesPresenterViewModel: SubtitlesPresenterViewModelOutput, 
 
 // MARK: - Implementations
 
-public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewModel {
+public final class SubtitlesPresenterViewModelImpl: SubtitlesPresenterViewModel {
 
     // MARK: - Properties
     
@@ -58,7 +58,7 @@ public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewMod
 
 // MARK: - Input Methods
 
-extension DefaultSubtitlesPresenterViewModel {
+extension SubtitlesPresenterViewModelImpl {
     
     public func update(with subtitlesState: SubtitlesState?) {
         
@@ -70,7 +70,7 @@ extension DefaultSubtitlesPresenterViewModel {
 
 // MARK: - Handlers
 
-extension DefaultSubtitlesPresenterViewModel {
+extension SubtitlesPresenterViewModelImpl {
     
     private func updateState(_ subtitlesState: SubtitlesState?) {
     
@@ -116,7 +116,7 @@ extension DefaultSubtitlesPresenterViewModel {
             
             let sentence = sentences[sentenceIndex]
             
-            return DefaultSentenceViewModel(
+            return SentenceViewModelImpl(
                 id: sentenceIndex,
                 text: sentence.text,
                 toggleWord: toggleWord

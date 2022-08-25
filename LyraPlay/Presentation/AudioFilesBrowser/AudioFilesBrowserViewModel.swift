@@ -41,7 +41,7 @@ public protocol AudioFilesBrowserViewModel: AnyObject, AudioFilesBrowserViewMode
 
 // MARK: - Implementations
 
-public final class DefaultAudioFilesBrowserViewModel: AudioFilesBrowserViewModel {
+public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
 
     private let coordinator: AudioFilesBrowserCoordinator
     private let browseUseCase: BrowseAudioLibraryUseCase

@@ -27,7 +27,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         
         let textToSpeechConverter = TextToSpeechConverterMock()
         let audioPlayerMock = AudioPlayerMock()
-        let pronounceTranslationsUseCase = DefaultPronounceTranslationsUseCase(
+        let pronounceTranslationsUseCase = PronounceTranslationsUseCaseImpl(
             textToSpeechConverter: textToSpeechConverter,
             audioPlayer: audioPlayerMock
         )
@@ -36,23 +36,23 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         
         let subtitlesTimer = ActionTimerMock2()
         
-        let subtitlesScheduler = DefaultScheduler(timer: subtitlesTimer)
+        let subtitlesScheduler = SchedulerImpl(timer: subtitlesTimer)
         
-        let subtitlesIteratorFactory = DefaultSubtitlesIteratorFactory()
-        let playSubtitlesUseCaseFactory = DefaultPlaySubtitlesUseCaseFactory(
+        let subtitlesIteratorFactory = SubtitlesIteratorFactoryImpl()
+        let playSubtitlesUseCaseFactory = PlaySubtitlesUseCaseFactoryImpl(
             subtitlesIteratorFactory: subtitlesIteratorFactory,
             scheduler: subtitlesScheduler
         )
         
         let playMediaUseCase = PlayMediaUseCaseMock()
         
-        let playMediaWithSubtitlesUseCase = DefaultPlayMediaWithSubtitlesUseCase(
+        let playMediaWithSubtitlesUseCase = PlayMediaWithSubtitlesUseCaseImpl(
             playMediaUseCase: playMediaUseCase,
             playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
             loadSubtitlesUseCase: loadSubtitlesUseCase
         )
         
-        let useCase = DefaultPlayMediaWithTranslationsUseCase(
+        let useCase = PlayMediaWithTranslationsUseCaseImpl(
             playMediaWithSubtitlesUseCase: playMediaWithSubtitlesUseCase,
             playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
             provideTranslationsToPlayUseCase: provideTranslationsToPlayUseCase,

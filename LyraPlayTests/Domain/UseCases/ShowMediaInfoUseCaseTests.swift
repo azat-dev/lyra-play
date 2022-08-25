@@ -26,7 +26,7 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         
         let defaultImage = "defaultImage".data(using: .utf8)!
         
-        let useCase = DefaultShowMediaInfoUseCase(
+        let useCase = ShowMediaInfoUseCaseImpl(
             audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository,
             defaultImage: defaultImage

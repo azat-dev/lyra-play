@@ -32,7 +32,7 @@ public protocol SubtitlesIterator: TimeLineIterator {
 
 // MARK: - Implementations
 
-public final class DefaultSubtitlesIterator: SubtitlesIterator {
+public final class SubtitlesIteratorImpl: SubtitlesIterator {
     
     // MARK: - Properties
     

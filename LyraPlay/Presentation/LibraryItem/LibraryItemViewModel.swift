@@ -47,7 +47,7 @@ public protocol LibraryItemViewModel: LibraryItemViewModelOutput, LibraryItemVie
 
 // MARK: - Implementations
 
-public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
+public final class LibraryItemViewModelImpl: LibraryItemViewModel {
     
     private let trackId: UUID
     private let coordinator: LibraryItemCoordinator
@@ -115,7 +115,7 @@ public final class DefaultLibraryItemViewModel: LibraryItemViewModel {
 
 // MARK: - Input
 
-extension DefaultLibraryItemViewModel {
+extension LibraryItemViewModelImpl {
     
     private func formatDuration(_ value: Double) -> String {
         return "\(value)"
@@ -158,7 +158,7 @@ extension DefaultLibraryItemViewModel {
             )
         )
         
-        subtitlesPresenterViewModel.value = DefaultSubtitlesPresenterViewModel()
+        subtitlesPresenterViewModel.value = SubtitlesPresenterViewModelImpl()
         
         subtitlesObserver = playMediaUseCase.state.publisher.sink { state in
             self.subtitlesPresenterViewModel.value?.update(with: state.subtitlesState)

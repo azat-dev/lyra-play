@@ -22,7 +22,7 @@ public protocol LoadTrackUseCase {
 
 // MARK: - Implementations
 
-public final class DefaultLoadTrackUseCase: LoadTrackUseCase {
+public final class LoadTrackUseCaseImpl: LoadTrackUseCase {
     
     private let audioLibraryRepository: AudioLibraryRepository
     private let audioFilesRepository: FilesRepository

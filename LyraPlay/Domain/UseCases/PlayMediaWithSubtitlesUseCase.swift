@@ -123,7 +123,7 @@ public protocol PlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCaseOutp
 
 // MARK: - Implementations
 
-public final class DefaultPlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCase {
+public final class PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseCase {
     
     // MARK: - Properties
     
@@ -196,7 +196,7 @@ public final class DefaultPlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesU
 
 // MARK: - Input methods
 
-extension DefaultPlayMediaWithSubtitlesUseCase {
+extension PlayMediaWithSubtitlesUseCaseImpl {
     
     public func prepare(params session: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
@@ -311,7 +311,7 @@ extension DefaultPlayMediaWithSubtitlesUseCase {
 // MARK: - Helpers
 
 
-extension DefaultPlayMediaWithSubtitlesUseCase {
+extension PlayMediaWithSubtitlesUseCaseImpl {
     
     private func updateSubtitlesPosition(_ subtitlesState: PlaySubtitlesUseCaseState) {
         

@@ -23,7 +23,7 @@ class SchedulerTests: XCTestCase {
         
         let timer = ActionTimerMock2()
         
-        let scheduler = DefaultScheduler(timer: timer)
+        let scheduler = SchedulerImpl(timer: timer)
         detectMemoryLeak(instance: scheduler, file: file, line: line)
         
         return (
@@ -337,7 +337,7 @@ struct ExpectedWillChange: Equatable {
 
 final class ActionTimerMock2: ActionTimer {
     
-    let timer = DefaultActionTimer()
+    let timer = ActionTimerImpl()
     
     func executeAfter(_ interval: TimeInterval, block: @escaping () async -> Void) {
         timer.executeAfter(0.001, block: block)

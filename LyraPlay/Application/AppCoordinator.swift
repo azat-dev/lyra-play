@@ -19,7 +19,7 @@ protocol AppCoordinator: AudioFilesBrowserCoordinator, LibraryItemCoordinator {
 
 // MARK: - Implementations
 
-final class DefaultAppCoordinator: AppCoordinator {
+final class AppCoordinatorImpl: AppCoordinator {
     
     private let navigationController: UINavigationController
     
@@ -31,7 +31,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var playerStateRepository: PlayerStateRepository = {
         
-        return DefaultPlayerStateRepository(
+        return PlayerStateRepositoryImpl(
             keyValueStore: UserDefaultsKeyValueStore(storeName: "playerState"),
             key: "currentState"
         )
@@ -39,7 +39,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var playingNowService: NowPlayingInfoService = {
         
-        return DefaultNowPlayingInfoService()
+        return NowPlayingInfoServiceImpl()
     } ()
     
     private lazy var audioSession: AudioSessionImpl = {
@@ -54,7 +54,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var loadTrackUseCase: LoadTrackUseCase = {
         
-        return DefaultLoadTrackUseCase(
+        return LoadTrackUseCaseImpl(
             audioLibraryRepository: audioLibraryRepository,
             audioFilesRepository: audioFilesRepository
         )
@@ -62,7 +62,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var currentPlayerStateUseCase: CurrentPlayerStateUseCase = {
         
-        let currentState = DefaultCurrentPlayerStateUseCase(
+        let currentState = CurrentPlayerStateUseCaseImpl(
             audioPlayer: audioPlayer,
             showMediaInfoUseCase: showMediaInfoUseCase
         )
@@ -81,7 +81,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var playMediaUseCase: PlayMediaUseCase = {
         
-        return DefaultPlayMediaUseCase(
+        return PlayMediaUseCaseImpl(
             audioPlayer: audioPlayer,
             loadTrackUseCase: loadTrackUseCase
         )
@@ -105,7 +105,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var browseFilesUseCase: BrowseAudioLibraryUseCase = {
         
-        return DefaultBrowseAudioLibraryUseCase(
+        return BrowseAudioLibraryUseCaseImpl(
             audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository
         )
@@ -113,7 +113,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var showMediaInfoUseCase: ShowMediaInfoUseCase = {
         
-        return DefaultShowMediaInfoUseCase(
+        return ShowMediaInfoUseCaseImpl(
             audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository,
             defaultImage: UIImage(named: "Image.CoverPlaceholder")!.pngData()!
@@ -155,11 +155,11 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var importFileUseCase: ImportAudioFileUseCase = {
         
-        return DefaultImportAudioFileUseCase(
+        return ImportAudioFileUseCaseImpl(
             audioLibraryRepository: audioLibraryRepository,
             audioFilesRepository: audioFilesRepository,
             imagesRepository: imagesRepository,
-            tagsParser: DefaultTagsParser()
+            tagsParser: TagsParserImpl()
         )
     } ()
     
@@ -184,12 +184,12 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var subtitlesParser: SubtitlesParser = {
         
-        let textSplitter = DefaultTextSplitter()
+        let textSplitter = TextSplitterImpl()
         let lyricsParser = LyricsParser(textSplitter: textSplitter)
         
         let subRipParser = SubRipFileFormatParser(textSplitter: textSplitter)
         
-        return DefaultSubtitlesParser(parsers: [
+        return SubtitlesParserImpl(parsers: [
             ".srt": subRipParser,
             ".lrc": lyricsParser
         ])
@@ -197,7 +197,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var importSubtitlesUseCase = {
         
-        return DefaultImportSubtitlesUseCase(
+        return ImportSubtitlesUseCaseImpl(
             subtitlesRepository: subtitlesRepository,
             subtitlesParser: subtitlesParser,
             subtitlesFilesRepository: subtitlesFilesRepository,
@@ -206,7 +206,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     } ()
     
     private lazy var loadSubtitlesUseCase: LoadSubtitlesUseCase = {
-        return DefaultLoadSubtitlesUseCase(
+        return LoadSubtitlesUseCaseImpl(
             subtitlesRepository: subtitlesRepository,
             subtitlesFiles: subtitlesFilesRepository,
             subtitlesParser: subtitlesParser
@@ -216,15 +216,15 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory = {
         
-        return DefaultPlaySubtitlesUseCaseFactory(
-            subtitlesIteratorFactory: DefaultSubtitlesIteratorFactory(),
-            scheduler: DefaultScheduler(timer: DefaultActionTimer())
+        return PlaySubtitlesUseCaseFactoryImpl(
+            subtitlesIteratorFactory: SubtitlesIteratorFactoryImpl(),
+            scheduler: SchedulerImpl(timer: ActionTimerImpl())
         )
     } ()
         
     private lazy var playMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCase = {
         
-        return DefaultPlayMediaWithSubtitlesUseCase(
+        return PlayMediaWithSubtitlesUseCaseImpl(
             playMediaUseCase: playMediaUseCase,
             playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
             loadSubtitlesUseCase: loadSubtitlesUseCase
@@ -237,24 +237,24 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase = {
         
-        return DefaultProvideTranslationsForSubtitlesUseCase(
+        return ProvideTranslationsForSubtitlesUseCaseImpl(
             dictionaryRepository: dictionaryRepository,
-            textSplitter: DefaultTextSplitter(),
-            lemmatizer: DefaultLemmatizer()
+            textSplitter: TextSplitterImpl(),
+            lemmatizer: LemmatizerImpl()
         )
     } ()
     
     private lazy var provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase = {
         
-        return DefaultProvideTranslationsToPlayUseCase(
+        return ProvideTranslationsToPlayUseCaseImpl(
             provideTranslationsForSubtitlesUseCase: provideTranslationsForSubtitlesUseCase
         )
     } ()
     
     private lazy var pronounceTranslationsUseCase: PronounceTranslationsUseCase = {
         
-        return DefaultPronounceTranslationsUseCase(
-            textToSpeechConverter: DefaultTextToSpeechConverter(),
+        return PronounceTranslationsUseCaseImpl(
+            textToSpeechConverter: TextToSpeechConverterImpl(),
             audioPlayer: AudioPlayerImpl(audioSession: audioSession)
         )
     } ()
@@ -262,7 +262,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var playMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCase = {
         
-        return DefaultPlayMediaWithTranslationsUseCase(
+        return PlayMediaWithTranslationsUseCaseImpl(
             playMediaWithSubtitlesUseCase: playMediaWithSubtitlesUseCase,
             playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
             provideTranslationsToPlayUseCase: provideTranslationsToPlayUseCase,
@@ -272,7 +272,7 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     private lazy var browseDictionaryUseCase: BrowseDictionaryUseCase = {
       
-        return DefaultBrowseDictionaryUseCase(dictionaryRepository: dictionaryRepository)
+        return BrowseDictionaryUseCaseImpl(dictionaryRepository: dictionaryRepository)
     } ()
     
     
@@ -351,7 +351,7 @@ final class DefaultAppCoordinator: AppCoordinator {
 
 // MARK: - LibraryItemCoordinator
 
-extension DefaultAppCoordinator: LibraryItemCoordinator {
+extension AppCoordinatorImpl: LibraryItemCoordinator {
     
     func chooseSubtitles(completion: @escaping (_ url: URL?) -> Void) {
         
@@ -368,7 +368,7 @@ extension DefaultAppCoordinator: LibraryItemCoordinator {
 
 // MARK: - AudioFilesBrowserCoordinator
 
-extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
+extension AppCoordinatorImpl: AudioFilesBrowserCoordinator {
     
     
     func openLibraryItem(trackId: UUID) {
@@ -404,7 +404,7 @@ extension DefaultAppCoordinator: AudioFilesBrowserCoordinator {
 
 // MARK: - DictionaryListBrowserCoordinator
 
-extension DefaultAppCoordinator: DictionaryListBrowserCoordinator {
+extension AppCoordinatorImpl: DictionaryListBrowserCoordinator {
     
     func addNewDictionaryItem(completion: @escaping (DictionaryItem) -> Void) {
         
@@ -425,7 +425,7 @@ extension DefaultAppCoordinator: DictionaryListBrowserCoordinator {
                 return
             }
             
-            let lemmatizer = DefaultLemmatizer()
+            let lemmatizer = LemmatizerImpl()
 
             let newItem = DictionaryItem(
                 id: nil,

@@ -23,7 +23,7 @@ final class DictionaryListBrowserViewControllerFactory {
     
     func build() -> DictionaryListBrowserViewController {
         
-        let viewModel = DefaultDictionaryListBrowserViewModel(
+        let viewModel = DictionaryListBrowserViewModelImpl(
             coordinator: coordinator,
             browseDictionaryUseCase: browseDictionaryUseCase
         )

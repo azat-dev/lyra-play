@@ -55,7 +55,7 @@ public protocol TagsParser {
 
 // MARK: - Implementations
 
-public final class DefaultTagsParser: TagsParser {
+public final class TagsParserImpl: TagsParser {
     
     public init() {}
     

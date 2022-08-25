@@ -1,5 +1,5 @@
 //
-//  DefaultSubtitlesParserTests.swift
+//  SubtitlesParserImplTests.swift
 //  LyraPlayTests
 //
 //  Created by Azat Kaiumov on 20.08.22.
@@ -9,17 +9,17 @@ import Foundation
 import XCTest
 import LyraPlay
 
-class DefaultSubtitlesParserTests: XCTestCase {
+class SubtitlesParserImplTests: XCTestCase {
 
     typealias SUT = (
         parser: SubtitlesParser,
         textSplitter: TextSplitterMock
     )
     
-    func createSUT(parsers: [DefaultSubtitlesParser.FileExtension: SubtitlesParser]) -> SUT {
+    func createSUT(parsers: [SubtitlesParserImpl.FileExtension: SubtitlesParser]) -> SUT {
         
         let textSplitter = TextSplitterMock()
-        let parser = DefaultSubtitlesParser(parsers: parsers)
+        let parser = SubtitlesParserImpl(parsers: parsers)
         detectMemoryLeak(instance: parser)
         
         return (

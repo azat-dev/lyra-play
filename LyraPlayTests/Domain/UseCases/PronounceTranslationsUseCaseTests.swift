@@ -21,7 +21,7 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
         let textToSpeechConverter = TextToSpeechConverterMock()
         let audioPlayer = AudioPlayerMock()
         
-        let useCase = DefaultPronounceTranslationsUseCase(
+        let useCase = PronounceTranslationsUseCaseImpl(
             textToSpeechConverter: textToSpeechConverter,
             audioPlayer: audioPlayer
         )

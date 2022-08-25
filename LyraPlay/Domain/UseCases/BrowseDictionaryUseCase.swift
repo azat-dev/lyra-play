@@ -50,7 +50,7 @@ public protocol BrowseDictionaryUseCase {
 
 // MARK: - Implementations
 
-public final class DefaultBrowseDictionaryUseCase: BrowseDictionaryUseCase {
+public final class BrowseDictionaryUseCaseImpl: BrowseDictionaryUseCase {
 
     // MARK: - Properties
 

@@ -28,7 +28,7 @@ public protocol SentenceViewModel {
 
 // MARK: - Implementations
 
-public struct DefaultSentenceViewModel: SentenceViewModel {
+public struct SentenceViewModelImpl: SentenceViewModel {
     
     public var id: RowId
     

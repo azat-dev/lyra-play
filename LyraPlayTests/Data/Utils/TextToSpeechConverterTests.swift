@@ -16,7 +16,7 @@ import LyraPlay
 
     func createSUT() -> SUT {
 
-        let useCase = DefaultTextToSpeechConverter()
+        let useCase = TextToSpeechConverterImpl()
         detectMemoryLeak(instance: useCase)
 
         return useCase

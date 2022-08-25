@@ -9,13 +9,13 @@ import Foundation
 import XCTest
 import LyraPlay
 
-class DefaultActionTimerTests: XCTestCase {
+class ActionTimerTests: XCTestCase {
     
     typealias SUT = ActionTimer
     
     func createSUT() -> SUT {
         
-        let timer = DefaultActionTimer()
+        let timer = ActionTimerImpl()
         detectMemoryLeak(instance: timer)
         
         return timer

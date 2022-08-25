@@ -44,7 +44,7 @@ public protocol ProvideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCa
 
 // MARK: - Implementations
 
-public final class DefaultProvideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase {
+public final class ProvideTranslationsToPlayUseCaseImpl: ProvideTranslationsToPlayUseCase {
     
     private typealias SentenceIndex = Int
     
@@ -70,7 +70,7 @@ public final class DefaultProvideTranslationsToPlayUseCase: ProvideTranslationsT
 
 // MARK: - Input methods
 
-extension DefaultProvideTranslationsToPlayUseCase {
+extension ProvideTranslationsToPlayUseCaseImpl {
     
     private static func groupTimeSlotsBySentences(timeSlots: [SubtitlesTimeSlot]) -> [SentenceIndex: [SubtitlesTimeSlot]] {
         

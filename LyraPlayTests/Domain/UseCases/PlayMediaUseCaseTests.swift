@@ -24,7 +24,7 @@ class PlayMediaUseCaseTests: XCTestCase {
         let audioPlayer = AudioPlayerMock()
         let loadTrackUseCase = LoadTrackUseCaseMock()
         
-        let useCase = DefaultPlayMediaUseCase(
+        let useCase = PlayMediaUseCaseImpl(
             audioPlayer: audioPlayer,
             loadTrackUseCase: loadTrackUseCase
         )

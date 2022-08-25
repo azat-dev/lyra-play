@@ -22,7 +22,7 @@ public protocol ImportAudioFileUseCase {
 
 // MARK: - Implementations
 
-public final class DefaultImportAudioFileUseCase: ImportAudioFileUseCase {
+public final class ImportAudioFileUseCaseImpl: ImportAudioFileUseCase {
     
     private var audioLibraryRepository: AudioLibraryRepository
     private var imagesRepository: FilesRepository

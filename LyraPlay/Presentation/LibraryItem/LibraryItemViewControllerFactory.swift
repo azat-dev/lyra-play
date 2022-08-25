@@ -35,7 +35,7 @@ public final class LibraryItemViewControllerFactory {
     
     public func build(with trackId: UUID) -> LibraryItemViewController {
         
-        let viewModel = DefaultLibraryItemViewModel(
+        let viewModel = LibraryItemViewModelImpl(
             trackId: trackId,
             coordinator: coordinator,
             showMediaInfoUseCase: showMediaInfoUseCase,

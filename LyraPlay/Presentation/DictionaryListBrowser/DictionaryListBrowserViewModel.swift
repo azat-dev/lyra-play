@@ -58,7 +58,7 @@ public protocol DictionaryListBrowserViewModel: DictionaryListBrowserViewModelOu
 
 // MARK: - Implementations
 
-public final class DefaultDictionaryListBrowserViewModel: DictionaryListBrowserViewModel {
+public final class DictionaryListBrowserViewModelImpl: DictionaryListBrowserViewModel {
     
     // MARK: - Properties
     
@@ -82,7 +82,7 @@ public final class DefaultDictionaryListBrowserViewModel: DictionaryListBrowserV
 
 // MARK: - Input Methods
 
-extension DefaultDictionaryListBrowserViewModel {
+extension DictionaryListBrowserViewModelImpl {
     
     private func map(_ item: BrowseListDictionaryItem) -> DictionaryListBrowserItemViewModel {
         

@@ -26,7 +26,7 @@ public protocol BrowseAudioLibraryUseCase {
 
 // MARK: - Implementations
 
-public final class DefaultBrowseAudioLibraryUseCase: BrowseAudioLibraryUseCase {
+public final class BrowseAudioLibraryUseCaseImpl: BrowseAudioLibraryUseCase {
     
     private let audioLibraryRepository: AudioLibraryRepository
     private let imagesRepository: FilesRepository

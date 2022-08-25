@@ -21,7 +21,7 @@ class BrowseAudioLibraryUseCaseTests: XCTestCase {
         let audioLibraryRepository = AudioLibraryRepositoryMock()
         let imagesRepository = FilesRepositoryMock()
         
-        let useCase = DefaultBrowseAudioLibraryUseCase(
+        let useCase = BrowseAudioLibraryUseCaseImpl(
             audioLibraryRepository: audioLibraryRepository,
             imagesRepository: imagesRepository
         )

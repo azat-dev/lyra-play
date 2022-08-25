@@ -105,7 +105,7 @@ public protocol PlaySubtitlesUseCase: AnyObject, PlaySubtitlesUseCaseOutput, Pla
 
 // MARK: - Implementations
 
-public final class DefaultPlaySubtitlesUseCase: PlaySubtitlesUseCase {
+public final class PlaySubtitlesUseCaseImpl: PlaySubtitlesUseCase {
     
     // MARK: - Properties
     
@@ -130,7 +130,7 @@ public final class DefaultPlaySubtitlesUseCase: PlaySubtitlesUseCase {
 
 // MARK: - Input methods
 
-extension DefaultPlaySubtitlesUseCase {
+extension PlaySubtitlesUseCaseImpl {
     
     private func didChangePosition() {
         

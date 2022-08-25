@@ -15,7 +15,7 @@ class LemmatizerTests: XCTestCase {
     
     func createSUT() -> SUT {
         
-        let lemmatizer = DefaultLemmatizer()
+        let lemmatizer = LemmatizerImpl()
         detectMemoryLeak(instance: lemmatizer)
         
         return lemmatizer

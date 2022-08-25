@@ -24,7 +24,7 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         let showMediaInfoUseCase = ShowMediaInfoUseCaseMock()
         let audioPlayer = AudioPlayerMock()
         
-        let useCase = DefaultCurrentPlayerStateUseCase(
+        let useCase = CurrentPlayerStateUseCaseImpl(
             audioPlayer: audioPlayer,
             showMediaInfoUseCase: showMediaInfoUseCase
         )

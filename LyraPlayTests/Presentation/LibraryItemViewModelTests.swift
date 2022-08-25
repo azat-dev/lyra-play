@@ -40,7 +40,7 @@ import XCTest
 //    
 //    fileprivate func createViewModel(trackId: UUID, sut: SUT) -> LibraryItemViewModel {
 //        
-//        let viewModel = DefaultLibraryItemViewModel(
+//        let viewModel = LibraryItemViewModelImpl(
 //            trackId: trackId,
 //            coordinator: sut.coordinator,
 //            showMediaInfoUseCase: sut.showMediaInfoUseCase,
