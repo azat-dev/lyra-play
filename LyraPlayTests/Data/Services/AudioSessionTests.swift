@@ -16,7 +16,7 @@ import LyraPlay
 
     func createSUT() -> SUT {
 
-        let useCase = DefaultAudioSession()
+        let useCase = AudioSessionImpl()
         detectMemoryLeak(instance: useCase)
 
         return useCase

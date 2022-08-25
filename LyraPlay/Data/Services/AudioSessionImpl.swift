@@ -1,5 +1,5 @@
 //
-//  DefaultAudioSession.swift
+//  AudioSession.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 17.08.22.
@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-public final class DefaultAudioSession: AudioSession {
+public final class AudioSessionImpl: AudioSession {
 
     // MARK: - Properties
     
@@ -37,7 +37,7 @@ public final class DefaultAudioSession: AudioSession {
 
 // MARK: - Input methods
 
-extension DefaultAudioSession {
+extension AudioSessionImpl {
 
     public func activate() -> Result<Void, AudioSessionError> {
 

@@ -42,9 +42,9 @@ final class DefaultAppCoordinator: AppCoordinator {
         return DefaultNowPlayingInfoService()
     } ()
     
-    private lazy var audioSession: DefaultAudioSession = {
+    private lazy var audioSession: AudioSessionImpl = {
 
-        return DefaultAudioSession()
+        return AudioSessionImpl()
     } ()
     
     private lazy var audioPlayer: AudioPlayer = {
