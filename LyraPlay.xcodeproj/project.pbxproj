@@ -1127,11 +1127,7 @@
 		AADCDBAC28B88E8C006AF136 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				AADCDBAD28B88EB6006AF136 /* AudioFilesBrowserView.swift */,
-				AADCDBA828B88CB0006AF136 /* AudioFilesBrowserViewFactory.swift */,
-				AADCDBAF28B88EFA006AF136 /* AudioFilesBrowserViewFactoryImpl.swift */,
-				AADCDBB128B88F28006AF136 /* AudioFilesBrowserViewModelFactory.swift */,
-				AADCDBB328B88F5F006AF136 /* AudioFilesBrowserViewModelFactoryImpl.swift */,
+				AADCDC0C28B92626006AF136 /* Library */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1152,6 +1148,18 @@
 				AADCDBBE28B896A6006AF136 /* LibraryModuleFactoryImpl.swift */,
 			);
 			path = Modules;
+			sourceTree = "<group>";
+		};
+		AADCDC0C28B92626006AF136 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				AADCDBAD28B88EB6006AF136 /* AudioFilesBrowserView.swift */,
+				AADCDBA828B88CB0006AF136 /* AudioFilesBrowserViewFactory.swift */,
+				AADCDBAF28B88EFA006AF136 /* AudioFilesBrowserViewFactoryImpl.swift */,
+				AADCDBB128B88F28006AF136 /* AudioFilesBrowserViewModelFactory.swift */,
+				AADCDBB328B88F5F006AF136 /* AudioFilesBrowserViewModelFactoryImpl.swift */,
+			);
+			path = Library;
 			sourceTree = "<group>";
 		};
 		AAEE8A122889B6BA007E41F3 /* Mocks */ = {
