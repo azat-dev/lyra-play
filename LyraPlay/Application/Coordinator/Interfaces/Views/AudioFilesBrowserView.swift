@@ -7,4 +7,4 @@
 
 import Foundation
 
-public protocol AudioFilesBrowserView {}
+public protocol AudioFilesBrowserView: Presentable {}
