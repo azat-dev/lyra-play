@@ -283,7 +283,7 @@ final class AppCoordinatorImpl: AppCoordinator {
     
     func makeAudioFilesBrowserVC() -> AudioFilesBrowserViewController {
         
-        let factory = AudioFilesBrowserViewControllerFactory(
+        let factory = AudioFilesBrowserViewControllerFactoryDeprecated(
             coordinator: self,
             browseFilesUseCase: browseFilesUseCase,
             importFileUseCase: importFileUseCase,
