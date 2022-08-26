@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class AudioFilesBrowserViewControllerFactory {
+final class AudioFilesBrowserViewControllerFactoryDeprecated {
     
     private let browseFilesUseCase: BrowseAudioLibraryUseCase
     private let importFileUseCase: ImportAudioFileUseCase

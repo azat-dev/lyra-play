@@ -192,7 +192,7 @@
 		AACEA3202869AC5B00111565 /* AudioFilesBrowserViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA31F2869AC5B00111565 /* AudioFilesBrowserViewModelTests.swift */; };
 		AACEA3232869B14000111565 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA3222869B14000111565 /* Observable.swift */; };
 		AACEA3262869B17E00111565 /* ObservableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA3252869B17E00111565 /* ObservableTests.swift */; };
-		AACEA3282869E9C500111565 /* AudioFilesBrowserViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA3272869E9C500111565 /* AudioFilesBrowserViewControllerFactory.swift */; };
+		AACEA3282869E9C500111565 /* AudioFilesBrowserViewControllerFactoryDeprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA3272869E9C500111565 /* AudioFilesBrowserViewControllerFactoryDeprecated.swift */; };
 		AACEA32B2869ED5800111565 /* AudioFilesBrowserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA32A2869ED5800111565 /* AudioFilesBrowserCell.swift */; };
 		AACEA32D2869EDE400111565 /* AudioFilesBrowserCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA32C2869EDE400111565 /* AudioFilesBrowserCellViewModel.swift */; };
 		AACEA32F286A418600111565 /* FilePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA32E286A418600111565 /* FilePickerViewController.swift */; };
@@ -423,7 +423,7 @@
 		AACEA31F2869AC5B00111565 /* AudioFilesBrowserViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserViewModelTests.swift; sourceTree = "<group>"; };
 		AACEA3222869B14000111565 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		AACEA3252869B17E00111565 /* ObservableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableTests.swift; sourceTree = "<group>"; };
-		AACEA3272869E9C500111565 /* AudioFilesBrowserViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserViewControllerFactory.swift; sourceTree = "<group>"; };
+		AACEA3272869E9C500111565 /* AudioFilesBrowserViewControllerFactoryDeprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserViewControllerFactoryDeprecated.swift; sourceTree = "<group>"; };
 		AACEA32A2869ED5800111565 /* AudioFilesBrowserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserCell.swift; sourceTree = "<group>"; };
 		AACEA32C2869EDE400111565 /* AudioFilesBrowserCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserCellViewModel.swift; sourceTree = "<group>"; };
 		AACEA32E286A418600111565 /* FilePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePickerViewController.swift; sourceTree = "<group>"; };
@@ -1026,7 +1026,7 @@
 				AACEA3192869ABD700111565 /* AudioFilesBrowserViewController.swift */,
 				AA4F9706286E3C380087F45A /* AudioFilesBrowserViewController+Styles.swift */,
 				AA4F9708286E3C4C0087F45A /* AudioFilesBrowserViewController+Layout.swift */,
-				AACEA3272869E9C500111565 /* AudioFilesBrowserViewControllerFactory.swift */,
+				AACEA3272869E9C500111565 /* AudioFilesBrowserViewControllerFactoryDeprecated.swift */,
 				AACEA3292869ED3F00111565 /* AudioFilesBrowserCell */,
 			);
 			path = AudioFilesBrowser;
@@ -1400,7 +1400,7 @@
 				AACCE801288814F8002EA7C5 /* TranslationItem.swift in Sources */,
 				AABB49F728B02C610088484B /* DictionaryListBrowserViewControllerFactory.swift in Sources */,
 				AA1D7E812876E71F0095E490 /* ManagedSubtitles+CoreDataProperties.swift in Sources */,
-				AACEA3282869E9C500111565 /* AudioFilesBrowserViewControllerFactory.swift in Sources */,
+				AACEA3282869E9C500111565 /* AudioFilesBrowserViewControllerFactoryDeprecated.swift in Sources */,
 				AA2BE88D2866EF35005C1AAD /* CoreDataStore.swift in Sources */,
 				AA09E16F289BC5740003EB83 /* SubtitlesTimeSlotsParser.swift in Sources */,
 				AA9BEB002865D4540028DF8E /* ImportAudioFileUseCase.swift in Sources */,
