@@ -10,6 +10,7 @@
 		AA040E0128834F04000CFC26 /* SubtitlesPresenterView+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA040E0028834F04000CFC26 /* SubtitlesPresenterView+Styles.swift */; };
 		AA040E0328835247000CFC26 /* SubtitlesPresenterView+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA040E0228835247000CFC26 /* SubtitlesPresenterView+Layout.swift */; };
 		AA08836028B95C30006315B9 /* ImportAudioFileUseCaseFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08835F28B95C30006315B9 /* ImportAudioFileUseCaseFactory.swift */; };
+		AA08836328B95E01006315B9 /* LibraryCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08836228B95E01006315B9 /* LibraryCoordinator.swift */; };
 		AA0930C4287349DA00E62DB3 /* CurrentPlayerStateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0930C3287349DA00E62DB3 /* CurrentPlayerStateUseCase.swift */; };
 		AA0930C628739B2000E62DB3 /* AssertSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0930C528739B2000E62DB3 /* AssertSequence.swift */; };
 		AA0930C828739B8500E62DB3 /* AudioPlayerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0930C728739B8500E62DB3 /* AudioPlayerMock.swift */; };
@@ -264,6 +265,7 @@
 		AA040E0028834F04000CFC26 /* SubtitlesPresenterView+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SubtitlesPresenterView+Styles.swift"; sourceTree = "<group>"; };
 		AA040E0228835247000CFC26 /* SubtitlesPresenterView+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SubtitlesPresenterView+Layout.swift"; sourceTree = "<group>"; };
 		AA08835F28B95C30006315B9 /* ImportAudioFileUseCaseFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportAudioFileUseCaseFactory.swift; sourceTree = "<group>"; };
+		AA08836228B95E01006315B9 /* LibraryCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryCoordinator.swift; sourceTree = "<group>"; };
 		AA0930C3287349DA00E62DB3 /* CurrentPlayerStateUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPlayerStateUseCase.swift; sourceTree = "<group>"; };
 		AA0930C528739B2000E62DB3 /* AssertSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssertSequence.swift; sourceTree = "<group>"; };
 		AA0930C728739B8500E62DB3 /* AudioPlayerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerMock.swift; sourceTree = "<group>"; };
@@ -526,6 +528,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AA08836128B95DF1006315B9 /* Flows */ = {
+			isa = PBXGroup;
+			children = (
+				AA08836228B95E01006315B9 /* LibraryCoordinator.swift */,
+			);
+			path = Flows;
+			sourceTree = "<group>";
+		};
 		AA0D3F752875F716006717B9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -1171,6 +1181,7 @@
 		AADCDBAB28B88E7F006AF136 /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
+				AA08836128B95DF1006315B9 /* Flows */,
 				AADCDBBD28B8967B006AF136 /* Modules */,
 				AADCDBB728B892CB006AF136 /* Common */,
 				AADCDBAC28B88E8C006AF136 /* Views */,
@@ -1554,6 +1565,7 @@
 				AA09E16F289BC5740003EB83 /* SubtitlesTimeSlotsParser.swift in Sources */,
 				AA9BEB002865D4540028DF8E /* ImportAudioFileUseCase.swift in Sources */,
 				AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */,
+				AA08836328B95E01006315B9 /* LibraryCoordinator.swift in Sources */,
 				AAD6746428A4311B005AFD91 /* PlayMediaUseCase.swift in Sources */,
 				AA4F9703286E32870087F45A /* PlayerViewControllerFactory.swift in Sources */,
 				AA3785992885EFD300FF3B66 /* EnhancedLayoutManager.swift in Sources */,

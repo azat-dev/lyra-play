@@ -10,13 +10,6 @@ import UIKit
 
 // MARK: - Interfaces
 
-public protocol LibraryCoordinator: AnyObject {
-    
-    func runImportMediaFilesFlow(completion: @escaping (_ urls: [URL]?) -> Void)
-    
-    func runOpenLibraryItemFlow(mediaId: UUID)
-}
-
 public protocol AudioFilesBrowserUpdateDelegate: AnyObject {
     
     func filesDidUpdate(updatedFiles: [AudioFilesBrowserCellViewModel])
@@ -41,7 +34,7 @@ public protocol AudioFilesBrowserViewModel: AnyObject, AudioFilesBrowserViewMode
 
 public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
 
-    private let coordinator: LibraryCoordinator
+    private let coordinator: LibraryCoordinatorInput
     private let browseUseCase: BrowseAudioLibraryUseCase
     private let importFileUseCase: ImportAudioFileUseCase
     
@@ -50,7 +43,7 @@ public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
     private var stubItemImage = UIImage(named: "Image.CoverPlaceholder")!
     
     public init(
-        coordinator: LibraryCoordinator,
+        coordinator: LibraryCoordinatorInput,
         browseUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase
     ) {
