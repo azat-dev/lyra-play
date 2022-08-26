@@ -11,10 +11,10 @@ final class AudioFilesBrowserViewControllerFactoryDeprecated {
     
     private let browseFilesUseCase: BrowseAudioLibraryUseCase
     private let importFileUseCase: ImportAudioFileUseCase
-    private let coordinator: AudioFilesBrowserCoordinator
+    private let coordinator: LibraryCoordinator
     
     init(
-        coordinator: AudioFilesBrowserCoordinator,
+        coordinator: LibraryCoordinator,
         browseFilesUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase
     ) {

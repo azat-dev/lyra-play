@@ -10,7 +10,7 @@ import Foundation
 public protocol LibraryModuleFactory {
     
     func create(
-        coordinator: AudioFilesBrowserCoordinator,
+        coordinator: LibraryCoordinator,
         browseUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase
     ) -> PresentableModuleImpl<AudioFilesBrowserViewModel>

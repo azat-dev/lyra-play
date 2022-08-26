@@ -12,7 +12,7 @@ import UniformTypeIdentifiers
 
 // MARK: - Interfaces
 
-protocol AppCoordinator: AudioFilesBrowserCoordinator, LibraryItemCoordinator {
+protocol AppCoordinator: LibraryCoordinator, LibraryItemCoordinator {
     
     func start()
 }
@@ -318,7 +318,7 @@ final class AppCoordinatorImpl: AppCoordinator {
         self.navigationController.topViewController?.present(vc, animated: true)
     }
     
-    func chooseFiles(completion: @escaping (_ urls: [URL]?) -> Void) {
+    func runImportMediaFilesFlow(completion: @escaping (_ urls: [URL]?) -> Void) {
         
         openFilePicker(
             multiple: true,
@@ -367,10 +367,10 @@ extension AppCoordinatorImpl: LibraryItemCoordinator {
 
 // MARK: - AudioFilesBrowserCoordinator
 
-extension AppCoordinatorImpl: AudioFilesBrowserCoordinator {
+extension AppCoordinatorImpl: LibraryCoordinator {
     
     
-    func openLibraryItem(trackId: UUID) {
+    func runOpenLibraryItemFlow(mediaId: UUID) {
         
         let factory = LibraryItemViewControllerFactory(
             coordnator: self,
@@ -381,7 +381,7 @@ extension AppCoordinatorImpl: AudioFilesBrowserCoordinator {
             loadSubtitlesUseCase: loadSubtitlesUseCase
         )
         
-        let vc = factory.build(with: trackId)
+        let vc = factory.build(with: mediaId)
         
         navigationController.pushViewController(vc, animated: true)
     }

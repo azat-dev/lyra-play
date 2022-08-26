@@ -129,11 +129,11 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
 
 // MARK: - Mocks
 
-fileprivate class AudioFilesBrowserCoordinatorMock: AudioFilesBrowserCoordinator {
-    func openLibraryItem(trackId: UUID) {
+fileprivate class AudioFilesBrowserCoordinatorMock: LibraryCoordinator {
+    func runOpenLibraryItemFlow(mediaId: UUID) {
     }
     
-    func chooseFiles(completion: @escaping ([URL]?) -> Void) {
+    func runImportMediaFilesFlow(completion: @escaping ([URL]?) -> Void) {
         completion(nil)
     }
     

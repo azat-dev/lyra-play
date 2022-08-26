@@ -10,13 +10,11 @@ import UIKit
 
 // MARK: - Interfaces
 
-public protocol AudioFilesBrowserCoordinator: AnyObject {
+public protocol LibraryCoordinator: AnyObject {
     
-    func chooseFiles(completion: @escaping (_ urls: [URL]?) -> Void)
+    func runImportMediaFilesFlow(completion: @escaping (_ urls: [URL]?) -> Void)
     
-    func openAudioPlayer(trackId: UUID)
-    
-    func openLibraryItem(trackId: UUID)
+    func runOpenLibraryItemFlow(mediaId: UUID)
 }
 
 public protocol AudioFilesBrowserUpdateDelegate: AnyObject {
@@ -43,7 +41,7 @@ public protocol AudioFilesBrowserViewModel: AnyObject, AudioFilesBrowserViewMode
 
 public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
 
-    private let coordinator: AudioFilesBrowserCoordinator
+    private let coordinator: LibraryCoordinator
     private let browseUseCase: BrowseAudioLibraryUseCase
     private let importFileUseCase: ImportAudioFileUseCase
     
@@ -52,7 +50,7 @@ public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
     private var stubItemImage = UIImage(named: "Image.CoverPlaceholder")!
     
     public init(
-        coordinator: AudioFilesBrowserCoordinator,
+        coordinator: LibraryCoordinator,
         browseUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase
     ) {
@@ -70,7 +68,7 @@ public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
     
     private func onPlay(_ trackId: UUID) {
         
-        coordinator.openLibraryItem(trackId: trackId)
+        coordinator.runOpenLibraryItemFlow(mediaId: trackId)
     }
     
     private func loadImages(names: [String]) async -> [String: UIImage] {
@@ -139,7 +137,7 @@ public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
     
     public func addNewItem() {
         
-        coordinator.chooseFiles { [weak self] urls in
+        coordinator.runImportMediaFilesFlow { [weak self] urls in
             
             guard let urls = urls, let self = self else {
                 return

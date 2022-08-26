@@ -12,7 +12,7 @@ public final class AudioFilesBrowserViewModelFactoryImpl: AudioFilesBrowserViewM
     public init() {}
     
     public func create(
-        coordinator: AudioFilesBrowserCoordinator,
+        coordinator: LibraryCoordinator,
         browseUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase
     ) -> AudioFilesBrowserViewModel {

@@ -19,7 +19,7 @@ public final class LibraryModuleFactoryImpl: LibraryModuleFactory {
     }
     
     public func create(
-        coordinator: AudioFilesBrowserCoordinator,
+        coordinator: LibraryCoordinator,
         browseUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase
     ) -> PresentableModuleImpl<AudioFilesBrowserViewModel> {
