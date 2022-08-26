@@ -44,8 +44,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
         let viewModel = AudioFilesBrowserViewModelImpl(
             coordinator: coordinator,
             browseUseCase: useCase,
-            importFileUseCase: importFileUseCase,
-            playMediaUseCase: PlayMediaUseCaseMock()
+            importFileUseCase: importFileUseCase
         )
         
         detectMemoryLeak(instance: viewModel)
@@ -137,7 +136,7 @@ fileprivate class AudioFilesBrowserCoordinatorMock: LibraryCoordinator {
         completion(nil)
     }
     
-    func openAudioPlayer(trackId: UUID) {
+    func start(at: StackPresentationContainer) {
     }
 }
 

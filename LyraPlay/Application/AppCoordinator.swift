@@ -368,6 +368,10 @@ extension AppCoordinatorImpl: LibraryItemCoordinator {
 // MARK: - AudioFilesBrowserCoordinator
 
 extension AppCoordinatorImpl: LibraryCoordinator {
+    func start(at: StackPresentationContainer) {
+        
+    }
+    
     
     
     func runOpenLibraryItemFlow(mediaId: UUID) {

@@ -6,16 +6,24 @@
 //
 
 import Foundation
+import UIKit
 
 // MARK: - Interfaces
 
-public protocol PresentableModule {
+public protocol PresentableModule: Presentable {
     
     associatedtype ViewModel
     
     var view: Presentable { get }
     
     var model: ViewModel { get }
+}
+
+extension PresentableModule {
+    
+    public func toPresent() -> UIViewController {
+        return view.toPresent()
+    }
 }
 
 // MARK: - Implementations

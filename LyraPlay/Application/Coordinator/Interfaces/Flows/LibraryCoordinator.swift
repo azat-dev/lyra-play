@@ -16,4 +16,5 @@ public protocol LibraryCoordinatorInput: AnyObject {
 
 public protocol LibraryCoordinator: LibraryCoordinatorInput {
     
+    func start(at: StackPresentationContainer)
 }

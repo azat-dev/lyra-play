@@ -120,6 +120,9 @@
 		AA5A1AD128AA887700DE29CD /* Subtitles+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5A1AD028AA887700DE29CD /* Subtitles+Helpers.swift */; };
 		AA5DD6FC28B962BE00929906 /* Presentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD6FB28B962BD00929906 /* Presentable.swift */; };
 		AA5DD6FE28B9631A00929906 /* PresentableModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD6FD28B9631A00929906 /* PresentableModule.swift */; };
+		AA5DD70128B9643F00929906 /* LibraryCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD70028B9643F00929906 /* LibraryCoordinatorTests.swift */; };
+		AA5DD70928B96E9F00929906 /* Mockingbird in Frameworks */ = {isa = PBXBuildFile; productRef = AA5DD70828B96E9F00929906 /* Mockingbird */; };
+		AA5DD70D28B970FA00929906 /* LyraPlayTests-LyraPlayMocks.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD70C28B970FA00929906 /* LyraPlayTests-LyraPlayMocks.generated.swift */; };
 		AA64C81A286F170C0089F165 /* PlayerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA64C819286F170C0089F165 /* PlayerViewModelTests.swift */; };
 		AA64C81D286F181F0089F165 /* AudioPlayerUseCaseMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA64C81C286F181F0089F165 /* AudioPlayerUseCaseMock.swift */; };
 		AA66FD26287A02F9005AD524 /* LoadSubtitlesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA66FD25287A02F9005AD524 /* LoadSubtitlesUseCaseTests.swift */; };
@@ -246,6 +249,7 @@
 		AAFB979F2875CFA9007A76A7 /* SubtitlesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB979E2875CFA9007A76A7 /* SubtitlesParser.swift */; };
 		AAFB97A12875D0FD007A76A7 /* LyricsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB97A02875D0FD007A76A7 /* LyricsParser.swift */; };
 		AAFDF5DA28789C5300AF0709 /* test_subtitles.lrc in Resources */ = {isa = PBXBuildFile; fileRef = AAFDF5D92878973500AF0709 /* test_subtitles.lrc */; };
+		EAAC71B4C29C82B44BE581A6 /* LyraPlayTests-LyraPlayMocks.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E22F53116F82855FCB5A83 /* LyraPlayTests-LyraPlayMocks.generated.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -379,6 +383,8 @@
 		AA5A1AD028AA887700DE29CD /* Subtitles+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Subtitles+Helpers.swift"; sourceTree = "<group>"; };
 		AA5DD6FB28B962BD00929906 /* Presentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Presentable.swift; sourceTree = "<group>"; };
 		AA5DD6FD28B9631A00929906 /* PresentableModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresentableModule.swift; sourceTree = "<group>"; };
+		AA5DD70028B9643F00929906 /* LibraryCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryCoordinatorTests.swift; sourceTree = "<group>"; };
+		AA5DD70C28B970FA00929906 /* LyraPlayTests-LyraPlayMocks.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LyraPlayTests-LyraPlayMocks.generated.swift"; sourceTree = "<group>"; };
 		AA64C819286F170C0089F165 /* PlayerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModelTests.swift; sourceTree = "<group>"; };
 		AA64C81C286F181F0089F165 /* AudioPlayerUseCaseMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerUseCaseMock.swift; sourceTree = "<group>"; };
 		AA66FD25287A02F9005AD524 /* LoadSubtitlesUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadSubtitlesUseCaseTests.swift; sourceTree = "<group>"; };
@@ -523,6 +529,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA5DD70928B96E9F00929906 /* Mockingbird in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -536,6 +543,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4EA9038AD32C4B343AFE1986 /* Generated Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				C1E22F53116F82855FCB5A83 /* LyraPlayTests-LyraPlayMocks.generated.swift */,
+			);
+			name = "Generated Mocks";
+			sourceTree = "<group>";
+		};
 		AA08837028B960C8006315B9 /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
@@ -562,8 +577,8 @@
 		AA08837528B960C8006315B9 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				AA08837628B960C8006315B9 /* LibraryModuleFactoryImpl.swift */,
 				AA08837728B960C8006315B9 /* LibraryModuleFactory.swift */,
+				AA08837628B960C8006315B9 /* LibraryModuleFactoryImpl.swift */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -591,8 +606,8 @@
 		AA08837F28B960C8006315B9 /* Flows */ = {
 			isa = PBXGroup;
 			children = (
-				AA08838028B960C8006315B9 /* LibraryCoordinatorImpl.swift */,
 				AA08838128B960C8006315B9 /* LibraryCoordinator.swift */,
+				AA08838028B960C8006315B9 /* LibraryCoordinatorImpl.swift */,
 			);
 			path = Flows;
 			sourceTree = "<group>";
@@ -807,6 +822,30 @@
 			path = ManagedObjects;
 			sourceTree = "<group>";
 		};
+		AA5DD6FF28B9641400929906 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				AA5DD70028B9643F00929906 /* LibraryCoordinatorTests.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		AA5DD70528B96B7E00929906 /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				AA5DD70628B96B7E00929906 /* Mocks */,
+			);
+			path = Generated;
+			sourceTree = "<group>";
+		};
+		AA5DD70628B96B7E00929906 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				AA5DD70C28B970FA00929906 /* LyraPlayTests-LyraPlayMocks.generated.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
 		AA64C81B286F18120089F165 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
@@ -885,6 +924,7 @@
 				AA8BF76228567A1F0010FA1E /* LyraPlayTests */,
 				AA8BF76C28567A1F0010FA1E /* LyraPlayUITests */,
 				AA8BF74728567A1C0010FA1E /* Products */,
+				4EA9038AD32C4B343AFE1986 /* Generated Mocks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -914,6 +954,8 @@
 		AA8BF76228567A1F0010FA1E /* LyraPlayTests */ = {
 			isa = PBXGroup;
 			children = (
+				AA5DD70528B96B7E00929906 /* Generated */,
+				AA5DD6FF28B9641400929906 /* Application */,
 				AA1ACC2628630FCD000EEDD5 /* Assets */,
 				AA1ACC202862FE65000EEDD5 /* Data */,
 				AA9BEAFA2865BF4A0028DF8E /* Domain */,
@@ -1331,6 +1373,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = AA8BF77628567A1F0010FA1E /* Build configuration list for PBXNativeTarget "LyraPlayTests" */;
 			buildPhases = (
+				D050E550111952BA2712AE8E /* Generate Mockingbird Mocks */,
 				AA8BF75B28567A1F0010FA1E /* Sources */,
 				AA8BF75C28567A1F0010FA1E /* Frameworks */,
 				AA8BF75D28567A1F0010FA1E /* Resources */,
@@ -1341,6 +1384,9 @@
 				AA8BF76128567A1F0010FA1E /* PBXTargetDependency */,
 			);
 			name = LyraPlayTests;
+			packageProductDependencies = (
+				AA5DD70828B96E9F00929906 /* Mockingbird */,
+			);
 			productName = LyraPlayTests;
 			productReference = AA8BF75F28567A1F0010FA1E /* LyraPlayTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -1396,6 +1442,7 @@
 			);
 			mainGroup = AA8BF73D28567A1C0010FA1E;
 			packageReferences = (
+				AA5DD70728B96E9F00929906 /* XCRemoteSwiftPackageReference "mockingbird" */,
 			);
 			productRefGroup = AA8BF74728567A1C0010FA1E /* Products */;
 			projectDirPath = "";
@@ -1451,6 +1498,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D050E550111952BA2712AE8E /* Generate Mockingbird Mocks */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate Mockingbird Mocks";
+			outputPaths = (
+				"$(SRCROOT)/LyraPlayTests/Generated/Mocks/LyraPlayTests-LyraPlayMocks.generated.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -eu\n\n# Prevent Xcode 13 from running this script while indexing.\n[[ \"${ACTION}\" == \"indexbuild\" ]] && exit 0\n\n# Infer the derived data location from the build environment.\n[[ -z \"${DERIVED_DATA+x}\" ]] && DERIVED_DATA=\"$(echo \"${BUILD_ROOT}\" | sed -n 's|\\(.*\\)/Build/.*|\\1|p')\"\n\n\"${DERIVED_DATA}/SourcePackages/checkouts/mockingbird/mockingbird\" generate --targets \"LyraPlay\" --outputs \"${SRCROOT}/LyraPlayTests/Generated/Mocks/LyraPlayTests-LyraPlayMocks.generated.swift\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AA8BF74228567A1C0010FA1E /* Sources */ = {
@@ -1642,6 +1708,7 @@
 				AABB49E628AFDFAF0088484B /* BrowseDictionaryUseCaseTests.swift in Sources */,
 				AA190E6F287ABC9C000514AB /* SubtitlesPresenterViewModelTests.swift in Sources */,
 				AABB49EF28AFFE3C0088484B /* DictionaryListBrowserViewModelTests.swift in Sources */,
+				AA5DD70D28B970FA00929906 /* LyraPlayTests-LyraPlayMocks.generated.swift in Sources */,
 				AA7B0D81287234F70067DDB5 /* CurrentPlayerStateUseCaseTests.swift in Sources */,
 				AAC8D1D3287B26AA00FAB35E /* LoadSubtitlesUseCaseMock.swift in Sources */,
 				AACEA3262869B17E00111565 /* ObservableTests.swift in Sources */,
@@ -1654,6 +1721,7 @@
 				AA731CCA2870BE890044412F /* LoadTrackUseCaseTests.swift in Sources */,
 				AAC8E0F0288B10AF001A274A /* LemmatizerTests.swift in Sources */,
 				AA0DADF928A14FB900B11B95 /* TextToSpeechConverterTests.swift in Sources */,
+				AA5DD70128B9643F00929906 /* LibraryCoordinatorTests.swift in Sources */,
 				AA66FD28287A0795005AD524 /* SubtitlesParserMock.swift in Sources */,
 				AA415084286B0987004549F4 /* AssertResult.swift in Sources */,
 				AA0D3F812876244D006717B9 /* CoreDataSubtitlesRepositoryTests.swift in Sources */,
@@ -1681,6 +1749,7 @@
 				AA35E57E286A993B0086DB28 /* TagsParserMock.swift in Sources */,
 				AA3BAB25286C7EE2005EE01E /* UserDefaultsKeyValueStoreTests.swift in Sources */,
 				AABB49EA28AFF50E0088484B /* Dictionary+Helpers.swift in Sources */,
+				EAAC71B4C29C82B44BE581A6 /* LyraPlayTests-LyraPlayMocks.generated.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2018,6 +2087,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AA5DD70728B96E9F00929906 /* XCRemoteSwiftPackageReference "mockingbird" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/birdrides/mockingbird";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AA5DD70828B96E9F00929906 /* Mockingbird */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA5DD70728B96E9F00929906 /* XCRemoteSwiftPackageReference "mockingbird" */;
+			productName = Mockingbird;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		AA2895A72876EAA100B168C4 /* LyraPlay.xcdatamodeld */ = {

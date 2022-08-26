@@ -12,6 +12,9 @@ public final class LibraryCoordinatorImpl: LibraryCoordinator {
     public init() {
         
     }
+    
+    public func start(at container: StackPresentationContainer) {
+    }
 }
 
 // MARK: - Input Methods
