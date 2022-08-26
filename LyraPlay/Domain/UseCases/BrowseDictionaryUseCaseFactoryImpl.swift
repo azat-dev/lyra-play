@@ -1,0 +1,18 @@
+//
+//  BrowseDictionaryUseCaseFactoryImpl.swift
+//  LyraPlay
+//
+//  Created by Azat Kaiumov on 26.08.22.
+//
+
+import Foundation
+
+public final class BrowseDictionaryUseCaseFactoryImpl: BrowseDictionaryUseCaseFactory {
+    
+    public init() {}
+    
+    public func create(dictionaryRepository: DictionaryRepository) -> BrowseDictionaryUseCase {
+        
+        return BrowseDictionaryUseCaseImpl(dictionaryRepository: dictionaryRepository)
+    }
+}

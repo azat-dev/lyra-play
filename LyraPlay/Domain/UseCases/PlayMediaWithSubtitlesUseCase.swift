@@ -310,7 +310,6 @@ extension PlayMediaWithSubtitlesUseCaseImpl {
 
 // MARK: - Helpers
 
-
 extension PlayMediaWithSubtitlesUseCaseImpl {
     
     private func updateSubtitlesPosition(_ subtitlesState: PlaySubtitlesUseCaseState) {
