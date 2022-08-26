@@ -46,7 +46,6 @@ public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
     private let coordinator: AudioFilesBrowserCoordinator
     private let browseUseCase: BrowseAudioLibraryUseCase
     private let importFileUseCase: ImportAudioFileUseCase
-    private let playMediaUseCase: PlayMediaUseCase
     
     public var isLoading: Observable<Bool>
     public weak var filesDelegate: AudioFilesBrowserUpdateDelegate?
@@ -55,14 +54,13 @@ public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
     public init(
         coordinator: AudioFilesBrowserCoordinator,
         browseUseCase: BrowseAudioLibraryUseCase,
-        importFileUseCase: ImportAudioFileUseCase,
-        playMediaUseCase: PlayMediaUseCase
+        importFileUseCase: ImportAudioFileUseCase
     ) {
         
         self.coordinator = coordinator
         self.browseUseCase = browseUseCase
         self.importFileUseCase = importFileUseCase
-        self.playMediaUseCase = playMediaUseCase
+        
         self.isLoading = Observable(true)
     }
     
@@ -73,11 +71,6 @@ public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
     private func onPlay(_ trackId: UUID) {
         
         coordinator.openLibraryItem(trackId: trackId)
-        
-//        Task {
-//            await playMediaUseCase.setTrack(fileId: trackId)
-//            await playMediaUseCase.play()
-//        }
     }
     
     private func loadImages(names: [String]) async -> [String: UIImage] {

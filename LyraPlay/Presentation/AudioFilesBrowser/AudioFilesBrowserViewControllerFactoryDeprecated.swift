@@ -12,19 +12,16 @@ final class AudioFilesBrowserViewControllerFactoryDeprecated {
     private let browseFilesUseCase: BrowseAudioLibraryUseCase
     private let importFileUseCase: ImportAudioFileUseCase
     private let coordinator: AudioFilesBrowserCoordinator
-    private let playMediaUseCase: PlayMediaUseCase
     
     init(
         coordinator: AudioFilesBrowserCoordinator,
         browseFilesUseCase: BrowseAudioLibraryUseCase,
-        importFileUseCase: ImportAudioFileUseCase,
-        playMediaUseCase: PlayMediaUseCase
+        importFileUseCase: ImportAudioFileUseCase
     ) {
         
         self.browseFilesUseCase = browseFilesUseCase
         self.importFileUseCase = importFileUseCase
         self.coordinator = coordinator
-        self.playMediaUseCase = playMediaUseCase
     }
     
     func build() -> AudioFilesBrowserViewController {
@@ -32,8 +29,7 @@ final class AudioFilesBrowserViewControllerFactoryDeprecated {
         let viewModel = AudioFilesBrowserViewModelImpl(
             coordinator: coordinator,
             browseUseCase: browseFilesUseCase,
-            importFileUseCase: importFileUseCase,
-            playMediaUseCase: playMediaUseCase
+            importFileUseCase: importFileUseCase
         )
         return AudioFilesBrowserViewController(viewModel: viewModel)
     }

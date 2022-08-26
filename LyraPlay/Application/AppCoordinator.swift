@@ -286,8 +286,7 @@ final class AppCoordinatorImpl: AppCoordinator {
         let factory = AudioFilesBrowserViewControllerFactoryDeprecated(
             coordinator: self,
             browseFilesUseCase: browseFilesUseCase,
-            importFileUseCase: importFileUseCase,
-            playMediaUseCase: playMediaUseCase
+            importFileUseCase: importFileUseCase
         )
         return factory.build()
     }

@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class AudioFilesBrowserViewController: UIViewController {
+final class AudioFilesBrowserViewController: UIViewController, AudioFilesBrowserView {
     
     private var tableView = UITableView()
     private var tableDataSource: UITableViewDiffableDataSource<Int, AudioFilesBrowserCellViewModel>!
