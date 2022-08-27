@@ -35,4 +35,10 @@ public struct PresentableModuleImpl<ViewModel>: PresentableModule {
     public var view: Presentable
     
     public var model: ViewModel
+    
+    public init(view: Presentable, model: ViewModel) {
+        
+        self.view = view
+        self.model = model
+    }
 }

@@ -7,25 +7,49 @@
 
 import Foundation
 
+
 public final class LibraryCoordinatorImpl: LibraryCoordinator {
     
-    public init() {
+    // MARK: - Properties
+    
+    private let moduleFactory: LibraryModuleFactory
+    
+    private let browseAudioLibraryUseCaseFactory: () -> BrowseAudioLibraryUseCase
+    private let importAudioFileUseCaseFactory: () -> ImportAudioFileUseCase
+    
+    // MARK: - Initializers
+    
+    public init(
+        moduleFactory: LibraryModuleFactory,
+        browseAudioLibraryUseCaseFactory: @escaping () -> BrowseAudioLibraryUseCase,
+        importAudioFileUseCaseFactory: @escaping () -> ImportAudioFileUseCase
+    ) {
         
+        self.moduleFactory = moduleFactory
+        self.browseAudioLibraryUseCaseFactory = browseAudioLibraryUseCaseFactory
+        self.importAudioFileUseCaseFactory = importAudioFileUseCaseFactory
     }
     
-    public func start(at container: StackPresentationContainer) {
+    // MARK: - Methods
+
+    public func runOpenLibraryItemFlow(mediaId: UUID) {
     }
-}
-
-// MARK: - Input Methods
-
-extension LibraryCoordinatorImpl {
     
     public func runImportMediaFilesFlow(completion: @escaping ([URL]?) -> Void) {
-        fatalError()
+        
     }
-    
-    public func runOpenLibraryItemFlow(mediaId: UUID) {
-        fatalError()
+
+    public func start(at presentationContainer: StackPresentationContainer) {
+        
+        let importAudioFileUseCase = importAudioFileUseCaseFactory()
+        let browseAudioLibraryUseCase = browseAudioLibraryUseCaseFactory()
+
+        let module = moduleFactory.create(
+            coordinator: self,
+            browseUseCase: browseAudioLibraryUseCase,
+            importFileUseCase: importAudioFileUseCase
+        )
+
+        presentationContainer.setRoot(module)
     }
 }

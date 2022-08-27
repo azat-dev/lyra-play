@@ -34,7 +34,7 @@ public protocol AudioFilesBrowserViewModel: AnyObject, AudioFilesBrowserViewMode
 
 public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
 
-    private let coordinator: LibraryCoordinatorInput
+    private weak var coordinator: LibraryCoordinatorInput?
     private let browseUseCase: BrowseAudioLibraryUseCase
     private let importFileUseCase: ImportAudioFileUseCase
     
@@ -61,7 +61,7 @@ public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
     
     private func onPlay(_ trackId: UUID) {
         
-        coordinator.runOpenLibraryItemFlow(mediaId: trackId)
+        coordinator?.runOpenLibraryItemFlow(mediaId: trackId)
     }
     
     private func loadImages(names: [String]) async -> [String: UIImage] {
@@ -130,7 +130,7 @@ public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
     
     public func addNewItem() {
         
-        coordinator.runImportMediaFilesFlow { [weak self] urls in
+        coordinator?.runImportMediaFilesFlow { [weak self] urls in
             
             guard let urls = urls, let self = self else {
                 return

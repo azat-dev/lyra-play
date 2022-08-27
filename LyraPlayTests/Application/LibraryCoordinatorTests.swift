@@ -10,19 +10,27 @@ import XCTest
 import LyraPlay
 import Mockingbird
 
-
 class LibraryCoordinatorTests: XCTestCase {
     
     typealias SUT = LibraryCoordinator
     
-    func createSUT() -> SUT {
+    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
         
-        let presenterViewModel = LibraryCoordinatorImpl()
-        detectMemoryLeak(instance: presenterViewModel)
+        let browseUseCase = mock(BrowseAudioLibraryUseCase.self)
+        let importUseCase = mock(ImportAudioFileUseCase.self)
         
-        return presenterViewModel
+        let moduleFactory = LibraryModuleFactoryMock2()
+        
+        let coordinator = LibraryCoordinatorImpl(
+            moduleFactory: moduleFactory,
+            browseAudioLibraryUseCaseFactory: { browseUseCase },
+            importAudioFileUseCaseFactory: { importUseCase }
+        )
+        
+        detectMemoryLeak(instance: coordinator, file: file, line: line)
+        return coordinator
     }
-
+    
     func test_start() {
         
         // Given
@@ -31,8 +39,23 @@ class LibraryCoordinatorTests: XCTestCase {
         
         // When
         sut.start(at: container)
-
+        
         // Then
         verify(container.setRoot(any())).wasCalled()
+        
+        print()
+    }
+}
+
+class LibraryModuleFactoryMock2: LibraryModuleFactory {
+    
+    func create(coordinator: LibraryCoordinator, browseUseCase: BrowseAudioLibraryUseCase, importFileUseCase: ImportAudioFileUseCase) -> PresentableModuleImpl<AudioFilesBrowserViewModel> {
+        
+        let viewModel = mock(AudioFilesBrowserViewModel.self)
+        
+        return PresentableModuleImpl(
+            view: UIViewController(nibName: nil, bundle: nil),
+            model: viewModel as AudioFilesBrowserViewModel
+        )
     }
 }
