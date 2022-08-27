@@ -241,7 +241,7 @@ private final class LibraryItemCoordinatorMock: LibraryItemCoordinator {
     public var resolveChooseSubtitles: ChooseSubtitlesCallback?
     public var resolveShowImportSubtitlesError: ShowImportSubttitlesErrorCallback?
     
-    public func chooseSubtitles(completion: @escaping (_ urls: URL?) -> Void) {
+    public func runAttachSubtitlesFlow(completion: @escaping (_ urls: URL?) -> Void) {
 
         guard let resolveChooseSubtitles = resolveChooseSubtitles else {
             XCTFail("No implementation")

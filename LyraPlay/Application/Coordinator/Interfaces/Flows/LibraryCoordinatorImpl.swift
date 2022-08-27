@@ -17,6 +17,8 @@ public final class LibraryCoordinatorImpl: LibraryCoordinator {
     private let browseAudioLibraryUseCaseFactory: () -> BrowseAudioLibraryUseCase
     private let importAudioFileUseCaseFactory: () -> ImportAudioFileUseCase
     
+    private var container: PresentationContainer?
+    
     // MARK: - Initializers
     
     public init(
@@ -33,6 +35,8 @@ public final class LibraryCoordinatorImpl: LibraryCoordinator {
     // MARK: - Methods
 
     public func runOpenLibraryItemFlow(mediaId: UUID) {
+        
+        
     }
     
     public func runImportMediaFilesFlow(completion: @escaping ([URL]?) -> Void) {
@@ -50,6 +54,7 @@ public final class LibraryCoordinatorImpl: LibraryCoordinator {
             importFileUseCase: importAudioFileUseCase
         )
 
+        container = presentationContainer
         presentationContainer.setRoot(module)
     }
 }

@@ -19,7 +19,7 @@ protocol AppCoordinator: LibraryCoordinator, LibraryItemCoordinator {
 
 // MARK: - Implementations
 
-final class AppCoordinatorImpl: AppCoordinator {
+final class AppCoordinatorImpl: AppCoordinator, LibraryItemCoordinatorInput {
     
     private let navigationController: UINavigationController
     
@@ -352,7 +352,7 @@ final class AppCoordinatorImpl: AppCoordinator {
 
 extension AppCoordinatorImpl: LibraryItemCoordinator {
     
-    func chooseSubtitles(completion: @escaping (_ url: URL?) -> Void) {
+    func runAttachSubtitlesFlow(completion: @escaping (_ url: URL?) -> Void) {
         
         openFilePicker(
             multiple: true,

@@ -9,7 +9,7 @@ import Foundation
 
 public final class LibraryItemViewControllerFactory {
     
-    private var coordinator: LibraryItemCoordinator
+    private var coordinator: LibraryItemCoordinatorInput
     private var showMediaInfoUseCase: ShowMediaInfoUseCase
     private var currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput
     private var playMediaUseCase: PlayMediaWithTranslationsUseCase
@@ -17,7 +17,7 @@ public final class LibraryItemViewControllerFactory {
     private var loadSubtitlesUseCase: LoadSubtitlesUseCase
     
     init(
-        coordnator: LibraryItemCoordinator,
+        coordnator: LibraryItemCoordinatorInput,
         showMediaInfoUseCase: ShowMediaInfoUseCase,
         currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput,
         playMediaUseCase: PlayMediaWithTranslationsUseCase,

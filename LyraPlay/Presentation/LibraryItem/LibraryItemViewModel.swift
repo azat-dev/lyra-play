@@ -18,12 +18,6 @@ public struct LibraryItemInfoPresentation {
     public var duration: String
 }
 
-public protocol LibraryItemCoordinator {
-    
-    func chooseSubtitles(completion: @escaping (_ url: URL?) -> Void)
-    func showImportSubtitlesError() -> Void
-}
-
 public protocol LibraryItemViewModelOutput {
 
     var isPlaying: Observable<Bool> { get }
@@ -50,7 +44,7 @@ public protocol LibraryItemViewModel: LibraryItemViewModelOutput, LibraryItemVie
 public final class LibraryItemViewModelImpl: LibraryItemViewModel {
     
     private let trackId: UUID
-    private let coordinator: LibraryItemCoordinator
+    private weak var coordinator: LibraryItemCoordinatorInput?
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
     private let playMediaUseCase: PlayMediaWithTranslationsUseCase
     private let currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput
@@ -64,7 +58,7 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
     
     public init(
         trackId: UUID,
-        coordinator: LibraryItemCoordinator,
+        coordinator: LibraryItemCoordinatorInput,
         showMediaInfoUseCase: ShowMediaInfoUseCase,
         currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput,
         playMediaUseCase: PlayMediaWithTranslationsUseCase,
@@ -196,7 +190,6 @@ extension LibraryItemViewModelImpl {
         )
         
         guard case .success() = importResult else {
-            coordinator.showImportSubtitlesError()
             return
         }
         
@@ -205,7 +198,7 @@ extension LibraryItemViewModelImpl {
     
     public func attachSubtitles(language: String) async {
         
-        coordinator.chooseSubtitles { [weak self] url in
+        coordinator?.runAttachSubtitlesFlow { [weak self] url in
             
             guard let attachSubtitles = self?.attachSubtitlesAfter else {
                 return
