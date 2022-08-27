@@ -19,7 +19,7 @@ class LibraryCoordinatorTests: XCTestCase {
         let browseUseCase = mock(BrowseAudioLibraryUseCase.self)
         let importUseCase = mock(ImportAudioFileUseCase.self)
         
-        let moduleFactory = LibraryModuleFactoryMock2()
+        let moduleFactory = LibraryModuleFactoryMock()
         
         let coordinator = LibraryCoordinatorImpl(
             moduleFactory: moduleFactory,
@@ -45,15 +45,15 @@ class LibraryCoordinatorTests: XCTestCase {
     }
 }
 
-class LibraryModuleFactoryMock2: LibraryModuleFactory {
+// MARK: - Mocks
+
+private class LibraryModuleFactoryMock: LibraryModuleFactory {
     
     func create(coordinator: LibraryCoordinator, browseUseCase: BrowseAudioLibraryUseCase, importFileUseCase: ImportAudioFileUseCase) -> PresentableModuleImpl<AudioFilesBrowserViewModel> {
         
-        let viewModel = mock(AudioFilesBrowserViewModel.self)
-        
         return PresentableModuleImpl(
             view: UIViewController(nibName: nil, bundle: nil),
-            model: viewModel as AudioFilesBrowserViewModel
+            model: mock(AudioFilesBrowserViewModel.self)
         )
     }
 }
