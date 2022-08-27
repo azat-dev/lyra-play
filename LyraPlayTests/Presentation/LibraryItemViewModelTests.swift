@@ -261,6 +261,9 @@ private final class LibraryItemCoordinatorMock: LibraryItemCoordinator {
         
         resolveShowImportSubtitlesError()
     }
+    
+    func start(at: StackPresentationContainer) {
+    }
 }
 
 final class CurrentPlayerStateUseCaseMock: CurrentPlayerStateUseCase {

@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public final class LibraryItemViewController: UIViewController {
+public final class LibraryItemViewController: UIViewController, LibraryItemView {
     
     private let viewModel: LibraryItemViewModel
     

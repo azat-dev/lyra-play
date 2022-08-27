@@ -10,7 +10,7 @@ import Foundation
 public protocol AudioFilesBrowserViewModelFactory {
     
     func create(
-        coordinator: LibraryCoordinator,
+        coordinator: LibraryCoordinatorInput,
         browseUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase
     ) -> AudioFilesBrowserViewModel
