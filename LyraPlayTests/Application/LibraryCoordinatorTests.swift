@@ -42,8 +42,6 @@ class LibraryCoordinatorTests: XCTestCase {
         
         // Then
         verify(container.setRoot(any())).wasCalled()
-        
-        print()
     }
 }
 
