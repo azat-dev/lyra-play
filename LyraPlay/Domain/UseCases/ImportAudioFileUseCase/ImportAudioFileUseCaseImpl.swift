@@ -1,47 +1,49 @@
 //
-//  ImportAudioFileUseCase.swift
+//  ImportAudioFileUseCaseImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 24.06.22.
+//  Created by Azat Kaiumov on 30.08.2022.
 //
 
 import Foundation
 
-// MARK: - Interfaces
-
-public enum ImportAudioFileUseCaseError: Error {
-    
-    case wrongFormat
-    case internalError(Error?)
-}
-
-public protocol ImportAudioFileUseCase {
-    
-    func importFile(originalFileName: String, fileData: Data) async -> Result<AudioFileInfo, ImportAudioFileUseCaseError>
-}
-
-// MARK: - Implementations
+import Foundation
 
 public final class ImportAudioFileUseCaseImpl: ImportAudioFileUseCase {
-    
-    private var audioLibraryRepository: AudioLibraryRepository
-    private var imagesRepository: FilesRepository
-    private var audioFilesRepository: FilesRepository
-    private var tagsParser: TagsParser
-    
+
+    // MARK: - Properties
+
+    private let audioLibraryRepository: AudioLibraryRepository
+    private let audioFilesRepository: FilesRepository
+    private let imagesRepository: FilesRepository
+    private let tagsParser: TagsParser
+
+    // MARK: - Initializers
+
     public init(
         audioLibraryRepository: AudioLibraryRepository,
         audioFilesRepository: FilesRepository,
         imagesRepository: FilesRepository,
         tagsParser: TagsParser
     ) {
-        
+
         self.audioLibraryRepository = audioLibraryRepository
+        self.audioFilesRepository = audioFilesRepository
         self.imagesRepository = imagesRepository
         self.tagsParser = tagsParser
-        self.audioFilesRepository = audioFilesRepository
     }
-    
+}
+
+// MARK: - Input Methods
+
+extension ImportAudioFileUseCaseImpl {
+
+}
+
+// MARK: - Output Methods
+
+extension ImportAudioFileUseCaseImpl {
+
     private func generateAudioFileName(originalName: String) -> String {
         
         let audioFileId = UUID().uuidString
