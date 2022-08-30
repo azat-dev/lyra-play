@@ -1,33 +1,21 @@
 //
-//  LoadSubtitlesUseCase.swift
+//  LoadSubtitlesUseCaseImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 09.07.22.
+//  Created by Azat Kaiumov on 30.08.2022.
 //
 
 import Foundation
 
-// MARK: - Interfaces
-
-public enum LoadSubtitlesUseCaseError: Error {
-    
-    case itemNotFound
-    case internalError(Error?)
-}
-
-public protocol LoadSubtitlesUseCase {
-    
-    func load(for: UUID, language: String) async -> Result<Subtitles, LoadSubtitlesUseCaseError>
-}
-
-// MARK: - Implementations
-
 public final class LoadSubtitlesUseCaseImpl: LoadSubtitlesUseCase {
     
+    // MARK: - Properties
     
     private let subtitlesRepository: SubtitlesRepository
     private let subtitlesFiles: FilesRepository
     private let subtitlesParser: SubtitlesParser
+    
+    // MARK: - Initializers
     
     public init(
         subtitlesRepository: SubtitlesRepository,
@@ -39,6 +27,12 @@ public final class LoadSubtitlesUseCaseImpl: LoadSubtitlesUseCase {
         self.subtitlesFiles = subtitlesFiles
         self.subtitlesParser = subtitlesParser
     }
+    
+}
+
+// MARK: - Input Methods
+
+extension LoadSubtitlesUseCaseImpl {
     
     public func load(for mediaFileId: UUID, language: String) async -> Result<Subtitles, LoadSubtitlesUseCaseError> {
         
