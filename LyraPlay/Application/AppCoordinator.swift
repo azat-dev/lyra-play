@@ -195,14 +195,16 @@ final class AppCoordinatorImpl: AppCoordinator, LibraryItemCoordinatorInput {
         ])
     } ()
     
-    private lazy var importSubtitlesUseCase = {
-        
-        return ImportSubtitlesUseCaseImpl(
+    private lazy var importSubtitlesUseCase: ImportSubtitlesUseCase = {
+
+        let factory = ImportSubtitlesUseCaseImplFactory(
+            supportedExtensions: [".srt", ".lrc"],
             subtitlesRepository: subtitlesRepository,
             subtitlesParser: subtitlesParser,
-            subtitlesFilesRepository: subtitlesFilesRepository,
-            supportedExtensions: [".srt", ".lrc"]
+            subtitlesFilesRepository: subtitlesFilesRepository
         )
+        
+        return factory.create()
     } ()
     
     private lazy var loadSubtitlesUseCase: LoadSubtitlesUseCase = {

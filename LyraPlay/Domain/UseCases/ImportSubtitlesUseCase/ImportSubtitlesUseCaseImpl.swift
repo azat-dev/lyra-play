@@ -1,49 +1,52 @@
 //
-//  ImportSubtitlesUseCase.swift
+//  ImportSubtitlesUseCaseImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 07.07.22.
+//  Created by Azat Kaiumov on 30.08.2022.
 //
 
 import Foundation
 
-// MARK: - Interfaces
-
-public enum ImportSubtitlesUseCaseError: Error {
-    
-    case internalError(Error?)
-    case wrongData
-    case formatNotSupported
-}
-
-public protocol ImportSubtitlesUseCase {
-    
-    func importFile(trackId: UUID, language: String, fileName: String, data: Data) async -> Result<Void, ImportSubtitlesUseCaseError>
-}
-
-// MARK: - Implementations
-
 public final class ImportSubtitlesUseCaseImpl: ImportSubtitlesUseCase {
     
-    private let subtitlesRepository: SubtitlesRepository
-    private let subtitlesFilesRepository: FilesRepository
-    private let subtitlesParser: SubtitlesParser
+    // MARK: - Properties
+    
     private let supportedExtensions: [String]
+    private let subtitlesRepository: SubtitlesRepository
+    private let subtitlesParser: SubtitlesParser
+    private let subtitlesFilesRepository: FilesRepository
+    
+    // MARK: - Initializers
     
     public init(
+        supportedExtensions: [String],
         subtitlesRepository: SubtitlesRepository,
         subtitlesParser: SubtitlesParser,
-        subtitlesFilesRepository: FilesRepository,
-        supportedExtensions: [String]
+        subtitlesFilesRepository: FilesRepository
     ) {
         
+        self.supportedExtensions = supportedExtensions
         self.subtitlesRepository = subtitlesRepository
         self.subtitlesParser = subtitlesParser
         self.subtitlesFilesRepository = subtitlesFilesRepository
-        self.supportedExtensions = supportedExtensions
     }
+}
+
+// MARK: - Input Methods
+
+extension ImportSubtitlesUseCaseImpl {
+}
+
+// MARK: - Output Methods
+
+extension ImportSubtitlesUseCaseImpl {
     
-    public func importFile(trackId: UUID, language: String, fileName: String, data: Data) async -> Result<Void, ImportSubtitlesUseCaseError> {
+    public func importFile(
+        trackId: UUID,
+        language: String,
+        fileName: String,
+        data: Data
+    ) async -> Result<Void, ImportSubtitlesUseCaseError> {
         
         let fileExtension = "." + URL(fileURLWithPath: fileName).pathExtension.lowercased()
         
@@ -87,4 +90,3 @@ public final class ImportSubtitlesUseCaseImpl: ImportSubtitlesUseCase {
         return .success(())
     }
 }
-
