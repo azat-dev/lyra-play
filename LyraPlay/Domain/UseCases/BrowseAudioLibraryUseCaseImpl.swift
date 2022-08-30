@@ -1,30 +1,11 @@
 //
-//  BrowseAudioLibraryUseCase.swift
+//  BrowseAudioLibraryUseCaseImpl.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 27.06.22.
 //
 
 import Foundation
-
-// MARK: - Interfaces
-
-public enum BrowseAudioLibraryUseCaseError: Error {
-    
-    case fileNotFound
-    case internalError
-}
-
-public protocol BrowseAudioLibraryUseCase {
-    
-    func listFiles() async -> Result<[AudioFileInfo], BrowseAudioLibraryUseCaseError>
-    
-    func getFileInfo(fileId: UUID) async -> Result<AudioFileInfo, BrowseAudioLibraryUseCaseError>
-    
-    func fetchImage(name: String) async -> Result<Data, BrowseAudioLibraryUseCaseError>
-}
-
-// MARK: - Implementations
 
 public final class BrowseAudioLibraryUseCaseImpl: BrowseAudioLibraryUseCase {
     
