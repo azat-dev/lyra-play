@@ -1,118 +1,17 @@
 //
-//  PlayMediaWithTranslationsUseCase.swift
+//  PlayMediaWithTranslationsUseCaseImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 09.08.2022.
+//  Created by Azat Kaiumov on 31.08.2022.
 //
 
 import Foundation
 import Combine
 
-// MARK: - Interfaces
-
-public enum PlayMediaWithTranslationsUseCaseError: Error {
-    
-    case mediaFileNotFound
-    case noActiveMedia
-    case internalError(Error?)
-    case taskCancelled
-}
-
-public struct PlayMediaWithTranslationsSession: Equatable {
-    
-    public let mediaId: UUID
-    public let learningLanguage: String
-    public let nativeLanguage: String
-    
-    public init(
-        mediaId: UUID,
-        learningLanguage: String,
-        nativeLanguage: String
-    ) {
-        
-        self.mediaId = mediaId
-        self.learningLanguage = learningLanguage
-        self.nativeLanguage = nativeLanguage
-    }
-}
-
-public enum PlayMediaWithTranslationsUseCaseState: Equatable {
-    
-    case initial
-    
-    case loading(session: PlayMediaWithTranslationsSession)
-    
-    case loadFailed(session: PlayMediaWithTranslationsSession)
-    
-    case loaded(session: PlayMediaWithTranslationsSession, subtitlesState: SubtitlesState?)
-    
-    case playing(session: PlayMediaWithTranslationsSession, subtitlesState: SubtitlesState?)
-    
-    case pronouncingTranslations(session: PlayMediaWithTranslationsSession, subtitlesState: SubtitlesState?, data: PronounceTranslationsUseCaseStateData)
-    
-    case paused(session: PlayMediaWithTranslationsSession, subtitlesState: SubtitlesState?, time: TimeInterval)
-    
-    case stopped(session: PlayMediaWithTranslationsSession)
-    
-    case finished(session: PlayMediaWithTranslationsSession)
-}
-
-extension PlayMediaWithTranslationsUseCaseState {
-    
-    public var session: PlayMediaWithTranslationsSession? {
-        
-        switch self {
-            
-        case .initial:
-            return nil
-            
-        case .loading(let session), .loadFailed(let session), .loaded(let session, _), .playing(let session, _), .pronouncingTranslations(let session, _, _), .paused(let session, _, _), .stopped(let session), .finished(let session):
-            
-            return session
-        }
-    }
-    
-    public var subtitlesState: SubtitlesState? {
-        
-        switch self {
-            
-        case .initial, .loading, .loadFailed, .stopped, .finished:
-            return nil
-            
-        case .playing(_, let subtitlesState), .pronouncingTranslations(_, let subtitlesState, _), .paused(_, let subtitlesState, _), .loaded(_, let subtitlesState):
-            
-            return subtitlesState
-        }
-    }
-}
-
-public protocol PlayMediaWithTranslationsUseCaseInput {
-    
-    func prepare(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError>
-    
-    func play() -> Result<Void, PlayMediaWithTranslationsUseCaseError>
-    
-    func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithTranslationsUseCaseError>
-    
-    func pause() -> Result<Void, PlayMediaWithTranslationsUseCaseError>
-    
-    func stop() -> Result<Void, PlayMediaWithTranslationsUseCaseError>
-}
-
-public protocol PlayMediaWithTranslationsUseCaseOutput {
-    
-    var state: PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never> { get }
-}
-
-public protocol PlayMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCaseOutput, PlayMediaWithTranslationsUseCaseInput {
-}
-
-// MARK: - Implementations
-
 public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase {
-    
+
     // MARK: - Properties
-    
+
     private let playMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCase
     private let playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory
     private let provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase
@@ -122,31 +21,24 @@ public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslatio
     
     private var playMediaWithSubtitlesObserver: AnyCancellable?
     private var subtitlesChangesObserver: AnyCancellable?
-    
-    // MARK: - Computed properties
-    
+
     // MARK: - Initializers
-    
+
     public init(
         playMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCase,
         playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory,
         provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase,
         pronounceTranslationsUseCase: PronounceTranslationsUseCase
     ) {
-        
+
         self.playMediaWithSubtitlesUseCase = playMediaWithSubtitlesUseCase
         self.playSubtitlesUseCaseFactory = playSubtitlesUseCaseFactory
         self.provideTranslationsToPlayUseCase = provideTranslationsToPlayUseCase
         self.pronounceTranslationsUseCase = pronounceTranslationsUseCase
-
+        
         connectMediaObserver()
         
         subtitlesChangesObserver = playMediaWithSubtitlesUseCase.willChangeSubtitlesPosition.sink { [weak self] in self?.playTranslationAfterSubtitlesPositionChange($0) }
-    }
-    
-    private func connectMediaObserver() {
-        
-        playMediaWithSubtitlesObserver = playMediaWithSubtitlesUseCase.state.dropFirst().sink { [weak self] in self?.updateState($0) }
     }
     
     deinit {
@@ -154,12 +46,17 @@ public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslatio
         subtitlesChangesObserver?.cancel()
         playMediaWithSubtitlesObserver?.cancel()
     }
+    
+    private func connectMediaObserver() {
+        
+        playMediaWithSubtitlesObserver = playMediaWithSubtitlesUseCase.state.dropFirst().sink { [weak self] in self?.updateState($0) }
+    }
 }
 
-// MARK: - Input methods
+// MARK: - Input Methods
 
 extension PlayMediaWithTranslationsUseCaseImpl {
-    
+
     public func prepare(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         state.value = .loading(session: session)
