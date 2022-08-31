@@ -1,100 +1,40 @@
 //
-//  ProvideTranslationsForSubtitlesUseCase.swift
+//  ProvideTranslationsForSubtitlesUseCaseImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 05.08.2022.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
 import Foundation
 
-// MARK: - Interfaces
-
-public struct SubtitlesTranslationItem: Equatable {
-    
-    public var dictionaryItemId: UUID
-    public var translationId: UUID
-    public var originalText: String
-    public var translatedText: String
-    
-    public init(
-        dictionaryItemId: UUID,
-        translationId: UUID,
-        originalText: String,
-        translatedText: String
-    ) {
-        
-        self.dictionaryItemId = dictionaryItemId
-        self.translationId = translationId
-        self.originalText = originalText
-        self.translatedText = translatedText
-    }
-    
-    public var originalTextLanguage: String {
-        "en_US"
-    }
-    
-    public var translatedTextLanguage: String {
-        "ru_RU"
-    }
-}
-
-public struct SubtitlesTranslation: Equatable {
-    
-    public var textRange: Range<String.Index>
-    public var translation: SubtitlesTranslationItem
-    
-    public init(
-        textRange: Range<String.Index>,
-        translation: SubtitlesTranslationItem
-    ) {
-        
-        self.textRange = textRange
-        self.translation = translation
-    }
-}
-
-public protocol ProvideTranslationsForSubtitlesUseCaseInput {
-    
-    func prepare(options: AdvancedPlayerSession) async -> Void
-}
-
-public protocol ProvideTranslationsForSubtitlesUseCaseOutput {
-    
-    func getTranslations(sentenceIndex: Int) async -> [SubtitlesTranslation]
-}
-
-public protocol ProvideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCaseOutput, ProvideTranslationsForSubtitlesUseCaseInput {
-}
-
-// MARK: - Implementations
-
 public final class ProvideTranslationsForSubtitlesUseCaseImpl: ProvideTranslationsForSubtitlesUseCase {
-    
-    // MARK: - Properties
-    
+
     private typealias SentenceIndex = Int
     
+    // MARK: - Properties
+
     private let dictionaryRepository: DictionaryRepository
     private let textSplitter: TextSplitter
     private let lemmatizer: Lemmatizer
     
     private var items = [SentenceIndex: [SubtitlesTranslation]]()
-    
+
     // MARK: - Initializers
-    
+
     public init(
         dictionaryRepository: DictionaryRepository,
         textSplitter: TextSplitter,
         lemmatizer: Lemmatizer
     ) {
-        
+
         self.dictionaryRepository = dictionaryRepository
         self.textSplitter = textSplitter
         self.lemmatizer = lemmatizer
     }
+
 }
 
-// MARK: - Input methods
+// MARK: - Input Methods
 
 extension ProvideTranslationsForSubtitlesUseCaseImpl {
     
@@ -372,7 +312,9 @@ extension ProvideTranslationsForSubtitlesUseCaseImpl {
         sortItemsByTextRange()
     }
 }
-// MARK: - Output methods
+
+
+// MARK: - Output Methods
 
 extension ProvideTranslationsForSubtitlesUseCaseImpl {
     
