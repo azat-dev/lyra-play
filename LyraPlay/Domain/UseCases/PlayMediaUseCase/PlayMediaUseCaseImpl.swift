@@ -1,91 +1,34 @@
 //
-//  PlayMediaUseCase.swift
+//  PlayMediaUseCaseImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 10.08.2022.
+//  Created by Azat Kaiumov on 31.08.2022.
 //
 
 import Foundation
 import Combine
 
-// MARK: - Interfaces
-
-public enum PlayMediaUseCaseError: Error {
-    
-    case trackNotFound
-    case noActiveTrack
-    case internalError(Error?)
-}
-
-public enum PlayMediaUseCaseState: Equatable {
-    
-    case initial
-    case loading(mediaId: UUID)
-    case loaded(mediaId: UUID)
-    case failedLoad(mediaId: UUID)
-    case playing(mediaId: UUID)
-    case stopped
-    case paused(mediaId: UUID, time: TimeInterval)
-    case finished(mediaId: UUID)
-    
-    public var mediaId: UUID? {
-        
-        switch self {
-            
-        case .initial, .stopped:
-            return nil
-            
-        case .loading(let mediaId), .loaded(let mediaId), .playing(let mediaId), .paused(let mediaId, _), .finished(let mediaId), .failedLoad(let mediaId):
-            return mediaId
-        }
-    }
-}
-
-public protocol PlayMediaUseCaseInput {
-    
-    func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError>
-    
-    func play() -> Result<Void, PlayMediaUseCaseError>
-    
-    func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError>
-    
-    func pause() -> Result<Void, PlayMediaUseCaseError>
-    
-    func stop() -> Result<Void, PlayMediaUseCaseError>
-}
-
-public protocol PlayMediaUseCaseOutput {
-    
-    var state: CurrentValueSubject<PlayMediaUseCaseState, Never> { get }
-}
-
-public protocol PlayMediaUseCase: PlayMediaUseCaseOutput, PlayMediaUseCaseInput {
-}
-
-// MARK: - Implementations
-
 public final class PlayMediaUseCaseImpl: PlayMediaUseCase {
-    
+
     // MARK: - Properties
-    
+
     private let audioPlayer: AudioPlayer
     private let loadTrackUseCase: LoadTrackUseCase
-    
-    public let state = CurrentValueSubject<PlayMediaUseCaseState, Never>(.initial)
+    public var state = CurrentValueSubject<PlayMediaUseCaseState, Never>(.initial)
     
     private var currentMediaId: UUID?
-    
     private var observeAudioPlayerCanellation: AnyCancellable?
-    
+
     // MARK: - Initializers
-    
+
     public init(
         audioPlayer: AudioPlayer,
         loadTrackUseCase: LoadTrackUseCase
     ) {
-        
+
         self.audioPlayer = audioPlayer
         self.loadTrackUseCase = loadTrackUseCase
+        
         
         observeAudioPlayerCanellation = observe(audioPlayer: audioPlayer)
     }
@@ -131,10 +74,10 @@ public final class PlayMediaUseCaseImpl: PlayMediaUseCase {
     }
 }
 
-// MARK: - Input methods
+// MARK: - Input Methods
 
 extension PlayMediaUseCaseImpl {
-    
+
     public func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError> {
         
         state.value = .loading(mediaId: mediaId)

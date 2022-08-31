@@ -27,10 +27,10 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         let subtitlesFilesRepository = FilesRepositoryMock()
         
         let useCase = ImportSubtitlesUseCaseImpl(
+            supportedExtensions: [".lrc"],
             subtitlesRepository: subtitlesRepository,
             subtitlesParser: subtitlesParser,
-            subtitlesFilesRepository: subtitlesFilesRepository,
-            supportedExtensions: [".lrc"]
+            subtitlesFilesRepository: subtitlesFilesRepository
         )
         
         detectMemoryLeak(instance: useCase)

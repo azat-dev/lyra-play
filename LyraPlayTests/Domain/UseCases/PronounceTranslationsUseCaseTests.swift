@@ -66,7 +66,7 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
         
         let observer = stateSequence.observe(sut.useCase.state)
         
-        await sut.useCase.pronounceSingle(
+        let _ = sut.useCase.pronounceSingle(
             translation: testTranslation
         )
         
@@ -90,7 +90,7 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
         
         let observer = stateSequence.observe(sut.useCase.state)
         
-        await sut.useCase.pronounceGroup(translations: testTranslations)
+        sut.useCase.pronounceGroup(translations: testTranslations)
         
         stateSequence.wait(timeout: 5, enforceOrder: true)
         observer.cancel()
