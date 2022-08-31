@@ -7,6 +7,7 @@
 
 import XCTest
 import LyraPlay
+import Mockingbird
 
 class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
     
@@ -37,11 +38,14 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         let subtitlesTimer = ActionTimerMock2()
         
         let subtitlesScheduler = SchedulerImpl(timer: subtitlesTimer)
+        let schedulerFactory = mock(SchedulerFactory.self)
+        given(schedulerFactory.create()).willReturn(subtitlesScheduler)
         
         let subtitlesIteratorFactory = SubtitlesIteratorFactoryImpl()
-        let playSubtitlesUseCaseFactory = PlaySubtitlesUseCaseFactoryImpl(
+        let playSubtitlesUseCaseFactory = PlaySubtitlesUseCaseImplFactory(
             subtitlesIteratorFactory: subtitlesIteratorFactory,
-            scheduler: subtitlesScheduler
+            schedulerFactory: schedulerFactory
+            
         )
         
         let playMediaUseCase = PlayMediaUseCaseMock()

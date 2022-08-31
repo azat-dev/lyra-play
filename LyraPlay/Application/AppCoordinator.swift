@@ -217,10 +217,10 @@ final class AppCoordinatorImpl: AppCoordinator, LibraryItemCoordinatorInput {
     
     
     private lazy var playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory = {
-        
-        return PlaySubtitlesUseCaseFactoryImpl(
+
+        return PlaySubtitlesUseCaseImplFactory(
             subtitlesIteratorFactory: SubtitlesIteratorFactoryImpl(),
-            scheduler: SchedulerImpl(timer: ActionTimerImpl())
+            schedulerFactory: SchedulerImplFactory(actionTimerFactory: ActionTimerFactoryImpl())
         )
     } ()
         

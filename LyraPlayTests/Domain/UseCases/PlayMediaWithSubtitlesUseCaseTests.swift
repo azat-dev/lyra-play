@@ -27,9 +27,9 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         
         let subtitlesTimer = ActionTimerMock2()
         
-        let playSubtitlesUseCaseFactory = PlaySubtitlesUseCaseFactoryImpl(
+        let playSubtitlesUseCaseFactory = PlaySubtitlesUseCaseImplFactory(
             subtitlesIteratorFactory: SubtitlesIteratorFactoryImpl(),
-            scheduler: SchedulerImpl(timer: subtitlesTimer)
+            schedulerFactory: SchedulerImplFactory(actionTimerFactory: ActionTimerFactoryMock())
         )
         
         let loadSubtitlesUseCase = LoadSubtitlesUseCaseMock()
