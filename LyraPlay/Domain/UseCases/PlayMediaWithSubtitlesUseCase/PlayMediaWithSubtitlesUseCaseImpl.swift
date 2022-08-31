@@ -1,138 +1,23 @@
 //
-//  PlayMediaWithSubtitlesUseCase.swift
+//  PlayMediaWithSubtitlesUseCaseImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 12.08.2022.
+//  Created by Azat Kaiumov on 31.08.2022.
 //
 
 import Foundation
 import Combine
 
-// MARK: - Interfaces
-
-public enum PlayMediaWithSubtitlesUseCaseError: Error {
-    
-    case mediaFileNotFound
-    case internalError(Error?)
-    case noActiveMedia
-}
-
-public enum PlayMediaWithSubtitlesUseCaseState: Equatable {
-    
-    case initial
-    case loading(session: PlayMediaWithSubtitlesSessionParams)
-    case loadFailed(session: PlayMediaWithSubtitlesSessionParams)
-    case loaded(session: PlayMediaWithSubtitlesSessionParams, subtitlesState: SubtitlesState?)
-    case playing(session: PlayMediaWithSubtitlesSessionParams, subtitlesState: SubtitlesState?)
-    case paused(session: PlayMediaWithSubtitlesSessionParams, subtitlesState: SubtitlesState?, time: TimeInterval)
-    case stopped(session: PlayMediaWithSubtitlesSessionParams)
-    case finished(session: PlayMediaWithSubtitlesSessionParams)
-}
-
-extension PlayMediaWithSubtitlesUseCaseState {
-    
-    var session: PlayMediaWithSubtitlesSessionParams? {
-        
-        switch self {
-            
-        case .initial:
-            return nil
-            
-        case .loading(let session), .loadFailed(let session),
-                .loaded(let session, _), .playing(let session, _),
-                .paused(let session, _, _), .finished(let session), .stopped(let session):
-            
-            return session
-        }
-    }
-    
-    var subtitlesState: SubtitlesState? {
-        
-        switch self {
-            
-        case .initial, .loading, .loadFailed, .stopped, .finished:
-            return nil
-            
-        case .loaded(_, let subtitlesState), .playing(_, let subtitlesState), .paused(_, let subtitlesState, _):
-            
-            return subtitlesState
-        }
-    }
-}
-
-public struct SubtitlesState: Equatable {
-    
-    public var position: SubtitlesPosition?
-    public var subtitles: Subtitles
-    
-    public init(
-        position: SubtitlesPosition?,
-        subtitles: Subtitles
-    ) {
-        
-        self.position = position
-        self.subtitles = subtitles
-    }
-    
-    public func positioned(_ position: SubtitlesPosition) -> SubtitlesState {
-        
-        var newState = self
-        newState.position = position
-        return newState
-    }
-}
-
-public struct PlayMediaWithSubtitlesSessionParams: Equatable {
-    
-    public var mediaId: UUID
-    public var subtitlesLanguage: String
-    
-    public init(
-        mediaId: UUID,
-        subtitlesLanguage: String
-    ) {
-        
-        self.mediaId = mediaId
-        self.subtitlesLanguage = subtitlesLanguage
-    }
-}
-
-
-public protocol PlayMediaWithSubtitlesUseCaseInput: AnyObject {
-    
-    func prepare(params: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
-    
-    func play() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
-    
-    func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
-    
-    func pause() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
-    
-    func stop() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
-}
-
-public protocol PlayMediaWithSubtitlesUseCaseOutput: AnyObject {
-    
-    var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseState, Never> { get }
-    
-    var willChangeSubtitlesPosition: PassthroughSubject<WillChangeSubtitlesPositionData, Never> { get }
-}
-
-public protocol PlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCaseOutput, PlayMediaWithSubtitlesUseCaseInput {
-}
-
-// MARK: - Implementations
-
 public final class PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseCase {
-    
+
     // MARK: - Properties
-    
+
     private let playMediaUseCase: PlayMediaUseCase
     private let playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory
     private let loadSubtitlesUseCase: LoadSubtitlesUseCase
     
-    public let state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseState, Never> = .init(.initial)
-    public let willChangeSubtitlesPosition =  PassthroughSubject<WillChangeSubtitlesPositionData, Never>()
+    public var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseState, Never> = .init(.initial)
+    public var willChangeSubtitlesPosition = PassthroughSubject<WillChangeSubtitlesPositionData, Never>()
     
     private var playSubtitlesObserver: AnyCancellable?
     private var subtitlesChangesObserver: AnyCancellable?
@@ -154,15 +39,15 @@ public final class PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseC
             playSubtitlesObserver = playSubtitlesUseCase?.state.sink { [weak self] in self?.updateSubtitlesPosition($0) }
         }
     }
-    
+
     // MARK: - Initializers
-    
+
     public init(
         playMediaUseCase: PlayMediaUseCase,
         playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory,
         loadSubtitlesUseCase: LoadSubtitlesUseCase
     ) {
-        
+
         self.playMediaUseCase = playMediaUseCase
         self.playSubtitlesUseCaseFactory = playSubtitlesUseCaseFactory
         self.loadSubtitlesUseCase = loadSubtitlesUseCase
@@ -194,10 +79,10 @@ public final class PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseC
     }
 }
 
-// MARK: - Input methods
+// MARK: - Input Methods
 
 extension PlayMediaWithSubtitlesUseCaseImpl {
-    
+
     public func prepare(params session: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         updateStateHash()
