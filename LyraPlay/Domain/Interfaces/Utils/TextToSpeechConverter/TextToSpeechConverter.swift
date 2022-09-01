@@ -2,19 +2,19 @@
 //  TextToSpeechConverter.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 08.08.2022.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
 import Foundation
 
-// MARK: - Interfaces
-
 public enum TextToSpeechConverterError: Error {
-
+    
     case internalError(Error?)
 }
 
-public protocol TextToSpeechConverter {
-
+public protocol TextToSpeechConverterOutput {
+    
     func convert(text: String, language: String) async -> Result<Data, TextToSpeechConverterError>
 }
+
+public protocol TextToSpeechConverter: TextToSpeechConverterOutput {}

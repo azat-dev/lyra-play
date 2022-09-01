@@ -2,7 +2,7 @@
 //  TextToSpeechConverterImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 08.08.22.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
 import Foundation
@@ -10,13 +10,18 @@ import AVFoundation
 
 public final class TextToSpeechConverterImpl: TextToSpeechConverter {
     
+    // MARK: - Properties
+    
     let synthesizer = AVSpeechSynthesizer()
     
     // MARK: - Initializers
     
     public init() {}
-    
-    // MARK: - Methods
+}
+
+// MARK: - Output Methods
+
+extension TextToSpeechConverterImpl {
     
     private func getEnhancedVoice(language: String) -> AVSpeechSynthesisVoice? {
         
@@ -90,12 +95,12 @@ public final class TextToSpeechConverterImpl: TextToSpeechConverter {
         let result = await writeSpeechToFile(utterance: utterance)
         
         guard case .success(let url) = result else {
-
+            
             return .failure(.internalError(result.error))
         }
         
         defer { try? FileManager.default.removeItem(at: url) }
-
+        
         guard let data = try? Data(contentsOf: url) else {
             return .failure(.internalError(nil))
         }
