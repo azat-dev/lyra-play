@@ -49,8 +49,8 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
                 id: trackId.uuidString,
                 coverImage: Data(),
                 title: "Test \(index)",
-                duration: 10,
-                artist: "Artist \(index)"
+                artist: "Artist \(index)",
+                duration: 10
             )
             
             showMediaInfoUseCase.tracks[trackId] = testTrackData
