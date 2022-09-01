@@ -2,37 +2,33 @@
 //  AudioPlayerImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 29.06.22.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
 import Foundation
+import Combine
 import AVFoundation
 import MediaPlayer
-import Combine
-
-// MARK: - Implementations
 
 public final class AudioPlayerImpl: NSObject, AudioPlayer, AVAudioPlayerDelegate {
-    
+
     // MARK: - Properties
 
     private let audioSession: AudioSession
-    private var player: AVAudioPlayer?
+    public var state: CurrentValueSubject<AudioPlayerState, Never> = .init(.initial)
     
+    private var player: AVAudioPlayer? = nil
     private var playerIsPlayingObserver: NSKeyValueObservation? = nil
-    
-    public let state: CurrentValueSubject<AudioPlayerState, Never> = .init(.initial)
-    
+
+
     // MARK: - Initializers
-    
+
     public init(audioSession: AudioSession) {
-        
+
         self.audioSession = audioSession
-        self.player = nil
     }
 }
 
-// MARK: - Input methods
 
 extension AudioPlayerImpl {
     
@@ -55,6 +51,8 @@ extension AudioPlayerImpl {
         }
     }
 }
+
+// MARK: - Input Methods
 
 extension AudioPlayerImpl {
     
