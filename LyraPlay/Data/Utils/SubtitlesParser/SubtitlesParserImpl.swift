@@ -1,8 +1,8 @@
 //
-//  SubtitlesParser.swift
+//  SubtitlesParserImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 20.08.22.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
 import Foundation
@@ -10,20 +10,23 @@ import Foundation
 public final class SubtitlesParserImpl: SubtitlesParser {
     
     public typealias FileExtension = String
-    
+
     // MARK: - Properties
-    
+
     private let parsers: [FileExtension: SubtitlesParser]
-    
+
     // MARK: - Initializers
-    
+
     public init(parsers: [FileExtension: SubtitlesParser]) {
-        
+
         self.parsers = parsers
     }
-    
-    // MARK: - Methods
-    
+}
+
+// MARK: - Methods
+
+extension SubtitlesParserImpl {
+
     public func parse(_ text: String, fileName: String) async -> Result<Subtitles, SubtitlesParserError> {
         
         let fileExtension = URL(fileURLWithPath: fileName).pathExtension.lowercased()

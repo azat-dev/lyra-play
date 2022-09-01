@@ -2,23 +2,13 @@
 //  LyricsParser.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 06.07.22.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
 import Foundation
-import simd
 
-extension String {
-    func substring(with nsrange: NSRange) -> Substring? {
-        
-        guard let range = Range(nsrange, in: self) else { return nil }
-        return self[range]
-    }
-}
+public final class LyricsParser: SubtitlesParser {
 
-
-public class LyricsParser: SubtitlesParser {
-    
     private enum ParsedLine {
         
         case sentence(Subtitles.Sentence)
@@ -34,12 +24,51 @@ public class LyricsParser: SubtitlesParser {
         var followingTextRange: Range<String.Index>
     }
     
-    private var textSplitter: TextSplitter
-    
+    // MARK: - Properties
+
+    private let textSplitter: TextSplitter
+
+    // MARK: - Initializers
+
     public init(textSplitter: TextSplitter) {
-        
+
         self.textSplitter = textSplitter
     }
+}
+
+// MARK: - Output Methods
+
+extension LyricsParser {
+
+    public func parse(_ text: String, fileName: String) async -> Result<Subtitles, SubtitlesParserError> {
+
+        var duration: TimeInterval = 0.0
+        var sentences = [Subtitles.Sentence]()
+        let splittedText = text.split(separator: "\n")
+        
+        for line in splittedText {
+            
+            let parsedLine = await parseLine(String(line))
+            
+            switch parsedLine {
+            case .sentence(let sentence):
+                sentences.append(sentence)
+            case .lengthTag(duration: let durationFromTag):
+                duration = durationFromTag
+                break
+            case .empty:
+                break
+            }
+        }
+        
+        let result = Subtitles(duration: duration, sentences: sentences)
+        return .success(result)
+    }
+}
+
+// MARK: - Helpers
+
+private extension LyricsParser {
     
     private static func parseTimeMarksTags(text: String) -> [ParsedTimeMarkTag] {
         
@@ -262,29 +291,5 @@ public class LyricsParser: SubtitlesParser {
         
         return .empty
     }
-    
-    public func parse(_ text: String, fileName: String) async -> Result<Subtitles, SubtitlesParserError> {
-        
-        var duration: TimeInterval = 0.0
-        var sentences = [Subtitles.Sentence]()
-        let splittedText = text.split(separator: "\n")
-        
-        for line in splittedText {
-            
-            let parsedLine = await parseLine(String(line))
-            
-            switch parsedLine {
-            case .sentence(let sentence):
-                sentences.append(sentence)
-            case .lengthTag(duration: let durationFromTag):
-                duration = durationFromTag
-                break
-            case .empty:
-                break
-            }
-        }
-        
-        let result = Subtitles(duration: duration, sentences: sentences)
-        return .success(result)
-    }
 }
+

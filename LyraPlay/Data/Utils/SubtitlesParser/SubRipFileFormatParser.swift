@@ -2,12 +2,12 @@
 //  SubRipFileFormatParser.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 20.08.22.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
 import Foundation
 
-public class SubRipFileFormatParser: SubtitlesParser {
+public final class SubRipFileFormatParser: SubtitlesParser {
     
     private struct ParsedTime: Equatable {
         
@@ -15,13 +15,19 @@ public class SubRipFileFormatParser: SubtitlesParser {
         var endTime: Double
     }
     
-    private var textSplitter: TextSplitter
+    // MARK: - Properties
+    
+    private let textSplitter: TextSplitter
+    
+    // MARK: - Initializers
     
     public init(textSplitter: TextSplitter) {
         
         self.textSplitter = textSplitter
     }
 }
+
+// MARK: - Methods
 
 extension SubRipFileFormatParser {
     
@@ -79,7 +85,7 @@ extension SubRipFileFormatParser {
         var currentParsedTime: ParsedTime?
         var currentParsedPosition: Int?
         
-        let appendSentence = { [weak self] () -> Void in
+        let appendSentence = { () -> Void in
             
             sentences.append(
                 .init(
