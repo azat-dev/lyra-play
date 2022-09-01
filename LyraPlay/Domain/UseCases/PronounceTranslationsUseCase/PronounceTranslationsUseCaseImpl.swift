@@ -1,74 +1,35 @@
 //
-//  PronounceTranslationsUseCase.swift
+//  PronounceTranslationsUseCaseImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 08.08.2022.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
 import Foundation
 import Combine
 import AVFAudio
 
-// MARK: - Interfaces
-
-public enum PronounceTranslationsUseCaseStateData: Equatable {
-    
-    case single(translation: SubtitlesTranslationItem)
-    case group(translations: [SubtitlesTranslationItem], currentTranslationIndex: Int?)
-}
-
-public enum PronounceTranslationsUseCaseState: Equatable {
-    
-    case loading(PronounceTranslationsUseCaseStateData)
-    case playing(PronounceTranslationsUseCaseStateData)
-    case paused(PronounceTranslationsUseCaseStateData)
-    case stopped
-    case finished
-}
-
-public protocol PronounceTranslationsUseCaseInput {
-    
-    func pronounceSingle(translation: SubtitlesTranslationItem) -> AsyncThrowingStream<PronounceTranslationsUseCaseState, Error>
-    
-    func pronounceGroup(translations: [SubtitlesTranslationItem]) -> AsyncThrowingStream<PronounceTranslationsUseCaseState, Error>
-    
-    func pause() -> Void
-    
-    func stop() -> Void
-}
-
-public protocol PronounceTranslationsUseCaseOutput {
-    
-    var state: CurrentValueSubject<PronounceTranslationsUseCaseState, Never> { get }
-}
-
-public protocol PronounceTranslationsUseCase: PronounceTranslationsUseCaseOutput, PronounceTranslationsUseCaseInput {
-}
-
-// MARK: - Implementations
-
 public final class PronounceTranslationsUseCaseImpl: PronounceTranslationsUseCase {
-    
+
     // MARK: - Properties
-    
+
     private let textToSpeechConverter: TextToSpeechConverter
     private let audioPlayer: AudioPlayer
-    
-    public let state = CurrentValueSubject<PronounceTranslationsUseCaseState, Never>(.stopped)
-    
+    public var state = CurrentValueSubject<PronounceTranslationsUseCaseState, Never>(.stopped)
+
     // MARK: - Initializers
-    
+
     public init(
         textToSpeechConverter: TextToSpeechConverter,
         audioPlayer: AudioPlayer
     ) {
-        
+
         self.textToSpeechConverter = textToSpeechConverter
         self.audioPlayer = audioPlayer
     }
 }
 
-// MARK: - Input methods
+// MARK: - Input Methods
 
 extension PronounceTranslationsUseCaseImpl {
     
