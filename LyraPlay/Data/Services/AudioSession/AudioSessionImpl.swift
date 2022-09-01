@@ -1,15 +1,15 @@
 //
-//  AudioSession.swift
+//  AudioSessionImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 17.08.22.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
 import Foundation
 import AVFoundation
 
 public final class AudioSessionImpl: AudioSession {
-
+    
     // MARK: - Properties
     
     private var audioSession: AVAudioSession {
@@ -17,7 +17,7 @@ public final class AudioSessionImpl: AudioSession {
     }
     
     // MARK: - Initializers
-
+    
     public init() {
         
         do {
@@ -35,12 +35,12 @@ public final class AudioSessionImpl: AudioSession {
     }
 }
 
-// MARK: - Input methods
+// MARK: - Input Methods
 
 extension AudioSessionImpl {
-
+    
     public func activate() -> Result<Void, AudioSessionError> {
-
+        
         do {
             
             try audioSession.setActive(true)
@@ -50,9 +50,9 @@ extension AudioSessionImpl {
         
         return .success(())
     }
-
+    
     public func deactivate() -> Result<Void, AudioSessionError> {
-
+        
         do {
             
             try audioSession.setActive(false)
@@ -61,5 +61,4 @@ extension AudioSessionImpl {
         }
         
         return .success(())
-    }
-}
+    }}

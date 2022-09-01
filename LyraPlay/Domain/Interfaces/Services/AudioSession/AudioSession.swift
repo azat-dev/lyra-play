@@ -2,12 +2,10 @@
 //  AudioSession.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 17.08.2022.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
 import Foundation
-
-// MARK: - Interfaces
 
 public enum AudioSessionError: Error {
 
@@ -23,5 +21,8 @@ public protocol AudioSessionInput {
     func deactivate() -> Result<Void, AudioSessionError>
 }
 
-public protocol AudioSession: AudioSessionInput {
+public protocol AudioSessionOutput {}
+
+public protocol AudioSession: AudioSessionOutput, AudioSessionInput {
+
 }
