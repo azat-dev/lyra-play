@@ -1,77 +1,39 @@
 //
-//  ProvideTranslationsToPlayUseCase.swift
+//  ProvideTranslationsToPlayUseCaseImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 06.08.2022.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
 import Foundation
 
-// MARK: - Interfaces
-
-public enum TranslationsToPlayData: Equatable {
-    
-    case single(translation: SubtitlesTranslationItem)
-    case groupAfterSentence(items: [SubtitlesTranslationItem])
-}
-
-public struct TranslationsToPlay: Equatable {
-    
-    public var position: SubtitlesPosition
-    public var data: TranslationsToPlayData
-    
-    public init(
-        position: SubtitlesPosition,
-        data: TranslationsToPlayData
-    ) {
-        
-        self.position = position
-        self.data = data
-    }
-}
-public protocol ProvideTranslationsToPlayUseCaseInput {
-    
-    func prepare(params: AdvancedPlayerSession) async -> Void
-}
-
-public protocol ProvideTranslationsToPlayUseCaseOutput {
-    
-    func getTranslationsToPlay(for position: SubtitlesPosition) -> TranslationsToPlayData?
-}
-
-public protocol ProvideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCaseOutput, ProvideTranslationsToPlayUseCaseInput {
-}
-
-// MARK: - Implementations
-
 public final class ProvideTranslationsToPlayUseCaseImpl: ProvideTranslationsToPlayUseCase {
-    
-    private typealias SentenceIndex = Int
+
+    public typealias SentenceIndex = Int
     
     // MARK: - Properties
-    
-    private let provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase
 
+    private let provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase
+    
     private var subtitles: Subtitles!
     
     private var subtitlesTimeSlots: [SentenceIndex: [SubtitlesTimeSlot]]!
     
     private var items = [SubtitlesPosition: TranslationsToPlay]()
-    
+
     // MARK: - Initializers
-    
-    public init(
-        provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase
-    ) {
-        
+
+    public init(provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase) {
+
         self.provideTranslationsForSubtitlesUseCase = provideTranslationsForSubtitlesUseCase
     }
+
 }
 
-// MARK: - Input methods
+// MARK: - Input Methods
 
 extension ProvideTranslationsToPlayUseCaseImpl {
-    
+
     private static func groupTimeSlotsBySentences(timeSlots: [SubtitlesTimeSlot]) -> [SentenceIndex: [SubtitlesTimeSlot]] {
         
         var result = [SentenceIndex: [SubtitlesTimeSlot]]()
@@ -194,9 +156,14 @@ extension ProvideTranslationsToPlayUseCaseImpl {
             }
         }
     }
-    
+}
+
+// MARK: - Output Methods
+
+extension ProvideTranslationsToPlayUseCaseImpl {
+
     public func getTranslationsToPlay(for position: SubtitlesPosition) -> TranslationsToPlayData? {
-        
+
         return items[position]?.data
     }
 }
