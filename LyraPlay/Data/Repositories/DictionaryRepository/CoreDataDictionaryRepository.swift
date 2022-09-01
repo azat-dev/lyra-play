@@ -2,62 +2,30 @@
 //  CoreDataDictionaryRepository.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 19.07.22.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
 import Foundation
 import CoreData
 
-// MARK: - Implementations
-
 public final class CoreDataDictionaryRepository: DictionaryRepository {
-    
+
+    // MARK: - Properties
+
     private let coreDataStore: CoreDataStore
-    
+
+    // MARK: - Initializers
+
     public init(coreDataStore: CoreDataStore) {
+
         self.coreDataStore = coreDataStore
     }
-    
-    private func getManagedItem(originalText: String, language: String) async throws -> ManagedDictionaryItem?  {
-        
-        let managedItems = try coreDataStore.performSync { context -> [ManagedDictionaryItem] in
-            
-            let request = ManagedDictionaryItem.fetchRequest()
-            request.fetchLimit = 1
-            request.resultType = .managedObjectResultType
-            request.predicate = NSPredicate(
-                format: "%K = %@ AND %K = %@ ",
-                #keyPath(ManagedDictionaryItem.originalText),
-                originalText,
-                #keyPath(ManagedDictionaryItem.language),
-                language
-            )
-            
-            return try context.fetch(request)
-        }
-        
-        return managedItems.first
-    }
-    
-    private func getManagedItem(id: UUID) async throws -> ManagedDictionaryItem?  {
-        
-        let managedItems = try coreDataStore.performSync { context -> [ManagedDictionaryItem] in
-            
-            let request = ManagedDictionaryItem.fetchRequest()
-            request.fetchLimit = 1
-            request.resultType = .managedObjectResultType
-            request.predicate = NSPredicate(
-                format: "%K = %@",
-                (\ManagedAudioFile.id)._kvcKeyPathString!,
-                id.uuidString
-            )
-            
-            return try context.fetch(request)
-        }
-        
-        return managedItems.first
-    }
-    
+}
+
+// MARK: - Input Methods
+
+extension CoreDataDictionaryRepository {
+
     public func putItem(_ item: DictionaryItem) async -> Result<DictionaryItem, DictionaryRepositoryError> {
         
         var existingItem: ManagedDictionaryItem? = nil
@@ -126,23 +94,7 @@ public final class CoreDataDictionaryRepository: DictionaryRepository {
             return .failure(.internalError(error))
         }
     }
-    
-    public func getItem(id: UUID) async -> Result<DictionaryItem, DictionaryRepositoryError> {
-        
-        do {
-            
-            let item = try await getManagedItem(id: id)
-            guard let item = item else {
-                return .failure(.itemNotFound)
-            }
-            
-            return .success(item.toDomain())
-            
-        } catch {
-            return .failure(.internalError(error))
-        }
-    }
-    
+
     public func deleteItem(id: UUID) async -> Result<Void, DictionaryRepositoryError> {
         
         do {
@@ -164,6 +116,27 @@ public final class CoreDataDictionaryRepository: DictionaryRepository {
         }
         
         return .success(())
+    }
+}
+
+// MARK: - Output Methods
+
+extension CoreDataDictionaryRepository {
+
+    public func getItem(id: UUID) async -> Result<DictionaryItem, DictionaryRepositoryError> {
+        
+        do {
+            
+            let item = try await getManagedItem(id: id)
+            guard let item = item else {
+                return .failure(.itemNotFound)
+            }
+            
+            return .success(item.toDomain())
+            
+        } catch {
+            return .failure(.internalError(error))
+        }
     }
     
     private static func predicate(for itemsFilter: DictionaryItemFilter) -> NSPredicate {
@@ -190,7 +163,7 @@ public final class CoreDataDictionaryRepository: DictionaryRepository {
             options: .caseInsensitive
         )
     }
-    
+
     private func searchItems(with predicates: [NSPredicate]) async throws -> [ManagedDictionaryItem] {
         
         var predicate: NSPredicate
@@ -268,5 +241,50 @@ public final class CoreDataDictionaryRepository: DictionaryRepository {
         
         let items = managedItems.map { $0.toDomain() }
         return .success(items)
+    }
+}
+
+// MARK: - Helpers
+
+extension CoreDataDictionaryRepository {
+    
+    private func getManagedItem(originalText: String, language: String) async throws -> ManagedDictionaryItem?  {
+        
+        let managedItems = try coreDataStore.performSync { context -> [ManagedDictionaryItem] in
+            
+            let request = ManagedDictionaryItem.fetchRequest()
+            request.fetchLimit = 1
+            request.resultType = .managedObjectResultType
+            request.predicate = NSPredicate(
+                format: "%K = %@ AND %K = %@ ",
+                #keyPath(ManagedDictionaryItem.originalText),
+                originalText,
+                #keyPath(ManagedDictionaryItem.language),
+                language
+            )
+            
+            return try context.fetch(request)
+        }
+        
+        return managedItems.first
+    }
+    
+    private func getManagedItem(id: UUID) async throws -> ManagedDictionaryItem?  {
+        
+        let managedItems = try coreDataStore.performSync { context -> [ManagedDictionaryItem] in
+            
+            let request = ManagedDictionaryItem.fetchRequest()
+            request.fetchLimit = 1
+            request.resultType = .managedObjectResultType
+            request.predicate = NSPredicate(
+                format: "%K = %@",
+                (\ManagedAudioFile.id)._kvcKeyPathString!,
+                id.uuidString
+            )
+            
+            return try context.fetch(request)
+        }
+        
+        return managedItems.first
     }
 }
