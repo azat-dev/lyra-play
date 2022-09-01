@@ -1,60 +1,46 @@
 //
-//  AudioFilesBrowserViewModel.swift
+//  AudioFilesBrowserViewModelImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 27.06.22.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
 import Foundation
 import UIKit
 
-// MARK: - Interfaces
-
-public protocol AudioFilesBrowserUpdateDelegate: AnyObject {
-    
-    func filesDidUpdate(updatedFiles: [AudioFilesBrowserCellViewModel])
-}
-
-public protocol AudioFilesBrowserViewModelOutput {
-    
-    var isLoading: Observable<Bool> { get }
-    var filesDelegate: AudioFilesBrowserUpdateDelegate? { get set }
-}
-
-public protocol AudioFilesBrowserViewModelInput {
-    
-    func load() async
-    func addNewItem()
-}
-
-public protocol AudioFilesBrowserViewModel: AnyObject, AudioFilesBrowserViewModelInput, AudioFilesBrowserViewModelOutput {
-}
-
-// MARK: - Implementations
-
 public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
+
+    // MARK: - Properties
 
     private weak var coordinator: LibraryCoordinatorInput?
     private let browseUseCase: BrowseAudioLibraryUseCase
     private let importFileUseCase: ImportAudioFileUseCase
     
-    public var isLoading: Observable<Bool>
-    public weak var filesDelegate: AudioFilesBrowserUpdateDelegate?
-    private var stubItemImage = UIImage(named: "Image.CoverPlaceholder")!
+    public var isLoading = Observable<Bool>(true)
+    public var filesDelegate: AudioFilesBrowserUpdateDelegate?
     
+    private var stubItemImage = UIImage(named: "Image.CoverPlaceholder")!
+
+    // MARK: - Initializers
+
     public init(
         coordinator: LibraryCoordinatorInput,
         browseUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase
     ) {
-        
+
         self.coordinator = coordinator
         self.browseUseCase = browseUseCase
         self.importFileUseCase = importFileUseCase
         
         self.isLoading = Observable(true)
     }
-    
+}
+
+// MARK: - Input Methods
+
+extension AudioFilesBrowserViewModelImpl {
+
     private func onOpen(_ cellId: UUID) {
         
     }
@@ -80,9 +66,9 @@ public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
         
         return images
     }
-    
-    public func load() async {
-        
+
+    public func load() async -> Void {
+
         isLoading.value = true
         
         let result = await browseUseCase.listFiles()
@@ -127,8 +113,8 @@ public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
         
         await load()
     }
-    
-    public func addNewItem() {
+
+    public func addNewItem() -> Void {
         
         coordinator?.runImportMediaFilesFlow { [weak self] urls in
             
@@ -143,4 +129,10 @@ public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
             }
         }
     }
+}
+
+// MARK: - Output Methods
+
+extension AudioFilesBrowserViewModelImpl {
+
 }

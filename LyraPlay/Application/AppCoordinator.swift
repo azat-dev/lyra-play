@@ -378,16 +378,19 @@ extension AppCoordinatorImpl: LibraryCoordinator {
     
     func runOpenLibraryItemFlow(mediaId: UUID) {
         
-        let factory = LibraryItemViewControllerFactory(
-            coordnator: self,
+        let viewModelFactory = LibraryItemViewModelFactoryImpl()
+        
+        let viewModel = viewModelFactory.create(
+            mediaId: mediaId,
+            coordinator: self,
             showMediaInfoUseCase: showMediaInfoUseCase,
-            currentPlayerStateUseCase: currentPlayerStateUseCase,
-            playMediaUseCase: playMediaWithTranslationsUseCase,
+            currentPlayerStateUseCaseOutput: currentPlayerStateUseCase,
+            playMediaWithTranslationsUseCase: playMediaWithTranslationsUseCase,
             importSubtitlesUseCase: importSubtitlesUseCase,
             loadSubtitlesUseCase: loadSubtitlesUseCase
         )
         
-        let vc = factory.build(with: mediaId)
+        let vc = LibraryItemViewController(viewModel: viewModel)
         
         navigationController.pushViewController(vc, animated: true)
     }

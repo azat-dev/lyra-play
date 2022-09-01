@@ -6,6 +6,6 @@
 //
 
 public protocol LibraryItemViewFactory {
-
+    
     func create(viewModel: LibraryItemViewModel) -> LibraryItemView
 }

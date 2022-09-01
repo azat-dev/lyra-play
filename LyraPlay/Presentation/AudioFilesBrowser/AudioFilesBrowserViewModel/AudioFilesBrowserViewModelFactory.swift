@@ -2,13 +2,11 @@
 //  AudioFilesBrowserViewModelFactory.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 26.08.22.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
-import Foundation
-
 public protocol AudioFilesBrowserViewModelFactory {
-    
+
     func create(
         coordinator: LibraryCoordinatorInput,
         browseUseCase: BrowseAudioLibraryUseCase,
