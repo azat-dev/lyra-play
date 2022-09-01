@@ -2,12 +2,9 @@
 //  LibraryItemView.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 27.08.22.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
-import Foundation
-
 public protocol LibraryItemView: Presentable {
-    
-}
 
+}

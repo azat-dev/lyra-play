@@ -2,12 +2,10 @@
 //  LibraryItemViewFactory.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 27.08.22.
+//  Created by Azat Kaiumov on 01.09.2022.
 //
 
-import Foundation
+public protocol LibraryItemViewFactory {
 
-public protocol LibraryItemViewFactory: AnyObject {
-    
     func create(viewModel: LibraryItemViewModel) -> LibraryItemView
 }
