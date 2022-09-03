@@ -184,6 +184,8 @@
 		AA5DD71128B9737400929906 /* LibraryItemCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD71028B9737400929906 /* LibraryItemCoordinator.swift */; };
 		AA5DD71328B9748800929906 /* TagsParserFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD71228B9748800929906 /* TagsParserFactory.swift */; };
 		AA5DD71528B974A900929906 /* TagsParserFactoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD71428B974A900929906 /* TagsParserFactoryImpl.swift */; };
+		AA641DF428C3484700641B0C /* PresentableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA641DF328C3484700641B0C /* PresentableView.swift */; };
+		AA641DF628C3489D00641B0C /* UIViewController+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA641DF528C3489D00641B0C /* UIViewController+Utils.swift */; };
 		AA64C81A286F170C0089F165 /* PlayerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA64C819286F170C0089F165 /* PlayerViewModelTests.swift */; };
 		AA64C81D286F181F0089F165 /* AudioPlayerUseCaseMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA64C81C286F181F0089F165 /* AudioPlayerUseCaseMock.swift */; };
 		AA66FD26287A02F9005AD524 /* LoadSubtitlesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA66FD25287A02F9005AD524 /* LoadSubtitlesUseCaseTests.swift */; };
@@ -513,6 +515,8 @@
 		AA5DD71028B9737400929906 /* LibraryItemCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemCoordinator.swift; sourceTree = "<group>"; };
 		AA5DD71228B9748800929906 /* TagsParserFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsParserFactory.swift; sourceTree = "<group>"; };
 		AA5DD71428B974A900929906 /* TagsParserFactoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsParserFactoryImpl.swift; sourceTree = "<group>"; };
+		AA641DF328C3484700641B0C /* PresentableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentableView.swift; sourceTree = "<group>"; };
+		AA641DF528C3489D00641B0C /* UIViewController+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Utils.swift"; sourceTree = "<group>"; };
 		AA64C819286F170C0089F165 /* PlayerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModelTests.swift; sourceTree = "<group>"; };
 		AA64C81C286F181F0089F165 /* AudioPlayerUseCaseMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerUseCaseMock.swift; sourceTree = "<group>"; };
 		AA66FD25287A02F9005AD524 /* LoadSubtitlesUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadSubtitlesUseCaseTests.swift; sourceTree = "<group>"; };
@@ -849,9 +853,11 @@
 			children = (
 				AA5DD6FB28B962BD00929906 /* Presentable.swift */,
 				AA5DD6FD28B9631A00929906 /* PresentableModule.swift */,
+				AA641DF328C3484700641B0C /* PresentableView.swift */,
 				AA08837328B960C8006315B9 /* PresentationContainer.swift */,
 				AA08837228B960C8006315B9 /* StackPresentationContainer.swift */,
 				AA08837428B960C8006315B9 /* TabBarPresentationContainer.swift */,
+				AA641DF528C3489D00641B0C /* UIViewController+Utils.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1966,6 +1972,7 @@
 				AAA87989289E947800E04CA9 /* Range+TextRange.swift in Sources */,
 				AA4F9709286E3C4C0087F45A /* AudioFilesBrowserViewController+Layout.swift in Sources */,
 				AA3C532428BE54D700CBE3C6 /* BrowseAudioLibraryUseCaseImpl.swift in Sources */,
+				AA641DF628C3489D00641B0C /* UIViewController+Utils.swift in Sources */,
 				AABB49FC28B030D70088484B /* DictionaryListBrowserCell+Styles.swift in Sources */,
 				AA190E72287AC6AC000514AB /* SubtitlesPresenterViewModel.swift in Sources */,
 				AA7B0D7F28721B050067DDB5 /* UIFont+Utils.swift in Sources */,
@@ -2016,6 +2023,7 @@
 				AA3BAB1B286C7225005EE01E /* PlayerState.swift in Sources */,
 				AA08838328B960D3006315B9 /* PresentationContainer.swift in Sources */,
 				AAC8E0F3288B140A001A274A /* Lemmatizer.swift in Sources */,
+				AA641DF428C3484700641B0C /* PresentableView.swift in Sources */,
 				AA3166C8287C066000348781 /* SubtitlesIterator.swift in Sources */,
 				AA0930C4287349DA00E62DB3 /* CurrentPlayerStateUseCase.swift in Sources */,
 				AA5DD6FE28B9631A00929906 /* PresentableModule.swift in Sources */,

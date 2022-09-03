@@ -21,7 +21,7 @@ public protocol PresentableModule: Presentable {
 
 extension PresentableModule {
     
-    public func toPresent() -> UIViewController {
+    public func toPresent() -> PresentableView {
         return view.toPresent()
     }
 }
