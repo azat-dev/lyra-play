@@ -7,7 +7,14 @@
 
 import Foundation
 
-public protocol MainTabBarCoordinator {
+public protocol MainTabBarCoordinatorInput {
     
-    func start(at: StackPresentationContainer)
+    func runLibraryFlow()
+    
+    func runDictionaryFlow()
+}
+
+public protocol MainTabBarCoordinator: BaseCoordinator, MainTabBarCoordinatorInput {
+    
+    func start(at: TabBarPresentationContainer)
 }

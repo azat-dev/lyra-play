@@ -7,15 +7,36 @@
 
 import Foundation
 
-public final class MainTabBarCoordinatorImpl: MainTabBarCoordinator {
+public final class MainTabBarCoordinatorImpl: BaseCoordinator, MainTabBarCoordinator {
 
+    // MARK: - Properties
+    
     private let libraryCoordinatorFactory: LibraryCoordinatorFactory
     
+    // MARK: - Initializers
+    
     public init(libraryCoordinatorFactory: LibraryCoordinatorFactory) {
-        fatalError()
+        
+        self.libraryCoordinatorFactory = libraryCoordinatorFactory
     }
     
-    public func start(at container: StackPresentationContainer) {
+    // MARK: - Methods
+    
+    public func start(at tabBarContainer: TabBarPresentationContainer) {
+    }
+}
+
+// MARK: - Input Methods
+
+extension MainTabBarCoordinatorImpl {
+    
+    public func runLibraryFlow() {
         
+//        let libraryCoordinator = libraryCoordinatorFactory.create()
+//        libraryCoordinator.start(at: tabContainer)
+    }
+    
+    public func runDictionaryFlow() {
+        fatalError()
     }
 }

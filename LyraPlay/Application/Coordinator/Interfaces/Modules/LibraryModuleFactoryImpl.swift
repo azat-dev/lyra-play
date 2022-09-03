@@ -8,4 +8,4 @@
 import Foundation
 
 public final class LibraryModuleFactoryImpl<ViewFactory>: PresentableModuleFactoryImpl<ViewFactory>, LibraryModuleFactory
-where ViewFactory: AudioFilesBrowserViewFactory {}
+    where ViewFactory: AudioFilesBrowserViewFactory {}

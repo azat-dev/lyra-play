@@ -2,8 +2,8 @@
 //  AudioFilesBrowserViewFactory.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 01.09.2022.
+//  Created by Azat Kaiumov on 03.09.2022.
 //
 
 public protocol AudioFilesBrowserViewFactory: PresentableViewFactory
-    where ViewModel: AudioFilesBrowserViewModel, View: AudioFilesBrowserView {}
+	where ViewModel: AudioFilesBrowserViewModel, View: AudioFilesBrowserView {}

@@ -8,7 +8,7 @@
 import Foundation
 
 
-public final class LibraryCoordinatorImpl<ModuleFactory, ViewModelFactory>: LibraryCoordinator
+public final class LibraryCoordinatorImpl<ModuleFactory, ViewModelFactory>: BaseCoordinator, LibraryCoordinator
     where ModuleFactory: LibraryModuleFactory,
     ViewModelFactory: AudioFilesBrowserViewModelFactory,
     ModuleFactory.ViewFactory.ViewModel == ViewModelFactory.ViewModel {
@@ -32,11 +32,14 @@ public final class LibraryCoordinatorImpl<ModuleFactory, ViewModelFactory>: Libr
         importAudioFileUseCaseFactory: @escaping () -> ImportAudioFileUseCase
     ) {
         
+        
         self.moduleFactory = moduleFactory
         self.viewModelFactory = viewModelFactory
         
         self.browseAudioLibraryUseCaseFactory = browseAudioLibraryUseCaseFactory
         self.importAudioFileUseCaseFactory = importAudioFileUseCaseFactory
+        
+        super.init()
     }
     
     // MARK: - Methods

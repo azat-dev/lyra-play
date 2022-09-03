@@ -19,7 +19,7 @@ protocol AppCoordinator: LibraryCoordinator, LibraryItemCoordinator {
 
 // MARK: - Implementations
 
-final class AppCoordinatorImpl: AppCoordinator, LibraryItemCoordinatorInput {
+final class AppCoordinatorImpl: BaseCoordinator, AppCoordinator, LibraryItemCoordinatorInput {
     
     private let navigationController: UINavigationController
     
@@ -281,6 +281,7 @@ final class AppCoordinatorImpl: AppCoordinator, LibraryItemCoordinatorInput {
     init(navigationController: UINavigationController) {
         
         self.navigationController = navigationController
+        super.init()
     }
     
     func makeAudioFilesBrowserVC() -> AudioFilesBrowserViewController {

@@ -14,7 +14,7 @@ public protocol LibraryCoordinatorInput: AnyObject {
     func runOpenLibraryItemFlow(mediaId: UUID)
 }
 
-public protocol LibraryCoordinator: LibraryCoordinatorInput {
+public protocol LibraryCoordinator: BaseCoordinator, LibraryCoordinatorInput {
     
     func start(at: StackPresentationContainer)
 }
