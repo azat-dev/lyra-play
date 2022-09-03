@@ -57,6 +57,7 @@
 		8B0AA4BAC419F2F2A9E7A5CF /* SubtitlesPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBC01D9BC320769887AD1D93 /* SubtitlesPosition.swift */; };
 		8B3A2A78D24C274CE9511659 /* ProvideTranslationsToPlayUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B748C7782B17299A5526CDD /* ProvideTranslationsToPlayUseCaseImpl.swift */; };
 		92300CA9124D603FAE818740 /* LibraryItemViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17623FA822C271296774312F /* LibraryItemViewControllerFactory.swift */; };
+		9263D76DDC6AC42E5B491E37 /* AudioFilesBrowserViewModelImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0729BBEC967A11A986C721 /* AudioFilesBrowserViewModelImplFactory.swift */; };
 		98FCF9390E1700E26F33A719 /* PlayMediaWithSubtitlesSessionParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F03BE925043432DA3ACF33 /* PlayMediaWithSubtitlesSessionParams.swift */; };
 		9E1B43E771E3A0046DFEF7C5 /* AudioPlayerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE22137157E820D8CFA5185 /* AudioPlayerFactory.swift */; };
 		A4167FEF1AE674E8FA7D57FF /* CoreDataAudioLibraryRepositoryFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A163F788C153287A07ADF87 /* CoreDataAudioLibraryRepositoryFactory.swift */; };
@@ -67,7 +68,6 @@
 		AA08838428B960D3006315B9 /* TabBarPresentationContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08837428B960C8006315B9 /* TabBarPresentationContainer.swift */; };
 		AA08838528B960D3006315B9 /* LibraryModuleFactoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08837628B960C8006315B9 /* LibraryModuleFactoryImpl.swift */; };
 		AA08838628B960D3006315B9 /* LibraryModuleFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08837728B960C8006315B9 /* LibraryModuleFactory.swift */; };
-		AA08838728B960D3006315B9 /* AudioFilesBrowserViewModelFactoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08837A28B960C8006315B9 /* AudioFilesBrowserViewModelFactoryImpl.swift */; };
 		AA08838C28B960D3006315B9 /* LibraryCoordinatorImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08838028B960C8006315B9 /* LibraryCoordinatorImpl.swift */; };
 		AA08838D28B960D3006315B9 /* LibraryCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08838128B960C8006315B9 /* LibraryCoordinator.swift */; };
 		AA0930C4287349DA00E62DB3 /* CurrentPlayerStateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0930C3287349DA00E62DB3 /* CurrentPlayerStateUseCase.swift */; };
@@ -405,7 +405,6 @@
 		AA08837428B960C8006315B9 /* TabBarPresentationContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarPresentationContainer.swift; sourceTree = "<group>"; };
 		AA08837628B960C8006315B9 /* LibraryModuleFactoryImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryModuleFactoryImpl.swift; sourceTree = "<group>"; };
 		AA08837728B960C8006315B9 /* LibraryModuleFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryModuleFactory.swift; sourceTree = "<group>"; };
-		AA08837A28B960C8006315B9 /* AudioFilesBrowserViewModelFactoryImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserViewModelFactoryImpl.swift; sourceTree = "<group>"; };
 		AA08838028B960C8006315B9 /* LibraryCoordinatorImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryCoordinatorImpl.swift; sourceTree = "<group>"; };
 		AA08838128B960C8006315B9 /* LibraryCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryCoordinator.swift; sourceTree = "<group>"; };
 		AA0930C3287349DA00E62DB3 /* CurrentPlayerStateUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPlayerStateUseCase.swift; sourceTree = "<group>"; };
@@ -662,6 +661,7 @@
 		F1148C96B9BB66D367F3A27E /* AudioPlayerImplFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AudioPlayerImplFactory.swift; sourceTree = "<group>"; };
 		F2C8AA68FFC4FACBA66B5692 /* PlayMediaWithSubtitlesUseCaseImplFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlayMediaWithSubtitlesUseCaseImplFactory.swift; sourceTree = "<group>"; };
 		FA386F96A46080D8247EE938 /* ShowMediaInfoUseCaseImpl.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ShowMediaInfoUseCaseImpl.swift; sourceTree = "<group>"; };
+		FC0729BBEC967A11A986C721 /* AudioFilesBrowserViewModelImplFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AudioFilesBrowserViewModelImplFactory.swift; sourceTree = "<group>"; };
 		FE5C485C5D34C2F6833125E1 /* PlaySubtitlesUseCaseFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlaySubtitlesUseCaseFactory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -788,6 +788,7 @@
 				99140A79E4FF757B0245A76C /* AudioFilesBrowserViewModel.swift */,
 				83CB367A6E16728FC2934046 /* AudioFilesBrowserViewModelFactory.swift */,
 				7188B0A5725053F90EE2DD58 /* AudioFilesBrowserViewModelImpl.swift */,
+				FC0729BBEC967A11A986C721 /* AudioFilesBrowserViewModelImplFactory.swift */,
 			);
 			path = AudioFilesBrowserViewModel;
 			sourceTree = "<group>";
@@ -898,7 +899,6 @@
 		AA08837928B960C8006315B9 /* Library */ = {
 			isa = PBXGroup;
 			children = (
-				AA08837A28B960C8006315B9 /* AudioFilesBrowserViewModelFactoryImpl.swift */,
 				AAA2DE4728BA39E3008C5923 /* LibraryItemViewModelFactory.swift */,
 				AAA2DE4928BA3A1B008C5923 /* LibraryItemViewModelFactoryImpl.swift */,
 			);
@@ -1242,10 +1242,10 @@
 		AA731CD32870DA510044412F /* LibraryItem */ = {
 			isa = PBXGroup;
 			children = (
-				AA731CD42870DA740044412F /* LibraryItemViewModel.swift */,
 				AA7B0D4F28719AE20067DDB5 /* LibraryItemViewController.swift */,
 				AA7B0D512871A6E00067DDB5 /* LibraryItemViewController+Layout.swift */,
 				AA7B0D532871A70F0067DDB5 /* LibraryItemViewController+Styles.swift */,
+				AA731CD42870DA740044412F /* LibraryItemViewModel.swift */,
 				AA190E70287AC694000514AB /* SubtitlesPresenter */,
 			);
 			path = LibraryItem;
@@ -1361,11 +1361,11 @@
 		AA8BF77D28567A580010FA1E /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				AABB49EB28AFFB180088484B /* DictionaryListBrowser */,
 				AACEA3182869ABB900111565 /* AudioFilesBrowser */,
-				AA4F96FB286E322C0087F45A /* PlayerViewController */,
-				AA731CD32870DA510044412F /* LibraryItem */,
 				AACEA330286A41CF00111565 /* Common */,
+				AABB49EB28AFFB180088484B /* DictionaryListBrowser */,
+				AA731CD32870DA510044412F /* LibraryItem */,
+				AA4F96FB286E322C0087F45A /* PlayerViewController */,
 				AACEA3212869B0FC00111565 /* Utils */,
 			);
 			path = Presentation;
@@ -1509,12 +1509,12 @@
 		AABB49EB28AFFB180088484B /* DictionaryListBrowser */ = {
 			isa = PBXGroup;
 			children = (
-				AABB49EC28AFFDA40088484B /* DictionaryListBrowserViewModel.swift */,
-				AABB49F028B02C260088484B /* DictionaryListBrowserViewController.swift */,
-				AABB49F228B02C390088484B /* DictionaryListBrowserViewController+Styles.swift */,
-				AABB49F428B02C410088484B /* DictionaryListBrowserViewController+Layout.swift */,
-				AABB49F628B02C610088484B /* DictionaryListBrowserViewControllerFactory.swift */,
 				AABB49F828B030B00088484B /* DictionaryListBrowserCell */,
+				AABB49F028B02C260088484B /* DictionaryListBrowserViewController.swift */,
+				AABB49F428B02C410088484B /* DictionaryListBrowserViewController+Layout.swift */,
+				AABB49F228B02C390088484B /* DictionaryListBrowserViewController+Styles.swift */,
+				AABB49F628B02C610088484B /* DictionaryListBrowserViewControllerFactory.swift */,
+				AABB49EC28AFFDA40088484B /* DictionaryListBrowserViewModel.swift */,
 			);
 			path = DictionaryListBrowser;
 			sourceTree = "<group>";
@@ -2004,7 +2004,6 @@
 				AA3B59D02887035900F68AF8 /* ManagedDictionaryItem+Mapping.swift in Sources */,
 				AA7B0D5028719AE20067DDB5 /* LibraryItemViewController.swift in Sources */,
 				AA3C532228BE54CF00CBE3C6 /* BrowseAudioLibraryUseCaseFactory.swift in Sources */,
-				AA08838728B960D3006315B9 /* AudioFilesBrowserViewModelFactoryImpl.swift in Sources */,
 				AA3C534628BE61C600CBE3C6 /* LoadSubtitlesUseCase.swift in Sources */,
 				AA0D3F8328762698006717B9 /* SubtitlesRepository.swift in Sources */,
 				AA0F69BC287F4F0D00BD13DB /* SubtitlesPresenterView.swift in Sources */,
@@ -2210,6 +2209,7 @@
 				2E8ADADE1DFCEDB9460963A6 /* AudioFilesBrowserViewModelFactory.swift in Sources */,
 				BC9ECCA466E1DBAA156C8166 /* AudioFilesBrowserViewModelImpl.swift in Sources */,
 				AA641DFA28C3516800641B0C /* PresentableViewFactory.swift in Sources */,
+				9263D76DDC6AC42E5B491E37 /* AudioFilesBrowserViewModelImplFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

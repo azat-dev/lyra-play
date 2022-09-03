@@ -17,6 +17,5 @@ public final class MainTabBarCoordinatorImpl: MainTabBarCoordinator {
     
     public func start(at container: StackPresentationContainer) {
         
-        fatalError()
     }
 }

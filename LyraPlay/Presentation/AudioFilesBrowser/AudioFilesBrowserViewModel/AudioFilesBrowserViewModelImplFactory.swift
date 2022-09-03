@@ -1,24 +1,26 @@
 //
-//  AudioFilesBrowserViewModelFactoryImpl.swift
+//  AudioFilesBrowserViewModelImplFactory.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 26.08.22.
+//  Created by Azat Kaiumov on 03.09.2022.
 //
 
 import Foundation
 
-public final class AudioFilesBrowserViewModelFactoryImpl: AudioFilesBrowserViewModelFactory {
-    
-    public typealias ViewModel = AudioFilesBrowserViewModelImpl
-    
+public final class AudioFilesBrowserViewModelImplFactory: AudioFilesBrowserViewModelFactory {
+
+    // MARK: - Initializers
+
     public init() {}
-    
+
+    // MARK: - Methods
+
     public func create(
         coordinator: LibraryCoordinatorInput,
         browseUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase
-    ) -> ViewModel {
-    
+    ) -> some AudioFilesBrowserViewModel {
+
         return AudioFilesBrowserViewModelImpl(
             coordinator: coordinator,
             browseUseCase: browseUseCase,
