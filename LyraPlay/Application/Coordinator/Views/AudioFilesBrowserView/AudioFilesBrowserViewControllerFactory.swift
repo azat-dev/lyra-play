@@ -7,7 +7,13 @@
 
 import Foundation
 
-public final class AudioFilesBrowserViewControllerFactory: AudioFilesBrowserViewFactory {
+public final class AudioFilesBrowserViewControllerFactory<ViewModel>: AudioFilesBrowserViewFactory where ViewModel: AudioFilesBrowserViewModel {
+    
+    // MARK: - Types
+    
+    public typealias View = AudioFilesBrowserViewController
+    
+    public typealias ViewModel = ViewModel
     
     // MARK: - Initializers
     
@@ -15,7 +21,7 @@ public final class AudioFilesBrowserViewControllerFactory: AudioFilesBrowserView
     
     // MARK: - Methods
     
-    public func create(viewModel: AudioFilesBrowserViewModel) -> AudioFilesBrowserView {
+    public func create(viewModel: ViewModel) -> View {
         
         return AudioFilesBrowserViewController(viewModel: viewModel)
     }

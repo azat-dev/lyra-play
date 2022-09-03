@@ -6,39 +6,19 @@
 //
 
 import Foundation
-import UIKit
 
-// MARK: - Interfaces
-
-public protocol PresentableModule: Presentable {
+public struct PresentableModule<ViewModel, View>: Presentable where View: PresentableView {
     
-    associatedtype ViewModel
+    private(set) var view: View
+    private(set) var model: ViewModel
     
-    var view: Presentable { get }
-    
-    var model: ViewModel { get }
-}
-
-extension PresentableModule {
-    
-    public func toPresent() -> PresentableView {
-        return view.toPresent()
-    }
-}
-
-// MARK: - Implementations
-
-public struct PresentableModuleImpl<ViewModel>: PresentableModule {
-    
-    public typealias ViewModel = ViewModel
-    
-    public var view: Presentable
-    
-    public var model: ViewModel
-    
-    public init(view: Presentable, model: ViewModel) {
+    public init(view: View, model: ViewModel) {
         
         self.view = view
         self.model = model
+    }
+    
+    public func toPresent() -> PresentableView {
+        return view
     }
 }

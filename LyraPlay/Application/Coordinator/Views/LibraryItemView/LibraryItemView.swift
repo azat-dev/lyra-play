@@ -5,6 +5,6 @@
 //  Created by Azat Kaiumov on 01.09.2022.
 //
 
-public protocol LibraryItemView: Presentable {
+public protocol LibraryItemView: PresentableView {
 
 }

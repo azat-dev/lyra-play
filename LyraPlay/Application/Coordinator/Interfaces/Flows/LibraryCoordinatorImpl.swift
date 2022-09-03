@@ -8,11 +8,15 @@
 import Foundation
 
 
-public final class LibraryCoordinatorImpl: LibraryCoordinator {
+public final class LibraryCoordinatorImpl<ModuleFactory, ViewModelFactory>: LibraryCoordinator
+    where ModuleFactory: LibraryModuleFactory,
+    ViewModelFactory: AudioFilesBrowserViewModelFactory,
+    ModuleFactory.ViewFactory.ViewModel == ViewModelFactory.ViewModel {
     
     // MARK: - Properties
     
-    private let moduleFactory: LibraryModuleFactory
+    private let moduleFactory: ModuleFactory
+    private let viewModelFactory: ViewModelFactory
     
     private let browseAudioLibraryUseCaseFactory: () -> BrowseAudioLibraryUseCase
     private let importAudioFileUseCaseFactory: () -> ImportAudioFileUseCase
@@ -22,12 +26,15 @@ public final class LibraryCoordinatorImpl: LibraryCoordinator {
     // MARK: - Initializers
     
     public init(
-        moduleFactory: LibraryModuleFactory,
+        moduleFactory: ModuleFactory,
+        viewModelFactory: ViewModelFactory,
         browseAudioLibraryUseCaseFactory: @escaping () -> BrowseAudioLibraryUseCase,
         importAudioFileUseCaseFactory: @escaping () -> ImportAudioFileUseCase
     ) {
         
         self.moduleFactory = moduleFactory
+        self.viewModelFactory = viewModelFactory
+        
         self.browseAudioLibraryUseCaseFactory = browseAudioLibraryUseCaseFactory
         self.importAudioFileUseCaseFactory = importAudioFileUseCaseFactory
     }
@@ -35,12 +42,9 @@ public final class LibraryCoordinatorImpl: LibraryCoordinator {
     // MARK: - Methods
 
     public func runOpenLibraryItemFlow(mediaId: UUID) {
-        
-        
     }
     
     public func runImportMediaFilesFlow(completion: @escaping ([URL]?) -> Void) {
-        
     }
 
     public func start(at presentationContainer: StackPresentationContainer) {
@@ -48,11 +52,13 @@ public final class LibraryCoordinatorImpl: LibraryCoordinator {
         let importAudioFileUseCase = importAudioFileUseCaseFactory()
         let browseAudioLibraryUseCase = browseAudioLibraryUseCaseFactory()
 
-        let module = moduleFactory.create(
+        let viewModel = viewModelFactory.create(
             coordinator: self,
             browseUseCase: browseAudioLibraryUseCase,
             importFileUseCase: importAudioFileUseCase
         )
+        
+        let module = moduleFactory.create(viewModel: viewModel)
 
         container = presentationContainer
         presentationContainer.setRoot(module)

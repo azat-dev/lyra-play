@@ -7,11 +7,5 @@
 
 import Foundation
 
-public protocol LibraryModuleFactory {
-    
-    func create(
-        coordinator: LibraryCoordinator,
-        browseUseCase: BrowseAudioLibraryUseCase,
-        importFileUseCase: ImportAudioFileUseCase
-    ) -> PresentableModuleImpl<AudioFilesBrowserViewModel>
-}
+public protocol LibraryModuleFactory: PresentableModuleFactory
+    where ViewFactory: AudioFilesBrowserViewFactory {}

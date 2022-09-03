@@ -7,17 +7,19 @@
 
 import Foundation
 
-public protocol LibraryItemModuleFactory {
-    
-    func create(
-        mediaId: UUID,
-        coordinator: LibraryItemCoordinatorInput,
-        viewModel: LibraryItemViewModel,
-        showMediaInfoUseCase: ShowMediaInfoUseCase,
-        currentPlayerStateUseCaseOutput: CurrentPlayerStateUseCaseOutput,
-        playMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCase,
-        importSubtitlesUseCase: ImportSubtitlesUseCase,
-        loadSubtitlesUseCase: LoadSubtitlesUseCase
-    ) -> PresentableModuleImpl<LibraryItemViewModel>
-}
-
+//public protocol LibraryItemModuleFactory {
+//    
+//    associatedtype View: LibraryItemView
+//    
+//    func create(
+//        mediaId: UUID,
+//        coordinator: LibraryItemCoordinatorInput,
+//        viewModel: LibraryItemViewModel,
+//        showMediaInfoUseCase: ShowMediaInfoUseCase,
+//        currentPlayerStateUseCaseOutput: CurrentPlayerStateUseCaseOutput,
+//        playMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCase,
+//        importSubtitlesUseCase: ImportSubtitlesUseCase,
+//        loadSubtitlesUseCase: LoadSubtitlesUseCase
+//    ) -> PresentableModule<LibraryItemViewModel, View>
+//}
+//

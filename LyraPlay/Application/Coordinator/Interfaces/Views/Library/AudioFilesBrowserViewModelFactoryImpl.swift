@@ -9,13 +9,15 @@ import Foundation
 
 public final class AudioFilesBrowserViewModelFactoryImpl: AudioFilesBrowserViewModelFactory {
     
+    public typealias ViewModel = AudioFilesBrowserViewModelImpl
+    
     public init() {}
     
     public func create(
         coordinator: LibraryCoordinatorInput,
         browseUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase
-    ) -> AudioFilesBrowserViewModel {
+    ) -> ViewModel {
     
         return AudioFilesBrowserViewModelImpl(
             coordinator: coordinator,

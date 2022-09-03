@@ -5,6 +5,4 @@
 //  Created by Azat Kaiumov on 01.09.2022.
 //
 
-public protocol AudioFilesBrowserView: Presentable {
-
-}
+public protocol AudioFilesBrowserView: PresentableView {}

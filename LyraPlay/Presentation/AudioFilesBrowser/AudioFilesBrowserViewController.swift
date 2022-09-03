@@ -8,13 +8,13 @@
 import Foundation
 import UIKit
 
-final class AudioFilesBrowserViewController: UIViewController, AudioFilesBrowserView {
+public final class AudioFilesBrowserViewController: UIViewController, AudioFilesBrowserView {
     
     private var tableView = UITableView()
     private var tableDataSource: UITableViewDiffableDataSource<Int, AudioFilesBrowserCellViewModel>!
     private var viewModel: AudioFilesBrowserViewModel!
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         setupViews()
@@ -27,11 +27,11 @@ final class AudioFilesBrowserViewController: UIViewController, AudioFilesBrowser
         }
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("Not implemented")
     }
 
-    init(viewModel: AudioFilesBrowserViewModel) {
+    public init(viewModel: AudioFilesBrowserViewModel) {
 
         super.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
@@ -142,7 +142,7 @@ extension AudioFilesBrowserViewController {
 
 extension AudioFilesBrowserViewController: AudioFilesBrowserUpdateDelegate {
     
-    func filesDidUpdate(updatedFiles: [AudioFilesBrowserCellViewModel]) {
+    public func filesDidUpdate(updatedFiles: [AudioFilesBrowserCellViewModel]) {
         
         var snapshot = NSDiffableDataSourceSnapshot<Int, AudioFilesBrowserCellViewModel>()
         
@@ -157,7 +157,7 @@ extension AudioFilesBrowserViewController: AudioFilesBrowserUpdateDelegate {
 
 extension AudioFilesBrowserViewController: UITableViewDelegate {
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         guard let cellViewModel = tableDataSource.itemIdentifier(for: indexPath) else {
             return
