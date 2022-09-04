@@ -6,4 +6,4 @@
 //
 
 public protocol AudioFilesBrowserViewFactory: PresentableViewFactory
-	where ViewModel: AudioFilesBrowserViewModel, View: AudioFilesBrowserView {}
+	where View: AudioFilesBrowserView {}

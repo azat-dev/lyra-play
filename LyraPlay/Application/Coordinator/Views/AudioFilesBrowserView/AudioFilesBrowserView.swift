@@ -5,4 +5,7 @@
 //  Created by Azat Kaiumov on 01.09.2022.
 //
 
-public protocol AudioFilesBrowserView: PresentableView {}
+public protocol AudioFilesBrowserView: PresentableViewForModel {
+    
+    init(viewModel: AudioFilesBrowserViewModel)
+}

@@ -8,3 +8,10 @@
 import Foundation
 
 public protocol PresentableView {}
+
+public protocol PresentableViewForModel: PresentableView {
+    
+    associatedtype ViewModel
+    
+    init(viewModel: ViewModel)
+}
