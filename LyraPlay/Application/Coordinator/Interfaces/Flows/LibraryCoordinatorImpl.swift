@@ -8,15 +8,12 @@
 import Foundation
 
 
-public final class LibraryCoordinatorImpl<ModuleFactory, ViewModelFactory>: BaseCoordinator, LibraryCoordinator
-    where ModuleFactory: LibraryModuleFactory,
-    ViewModelFactory: AudioFilesBrowserViewModelFactory,
-    ModuleFactory.ViewFactory.ViewModel == ViewModelFactory.ViewModel {
+public final class LibraryCoordinatorImpl: BaseCoordinator, LibraryCoordinator {
     
     // MARK: - Properties
     
-    private let moduleFactory: ModuleFactory
-    private let viewModelFactory: ViewModelFactory
+    private let viewFactory: AudioFilesBrowserViewFactory
+    private let viewModelFactory: AudioFilesBrowserViewModelFactory
     
     private let browseAudioLibraryUseCaseFactory: () -> BrowseAudioLibraryUseCase
     private let importAudioFileUseCaseFactory: () -> ImportAudioFileUseCase
@@ -26,14 +23,14 @@ public final class LibraryCoordinatorImpl<ModuleFactory, ViewModelFactory>: Base
     // MARK: - Initializers
     
     public init(
-        moduleFactory: ModuleFactory,
-        viewModelFactory: ViewModelFactory,
+        viewModelFactory: AudioFilesBrowserViewModelFactory,
+        viewFactory: AudioFilesBrowserViewFactory,
         browseAudioLibraryUseCaseFactory: @escaping () -> BrowseAudioLibraryUseCase,
         importAudioFileUseCaseFactory: @escaping () -> ImportAudioFileUseCase
     ) {
         
         
-        self.moduleFactory = moduleFactory
+        self.viewFactory = viewFactory
         self.viewModelFactory = viewModelFactory
         
         self.browseAudioLibraryUseCaseFactory = browseAudioLibraryUseCaseFactory
@@ -61,9 +58,9 @@ public final class LibraryCoordinatorImpl<ModuleFactory, ViewModelFactory>: Base
             importFileUseCase: importAudioFileUseCase
         )
         
-        let module = moduleFactory.create(viewModel: viewModel)
+        let view = viewFactory.create(viewModel: viewModel)
 
         container = presentationContainer
-        presentationContainer.setRoot(module)
+        presentationContainer.setRoot(view)
     }
 }

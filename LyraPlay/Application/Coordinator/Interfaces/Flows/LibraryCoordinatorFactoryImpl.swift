@@ -7,22 +7,22 @@
 
 import Foundation
 
-public final class LibraryCoordinatorFactoryImpl<M,V>: LibraryCoordinatorFactory
-where M: LibraryModuleFactory, V: AudioFilesBrowserViewModelFactory {
+public final class LibraryCoordinatorFactoryImpl: LibraryCoordinatorFactory {
     
-    private let moduleFactory: M
-    private let viewModelFactory: V
+    private let viewModelFactory: AudioFilesBrowserViewModelFactory
+    private let viewFactory: AudioFilesBrowserViewFactory
     
     public init(
-        moduleFactory: M,
-        viewModelFactory: V
+        viewModelFactory: AudioFilesBrowserViewModelFactory,
+        viewFactory: AudioFilesBrowserViewFactory
     ) {
         
-        self.moduleFactory = moduleFactory
+        self.viewFactory = viewFactory
         self.viewModelFactory = viewModelFactory
     }
     
     public func create() -> LibraryCoordinator {
+        
         fatalError()
 //        return LibraryCoordinatorImpl(
 //            moduleFactory: moduleFactory,

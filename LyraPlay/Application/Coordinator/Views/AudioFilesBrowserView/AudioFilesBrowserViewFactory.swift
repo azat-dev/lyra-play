@@ -5,5 +5,7 @@
 //  Created by Azat Kaiumov on 03.09.2022.
 //
 
-public protocol AudioFilesBrowserViewFactory: PresentableViewFactory
-	where View: AudioFilesBrowserView {}
+public protocol AudioFilesBrowserViewFactory {
+    
+    func create(viewModel: AudioFilesBrowserViewModel) -> AudioFilesBrowserView
+}

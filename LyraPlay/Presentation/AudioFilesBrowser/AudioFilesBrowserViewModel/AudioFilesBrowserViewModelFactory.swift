@@ -7,11 +7,9 @@
 
 public protocol AudioFilesBrowserViewModelFactory {
 
-    associatedtype ViewModel: AudioFilesBrowserViewModel
-    
     func create(
         coordinator: LibraryCoordinatorInput,
         browseUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase
-    ) -> ViewModel
+    ) -> AudioFilesBrowserViewModel
 }

@@ -19,7 +19,7 @@ public final class AudioFilesBrowserViewModelImplFactory: AudioFilesBrowserViewM
         coordinator: LibraryCoordinatorInput,
         browseUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase
-    ) -> some AudioFilesBrowserViewModel {
+    ) -> AudioFilesBrowserViewModel {
 
         return AudioFilesBrowserViewModelImpl(
             coordinator: coordinator,
