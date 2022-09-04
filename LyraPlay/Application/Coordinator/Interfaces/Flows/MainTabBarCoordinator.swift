@@ -16,5 +16,5 @@ public protocol MainTabBarCoordinatorInput {
 
 public protocol MainTabBarCoordinator: BaseCoordinator, MainTabBarCoordinatorInput {
     
-    func start(at: TabBarPresentationContainer)
+    func start(at: StackPresentationContainer)
 }

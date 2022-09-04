@@ -15,7 +15,7 @@ public final class MainTabBarViewModelImplFactory: MainTabBarViewModelFactory {
 
     // MARK: - Methods
 
-    public func create(coordinator: MainTabBarCoordinator) -> some MainTabBarViewModel {
+    public func create(coordinator: MainTabBarCoordinator) -> MainTabBarViewModel {
 
         return MainTabBarViewModelImpl(coordinator: coordinator)
     }

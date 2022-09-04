@@ -130,6 +130,7 @@
 		AA3785992885EFD300FF3B66 /* EnhancedLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3785982885EFD300FF3B66 /* EnhancedLayoutManager.swift */; };
 		AA3B59C82886EA0700F68AF8 /* CoreDataDictionaryRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3B59C72886EA0700F68AF8 /* CoreDataDictionaryRepositoryTests.swift */; };
 		AA3B59D02887035900F68AF8 /* ManagedDictionaryItem+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3B59CF2887035900F68AF8 /* ManagedDictionaryItem+Mapping.swift */; };
+		AA3B730428C500860071CBA4 /* MainTabBarCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3B730328C500860071CBA4 /* MainTabBarCoordinatorTests.swift */; };
 		AA3BAB1B286C7225005EE01E /* PlayerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB1A286C7225005EE01E /* PlayerState.swift */; };
 		AA3BAB1D286C728B005EE01E /* PlayerStateRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB1C286C728B005EE01E /* PlayerStateRepository.swift */; };
 		AA3BAB1F286C73A3005EE01E /* PlayerStateRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB1E286C73A3005EE01E /* PlayerStateRepositoryImpl.swift */; };
@@ -478,6 +479,7 @@
 		AA3785982885EFD300FF3B66 /* EnhancedLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedLayoutManager.swift; sourceTree = "<group>"; };
 		AA3B59C72886EA0700F68AF8 /* CoreDataDictionaryRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataDictionaryRepositoryTests.swift; sourceTree = "<group>"; };
 		AA3B59CF2887035900F68AF8 /* ManagedDictionaryItem+Mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedDictionaryItem+Mapping.swift"; sourceTree = "<group>"; };
+		AA3B730328C500860071CBA4 /* MainTabBarCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarCoordinatorTests.swift; sourceTree = "<group>"; };
 		AA3BAB1A286C7225005EE01E /* PlayerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerState.swift; sourceTree = "<group>"; };
 		AA3BAB1C286C728B005EE01E /* PlayerStateRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerStateRepository.swift; sourceTree = "<group>"; };
 		AA3BAB1E286C73A3005EE01E /* PlayerStateRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerStateRepositoryImpl.swift; sourceTree = "<group>"; };
@@ -1258,6 +1260,7 @@
 			children = (
 				AA5DD70028B9643F00929906 /* LibraryCoordinatorTests.swift */,
 				AAA2DE3B28BA1F05008C5923 /* LibraryItemCoordinatorTests.swift */,
+				AA3B730328C500860071CBA4 /* MainTabBarCoordinatorTests.swift */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -2353,6 +2356,7 @@
 				AACEA31228699F5500111565 /* BrowseAudioFilesUseCaseTests.swift in Sources */,
 				AA35E57E286A993B0086DB28 /* TagsParserMock.swift in Sources */,
 				AA3BAB25286C7EE2005EE01E /* UserDefaultsKeyValueStoreTests.swift in Sources */,
+				AA3B730428C500860071CBA4 /* MainTabBarCoordinatorTests.swift in Sources */,
 				AABB49EA28AFF50E0088484B /* Dictionary+Helpers.swift in Sources */,
 				EAAC71B4C29C82B44BE581A6 /* (null) in Sources */,
 			);

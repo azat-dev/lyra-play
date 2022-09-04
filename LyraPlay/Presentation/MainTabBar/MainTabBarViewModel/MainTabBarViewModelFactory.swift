@@ -7,7 +7,5 @@
 
 public protocol MainTabBarViewModelFactory {
 
-    associatedtype ViewModel: MainTabBarViewModel
-
-    func create(coordinator: MainTabBarCoordinator) -> ViewModel
+    func create(coordinator: MainTabBarCoordinator) -> MainTabBarViewModel
 }

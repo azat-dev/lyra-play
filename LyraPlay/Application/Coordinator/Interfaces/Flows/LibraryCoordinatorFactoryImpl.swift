@@ -23,12 +23,11 @@ public final class LibraryCoordinatorFactoryImpl: LibraryCoordinatorFactory {
     
     public func create() -> LibraryCoordinator {
         
-        fatalError()
-//        return LibraryCoordinatorImpl(
-//            moduleFactory: moduleFactory,
-//            viewModelFactory: viewModelFactory,
-//            browseAudioLibraryUseCaseFactory: <#T##() -> BrowseAudioLibraryUseCase#>,
-//            importAudioFileUseCaseFactory: <#T##() -> ImportAudioFileUseCase#>
-//        )
+        return LibraryCoordinatorImpl(
+            viewModelFactory: viewModelFactory,
+            viewFactory: viewFactory,
+            browseAudioLibraryUseCaseFactory: { fatalError() },
+            importAudioFileUseCaseFactory: { fatalError() }
+        )
     }
 }

@@ -7,20 +7,15 @@
 
 import Foundation
 
-public final class MainTabBarViewControllerFactory<ViewModel>: MainTabBarViewFactory
-    where ViewModel: MainTabBarViewModel {
+public final class MainTabBarViewControllerFactory: MainTabBarViewFactory {
     
-    public typealias View = MainTabBarViewController
-    
-    public typealias ViewModel = ViewModel
-
     // MARK: - Initializers
 
     public init() {}
 
     // MARK: - Methods
 
-    public func create(viewModel: ViewModel) -> View {
+    public func create(viewModel: MainTabBarViewModel) -> MainTabBarView {
 
         return MainTabBarViewController(viewModel: viewModel)
     }

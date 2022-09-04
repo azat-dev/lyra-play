@@ -6,8 +6,10 @@
 //
 
 import Foundation
-import LyraPlay
 import XCTest
+import Mockingbird
+
+import LyraPlay
 
 class AudioFilesBrowserViewModelTests: XCTestCase {
     
@@ -39,7 +41,7 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
             tagsParser: tagsParser
         )
         
-        let coordinator = AudioFilesBrowserCoordinatorMock()
+        let coordinator = mock(LibraryCoordinatorInput.self)
         
         let viewModel = AudioFilesBrowserViewModelImpl(
             coordinator: coordinator,
@@ -127,18 +129,6 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
 }
 
 // MARK: - Mocks
-
-fileprivate class AudioFilesBrowserCoordinatorMock: LibraryCoordinator {
-    func runOpenLibraryItemFlow(mediaId: UUID) {
-    }
-    
-    func runImportMediaFilesFlow(completion: @escaping ([URL]?) -> Void) {
-        completion(nil)
-    }
-    
-    func start(at: StackPresentationContainer) {
-    }
-}
 
 fileprivate class FilesDelegateMock: AudioFilesBrowserUpdateDelegate {
     
