@@ -2,7 +2,7 @@
 //  LibraryItemCoordinator.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 27.08.22.
+//  Created by Azat Kaiumov on 05.09.2022.
 //
 
 import Foundation
@@ -12,7 +12,7 @@ public protocol LibraryItemCoordinatorInput: AnyObject {
     func runAttachSubtitlesFlow(completion: @escaping (_ url: URL?) -> Void)
 }
 
-public protocol LibraryItemCoordinator: LibraryItemCoordinatorInput {
+public protocol LibraryItemCoordinator: Coordinator, LibraryItemCoordinatorInput {
     
-    func start(at: StackPresentationContainer)
+    func start(at: StackPresentationContainer, mediaId: UUID)
 }

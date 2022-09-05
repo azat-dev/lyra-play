@@ -171,15 +171,15 @@ extension LibraryItemViewModelImpl {
     
     public func attachSubtitles(language: String) async {
         
-        coordinator?.runAttachSubtitlesFlow { [weak self] url in
-            
-            guard let attachSubtitles = self?.attachSubtitlesAfter else {
-                return
-            }
-            
-            Task {
-                await attachSubtitles(language, url)
-            }
-        }
+//        coordinator?.runAttachSubtitlesFlow { [weak self] url in
+//            
+//            guard let attachSubtitles = self?.attachSubtitlesAfter else {
+//                return
+//            }
+//            
+//            Task {
+//                await attachSubtitles(language, url)
+//            }
+//        }
     }
 }

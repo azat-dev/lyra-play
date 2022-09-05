@@ -19,7 +19,8 @@ protocol AppCoordinator: LibraryCoordinator, LibraryItemCoordinator {
 
 // MARK: - Implementations
 
-final class AppCoordinatorImpl: BaseCoordinator, AppCoordinator, LibraryItemCoordinatorInput {
+final class AppCoordinatorImpl: BaseCoordinator, AppCoordinator {
+
     
     private let navigationController: UINavigationController
     
@@ -330,16 +331,19 @@ final class AppCoordinatorImpl: BaseCoordinator, AppCoordinator, LibraryItemCoor
 // MARK: - LibraryItemCoordinator
 
 extension AppCoordinatorImpl: LibraryItemCoordinator {
+    func start(at: StackPresentationContainer, mediaId: UUID) {
+    }
+    
     
     func runAttachSubtitlesFlow(completion: @escaping (_ url: URL?) -> Void) {
-        
+
         openFilePicker(
             multiple: true,
             documentTypes: ["com.azatkaiumov.subtitles"],
             completion: { completion($0?.first) }
         )
     }
-    
+
     func showImportSubtitlesError() {
     }
 }

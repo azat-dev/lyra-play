@@ -233,39 +233,6 @@ import XCTest
 //
 // MARK: - Mocks
 
-private final class LibraryItemCoordinatorMock: LibraryItemCoordinator {
-
-    typealias ChooseSubtitlesCallback = () -> URL?
-    typealias ShowImportSubttitlesErrorCallback = () -> Void?
-    
-    public var resolveChooseSubtitles: ChooseSubtitlesCallback?
-    public var resolveShowImportSubtitlesError: ShowImportSubttitlesErrorCallback?
-    
-    public func runAttachSubtitlesFlow(completion: @escaping (_ urls: URL?) -> Void) {
-
-        guard let resolveChooseSubtitles = resolveChooseSubtitles else {
-            XCTFail("No implementation")
-            completion(nil)
-            return
-        }
-        
-        completion(resolveChooseSubtitles())
-    }
-    
-    public func showImportSubtitlesError() -> Void {
-        
-        guard let resolveShowImportSubtitlesError = resolveShowImportSubtitlesError else {
-            XCTFail("No implementation")
-            return
-        }
-        
-        resolveShowImportSubtitlesError()
-    }
-    
-    func start(at: StackPresentationContainer) {
-    }
-}
-
 final class CurrentPlayerStateUseCaseMock: CurrentPlayerStateUseCase {
     
     var info: Observable<MediaInfo?> = Observable(nil)
