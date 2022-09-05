@@ -78,9 +78,6 @@ public class Application {
         
         let mainTabBarViewModelFactory = MainTabBarViewModelImplFactory()
         let mainTabBarViewFactory = MainTabBarViewControllerFactory()
-        
-        let libraryViewModelFactory = AudioFilesBrowserViewModelImplFactory()
-        let libraryViewFactory = AudioFilesBrowserViewControllerFactory()
 
         let browseAudioLibraryUseCaseFactory = BrowseAudioLibraryUseCaseImplFactory(
             audioLibraryRepository: audioLibraryRepository,
@@ -95,12 +92,17 @@ public class Application {
             imagesRepository: imagesRepository,
             tagsParser: tagsParser
         )
+
+        let libraryViewModelFactory = AudioFilesBrowserViewModelImplFactory(
+            browseAudioLibraryUseCaseFactory: browseAudioLibraryUseCaseFactory,
+            importAudioFileUseCaseFactory: imporAudioFileUseCaseFactory
+        )
+        
+        let libraryViewFactory = AudioFilesBrowserViewControllerFactory()
         
         let libraryCoordinatorFactory = LibraryCoordinatorFactoryImpl(
             viewModelFactory: libraryViewModelFactory,
-            viewFactory: libraryViewFactory,
-            browseAudioLibraryUseCaseFactory: browseAudioLibraryUseCaseFactory,
-            importAudioFileUseCaseFactory: imporAudioFileUseCaseFactory
+            viewFactory: libraryViewFactory
         )
         
         let browseDictionaryUseCase = BrowseDictionaryUseCaseImpl(

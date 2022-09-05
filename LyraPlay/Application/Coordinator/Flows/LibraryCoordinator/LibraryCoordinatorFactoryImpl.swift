@@ -11,29 +11,21 @@ public final class LibraryCoordinatorFactoryImpl: LibraryCoordinatorFactory {
     
     private let viewModelFactory: AudioFilesBrowserViewModelFactory
     private let viewFactory: AudioFilesBrowserViewFactory
-    private let browseAudioLibraryUseCaseFactory: BrowseAudioLibraryUseCaseFactory
-    private let importAudioFileUseCaseFactory: ImportAudioFileUseCaseFactory
     
     public init(
         viewModelFactory: AudioFilesBrowserViewModelFactory,
-        viewFactory: AudioFilesBrowserViewFactory,
-        browseAudioLibraryUseCaseFactory: BrowseAudioLibraryUseCaseFactory,
-        importAudioFileUseCaseFactory: ImportAudioFileUseCaseFactory
+        viewFactory: AudioFilesBrowserViewFactory
     ) {
         
         self.viewFactory = viewFactory
         self.viewModelFactory = viewModelFactory
-        self.browseAudioLibraryUseCaseFactory = browseAudioLibraryUseCaseFactory
-        self.importAudioFileUseCaseFactory = importAudioFileUseCaseFactory
     }
     
     public func create() -> LibraryCoordinator {
         
         return LibraryCoordinatorImpl(
             viewModelFactory: viewModelFactory,
-            viewFactory: viewFactory,
-            browseAudioLibraryUseCaseFactory: browseAudioLibraryUseCaseFactory,
-            importAudioFileUseCaseFactory: importAudioFileUseCaseFactory
+            viewFactory: viewFactory
         )
     }
 }

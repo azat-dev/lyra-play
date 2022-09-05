@@ -28,13 +28,13 @@ class MainTabBarCoordinatorTests: XCTestCase {
         let libraryCoordinator: LibraryCoordinatorMock = mock(LibraryCoordinator.self)
         let libraryCoordinatorFactory = mock(LibraryCoordinatorFactory.self)
 
-        given(libraryCoordinatorFactory.create()).willReturn(libraryCoordinator as! LibraryCoordinator)
+        given(libraryCoordinatorFactory.create()).willReturn(libraryCoordinator)
         
         
         let dictionaryCoordinator: DictionaryCoordinatorMock = mock(DictionaryCoordinator.self)
         let dictionaryCoordinatorFactory = mock(DictionaryCoordinatorFactory.self)
 
-        given(dictionaryCoordinatorFactory.create()).willReturn(dictionaryCoordinator as! DictionaryCoordinator)
+        given(dictionaryCoordinatorFactory.create()).willReturn(dictionaryCoordinator)
 
         
         let mainTabBarViewModel = mock(MainTabBarViewModel.self)
@@ -62,7 +62,8 @@ class MainTabBarCoordinatorTests: XCTestCase {
         let coordinator = MainTabBarCoordinatorImpl(
             mainTabBarViewModelFactory: mainTabBarViewModelFactory,
             mainTabBarViewFactory: mainTabBarViewFactory,
-            libraryCoordinatorFactory: libraryCoordinatorFactory
+            libraryCoordinatorFactory: libraryCoordinatorFactory,
+            dictionaryCoordinatorFactory: dictionaryCoordinatorFactory
         )
 
         detectMemoryLeak(instance: coordinator, file: file, line: line)
