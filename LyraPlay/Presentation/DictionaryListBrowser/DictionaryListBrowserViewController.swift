@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import UIKit
 
-public final class DictionaryListBrowserViewController: UIViewController {
+public final class DictionaryListBrowserViewController: UIViewController, DictionaryListBrowserView {
     
     private var observers = Set<AnyCancellable>()
     
@@ -18,7 +18,7 @@ public final class DictionaryListBrowserViewController: UIViewController {
     
     private let viewModel: DictionaryListBrowserViewModel
     
-    init(viewModel: DictionaryListBrowserViewModel) {
+    public init(viewModel: DictionaryListBrowserViewModel) {
         
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)

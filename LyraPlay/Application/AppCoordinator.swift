@@ -294,14 +294,6 @@ final class AppCoordinatorImpl: BaseCoordinator, AppCoordinator, LibraryItemCoor
         return factory.build()
     }
     
-    func makeDictionaryListBrowserVC() -> DictionaryListBrowserViewController {
-        
-        let factory = DictionaryListBrowserViewControllerFactory(
-            coordinator: self,
-            browseDictionaryUseCase: browseDictionaryUseCase
-        )
-        return factory.build()
-    }
     
     private func openFilePicker(multiple: Bool, documentTypes: [String], completion: @escaping (_ urls: [URL]?) -> Void) {
 
@@ -332,22 +324,6 @@ final class AppCoordinatorImpl: BaseCoordinator, AppCoordinator, LibraryItemCoor
     
     func start() {
         
-        let tabBarVC = UITabBarController()
-        
-        let audioFilesBrowserNavigationController = UINavigationController()
-        audioFilesBrowserNavigationController.pushViewController(makeAudioFilesBrowserVC(), animated: false)
-        
-        let dictionaryBrowserNavigationController = UINavigationController()
-        dictionaryBrowserNavigationController.pushViewController(makeDictionaryListBrowserVC(), animated: false)
-        
-        tabBarVC.viewControllers = [
-            audioFilesBrowserNavigationController,
-            dictionaryBrowserNavigationController,
-        ]
-        
-        tabBarVC.selectedViewController = tabBarVC.viewControllers?.first
-        navigationController.isNavigationBarHidden = true
-        navigationController.pushViewController(tabBarVC, animated: false)
     }
 }
 
