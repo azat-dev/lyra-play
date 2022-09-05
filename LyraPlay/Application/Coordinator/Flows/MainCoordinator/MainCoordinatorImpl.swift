@@ -28,14 +28,3 @@ public final class MainCoordinatorImpl: BaseCoordinator, MainCoordinator {
         mainTabBarCoordinator.start(at: container)
     }
 }
-
-// MARK: - Input Methods
-
-extension MainCoordinatorImpl {
-    
-    public func runLibraryFlow() {
-    }
-    
-    public func runDictionaryFlow() {
-    }
-}

@@ -16,4 +16,3 @@ public protocol LibraryItemCoordinator: LibraryItemCoordinatorInput {
     
     func start(at: StackPresentationContainer)
 }
-
