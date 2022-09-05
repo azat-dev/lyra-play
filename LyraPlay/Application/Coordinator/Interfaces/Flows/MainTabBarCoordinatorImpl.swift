@@ -13,10 +13,10 @@ public final class MainTabBarCoordinatorImpl: BaseCoordinator, MainTabBarCoordin
     
 //    private weak var mainTabBarView: MainTabBarView?
 //
-//    private let mainTabBarViewModelFactory: MainTabBarViewModelFactory
-//    private let mainTabBarViewFactory: MainTabBarViewFactory
-//    private let libraryCoordinatorFactory: LibraryCoordinatorFactory
-//
+    private let mainTabBarViewModelFactory: MainTabBarViewModelFactory
+    private let mainTabBarViewFactory: MainTabBarViewFactory
+    private let libraryCoordinatorFactory: LibraryCoordinatorFactory
+
     // MARK: - Initializers
     
     public init(
@@ -25,22 +25,21 @@ public final class MainTabBarCoordinatorImpl: BaseCoordinator, MainTabBarCoordin
         libraryCoordinatorFactory: LibraryCoordinatorFactory
     ) {
         
-//        self.mainTabBarViewModelFactory = mainTabBarViewModelFactory
-//        self.mainTabBarViewFactory = mainTabBarViewFactory
-//        self.libraryCoordinatorFactory = libraryCoordinatorFactory
+        self.mainTabBarViewModelFactory = mainTabBarViewModelFactory
+        self.mainTabBarViewFactory = mainTabBarViewFactory
+        self.libraryCoordinatorFactory = libraryCoordinatorFactory
+        
         super.init()
     }
     
     // MARK: - Methods
     
-    public func start(at: StackPresentationContainer) {
+    public func start(at container: StackPresentationContainer) {
         
-//        let viewModel = mainTabBarViewModelFactory.create(coordinator: self)
-//        let tabBarView = mainTabBarViewFactory.create(viewModel: viewModel)
-//
-//        self.tabBarView = tabBarView
-//
-//        tabBarContainer
+        let viewModel = mainTabBarViewModelFactory.create(coordinator: self)
+        let tabBarView = mainTabBarViewFactory.create(viewModel: viewModel)
+        
+        container.setRoot(tabBarView)
     }
 }
 

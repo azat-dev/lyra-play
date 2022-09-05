@@ -20,7 +20,7 @@ class MainTabBarCoordinatorTests: XCTestCase {
         mainTabBarView: MainTabBarView
     )
 
-    func createSUT() -> SUT {
+    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
 
         let rootContainer = mock(StackPresentationContainer.self)
         
@@ -32,19 +32,32 @@ class MainTabBarCoordinatorTests: XCTestCase {
 
         let mainTabBarViewModel = mock(MainTabBarViewModel.self)
         let mainTabBarViewModelFactory = mock(MainTabBarViewModelFactory.self)
-        
+
+        given(mainTabBarViewModelFactory.create(coordinator: any())).willReturn(mainTabBarViewModel)
+
         let mainTabBarView = mock(MainTabBarView.self)
         let mainTabBarViewFactory = mock(MainTabBarViewFactory.self)
-        
+
         given(mainTabBarViewFactory.create(viewModel: any())).willReturn(mainTabBarView as MainTabBarView)
 
-        let coordinator: MainTabBarCoordinator = MainTabBarCoordinatorImpl(
+        let coordinator = MainTabBarCoordinatorImpl(
             mainTabBarViewModelFactory: mainTabBarViewModelFactory,
             mainTabBarViewFactory: mainTabBarViewFactory,
             libraryCoordinatorFactory: libraryCoordinatorFactory
         )
 
-        detectMemoryLeak(instance: coordinator)
+        detectMemoryLeak(instance: coordinator, file: file, line: line)
+        addTeardownBlock {
+            reset(
+                rootContainer,
+                libraryCoordinator,
+                libraryCoordinatorFactory,
+                mainTabBarView,
+                mainTabBarViewModel,
+                mainTabBarViewModelFactory,
+                mainTabBarViewFactory
+            )
+        }
 
         return (
             coordinator,
