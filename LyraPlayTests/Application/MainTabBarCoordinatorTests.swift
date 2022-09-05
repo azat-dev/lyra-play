@@ -29,14 +29,18 @@ class MainTabBarCoordinatorTests: XCTestCase {
         let libraryCoordinatorFactory = mock(LibraryCoordinatorFactory.self)
         given(libraryCoordinatorFactory.create()).willReturn(libraryCoordinator as! LibraryCoordinator)
 
-
         let mainTabBarViewModel = mock(MainTabBarViewModel.self)
         let mainTabBarViewModelFactory = mock(MainTabBarViewModelFactory.self)
 
         given(mainTabBarViewModelFactory.create(coordinator: any())).willReturn(mainTabBarViewModel)
 
         let mainTabBarView = mock(MainTabBarView.self)
+        let libraryContainer = mock(StackPresentationContainer.self)
+        
+        given(mainTabBarView.libraryContainer).willReturn(libraryContainer)
+        
         let mainTabBarViewFactory = mock(MainTabBarViewFactory.self)
+        
 
         given(mainTabBarViewFactory.create(viewModel: any())).willReturn(mainTabBarView as MainTabBarView)
 
@@ -55,7 +59,8 @@ class MainTabBarCoordinatorTests: XCTestCase {
                 mainTabBarView,
                 mainTabBarViewModel,
                 mainTabBarViewModelFactory,
-                mainTabBarViewFactory
+                mainTabBarViewFactory,
+                libraryContainer
             )
         }
 
@@ -83,6 +88,7 @@ class MainTabBarCoordinatorTests: XCTestCase {
         
         // Given
         let sut = createSUT()
+        sut.coordinator.start(at: sut.rootContainer)
         
         // When
         sut.coordinator.runLibraryFlow()

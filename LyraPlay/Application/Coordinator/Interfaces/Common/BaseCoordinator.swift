@@ -15,7 +15,7 @@ public class BaseCoordinator: Coordinator {
     
     public func addChild(_ child: Coordinator) {
         
-        guard children.contains(where: { $0 === child }) else {
+        guard !children.contains(where: { $0 === child }) else {
             return
         }
         

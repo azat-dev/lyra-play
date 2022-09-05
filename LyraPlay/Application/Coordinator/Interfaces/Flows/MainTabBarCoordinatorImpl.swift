@@ -11,8 +11,8 @@ public final class MainTabBarCoordinatorImpl: BaseCoordinator, MainTabBarCoordin
 
     // MARK: - Properties
     
-//    private weak var mainTabBarView: MainTabBarView?
-//
+    private weak var mainTabBarView: MainTabBarView?
+
     private let mainTabBarViewModelFactory: MainTabBarViewModelFactory
     private let mainTabBarViewFactory: MainTabBarViewFactory
     private let libraryCoordinatorFactory: LibraryCoordinatorFactory
@@ -38,7 +38,8 @@ public final class MainTabBarCoordinatorImpl: BaseCoordinator, MainTabBarCoordin
         
         let viewModel = mainTabBarViewModelFactory.create(coordinator: self)
         let tabBarView = mainTabBarViewFactory.create(viewModel: viewModel)
-        
+
+        self.mainTabBarView = tabBarView
         container.setRoot(tabBarView)
     }
 }
@@ -49,9 +50,17 @@ extension MainTabBarCoordinatorImpl {
     
     public func runLibraryFlow() {
         
-//        let libraryCoordinator = libraryCoordinatorFactory.create()
-//        libraryCoordinator.start(at: tabBarContainer.)
-//        libraryCoordinator.start(at: tabContainer)
+        guard
+            let mainTabBarView = mainTabBarView,
+            !children.contains(where: { $0 is LibraryCoordinator })
+        else {
+            return
+        }
+        
+        let libraryCoordinator = libraryCoordinatorFactory.create()
+        addChild(libraryCoordinator)
+        
+        libraryCoordinator.start(at: mainTabBarView.libraryContainer)
     }
     
     public func runDictionaryFlow() {

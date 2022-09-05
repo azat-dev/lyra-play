@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import UIKit
 
-public protocol Presentable {
+public protocol Presentable: AnyObject {
     
     func toPresent() -> PresentableView
 }
