@@ -770,6 +770,7 @@
 			isa = PBXGroup;
 			children = (
 				DB0A35371BC4B028BAA1DCB4 /* AudioFilesBrowserView */,
+				AA08837928B960C8006315B9 /* Library */,
 				FBC9C3DDC0B325B089C71D56 /* LibraryItemView */,
 				A60F6DCC5DAE8A5AC4A6597C /* MainTabBarView */,
 			);
@@ -904,16 +905,6 @@
 			path = MainTabBarView;
 			sourceTree = "<group>";
 		};
-		AA08837028B960C8006315B9 /* Interfaces */ = {
-			isa = PBXGroup;
-			children = (
-				AA08837128B960C8006315B9 /* Common */,
-				AA08837828B960C8006315B9 /* Views */,
-				AA08837F28B960C8006315B9 /* Flows */,
-			);
-			path = Interfaces;
-			sourceTree = "<group>";
-		};
 		AA08837128B960C8006315B9 /* Common */ = {
 			isa = PBXGroup;
 			children = (
@@ -929,14 +920,6 @@
 				AA641E1028C3B08B00641B0C /* UINavigationController+Utills.swift */,
 			);
 			path = Common;
-			sourceTree = "<group>";
-		};
-		AA08837828B960C8006315B9 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				AA08837928B960C8006315B9 /* Library */,
-			);
-			path = Views;
 			sourceTree = "<group>";
 		};
 		AA08837928B960C8006315B9 /* Library */ = {
@@ -1690,7 +1673,8 @@
 		AADCDBAA28B88E70006AF136 /* Coordinator */ = {
 			isa = PBXGroup;
 			children = (
-				AA08837028B960C8006315B9 /* Interfaces */,
+				AA08837128B960C8006315B9 /* Common */,
+				AA08837F28B960C8006315B9 /* Flows */,
 				284E9142714ABA6BA8B36783 /* Views */,
 			);
 			path = Coordinator;

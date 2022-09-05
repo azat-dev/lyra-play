@@ -376,24 +376,23 @@ extension AppCoordinatorImpl: LibraryCoordinator {
     }
     
     
-    
     func runOpenLibraryItemFlow(mediaId: UUID) {
         
-        let viewModelFactory = LibraryItemViewModelFactoryImpl()
-        
-        let viewModel = viewModelFactory.create(
-            mediaId: mediaId,
-            coordinator: self,
-            showMediaInfoUseCase: showMediaInfoUseCase,
-            currentPlayerStateUseCaseOutput: currentPlayerStateUseCase,
-            playMediaWithTranslationsUseCase: playMediaWithTranslationsUseCase,
-            importSubtitlesUseCase: importSubtitlesUseCase,
-            loadSubtitlesUseCase: loadSubtitlesUseCase
-        )
-        
-        let vc = LibraryItemViewController(viewModel: viewModel)
-        
-        navigationController.pushViewController(vc, animated: true)
+//        let viewModelFactory = LibraryItemViewModelFactoryImpl()
+//
+//        let viewModel = viewModelFactory.create(
+//            mediaId: mediaId,
+//            coordinator: self,
+//            showMediaInfoUseCase: showMediaInfoUseCase,
+//            currentPlayerStateUseCaseOutput: currentPlayerStateUseCase,
+//            playMediaWithTranslationsUseCase: playMediaWithTranslationsUseCase,
+//            importSubtitlesUseCase: importSubtitlesUseCase,
+//            loadSubtitlesUseCase: loadSubtitlesUseCase
+//        )
+//
+//        let vc = LibraryItemViewController(viewModel: viewModel)
+//
+//        navigationController.pushViewController(vc, animated: true)
     }
     
     func openAudioPlayer(trackId: UUID) {
