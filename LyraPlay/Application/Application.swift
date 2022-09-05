@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import UIKit
 
 public class Application {
 
@@ -66,6 +67,160 @@ public class Application {
         return try! LocalFilesRepository(baseDirectory: imagesDirectory)
     } ()
     
+    
+    private lazy var audioPlayer: AudioPlayer = {
+
+        return AudioPlayerImpl(audioSession: audioSession)
+    } ()
+    
+    private lazy var currentPlayerStateUseCase: CurrentPlayerStateUseCase = {
+        
+        let currentState = CurrentPlayerStateUseCaseImpl(
+            audioPlayer: audioPlayer,
+            showMediaInfoUseCase: showMediaInfoUseCase
+        )
+        
+        currentState.info.observe(on: self) { [weak self] info in
+            
+            guard let info = info else {
+                return
+            }
+
+            // FIXME:
+//            self?.playingNowService.update(from: info)
+        }
+        
+        return currentState
+    } ()
+    
+    private lazy var showMediaInfoUseCase: ShowMediaInfoUseCase = {
+        
+        return ShowMediaInfoUseCaseImpl(
+            audioLibraryRepository: audioLibraryRepository,
+            imagesRepository: imagesRepository,
+            defaultImage: UIImage(named: "Image.CoverPlaceholder")!.pngData()!
+        )
+    } ()
+
+    private lazy var subtitlesRepository: SubtitlesRepository = {
+      
+        return CoreDataSubtitlesRepository(coreDataStore: coreDataStore)
+    } ()
+    
+    private lazy var loadSubtitlesUseCase: LoadSubtitlesUseCase = {
+        return LoadSubtitlesUseCaseImpl(
+            subtitlesRepository: subtitlesRepository,
+            subtitlesFiles: subtitlesFilesRepository,
+            subtitlesParser: subtitlesParser
+        )
+    } ()
+    
+    private lazy var subtitlesFilesRepository: FilesRepository = {
+        
+        let url = try! FileManager.default.url(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: false
+        )
+        
+        let subtitlesDirectory = url.appendingPathComponent("subtitles", isDirectory: true)
+        
+        return try! LocalFilesRepository(baseDirectory: subtitlesDirectory)
+    } ()
+    
+    private lazy var loadTrackUseCase: LoadTrackUseCase = {
+        
+        return LoadTrackUseCaseImpl(
+            audioLibraryRepository: audioLibraryRepository,
+            audioFilesRepository: audioFilesRepository
+        )
+    } ()
+
+    private lazy var playMediaUseCase: PlayMediaUseCase = {
+        
+        return PlayMediaUseCaseImpl(
+            audioPlayer: audioPlayer,
+            loadTrackUseCase: loadTrackUseCase
+        )
+    } ()
+    
+    private lazy var subtitlesParser: SubtitlesParser = {
+        
+        let textSplitter = TextSplitterImpl()
+        let lyricsParser = LyricsParser(textSplitter: textSplitter)
+        
+        let subRipParser = SubRipFileFormatParser(textSplitter: textSplitter)
+        
+        return SubtitlesParserImpl(parsers: [
+            ".srt": subRipParser,
+            ".lrc": lyricsParser
+        ])
+    } ()
+    
+    private lazy var importSubtitlesUseCase: ImportSubtitlesUseCase = {
+
+        let factory = ImportSubtitlesUseCaseImplFactory(
+            supportedExtensions: [".srt", ".lrc"],
+            subtitlesRepository: subtitlesRepository,
+            subtitlesParser: subtitlesParser,
+            subtitlesFilesRepository: subtitlesFilesRepository
+        )
+        
+        return factory.create()
+    } ()
+    
+    private lazy var playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory = {
+
+        return PlaySubtitlesUseCaseImplFactory(
+            subtitlesIteratorFactory: SubtitlesIteratorFactoryImpl(),
+            schedulerFactory: SchedulerImplFactory(actionTimerFactory: ActionTimerFactoryImpl())
+        )
+    } ()
+        
+    private lazy var playMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCase = {
+        
+        return PlayMediaWithSubtitlesUseCaseImpl(
+            playMediaUseCase: playMediaUseCase,
+            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
+            loadSubtitlesUseCase: loadSubtitlesUseCase
+        )
+    } ()
+    
+    private lazy var provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase = {
+        
+        return ProvideTranslationsForSubtitlesUseCaseImpl(
+            dictionaryRepository: dictionaryRepository,
+            textSplitter: TextSplitterImpl(),
+            lemmatizer: LemmatizerImpl()
+        )
+    } ()
+    
+    private lazy var provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase = {
+        
+        return ProvideTranslationsToPlayUseCaseImpl(
+            provideTranslationsForSubtitlesUseCase: provideTranslationsForSubtitlesUseCase
+        )
+    } ()
+    
+    private lazy var pronounceTranslationsUseCase: PronounceTranslationsUseCase = {
+        
+        return PronounceTranslationsUseCaseImpl(
+            textToSpeechConverter: TextToSpeechConverterImpl(),
+            audioPlayer: AudioPlayerImpl(audioSession: audioSession)
+        )
+    } ()
+    
+    
+    private lazy var playMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCase = {
+        
+        return PlayMediaWithTranslationsUseCaseImpl(
+            playMediaWithSubtitlesUseCase: playMediaWithSubtitlesUseCase,
+            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
+            provideTranslationsToPlayUseCase: provideTranslationsToPlayUseCase,
+            pronounceTranslationsUseCase: pronounceTranslationsUseCase
+        )
+    } ()
 
     // MARK: - Initializers
     
@@ -100,9 +255,25 @@ public class Application {
         
         let libraryViewFactory = AudioFilesBrowserViewControllerFactory()
         
+        let libraryItemViewFactory = LibraryItemViewControllerFactory()
+        
+        let libraryItemViewModelFactory = LibraryItemViewModelImplFactory(
+            showMediaInfoUseCase: showMediaInfoUseCase,
+            currentPlayerStateUseCase: currentPlayerStateUseCase,
+            playMediaUseCase: playMediaWithTranslationsUseCase,
+            importSubtitlesUseCase: importSubtitlesUseCase,
+            loadSubtitlesUseCase: loadSubtitlesUseCase
+        )
+        
+        let libraryItemCoordinatorFactory = LibraryItemCoordinatorFactoryImpl(
+            viewModelFactory: libraryItemViewModelFactory,
+            viewFactory: libraryItemViewFactory
+        )
+        
         let libraryCoordinatorFactory = LibraryCoordinatorFactoryImpl(
             viewModelFactory: libraryViewModelFactory,
-            viewFactory: libraryViewFactory
+            viewFactory: libraryViewFactory,
+            libraryItemCoordinatorFactory: libraryItemCoordinatorFactory
         )
         
         let browseDictionaryUseCase = BrowseDictionaryUseCaseImpl(

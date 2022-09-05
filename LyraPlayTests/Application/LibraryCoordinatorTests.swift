@@ -17,7 +17,8 @@ class LibraryCoordinatorTests: XCTestCase {
         coordinator: LibraryCoordinator,
         rootContainer: StackPresentationContainerMock,
         view: AudioFilesBrowserViewMock,
-        viewModel: AudioFilesBrowserViewModelMock
+        viewModel: AudioFilesBrowserViewModelMock,
+        libraryItemCoordinator: LibraryItemCoordinatorMock
     )
 
     func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
@@ -36,10 +37,17 @@ class LibraryCoordinatorTests: XCTestCase {
 
         given(viewFactory.create(viewModel: any()))
             .willReturn(view)
+        
+        let libraryItemCoordinator = mock(LibraryItemCoordinator.self)
+        let libraryItemCoordinatorFactory = mock(LibraryItemCoordinatorFactory.self)
+        
+        given(libraryItemCoordinatorFactory.create())
+            .willReturn(libraryItemCoordinator)
 
         let coordinator = LibraryCoordinatorImpl(
             viewModelFactory: viewModelFactory,
-            viewFactory: viewFactory
+            viewFactory: viewFactory,
+            libraryItemCoordinatorFactory: libraryItemCoordinatorFactory
         )
 
         detectMemoryLeak(instance: coordinator, file: file, line: line)
@@ -49,7 +57,9 @@ class LibraryCoordinatorTests: XCTestCase {
                 viewModel,
                 viewModelFactory,
                 view,
-                viewFactory
+                viewFactory,
+                libraryItemCoordinator,
+                libraryItemCoordinatorFactory
             )
         }
 
@@ -57,7 +67,8 @@ class LibraryCoordinatorTests: XCTestCase {
             coordinator,
             rootContainer,
             view,
-            viewModel
+            viewModel,
+            libraryItemCoordinator
         )
     }
     
@@ -70,6 +81,32 @@ class LibraryCoordinatorTests: XCTestCase {
         sut.coordinator.start(at: sut.rootContainer)
         
         // Then
-        verify(sut.rootContainer.setRoot(sut.view)).wasCalled()
+        verify(sut.rootContainer.setRoot(sut.view)).wasCalled(1)
+    }
+    
+    func test_runOpenLibraryItemFlow__without_start() {
+        
+        // Given
+        let sut = createSUT()
+        
+        // When
+        sut.coordinator.runOpenLibraryItemFlow(mediaId: UUID())
+        
+        // Then
+        verify(sut.coordinator.runOpenLibraryItemFlow(mediaId: any())).wasNeverCalled()
+    }
+    
+    func test_runOpenLibraryItemFlow() {
+        
+        // Given
+        let sut = createSUT()
+        let mediaId = UUID()
+        
+        // When
+        sut.coordinator.start(at: sut.rootContainer)
+        sut.coordinator.runOpenLibraryItemFlow(mediaId: mediaId)
+        
+        // Then
+        verify(sut.coordinator.runOpenLibraryItemFlow(mediaId: mediaId)).wasCalled(1)
     }
 }

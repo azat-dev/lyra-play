@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol PresentationContainer {
+public protocol PresentationContainer: AnyObject {
     
     func present(_ presentable: Presentable)
     

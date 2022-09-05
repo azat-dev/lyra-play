@@ -69,6 +69,7 @@
 		8A3E193C04CF87B557E66824 /* LibraryItemCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A20F7343D6DB0880ADB26D /* LibraryItemCoordinator.swift */; };
 		8B0AA4BAC419F2F2A9E7A5CF /* SubtitlesPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBC01D9BC320769887AD1D93 /* SubtitlesPosition.swift */; };
 		8B3A2A78D24C274CE9511659 /* ProvideTranslationsToPlayUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B748C7782B17299A5526CDD /* ProvideTranslationsToPlayUseCaseImpl.swift */; };
+		8CF8389D68D488FFDF5FCCC8 /* LibraryItemViewModelImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B0479BE8B009A470A04C13 /* LibraryItemViewModelImplFactory.swift */; };
 		8EC4703AA8D36BBB3C74A3C7 /* DictionaryListBrowserViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DD6C23E2E6B5924FF8B5EA /* DictionaryListBrowserViewFactory.swift */; };
 		918CEAEB02871A579A85EAA5 /* MainTabBarViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C4220E81D7852DF83E87A /* MainTabBarViewControllerFactory.swift */; };
 		92300CA9124D603FAE818740 /* LibraryItemViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17623FA822C271296774312F /* LibraryItemViewControllerFactory.swift */; };
@@ -344,7 +345,7 @@
 		E694A057588488E9B7547E36 /* PlayMediaWithSubtitlesUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABBC56343CC4A10FD2C2946D /* PlayMediaWithSubtitlesUseCaseImpl.swift */; };
 		E83BBDD22C1FFA257299F478 /* MainTabBarViewModelImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74F947954CFB2CF297F79E4 /* MainTabBarViewModelImpl.swift */; };
 		EAAB9060AC792C0861E262D6 /* DictionaryListBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9637C2EEB35C1093860FE1 /* DictionaryListBrowserView.swift */; };
-		EAAC71B4C29C82B44BE581A6 /* (null) in Sources */ = {isa = PBXBuildFile; };
+		EAAC71B4C29C82B44BE581A6 /* BuildFile in Sources */ = {isa = PBXBuildFile; };
 		EAB1F084D84C3B3F698EC727 /* AudioSessionImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A038B48D98578860715FE5A /* AudioSessionImplFactory.swift */; };
 		EC5CC0EDD67A7CD171F53803 /* DictionaryListBrowserViewModelImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C86013FECEA642AFDE50647 /* DictionaryListBrowserViewModelImplFactory.swift */; };
 		F02A83F940FF30F78A240253 /* LibraryItemViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D021D00F7F3C90D3257220 /* LibraryItemViewModelFactory.swift */; };
@@ -399,6 +400,7 @@
 		376434EBC0617FBD15B88177 /* SubRipFileFormatParserFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubRipFileFormatParserFactory.swift; sourceTree = "<group>"; };
 		392AD692149CC22A4EE93F21 /* SubtitlesParserFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubtitlesParserFactory.swift; sourceTree = "<group>"; };
 		398D467D04C83DB24EDEDF3D /* DictionaryListBrowserViewControllerFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DictionaryListBrowserViewControllerFactory.swift; sourceTree = "<group>"; };
+		39B0479BE8B009A470A04C13 /* LibraryItemViewModelImplFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LibraryItemViewModelImplFactory.swift; sourceTree = "<group>"; };
 		41567BE13535B1F8CFCB356A /* SubtitlesParserImpl.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubtitlesParserImpl.swift; sourceTree = "<group>"; };
 		41D8EACE0B456936318FF48C /* AudioLibraryRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AudioLibraryRepository.swift; sourceTree = "<group>"; };
 		41E338E2B455FD1922D99487 /* ProvideTranslationsForSubtitlesUseCaseImplFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProvideTranslationsForSubtitlesUseCaseImplFactory.swift; sourceTree = "<group>"; };
@@ -845,6 +847,7 @@
 				18F18D684B25379D19431F69 /* LibraryItemViewModel.swift */,
 				69D021D00F7F3C90D3257220 /* LibraryItemViewModelFactory.swift */,
 				AE40ED592D6226E51B6736C1 /* LibraryItemViewModelImpl.swift */,
+				39B0479BE8B009A470A04C13 /* LibraryItemViewModelImplFactory.swift */,
 			);
 			path = LibraryItemViewModel;
 			sourceTree = "<group>";
@@ -1276,11 +1279,11 @@
 		AA5DD6FF28B9641400929906 /* Application */ = {
 			isa = PBXGroup;
 			children = (
+				AA94065428C60A2F00AEAA56 /* DictionaryCoordinatorTests.swift */,
 				AA5DD70028B9643F00929906 /* LibraryCoordinatorTests.swift */,
 				AAA2DE3B28BA1F05008C5923 /* LibraryItemCoordinatorTests.swift */,
-				AA3B730328C500860071CBA4 /* MainTabBarCoordinatorTests.swift */,
-				AA94065428C60A2F00AEAA56 /* DictionaryCoordinatorTests.swift */,
 				AA94064528C5D8BC00AEAA56 /* MainCoordinatorTests.swift */,
+				AA3B730328C500860071CBA4 /* MainTabBarCoordinatorTests.swift */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -2359,6 +2362,7 @@
 				2DBBD22BD78D1F5FC6E73F53 /* LibraryItemCoordinatorFactory.swift in Sources */,
 				1794E3E69879CDA802703250 /* LibraryItemCoordinatorFactoryImpl.swift in Sources */,
 				C82EA2DFAB4508C12CE3476A /* LibraryItemCoordinatorImpl.swift in Sources */,
+				8CF8389D68D488FFDF5FCCC8 /* LibraryItemViewModelImplFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2434,7 +2438,7 @@
 				AA3BAB25286C7EE2005EE01E /* UserDefaultsKeyValueStoreTests.swift in Sources */,
 				AA3B730428C500860071CBA4 /* MainTabBarCoordinatorTests.swift in Sources */,
 				AABB49EA28AFF50E0088484B /* Dictionary+Helpers.swift in Sources */,
-				EAAC71B4C29C82B44BE581A6 /* (null) in Sources */,
+				EAAC71B4C29C82B44BE581A6 /* BuildFile in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
