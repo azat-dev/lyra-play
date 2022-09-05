@@ -67,12 +67,28 @@ class MainTabBarCoordinatorTests: XCTestCase {
         )
     }
     
-    func test_start_create_tabbar_view_on_start() {
+    func test_start__create_tabbar_view_on_start() {
         
+        // Given
         let sut = createSUT()
         
+        // When
         sut.coordinator.start(at: sut.rootContainer)
+        
+        // Then
         verify(sut.rootContainer.setRoot(sut.mainTabBarView)).wasCalled()
     }
+    
+    func test_runLibraryFlow() {
+        
+        // Given
+        let sut = createSUT()
+        
+        // When
+        sut.coordinator.runLibraryFlow()
+        sut.coordinator.runLibraryFlow()
+        
+        // Then
+        verify(sut.libraryCoordinator.start(at: sut.mainTabBarView.libraryContainer)).wasCalled(1)
+    }
 }
-
