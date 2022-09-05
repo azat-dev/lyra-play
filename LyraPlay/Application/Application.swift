@@ -12,6 +12,8 @@ public class Application {
 
     // MARK: - Properties
     
+    private var mainCoordinator: MainCoordinator?
+    
     private lazy var coreDataStore: CoreDataStore = {
         
         let url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("LyraPlay.sqlite")
@@ -27,6 +29,11 @@ public class Application {
     private lazy var audioLibraryRepository: AudioLibraryRepository = {
         
         return CoreDataAudioLibraryRepository(coreDataStore: coreDataStore)
+    } ()
+    
+    private lazy var dictionaryRepository: DictionaryRepository = {
+        
+        return CoreDataDictionaryRepository(coreDataStore: coreDataStore)
     } ()
     
     private lazy var imagesRepository: FilesRepository = {
@@ -82,7 +89,6 @@ public class Application {
         
         let tagsParser = TagsParserImpl()
         
-        
         let imporAudioFileUseCaseFactory = ImportAudioFileUseCaseImplFactory(
             audioLibraryRepository: audioLibraryRepository,
             audioFilesRepository: audioFilesRepository,
@@ -97,12 +103,33 @@ public class Application {
             importAudioFileUseCaseFactory: imporAudioFileUseCaseFactory
         )
         
-        let mainCoordinator = MainTabBarCoordinatorImpl(
-            mainTabBarViewModelFactory: mainTabBarViewModelFactory,
-            mainTabBarViewFactory: mainTabBarViewFactory,
-            libraryCoordinatorFactory: libraryCoordinatorFactory
+        let browseDictionaryUseCase = BrowseDictionaryUseCaseImpl(
+            dictionaryRepository: dictionaryRepository
         )
         
+        let dictionaryViewModelFactory = DictionaryListBrowserViewModelImplFactory(
+            browseDictionaryUseCase: browseDictionaryUseCase
+        )
+        
+        let dictionaryViewFactory = DictionaryListBrowserViewControllerFactory()
+        
+        let dictionaryCoordinatorFactory = DictionaryCoordinatorFactoryImpl(
+            viewModelFactory: dictionaryViewModelFactory,
+            viewFactory: dictionaryViewFactory
+        )
+        
+        let mainTabBarCoordinatorFactory = MainTabBarCoordinatorImplFactory(
+            mainTabBarViewModelFactory: mainTabBarViewModelFactory,
+            mainTabBarViewFactory: mainTabBarViewFactory,
+            libraryCoordinatorFactory: libraryCoordinatorFactory,
+            dictionaryCoordinatorFactory: dictionaryCoordinatorFactory
+        )
+        
+        let mainCoordinator = MainCoordinatorImpl(
+            mainTabBarCoordinatorFactory: mainTabBarCoordinatorFactory
+        )
+        
+        self.mainCoordinator = mainCoordinator
         mainCoordinator.start(at: container)
     }
 }

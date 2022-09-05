@@ -25,6 +25,8 @@ public final class MainCoordinatorImpl: BaseCoordinator, MainCoordinator {
     public func start(at container: StackPresentationContainer) {
     
         let mainTabBarCoordinator = mainTabBarCoordinatorFactory.create()
+        addChild(mainTabBarCoordinator)
+        
         mainTabBarCoordinator.start(at: container)
     }
 }

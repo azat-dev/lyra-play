@@ -22,9 +22,25 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
     
     private lazy var tabControllers: [Tab: UINavigationController] = {
         
+        let libraryView = UINavigationController()
+        
+        libraryView.tabBarItem = .init(
+            title: "Library",
+            image: .init(systemName: "books.vertical"),
+            selectedImage: .init(systemName: "books.vertical.fill")
+        )
+        
+        let dictionaryView = UINavigationController()
+        
+        dictionaryView.tabBarItem = .init(
+            title: "Dictionary",
+            image: .init(systemName: "character.book.closed"),
+            selectedImage: .init(systemName: "character.book.closed.fill")
+        )
+        
         return [
-            .library: UINavigationController(),
-            .dictionary: UINavigationController()
+            .library: libraryView,
+            .dictionary: dictionaryView
         ]
     } ()
     
@@ -36,7 +52,7 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
         return tabControllers[.dictionary]!
     }
     
-
+    
     // MARK: - Initializers
     
     init(viewModel: MainTabBarViewModel) {
@@ -79,19 +95,20 @@ extension MainTabBarViewController {
 // MARK: - TabBarDelegate
 
 extension MainTabBarViewController {
-
+    
     public override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-
-        switch Tab(rawValue: selectedIndex) {
         
+        guard let selecteTabIndex = tabBar.items?.firstIndex(of: item) else {
+            return
+        }
+        
+        switch Tab.allCases[selecteTabIndex] {
+            
         case .dictionary:
             viewModel.selectDictionaryTab()
-        
+            
         case .library:
             viewModel.selectLibraryTab()
-            
-        case .none:
-            break
         }
     }
 }
@@ -109,15 +126,12 @@ extension MainTabBarViewController {
 // MARK: - Layout
 extension MainTabBarViewController {
     
-    private func layout() {
-    }
+    private func layout() {}
 }
 
 // MARK: - Styles
 
 extension MainTabBarViewController {
     
-    private func style() {
-    }
+    private func style() {}
 }
-

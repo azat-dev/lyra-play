@@ -104,15 +104,6 @@ extension DictionaryListBrowserViewController {
         viewModel.addNewItem()
     }
     
-    private func setupTabBar() {
-        
-        tabBarItem = .init(
-            title: "Dictionary",
-            image: .init(systemName: "character.book.closed"),
-            selectedImage: .init(systemName: "character.book.closed.fill")
-        )
-    }
-    
     private func setupNavigatioBar() {
         
         let addButton = UIBarButtonItem(
@@ -126,7 +117,6 @@ extension DictionaryListBrowserViewController {
 
     private func setupViews() {
         
-        setupTabBar()
         setupNavigatioBar()
         
         self.tableView.register(

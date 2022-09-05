@@ -16,18 +16,21 @@ public final class MainTabBarCoordinatorImpl: BaseCoordinator, MainTabBarCoordin
     private let mainTabBarViewModelFactory: MainTabBarViewModelFactory
     private let mainTabBarViewFactory: MainTabBarViewFactory
     private let libraryCoordinatorFactory: LibraryCoordinatorFactory
+    private let dictionaryCoordinatorFactory: DictionaryCoordinatorFactory
 
     // MARK: - Initializers
     
     public init(
         mainTabBarViewModelFactory: MainTabBarViewModelFactory,
         mainTabBarViewFactory: MainTabBarViewFactory,
-        libraryCoordinatorFactory: LibraryCoordinatorFactory
+        libraryCoordinatorFactory: LibraryCoordinatorFactory,
+        dictionaryCoordinatorFactory: DictionaryCoordinatorFactory
     ) {
         
         self.mainTabBarViewModelFactory = mainTabBarViewModelFactory
         self.mainTabBarViewFactory = mainTabBarViewFactory
         self.libraryCoordinatorFactory = libraryCoordinatorFactory
+        self.dictionaryCoordinatorFactory = dictionaryCoordinatorFactory
         
         super.init()
     }
@@ -66,6 +69,17 @@ extension MainTabBarCoordinatorImpl {
     }
     
     public func runDictionaryFlow() {
-        fatalError()
+        
+        guard
+            let mainTabBarView = mainTabBarView,
+            !children.contains(where: { $0 is DictionaryCoordinator })
+        else {
+            return
+        }
+        
+        let dictionaryCoordinator = dictionaryCoordinatorFactory.create()
+        addChild(dictionaryCoordinator)
+        
+        dictionaryCoordinator.start(at: mainTabBarView.dictionaryContainer)
     }
 }

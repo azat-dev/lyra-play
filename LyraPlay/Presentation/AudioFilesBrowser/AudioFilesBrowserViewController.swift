@@ -59,15 +59,6 @@ extension AudioFilesBrowserViewController {
         viewModel.addNewItem()
     }
     
-    private func setupTabBar() {
-        
-        tabBarItem = .init(
-            title: "Library",
-            image: .init(systemName: "books.vertical"),
-            selectedImage: .init(systemName: "books.vertical.fill")
-        )
-    }
-    
     private func setupNavigatioBar() {
         
         let addButton = UIBarButtonItem(
@@ -81,7 +72,6 @@ extension AudioFilesBrowserViewController {
     
     private func setupViews() {
         
-        setupTabBar()
         setupNavigatioBar()
         
         self.tableView.delegate = self

@@ -14,10 +14,6 @@ public protocol MainTabBarViewModelInput {
     func selectDictionaryTab() -> Void
 }
 
-public protocol MainTabBarViewModelOutput {
+public protocol MainTabBarViewModelOutput {}
 
-}
-
-public protocol MainTabBarViewModel: MainTabBarViewModelOutput, MainTabBarViewModelInput {
-
-}
+public protocol MainTabBarViewModel: MainTabBarViewModelOutput, MainTabBarViewModelInput {}
