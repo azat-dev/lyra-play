@@ -23,7 +23,7 @@ public final class LibraryItemViewController: UIViewController, LibraryItemView 
     private var mainGroup = UIView()
     private var subtitlesPresenter = SubtitlesPresenterView()
     
-    init(viewModel: LibraryItemViewModel) {
+    public init(viewModel: LibraryItemViewModel) {
         
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)

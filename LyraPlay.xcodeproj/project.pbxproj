@@ -190,7 +190,6 @@
 		AA5DD6FC28B962BE00929906 /* Presentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD6FB28B962BD00929906 /* Presentable.swift */; };
 		AA5DD70128B9643F00929906 /* LibraryCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD70028B9643F00929906 /* LibraryCoordinatorTests.swift */; };
 		AA5DD70D28B970FA00929906 /* LyraPlayTests-LyraPlayMocks.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD70C28B970FA00929906 /* LyraPlayTests-LyraPlayMocks.generated.swift */; };
-		AA5DD70F28B9734100929906 /* ImportMediaFilesFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD70E28B9734100929906 /* ImportMediaFilesFlow.swift */; };
 		AA5DD71128B9737400929906 /* LibraryItemCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD71028B9737400929906 /* LibraryItemCoordinator.swift */; };
 		AA5DD71328B9748800929906 /* TagsParserFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD71228B9748800929906 /* TagsParserFactory.swift */; };
 		AA5DD71528B974A900929906 /* TagsParserFactoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD71428B974A900929906 /* TagsParserFactoryImpl.swift */; };
@@ -550,7 +549,6 @@
 		AA5DD6FB28B962BD00929906 /* Presentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Presentable.swift; sourceTree = "<group>"; };
 		AA5DD70028B9643F00929906 /* LibraryCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryCoordinatorTests.swift; sourceTree = "<group>"; };
 		AA5DD70C28B970FA00929906 /* LyraPlayTests-LyraPlayMocks.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LyraPlayTests-LyraPlayMocks.generated.swift"; sourceTree = "<group>"; };
-		AA5DD70E28B9734100929906 /* ImportMediaFilesFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportMediaFilesFlow.swift; sourceTree = "<group>"; };
 		AA5DD71028B9737400929906 /* LibraryItemCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemCoordinator.swift; sourceTree = "<group>"; };
 		AA5DD71228B9748800929906 /* TagsParserFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsParserFactory.swift; sourceTree = "<group>"; };
 		AA5DD71428B974A900929906 /* TagsParserFactoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsParserFactoryImpl.swift; sourceTree = "<group>"; };
@@ -991,7 +989,6 @@
 			isa = PBXGroup;
 			children = (
 				99791CAF11F81F1D7F70481B /* DictionaryCoordinator */,
-				AA5DD70E28B9734100929906 /* ImportMediaFilesFlow.swift */,
 				AA94065228C5EA1F00AEAA56 /* LibraryCoordinator */,
 				AA5DD71028B9737400929906 /* LibraryItemCoordinator.swift */,
 				AA94065128C5EA0800AEAA56 /* MainCoordinator */,
@@ -2102,7 +2099,6 @@
 				AA190E72287AC6AC000514AB /* SubtitlesPresenterViewModel.swift in Sources */,
 				AA7B0D7F28721B050067DDB5 /* UIFont+Utils.swift in Sources */,
 				AA040E0128834F04000CFC26 /* SubtitlesPresenterView+Styles.swift in Sources */,
-				AA5DD70F28B9734100929906 /* ImportMediaFilesFlow.swift in Sources */,
 				AA273A1E28AD47BE00119088 /* Publisher+Utils.swift in Sources */,
 				AA1ACC2C286317A2000EEDD5 /* TagsParser.swift in Sources */,
 				AA3C533D28BE5F6300CBE3C6 /* ImportSubtitlesUseCaseImplFactory.swift in Sources */,
