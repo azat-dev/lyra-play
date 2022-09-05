@@ -1,61 +1,34 @@
 //
-//  LibraryItemViewModel.swift
+//  LibraryItemViewModelImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 02.07.22.
+//  Created by Azat Kaiumov on 05.09.2022.
 //
 
 import Foundation
 import Combine
 
-// MARK: - Interfaces
-
-public struct LibraryItemInfoPresentation {
-    
-    public var title: String
-    public var artist: String
-    public var coverImage: Data
-    public var duration: String
-}
-
-public protocol LibraryItemViewModelOutput {
-
-    var isPlaying: Observable<Bool> { get }
-    
-    var info: Observable<LibraryItemInfoPresentation?> { get }
-    
-    var subtitlesPresenterViewModel: Observable<SubtitlesPresenterViewModel?> { get }
-}
-
-public protocol LibraryItemViewModelInput {
-    
-    func load() async
-    
-    func togglePlay() async
-    
-    func attachSubtitles(language: String) async
-}
-
-public protocol LibraryItemViewModel: LibraryItemViewModelOutput, LibraryItemViewModelInput {
-}
-
-// MARK: - Implementations
-
 public final class LibraryItemViewModelImpl: LibraryItemViewModel {
-    
+
+    // MARK: - Properties
+
     private let trackId: UUID
     private weak var coordinator: LibraryItemCoordinatorInput?
+    
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
-    private let playMediaUseCase: PlayMediaWithTranslationsUseCase
     private let currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput
+    private let playMediaUseCase: PlayMediaWithTranslationsUseCase
     private let importSubtitlesUseCase: ImportSubtitlesUseCase
     private let loadSubtitlesUseCase: LoadSubtitlesUseCase
     
-    public var isPlaying: Observable<Bool> = Observable(false)
-    public var info: Observable<LibraryItemInfoPresentation?> = Observable(nil)
-    public var subtitlesPresenterViewModel: Observable<SubtitlesPresenterViewModel?> = Observable(nil)
-    private var subtitlesObserver: AnyCancellable?
+    public var isPlaying: Observable<Bool> = .init(false)
+    public var info: Observable<LibraryItemInfoPresentation?> = .init(nil)
+    public var subtitlesPresenterViewModel: Observable<SubtitlesPresenterViewModel?> = .init(nil)
     
+    private var subtitlesObserver: AnyCancellable?
+
+    // MARK: - Initializers
+
     public init(
         trackId: UUID,
         coordinator: LibraryItemCoordinatorInput,
@@ -65,16 +38,20 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
         importSubtitlesUseCase: ImportSubtitlesUseCase,
         loadSubtitlesUseCase: LoadSubtitlesUseCase
     ) {
-        
+
         self.trackId = trackId
         self.coordinator = coordinator
         self.showMediaInfoUseCase = showMediaInfoUseCase
-        self.playMediaUseCase = playMediaUseCase
         self.currentPlayerStateUseCase = currentPlayerStateUseCase
+        self.playMediaUseCase = playMediaUseCase
         self.importSubtitlesUseCase = importSubtitlesUseCase
         self.loadSubtitlesUseCase = loadSubtitlesUseCase
         
         bind(to: currentPlayerStateUseCase)
+    }
+    
+    deinit {
+        subtitlesObserver?.cancel()
     }
     
     private func updatePlayingState() {
@@ -101,16 +78,12 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
             self?.updatePlayingState()
         }
     }
-    
-    deinit {
-        subtitlesObserver?.cancel()
-    }
 }
 
-// MARK: - Input
+// MARK: - Input Methods
 
 extension LibraryItemViewModelImpl {
-    
+
     private func formatDuration(_ value: Double) -> String {
         return "\(value)"
     }
