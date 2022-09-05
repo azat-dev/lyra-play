@@ -41,6 +41,8 @@ public final class MainTabBarCoordinatorImpl: BaseCoordinator, MainTabBarCoordin
 
         self.mainTabBarView = tabBarView
         container.setRoot(tabBarView)
+        
+        runLibraryFlow()
     }
 }
 

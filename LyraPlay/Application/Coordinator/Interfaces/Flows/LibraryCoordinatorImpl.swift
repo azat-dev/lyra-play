@@ -15,8 +15,8 @@ public final class LibraryCoordinatorImpl: BaseCoordinator, LibraryCoordinator {
     private let viewFactory: AudioFilesBrowserViewFactory
     private let viewModelFactory: AudioFilesBrowserViewModelFactory
     
-    private let browseAudioLibraryUseCaseFactory: () -> BrowseAudioLibraryUseCase
-    private let importAudioFileUseCaseFactory: () -> ImportAudioFileUseCase
+    private let browseAudioLibraryUseCaseFactory: BrowseAudioLibraryUseCaseFactory
+    private let importAudioFileUseCaseFactory: ImportAudioFileUseCaseFactory
     
     private var container: PresentationContainer?
     
@@ -25,8 +25,8 @@ public final class LibraryCoordinatorImpl: BaseCoordinator, LibraryCoordinator {
     public init(
         viewModelFactory: AudioFilesBrowserViewModelFactory,
         viewFactory: AudioFilesBrowserViewFactory,
-        browseAudioLibraryUseCaseFactory: @escaping () -> BrowseAudioLibraryUseCase,
-        importAudioFileUseCaseFactory: @escaping () -> ImportAudioFileUseCase
+        browseAudioLibraryUseCaseFactory: BrowseAudioLibraryUseCaseFactory,
+        importAudioFileUseCaseFactory: ImportAudioFileUseCaseFactory
     ) {
         
         
@@ -49,8 +49,8 @@ public final class LibraryCoordinatorImpl: BaseCoordinator, LibraryCoordinator {
 
     public func start(at presentationContainer: StackPresentationContainer) {
         
-        let importAudioFileUseCase = importAudioFileUseCaseFactory()
-        let browseAudioLibraryUseCase = browseAudioLibraryUseCaseFactory()
+        let importAudioFileUseCase = importAudioFileUseCaseFactory.create()
+        let browseAudioLibraryUseCase = browseAudioLibraryUseCaseFactory.create()
 
         let viewModel = viewModelFactory.create(
             coordinator: self,

@@ -10,7 +10,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    private var appCoordinator: AppCoordinator!
+    private var application: Application!
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -23,10 +23,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window = window
         
         let navigationController = UINavigationController()
-        
-        appCoordinator = AppCoordinatorImpl(navigationController: navigationController)
-        appCoordinator.start()
-        
+
+        application = Application()
+        application.start(container: navigationController)
+
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
     }
@@ -63,7 +63,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // FIXME: FIX CRITICAL
 //        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
-
-
 }
 
