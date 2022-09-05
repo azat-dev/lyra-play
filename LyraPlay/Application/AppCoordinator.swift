@@ -388,7 +388,7 @@ extension AppCoordinatorImpl: LibraryCoordinator {
 
 // MARK: - DictionaryListBrowserCoordinator
 
-extension AppCoordinatorImpl: DictionaryListBrowserCoordinator {
+extension AppCoordinatorImpl {
     
     func addNewDictionaryItem(completion: @escaping (DictionaryItem) -> Void) {
         

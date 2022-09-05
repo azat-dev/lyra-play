@@ -6,26 +6,32 @@
 //
 
 import XCTest
+import Mockingbird
+
 import LyraPlay
 
 class DictionaryListBrowserViewModelTests: XCTestCase {
     
     typealias SUT = (
         viewModel: DictionaryListBrowserViewModel,
-        dictionaryListBrowserCoordinator: DictionaryListBrowserCoordinatorMock,
+        dictionaryListBrowserCoordinator: DictionaryCoordinatorMock,
         browseDictionaryUseCase: BrowseDictionaryUseCaseMock
     )
     
-    func createSUT() -> SUT {
+    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
         
-        let dictionaryListBrowserCoordinator = DictionaryListBrowserCoordinatorMock()
+        let dictionaryListBrowserCoordinator = mock(DictionaryCoordinator.self)
         let browseDictionaryUseCase = BrowseDictionaryUseCaseMock()
         
         let viewModel = DictionaryListBrowserViewModelImpl(
             coordinator: dictionaryListBrowserCoordinator,
             browseDictionaryUseCase: browseDictionaryUseCase
         )
-        detectMemoryLeak(instance: viewModel)
+        detectMemoryLeak(instance: viewModel, file: file, line: line)
+        
+        addTeardownBlock {
+            reset(dictionaryListBrowserCoordinator)
+        }
         
         return (
             viewModel,
@@ -147,14 +153,12 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
         // Given
         let sut = createSUT()
         
-        let expectation = expectation(description: "Will call coordinator")
-        sut.dictionaryListBrowserCoordinator.willAddNewDictionaryItem = { _ in expectation.fulfill() }
-        
+
         // When
         sut.viewModel.addNewItem()
         
         // Then
-        wait(for: [expectation], timeout: 1)
+        verify(sut.dictionaryListBrowserCoordinator.runCreationFlow(completion: any())).wasCalled(1)
     }
 }
 
@@ -194,20 +198,6 @@ extension DictionaryListBrowserViewModelTests {
                 return .loaded(items: items.map { $0.id })
             }
         }
-    }
-}
-
-// MARK: - Mocks
-
-final class DictionaryListBrowserCoordinatorMock: DictionaryListBrowserCoordinator {
-    
-    typealias AddNewDictionaryItemCallback = (_ completion: (DictionaryItem) -> Void) -> Void
-    
-    var willAddNewDictionaryItem: AddNewDictionaryItemCallback = { _ in }
-    
-    
-    func addNewDictionaryItem(completion: @escaping (DictionaryItem) -> Void) {
-        willAddNewDictionaryItem(completion)
     }
 }
 

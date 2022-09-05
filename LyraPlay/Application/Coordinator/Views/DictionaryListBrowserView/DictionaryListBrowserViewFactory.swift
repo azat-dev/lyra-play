@@ -6,6 +6,6 @@
 //
 
 public protocol DictionaryListBrowserViewFactory {
-    
+
     func create(viewModel: DictionaryListBrowserViewModel) -> DictionaryListBrowserView
 }
