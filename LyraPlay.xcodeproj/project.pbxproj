@@ -952,17 +952,10 @@
 			isa = PBXGroup;
 			children = (
 				AA5DD70E28B9734100929906 /* ImportMediaFilesFlow.swift */,
-				AA08838128B960C8006315B9 /* LibraryCoordinator.swift */,
-				AA641DFF28C36A8B00641B0C /* LibraryCoordinatorFactory.swift */,
-				AA641E0128C36AB600641B0C /* LibraryCoordinatorFactoryImpl.swift */,
-				AA08838028B960C8006315B9 /* LibraryCoordinatorImpl.swift */,
+				AA94065228C5EA1F00AEAA56 /* LibraryCoordinator */,
 				AA5DD71028B9737400929906 /* LibraryItemCoordinator.swift */,
-				AA641E0328C3935E00641B0C /* MainCoordinator.swift */,
-				AA94064B28C5DD0800AEAA56 /* MainCoordinatorImpl.swift */,
-				AA641DFB28C3696200641B0C /* MainTabBarCoordinator.swift */,
-				AA94064728C5DAB300AEAA56 /* MainTabBarCoordinatorFactory.swift */,
-				AA641DFD28C369DB00641B0C /* MainTabBarCoordinatorImpl.swift */,
-				AA94064928C5DAE600AEAA56 /* MainTabBarCoordinatorImplFactory.swift */,
+				AA94065128C5EA0800AEAA56 /* MainCoordinator */,
+				AA94065328C5EA4600AEAA56 /* MainTabBarCoordinator */,
 			);
 			path = Flows;
 			sourceTree = "<group>";
@@ -1445,6 +1438,37 @@
 				AA7B0D7C28721A5E0067DDB5 /* Fonts.swift */,
 			);
 			path = SupportFiles;
+			sourceTree = "<group>";
+		};
+		AA94065128C5EA0800AEAA56 /* MainCoordinator */ = {
+			isa = PBXGroup;
+			children = (
+				AA641E0328C3935E00641B0C /* MainCoordinator.swift */,
+				AA94064B28C5DD0800AEAA56 /* MainCoordinatorImpl.swift */,
+			);
+			path = MainCoordinator;
+			sourceTree = "<group>";
+		};
+		AA94065228C5EA1F00AEAA56 /* LibraryCoordinator */ = {
+			isa = PBXGroup;
+			children = (
+				AA08838128B960C8006315B9 /* LibraryCoordinator.swift */,
+				AA641DFF28C36A8B00641B0C /* LibraryCoordinatorFactory.swift */,
+				AA641E0128C36AB600641B0C /* LibraryCoordinatorFactoryImpl.swift */,
+				AA08838028B960C8006315B9 /* LibraryCoordinatorImpl.swift */,
+			);
+			path = LibraryCoordinator;
+			sourceTree = "<group>";
+		};
+		AA94065328C5EA4600AEAA56 /* MainTabBarCoordinator */ = {
+			isa = PBXGroup;
+			children = (
+				AA641DFB28C3696200641B0C /* MainTabBarCoordinator.swift */,
+				AA94064728C5DAB300AEAA56 /* MainTabBarCoordinatorFactory.swift */,
+				AA641DFD28C369DB00641B0C /* MainTabBarCoordinatorImpl.swift */,
+				AA94064928C5DAE600AEAA56 /* MainTabBarCoordinatorImplFactory.swift */,
+			);
+			path = MainTabBarCoordinator;
 			sourceTree = "<group>";
 		};
 		AA9BEAF92865BF310028DF8E /* UseCases */ = {
