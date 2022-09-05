@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol MainCoordinator: Coordinator {
+public protocol MainCoordinator: Coordinator {
     
     func start(at: StackPresentationContainer)
 }

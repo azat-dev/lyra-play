@@ -14,7 +14,7 @@ public protocol MainTabBarCoordinatorInput {
     func runDictionaryFlow()
 }
 
-public protocol MainTabBarCoordinator: BaseCoordinator, MainTabBarCoordinatorInput {
+public protocol MainTabBarCoordinator: Coordinator, MainTabBarCoordinatorInput {
     
     func start(at: StackPresentationContainer)
 }

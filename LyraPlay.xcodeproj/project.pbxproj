@@ -244,6 +244,10 @@
 		AA8BF76E28567A1F0010FA1E /* LyraPlayUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF76D28567A1F0010FA1E /* LyraPlayUITests.swift */; };
 		AA8BF77028567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF76F28567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift */; };
 		AA8BF78228567C410010FA1E /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF78128567C410010FA1E /* AppCoordinator.swift */; };
+		AA94064628C5D8BC00AEAA56 /* MainCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA94064528C5D8BC00AEAA56 /* MainCoordinatorTests.swift */; };
+		AA94064828C5DAB300AEAA56 /* MainTabBarCoordinatorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA94064728C5DAB300AEAA56 /* MainTabBarCoordinatorFactory.swift */; };
+		AA94064A28C5DAE600AEAA56 /* MainTabBarCoordinatorImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA94064928C5DAE600AEAA56 /* MainTabBarCoordinatorImplFactory.swift */; };
+		AA94064C28C5DD0800AEAA56 /* MainCoordinatorImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA94064B28C5DD0800AEAA56 /* MainCoordinatorImpl.swift */; };
 		AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEAFD2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift */; };
 		AA9BEB022865D5BB0028DF8E /* AudioFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB012865D5BB0028DF8E /* AudioFileInfo.swift */; };
 		AA9BEB0B28661DCE0028DF8E /* CoreDataAudioLibraryRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB0A28661DCE0028DF8E /* CoreDataAudioLibraryRepositoryTests.swift */; };
@@ -593,6 +597,10 @@
 		AA8BF76D28567A1F0010FA1E /* LyraPlayUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyraPlayUITests.swift; sourceTree = "<group>"; };
 		AA8BF76F28567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyraPlayUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		AA8BF78128567C410010FA1E /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		AA94064528C5D8BC00AEAA56 /* MainCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinatorTests.swift; sourceTree = "<group>"; };
+		AA94064728C5DAB300AEAA56 /* MainTabBarCoordinatorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarCoordinatorFactory.swift; sourceTree = "<group>"; };
+		AA94064928C5DAE600AEAA56 /* MainTabBarCoordinatorImplFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarCoordinatorImplFactory.swift; sourceTree = "<group>"; };
+		AA94064B28C5DD0800AEAA56 /* MainCoordinatorImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinatorImpl.swift; sourceTree = "<group>"; };
 		AA9BEAFD2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportAudioFileUseCaseTests.swift; sourceTree = "<group>"; };
 		AA9BEB012865D5BB0028DF8E /* AudioFileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileInfo.swift; sourceTree = "<group>"; };
 		AA9BEB0A28661DCE0028DF8E /* CoreDataAudioLibraryRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataAudioLibraryRepositoryTests.swift; sourceTree = "<group>"; };
@@ -956,6 +964,9 @@
 			isa = PBXGroup;
 			children = (
 				AA5DD70E28B9734100929906 /* ImportMediaFilesFlow.swift */,
+				AA94064728C5DAB300AEAA56 /* MainTabBarCoordinatorFactory.swift */,
+				AA94064928C5DAE600AEAA56 /* MainTabBarCoordinatorImplFactory.swift */,
+				AA94064B28C5DD0800AEAA56 /* MainCoordinatorImpl.swift */,
 				AA08838128B960C8006315B9 /* LibraryCoordinator.swift */,
 				AA641DFF28C36A8B00641B0C /* LibraryCoordinatorFactory.swift */,
 				AA641E0128C36AB600641B0C /* LibraryCoordinatorFactoryImpl.swift */,
@@ -966,13 +977,6 @@
 				AA641DFD28C369DB00641B0C /* MainTabBarCoordinatorImpl.swift */,
 			);
 			path = Flows;
-			sourceTree = "<group>";
-		};
-		AA0D3F752875F716006717B9 /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Utils;
 			sourceTree = "<group>";
 		};
 		AA0F69BD287F587F00BD13DB /* RowCell */ = {
@@ -1205,11 +1209,11 @@
 				AA2A6DE028984A9200AE5E75 /* AssertEqualReadable.swift */,
 				AA415083286B0987004549F4 /* AssertResult.swift */,
 				AA0930C528739B2000E62DB3 /* AssertSequence.swift */,
+				AABB49E928AFF50E0088484B /* Dictionary+Helpers.swift */,
 				AA0F69B1287EE64300BD13DB /* Int+Double.swift */,
+				AA5A1AD028AA887700DE29CD /* Subtitles+Helpers.swift */,
 				AA252C9B2874E302001B7AEE /* XCTestCase+MemoryLeakDetection.swift */,
 				AA5802182879A53700655B4A /* XCTestCase+Sequence.swift */,
-				AA5A1AD028AA887700DE29CD /* Subtitles+Helpers.swift */,
-				AABB49E928AFF50E0088484B /* Dictionary+Helpers.swift */,
 			);
 			path = TestUtils;
 			sourceTree = "<group>";
@@ -1248,6 +1252,7 @@
 				AA5DD70028B9643F00929906 /* LibraryCoordinatorTests.swift */,
 				AAA2DE3B28BA1F05008C5923 /* LibraryItemCoordinatorTests.swift */,
 				AA3B730328C500860071CBA4 /* MainTabBarCoordinatorTests.swift */,
+				AA94064528C5D8BC00AEAA56 /* MainCoordinatorTests.swift */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -1381,7 +1386,6 @@
 				AA1ACC202862FE65000EEDD5 /* Data */,
 				AA9BEAFA2865BF4A0028DF8E /* Domain */,
 				AACEA31D2869AC2300111565 /* Presentation */,
-				AA0D3F752875F716006717B9 /* Utils */,
 				AA415082286B0979004549F4 /* TestUtils */,
 			);
 			path = LyraPlayTests;
@@ -2063,6 +2067,7 @@
 				AA2895A92876EAA100B168C4 /* LyraPlay.xcdatamodeld in Sources */,
 				AAA87987289E643100E04CA9 /* TranslationItemPosition.swift in Sources */,
 				AABB49F128B02C260088484B /* DictionaryListBrowserViewController.swift in Sources */,
+				AA94064A28C5DAE600AEAA56 /* MainTabBarCoordinatorImplFactory.swift in Sources */,
 				AA0F69C5287F608B00BD13DB /* UIView+Layout.swift in Sources */,
 				AAFB979528759D45007A76A7 /* MessageChannel.swift in Sources */,
 				AAA8798B289EB45500E04CA9 /* AdvancedPlayerSession.swift in Sources */,
@@ -2073,6 +2078,7 @@
 				AA4F9707286E3C380087F45A /* AudioFilesBrowserViewController+Styles.swift in Sources */,
 				AA41508C286B603B004549F4 /* AudioFilesBrowserCell+Styles.swift in Sources */,
 				AAC5FFAA28BFE38400D402FF /* PlayMediaUseCaseState+MediaId.swift in Sources */,
+				AA94064C28C5DD0800AEAA56 /* MainCoordinatorImpl.swift in Sources */,
 				AA3C532F28BE5ABB00CBE3C6 /* BrowseListDictionaryItem.swift in Sources */,
 				AA5DD71128B9737400929906 /* LibraryItemCoordinator.swift in Sources */,
 				AA3C533828BE5C6F00CBE3C6 /* ImportAudioFileUseCaseImpl.swift in Sources */,
@@ -2236,6 +2242,7 @@
 				9E1B43E771E3A0046DFEF7C5 /* AudioPlayerFactory.swift in Sources */,
 				2CFEE3143BB5176AB2FFE4C5 /* AudioPlayerSession.swift in Sources */,
 				23FEB2351FF834A934E080DD /* AudioPlayerImplFactory.swift in Sources */,
+				AA94064828C5DAB300AEAA56 /* MainTabBarCoordinatorFactory.swift in Sources */,
 				0143A50905B394D78ECB8D35 /* AudioPlayerImpl.swift in Sources */,
 				25D3F5CEECB594EC167CF853 /* SubtitlesParser.swift in Sources */,
 				45CD0ABD075AFB052D87276E /* SubtitlesParserFactory.swift in Sources */,
@@ -2321,6 +2328,7 @@
 				AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */,
 				AA5802192879A53700655B4A /* XCTestCase+Sequence.swift in Sources */,
 				AACEA3152869A32A00111565 /* AudioLibraryRepositoryMock.swift in Sources */,
+				AA94064628C5D8BC00AEAA56 /* MainCoordinatorTests.swift in Sources */,
 				AAF2EEBE287DF75700894F71 /* ActionTimerFactoryTests.swift in Sources */,
 				AA0DADFD28A1893A00B11B95 /* PronounceTranslationsUseCaseTests.swift in Sources */,
 				AA273A1828ACD30700119088 /* AudioSessionTests.swift in Sources */,
