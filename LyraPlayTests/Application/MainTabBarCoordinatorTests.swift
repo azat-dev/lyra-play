@@ -17,6 +17,7 @@ class MainTabBarCoordinatorTests: XCTestCase {
         coordinator: MainTabBarCoordinator,
         rootContainer: StackPresentationContainerMock,
         libraryCoordinator: LibraryCoordinatorMock,
+        dictionaryCoordinator: DictionaryCoordinatorMock,
         mainTabBarView: MainTabBarView
     )
 
@@ -25,24 +26,38 @@ class MainTabBarCoordinatorTests: XCTestCase {
         let rootContainer = mock(StackPresentationContainer.self)
         
         let libraryCoordinator: LibraryCoordinatorMock = mock(LibraryCoordinator.self)
-
         let libraryCoordinatorFactory = mock(LibraryCoordinatorFactory.self)
-        given(libraryCoordinatorFactory.create()).willReturn(libraryCoordinator as! LibraryCoordinator)
 
+        given(libraryCoordinatorFactory.create()).willReturn(libraryCoordinator as! LibraryCoordinator)
+        
+        
+        let dictionaryCoordinator: DictionaryCoordinatorMock = mock(DictionaryCoordinator.self)
+        let dictionaryCoordinatorFactory = mock(DictionaryCoordinatorFactory.self)
+
+        given(dictionaryCoordinatorFactory.create()).willReturn(dictionaryCoordinator as! DictionaryCoordinator)
+
+        
         let mainTabBarViewModel = mock(MainTabBarViewModel.self)
         let mainTabBarViewModelFactory = mock(MainTabBarViewModelFactory.self)
 
-        given(mainTabBarViewModelFactory.create(coordinator: any())).willReturn(mainTabBarViewModel)
+        given(mainTabBarViewModelFactory.create(coordinator: any()))
+            .willReturn(mainTabBarViewModel)
 
         let mainTabBarView = mock(MainTabBarView.self)
-        let libraryContainer = mock(StackPresentationContainer.self)
         
-        given(mainTabBarView.libraryContainer).willReturn(libraryContainer)
+        let libraryContainer = mock(StackPresentationContainer.self)
+        let dictionaryContainer = mock(StackPresentationContainer.self)
+        
+        given(mainTabBarView.libraryContainer)
+            .willReturn(libraryContainer)
+        
+        given(mainTabBarView.dictionaryContainer)
+            .willReturn(dictionaryContainer)
         
         let mainTabBarViewFactory = mock(MainTabBarViewFactory.self)
-        
 
-        given(mainTabBarViewFactory.create(viewModel: any())).willReturn(mainTabBarView as MainTabBarView)
+        given(mainTabBarViewFactory.create(viewModel: any()))
+            .willReturn(mainTabBarView as MainTabBarView)
 
         let coordinator = MainTabBarCoordinatorImpl(
             mainTabBarViewModelFactory: mainTabBarViewModelFactory,
@@ -60,7 +75,9 @@ class MainTabBarCoordinatorTests: XCTestCase {
                 mainTabBarViewModel,
                 mainTabBarViewModelFactory,
                 mainTabBarViewFactory,
-                libraryContainer
+                libraryContainer,
+                dictionaryCoordinatorFactory,
+                dictionaryCoordinator
             )
         }
 
@@ -68,6 +85,7 @@ class MainTabBarCoordinatorTests: XCTestCase {
             coordinator,
             rootContainer,
             libraryCoordinator,
+            dictionaryCoordinator,
             mainTabBarView
         )
     }
@@ -96,5 +114,19 @@ class MainTabBarCoordinatorTests: XCTestCase {
         
         // Then
         verify(sut.libraryCoordinator.start(at: sut.mainTabBarView.libraryContainer)).wasCalled(1)
+    }
+    
+    func test_runDictionaryFlow() {
+        
+        // Given
+        let sut = createSUT()
+        sut.coordinator.start(at: sut.rootContainer)
+        
+        // When
+        sut.coordinator.runDictionaryFlow()
+        sut.coordinator.runDictionaryFlow()
+        
+        // Then
+        verify(sut.dictionaryCoordinator.start(at: sut.mainTabBarView.dictionaryContainer)).wasCalled(1)
     }
 }
