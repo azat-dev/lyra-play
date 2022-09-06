@@ -34,7 +34,6 @@ class LibraryCoordinatorTests: XCTestCase {
         let view = mock(AudioFilesBrowserView.self)
         let viewFactory = mock(AudioFilesBrowserViewFactory.self)
         
-
         given(viewFactory.create(viewModel: any()))
             .willReturn(view)
         
@@ -93,7 +92,7 @@ class LibraryCoordinatorTests: XCTestCase {
         sut.coordinator.runOpenLibraryItemFlow(mediaId: UUID())
         
         // Then
-        verify(sut.coordinator.runOpenLibraryItemFlow(mediaId: any())).wasNeverCalled()
+        verify(sut.libraryItemCoordinator.start(at: sut.rootContainer, mediaId: any())).wasNeverCalled()
     }
     
     func test_runOpenLibraryItemFlow() {
@@ -107,6 +106,6 @@ class LibraryCoordinatorTests: XCTestCase {
         sut.coordinator.runOpenLibraryItemFlow(mediaId: mediaId)
         
         // Then
-        verify(sut.coordinator.runOpenLibraryItemFlow(mediaId: mediaId)).wasCalled(1)
+        verify(sut.libraryItemCoordinator.start(at: sut.rootContainer, mediaId: mediaId)).wasCalled(1)
     }
 }

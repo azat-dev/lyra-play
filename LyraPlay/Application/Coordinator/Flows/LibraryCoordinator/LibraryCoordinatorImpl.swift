@@ -44,9 +44,10 @@ public final class LibraryCoordinatorImpl: BaseCoordinator, LibraryCoordinator {
         else {
             return
         }
-        
+
         let libraryItemCoordinator = libraryItemCoordinatorFactory.create()
         addChild(libraryItemCoordinator)
+
         libraryItemCoordinator.start(at: container, mediaId: mediaId)
     }
     
