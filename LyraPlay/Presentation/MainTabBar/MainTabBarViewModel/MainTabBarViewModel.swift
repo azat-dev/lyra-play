@@ -7,6 +7,13 @@
 
 import Foundation
 
+public protocol MainTabBarViewModelDelegate {
+    
+    func runDictionaryFlow()
+    
+    func runLibraryFlow()
+}
+
 public protocol MainTabBarViewModelInput {
 
     func selectLibraryTab() -> Void

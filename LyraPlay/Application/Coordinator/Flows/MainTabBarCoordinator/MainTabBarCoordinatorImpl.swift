@@ -39,13 +39,13 @@ public final class MainTabBarCoordinatorImpl: BaseCoordinator, MainTabBarCoordin
     
     public func start(at container: StackPresentationContainer) {
         
-        let viewModel = mainTabBarViewModelFactory.create(coordinator: self)
-        let tabBarView = mainTabBarViewFactory.create(viewModel: viewModel)
-
-        self.mainTabBarView = tabBarView
-        container.setRoot(tabBarView)
-        
-        runLibraryFlow()
+//        let viewModel = mainTabBarViewModelFactory.create(delegate: self)
+//        let tabBarView = mainTabBarViewFactory.create(viewModel: viewModel)
+//
+//        self.mainTabBarView = tabBarView
+//        container.setRoot(tabBarView)
+//        
+//        runLibraryFlow()
     }
 }
 

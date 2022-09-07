@@ -11,13 +11,13 @@ public final class MainTabBarViewModelImpl: MainTabBarViewModel {
 
     // MARK: - Properties
 
-    private weak var coordinator: MainTabBarCoordinator?
+    private var delegate: MainTabBarViewModelDelegate
 
     // MARK: - Initializers
 
-    public init(coordinator: MainTabBarCoordinator) {
+    public init(delegate: MainTabBarViewModelDelegate) {
 
-        self.coordinator = coordinator
+        self.delegate = delegate
     }
 }
 
@@ -27,12 +27,12 @@ extension MainTabBarViewModelImpl {
 
     public func selectLibraryTab() -> Void {
 
-        coordinator?.runLibraryFlow()
+        delegate.runLibraryFlow()
     }
 
     public func selectDictionaryTab() -> Void {
 
-        coordinator?.runDictionaryFlow()
+        delegate.runDictionaryFlow()
     }
 }
 
