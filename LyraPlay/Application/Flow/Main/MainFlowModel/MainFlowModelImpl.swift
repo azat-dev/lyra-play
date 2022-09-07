@@ -63,5 +63,10 @@ extension MainFlowModelImpl: MainTabBarViewModelDelegate {
     
     public func runDictionaryFlow() {
         
+        if dictionaryFlow.value != nil {
+            return
+        }
+        
+        dictionaryFlow.value = dictionaryFlowModelFactory.create()
     }
 }
