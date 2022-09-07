@@ -13,16 +13,19 @@ public final class MainFlowModelImplFactory: MainFlowModelFactory {
 
     private let mainTabBarViewModelFactory: MainTabBarViewModelFactory
     private let libraryFlowModelFactory: LibraryFlowModelFactory
+    private let dictionaryFlowModelFactory: DictionaryFlowModelFactory
 
     // MARK: - Initializers
 
     public init(
         mainTabBarViewModelFactory: MainTabBarViewModelFactory,
-        libraryFlowModelFactory: LibraryFlowModelFactory
+        libraryFlowModelFactory: LibraryFlowModelFactory,
+        dictionaryFlowModelFactory: DictionaryFlowModelFactory
     ) {
 
         self.mainTabBarViewModelFactory = mainTabBarViewModelFactory
         self.libraryFlowModelFactory = libraryFlowModelFactory
+        self.dictionaryFlowModelFactory = dictionaryFlowModelFactory
     }
 
     // MARK: - Methods
@@ -31,7 +34,8 @@ public final class MainFlowModelImplFactory: MainFlowModelFactory {
 
         return MainFlowModelImpl(
             mainTabBarViewModelFactory: mainTabBarViewModelFactory,
-            libraryFlowModelFactory: libraryFlowModelFactory
+            libraryFlowModelFactory: libraryFlowModelFactory,
+            dictionaryFlowModelFactory: dictionaryFlowModelFactory
         )
     }
 }
