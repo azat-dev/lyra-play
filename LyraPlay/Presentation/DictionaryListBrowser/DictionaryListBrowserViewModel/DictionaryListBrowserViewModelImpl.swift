@@ -9,23 +9,23 @@ import Foundation
 import Combine
 
 public final class DictionaryListBrowserViewModelImpl: DictionaryListBrowserViewModel {
-
+    
     // MARK: - Properties
-
-    private weak var coordinator: DictionaryCoordinatorInput?
+    
+    private var delegate: DictionaryListBrowserViewModelDelegate
     private let browseDictionaryUseCase: BrowseDictionaryUseCase
     
     public var isLoading = CurrentValueSubject<Bool, Never>(true)
     public var listChanged: PassthroughSubject<DictionaryListBrowserChangeEvent, Never> = .init()
-
+    
     // MARK: - Initializers
-
+    
     public init(
-        coordinator: DictionaryCoordinatorInput,
+        delegate: DictionaryListBrowserViewModelDelegate,
         browseDictionaryUseCase: BrowseDictionaryUseCase
     ) {
-
-        self.coordinator = coordinator
+        
+        self.delegate = delegate
         self.browseDictionaryUseCase = browseDictionaryUseCase
     }
 }
@@ -33,7 +33,7 @@ public final class DictionaryListBrowserViewModelImpl: DictionaryListBrowserView
 // MARK: - Input Methods
 
 extension DictionaryListBrowserViewModelImpl {
-
+    
     private func map(_ item: BrowseListDictionaryItem) -> DictionaryListBrowserItemViewModel {
         
         return .init(
@@ -62,16 +62,12 @@ extension DictionaryListBrowserViewModelImpl {
     
     public func addNewItem() {
 
-        coordinator?.runCreationFlow { _ in
-            Task {
-                await self.load()
-            }
-        }
+        delegate.runCreationFlow()
     }
 }
 
 // MARK: - Output Methods
 
 extension DictionaryListBrowserViewModelImpl {
-
+    
 }

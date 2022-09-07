@@ -16,6 +16,6 @@ public protocol LibraryFlowModelOutput: AnyObject {
     var listViewModel: AudioFilesBrowserViewModel { get }
 }
 
-public protocol LibraryFlowModel: AnyObject, LibraryFlowModelOutput, LibraryFlowModelInput {
+public protocol LibraryFlowModel: LibraryFlowModelOutput, LibraryFlowModelInput {
 
 }

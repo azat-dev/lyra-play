@@ -7,5 +7,5 @@
 
 public protocol DictionaryListBrowserViewModelFactory {
 
-    func create(coordinator: DictionaryCoordinatorInput) -> DictionaryListBrowserViewModel
+    func create(delegate: DictionaryListBrowserViewModelDelegate) -> DictionaryListBrowserViewModel
 }

@@ -67,7 +67,7 @@ class MainFlowModelTests: XCTestCase {
         
         // Given
         let sut = createSUT()
-
+        
         let sequence = expectSequence([true, false])
         let disposible = sut.flow.libraryFlow.sink { sequence.fulfill(with: $0 == nil) }
         
@@ -85,7 +85,7 @@ class MainFlowModelTests: XCTestCase {
         
         // Given
         let sut = createSUT()
-
+        
         let sequence = expectSequence([true, false])
         let disposible = sut.flow.dictionaryFlow.sink { sequence.fulfill(with: $0 == nil) }
         
@@ -99,4 +99,3 @@ class MainFlowModelTests: XCTestCase {
         disposible.cancel()
     }
 }
-

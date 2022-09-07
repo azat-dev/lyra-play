@@ -14,28 +14,28 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
     
     typealias SUT = (
         viewModel: DictionaryListBrowserViewModel,
-        dictionaryListBrowserCoordinator: DictionaryCoordinatorMock,
+        dictionaryListBrowserDelegate: DictionaryListBrowserViewModelDelegate,
         browseDictionaryUseCase: BrowseDictionaryUseCaseMock
     )
     
     func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
         
-        let dictionaryListBrowserCoordinator = mock(DictionaryCoordinator.self)
+        let dictionaryListBrowserDelegate = mock(DictionaryListBrowserViewModelDelegate.self)
         let browseDictionaryUseCase = BrowseDictionaryUseCaseMock()
         
         let viewModel = DictionaryListBrowserViewModelImpl(
-            coordinator: dictionaryListBrowserCoordinator,
+            delegate: dictionaryListBrowserDelegate,
             browseDictionaryUseCase: browseDictionaryUseCase
         )
         detectMemoryLeak(instance: viewModel, file: file, line: line)
         
         addTeardownBlock {
-            reset(dictionaryListBrowserCoordinator)
+            reset(dictionaryListBrowserDelegate)
         }
         
         return (
             viewModel,
-            dictionaryListBrowserCoordinator,
+            dictionaryListBrowserDelegate,
             browseDictionaryUseCase
         )
     }
@@ -158,7 +158,7 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
         sut.viewModel.addNewItem()
         
         // Then
-        verify(sut.dictionaryListBrowserCoordinator.runCreationFlow(completion: any())).wasCalled(1)
+        verify(sut.dictionaryListBrowserDelegate.runCreationFlow()).wasCalled(1)
     }
 }
 

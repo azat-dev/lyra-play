@@ -22,10 +22,10 @@ public final class DictionaryListBrowserViewModelImplFactory: DictionaryListBrow
 
     // MARK: - Methods
 
-    public func create(coordinator: DictionaryCoordinatorInput) -> DictionaryListBrowserViewModel {
+    public func create(delegate: DictionaryListBrowserViewModelDelegate) -> DictionaryListBrowserViewModel {
 
         return DictionaryListBrowserViewModelImpl(
-            coordinator: coordinator,
+            delegate: delegate,
             browseDictionaryUseCase: browseDictionaryUseCase
         )
     }

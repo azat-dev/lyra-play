@@ -27,10 +27,10 @@ public final class DictionaryCoordinatorImpl: BaseCoordinator, DictionaryCoordin
     
     public func start(at container: StackPresentationContainer) {
         
-        let viewModel = viewModelFactory.create(coordinator: self)
-        let view = viewFactory.create(viewModel: viewModel)
-        
-        container.push(view)
+//        let viewModel = viewModelFactory.create(coordinator: self)
+//        let view = viewFactory.create(viewModel: viewModel)
+//        
+//        container.push(view)
     }
 }
 
