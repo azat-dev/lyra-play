@@ -41,10 +41,10 @@ class AudioFilesBrowserViewModelTests: XCTestCase {
             tagsParser: tagsParser
         )
         
-        let coordinator = mock(LibraryCoordinatorInput.self)
+        let delegate = mock(AudioFilesBrowserViewModelDelegate.self)
         
         let viewModel = AudioFilesBrowserViewModelImpl(
-            coordinator: coordinator,
+            delegate: delegate,
             browseUseCase: useCase,
             importFileUseCase: importFileUseCase
         )

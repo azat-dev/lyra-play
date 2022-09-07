@@ -6,6 +6,6 @@
 //
 
 public protocol LibraryFlowModelFactory {
-
+    
     func create() -> LibraryFlowModel
 }

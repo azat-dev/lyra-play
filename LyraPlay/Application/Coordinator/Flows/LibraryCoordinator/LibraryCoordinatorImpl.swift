@@ -56,10 +56,10 @@ public final class LibraryCoordinatorImpl: BaseCoordinator, LibraryCoordinator {
 
     public func start(at presentationContainer: StackPresentationContainer) {
         
-        let viewModel = viewModelFactory.create(coordinator: self)
-        let view = viewFactory.create(viewModel: viewModel)
-
-        container = presentationContainer
-        presentationContainer.setRoot(view)
+//        let viewModel = viewModelFactory.create(coordinator: self)
+//        let view = viewFactory.create(viewModel: viewModel)
+//
+//        container = presentationContainer
+//        presentationContainer.setRoot(view)
     }
 }

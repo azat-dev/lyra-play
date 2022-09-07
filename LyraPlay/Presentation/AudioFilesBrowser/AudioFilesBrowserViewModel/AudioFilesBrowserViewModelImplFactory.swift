@@ -27,13 +27,13 @@ public final class AudioFilesBrowserViewModelImplFactory: AudioFilesBrowserViewM
 
     // MARK: - Methods
 
-    public func create(coordinator: LibraryCoordinatorInput) -> AudioFilesBrowserViewModel {
+    public func create(delegate: AudioFilesBrowserViewModelDelegate) -> AudioFilesBrowserViewModel {
 
         let browseUseCase = browseAudioLibraryUseCaseFactory.create()
         let importFileUseCase = importAudioFileUseCaseFactory.create()
 
         return AudioFilesBrowserViewModelImpl(
-            coordinator: coordinator,
+            delegate: delegate,
             browseUseCase: browseUseCase,
             importFileUseCase: importFileUseCase
         )

@@ -7,6 +7,13 @@
 
 import Foundation
 
+public protocol AudioFilesBrowserViewModelDelegate {
+    
+    func runImportMediaFilesFlow(completion: @escaping (_ urls: [URL]?) -> Void)
+    
+    func runOpenLibraryItemFlow(mediaId: UUID)
+}
+
 public protocol AudioFilesBrowserUpdateDelegate: AnyObject {
     
     func filesDidUpdate(updatedFiles: [AudioFilesBrowserCellViewModel])
@@ -26,6 +33,4 @@ public protocol AudioFilesBrowserViewModelOutput {
     var filesDelegate: AudioFilesBrowserUpdateDelegate? { get set }
 }
 
-public protocol AudioFilesBrowserViewModel: AudioFilesBrowserViewModelOutput, AudioFilesBrowserViewModelInput {
-    
-}
+public protocol AudioFilesBrowserViewModel: AudioFilesBrowserViewModelOutput, AudioFilesBrowserViewModelInput {}

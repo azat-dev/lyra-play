@@ -12,7 +12,7 @@ public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
 
     // MARK: - Properties
 
-    private weak var coordinator: LibraryCoordinatorInput?
+    private var delegate: AudioFilesBrowserViewModelDelegate
     private let browseUseCase: BrowseAudioLibraryUseCase
     private let importFileUseCase: ImportAudioFileUseCase
     
@@ -24,12 +24,12 @@ public final class AudioFilesBrowserViewModelImpl: AudioFilesBrowserViewModel {
     // MARK: - Initializers
 
     public init(
-        coordinator: LibraryCoordinatorInput,
+        delegate: AudioFilesBrowserViewModelDelegate,
         browseUseCase: BrowseAudioLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase
     ) {
 
-        self.coordinator = coordinator
+        self.delegate = delegate
         self.browseUseCase = browseUseCase
         self.importFileUseCase = importFileUseCase
         
@@ -47,7 +47,7 @@ extension AudioFilesBrowserViewModelImpl {
     
     private func onPlay(_ trackId: UUID) {
         
-        coordinator?.runOpenLibraryItemFlow(mediaId: trackId)
+        delegate.runOpenLibraryItemFlow(mediaId: trackId)
     }
     
     private func loadImages(names: [String]) async -> [String: UIImage] {
@@ -116,7 +116,7 @@ extension AudioFilesBrowserViewModelImpl {
 
     public func addNewItem() -> Void {
         
-        coordinator?.runImportMediaFilesFlow { [weak self] urls in
+        delegate.runImportMediaFilesFlow { [weak self] urls in
             
             guard let urls = urls, let self = self else {
                 return
