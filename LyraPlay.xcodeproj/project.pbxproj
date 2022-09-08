@@ -207,6 +207,10 @@
 		AA55226B28CA5EAD007D5343 /* LibraryFlowPresenterImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55226A28CA5EAD007D5343 /* LibraryFlowPresenterImpl.swift */; };
 		AA55226D28CA5FAB007D5343 /* LibraryFlowPresenterImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55226C28CA5FAB007D5343 /* LibraryFlowPresenterImplFactory.swift */; };
 		AA55226F28CA76A9007D5343 /* XCTestCase+Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55226E28CA76A9007D5343 /* XCTestCase+Mocks.swift */; };
+		AA55227528CA7BC0007D5343 /* DictionaryFlowPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55227128CA7BC0007D5343 /* DictionaryFlowPresenter.swift */; };
+		AA55227628CA7BC0007D5343 /* DictionaryFlowPresenterImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55227228CA7BC0007D5343 /* DictionaryFlowPresenterImplFactory.swift */; };
+		AA55227728CA7BC0007D5343 /* DictionaryFlowPresenterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55227328CA7BC0007D5343 /* DictionaryFlowPresenterFactory.swift */; };
+		AA55227828CA7BC0007D5343 /* DictionaryFlowPresenterImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55227428CA7BC0007D5343 /* DictionaryFlowPresenterImpl.swift */; };
 		AA5802192879A53700655B4A /* XCTestCase+Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5802182879A53700655B4A /* XCTestCase+Sequence.swift */; };
 		AA598D1B2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA598D192868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift */; };
 		AA598D1C2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA598D1A2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift */; };
@@ -595,6 +599,10 @@
 		AA55226A28CA5EAD007D5343 /* LibraryFlowPresenterImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryFlowPresenterImpl.swift; sourceTree = "<group>"; };
 		AA55226C28CA5FAB007D5343 /* LibraryFlowPresenterImplFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryFlowPresenterImplFactory.swift; sourceTree = "<group>"; };
 		AA55226E28CA76A9007D5343 /* XCTestCase+Mocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Mocks.swift"; sourceTree = "<group>"; };
+		AA55227128CA7BC0007D5343 /* DictionaryFlowPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryFlowPresenter.swift; sourceTree = "<group>"; };
+		AA55227228CA7BC0007D5343 /* DictionaryFlowPresenterImplFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryFlowPresenterImplFactory.swift; sourceTree = "<group>"; };
+		AA55227328CA7BC0007D5343 /* DictionaryFlowPresenterFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryFlowPresenterFactory.swift; sourceTree = "<group>"; };
+		AA55227428CA7BC0007D5343 /* DictionaryFlowPresenterImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryFlowPresenterImpl.swift; sourceTree = "<group>"; };
 		AA5802182879A53700655B4A /* XCTestCase+Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Sequence.swift"; sourceTree = "<group>"; };
 		AA598D192868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedAudioFile+CoreDataClass.swift"; sourceTree = "<group>"; };
 		AA598D1A2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedAudioFile+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -982,6 +990,7 @@
 		72DD67570C56DA68DD47B8AB /* Dictionary */ = {
 			isa = PBXGroup;
 			children = (
+				AA55227028CA7BC0007D5343 /* DictionaryFlowPresenter */,
 				54EEBD9F9569DBA6D998906B /* DictionaryFlowModel */,
 			);
 			path = Dictionary;
@@ -1405,6 +1414,17 @@
 				AA55226C28CA5FAB007D5343 /* LibraryFlowPresenterImplFactory.swift */,
 			);
 			path = LibraryFlowPresenter;
+			sourceTree = "<group>";
+		};
+		AA55227028CA7BC0007D5343 /* DictionaryFlowPresenter */ = {
+			isa = PBXGroup;
+			children = (
+				AA55227128CA7BC0007D5343 /* DictionaryFlowPresenter.swift */,
+				AA55227328CA7BC0007D5343 /* DictionaryFlowPresenterFactory.swift */,
+				AA55227428CA7BC0007D5343 /* DictionaryFlowPresenterImpl.swift */,
+				AA55227228CA7BC0007D5343 /* DictionaryFlowPresenterImplFactory.swift */,
+			);
+			path = DictionaryFlowPresenter;
 			sourceTree = "<group>";
 		};
 		AA598D1D2868D403001F3DE1 /* ManagedObjects */ = {
@@ -2273,6 +2293,7 @@
 				AA3BAB1F286C73A3005EE01E /* PlayerStateRepositoryImpl.swift in Sources */,
 				AA3C532928BE5AA200CBE3C6 /* BrowseDictionaryUseCase.swift in Sources */,
 				AA040E0328835247000CFC26 /* SubtitlesPresenterView+Layout.swift in Sources */,
+				AA55227528CA7BC0007D5343 /* DictionaryFlowPresenter.swift in Sources */,
 				AA3C534F28BE630700CBE3C6 /* LoadTrackUseCase.swift in Sources */,
 				AAA87989289E947800E04CA9 /* Range+TextRange.swift in Sources */,
 				AA4F9709286E3C4C0087F45A /* AudioFilesBrowserViewController+Layout.swift in Sources */,
@@ -2287,6 +2308,7 @@
 				AA3C533D28BE5F6300CBE3C6 /* ImportSubtitlesUseCaseImplFactory.swift in Sources */,
 				AA0F69B6287EF74500BD13DB /* Scheduler.swift in Sources */,
 				AA35E585286AA5E10086DB28 /* LocalFilesRepository.swift in Sources */,
+				AA55227728CA7BC0007D5343 /* DictionaryFlowPresenterFactory.swift in Sources */,
 				AA3B59D02887035900F68AF8 /* ManagedDictionaryItem+Mapping.swift in Sources */,
 				AA7B0D5028719AE20067DDB5 /* LibraryItemViewController.swift in Sources */,
 				AA3C532228BE54CF00CBE3C6 /* BrowseAudioLibraryUseCaseFactory.swift in Sources */,
@@ -2370,6 +2392,7 @@
 				AA4F9701286E327D0087F45A /* PlayerViewController+Styles.swift in Sources */,
 				AABB49FA28B030CC0088484B /* DictionaryListBrowserCell.swift in Sources */,
 				AA3C532028BE546A00CBE3C6 /* BrowseAudioLibraryUseCase.swift in Sources */,
+				AA55227628CA7BC0007D5343 /* DictionaryFlowPresenterImplFactory.swift in Sources */,
 				AA9BEB022865D5BB0028DF8E /* AudioFileInfo.swift in Sources */,
 				AA7B0D522871A6E00067DDB5 /* LibraryItemViewController+Layout.swift in Sources */,
 				AA731CBD2870395B0044412F /* NowPlayingInfoService.swift in Sources */,
@@ -2431,6 +2454,7 @@
 				7BB0BAF7E95CC090BD7B868B /* PlaySubtitlesUseCase.swift in Sources */,
 				60BB39D8DC14DAA9D6E6D35A /* WillChangeSubtitlesPositionData.swift in Sources */,
 				AA55225E28CA460D007D5343 /* MainFlowPresenterImpl.swift in Sources */,
+				AA55227828CA7BC0007D5343 /* DictionaryFlowPresenterImpl.swift in Sources */,
 				3853A60524164B5EEF1FD4B7 /* PlaySubtitlesUseCaseImpl.swift in Sources */,
 				AD26B8F8AD0C5EB893BB7090 /* PlaySubtitlesUseCaseImplFactory.swift in Sources */,
 				BB7E8509073F5233CBD2D37F /* PlaySubtitlesUseCaseFactory.swift in Sources */,
