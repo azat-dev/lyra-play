@@ -22,12 +22,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         self.window = window
         
-        let navigationController = UINavigationController()
-
         application = Application()
-        application.start(container: navigationController)
+        application.start(container: window)
 
-        window.rootViewController = navigationController
         window.makeKeyAndVisible()
     }
 

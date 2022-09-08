@@ -10,10 +10,14 @@ import CoreData
 import UIKit
 
 public class Application {
+    
+    private lazy var appPresenter: MainFlowPresenter = {
+        
+        let appFlow = makeFlow()
+        return makePresenter(flow: appFlow)
+    } ()
 
     // MARK: - Properties
-    
-    private var mainCoordinator: MainCoordinator?
     
     private lazy var coreDataStore: CoreDataStore = {
         
@@ -224,15 +228,20 @@ public class Application {
 
     // MARK: - Initializers
     
-    public init() {}
-    
+    public init() {
+        
+    }
     
     // MARK: - Methods
     
-    public func start(container: StackPresentationContainer) {
+    public func start(container: WindowContainer) {
+        
+        appPresenter.present(at: container)
+    }
+    
+    func makeFlow() -> MainFlowModel {
         
         let mainTabBarViewModelFactory = MainTabBarViewModelImplFactory()
-        let mainTabBarViewFactory = MainTabBarViewControllerFactory()
 
         let browseAudioLibraryUseCaseFactory = BrowseAudioLibraryUseCaseImplFactory(
             audioLibraryRepository: audioLibraryRepository,
@@ -253,27 +262,12 @@ public class Application {
             importAudioFileUseCaseFactory: imporAudioFileUseCaseFactory
         )
         
-        let libraryViewFactory = AudioFilesBrowserViewControllerFactory()
-        
-        let libraryItemViewFactory = LibraryItemViewControllerFactory()
-        
         let libraryItemViewModelFactory = LibraryItemViewModelImplFactory(
             showMediaInfoUseCase: showMediaInfoUseCase,
             currentPlayerStateUseCase: currentPlayerStateUseCase,
             playMediaUseCase: playMediaWithTranslationsUseCase,
             importSubtitlesUseCase: importSubtitlesUseCase,
             loadSubtitlesUseCase: loadSubtitlesUseCase
-        )
-        
-        let libraryItemCoordinatorFactory = LibraryItemCoordinatorFactoryImpl(
-            viewModelFactory: libraryItemViewModelFactory,
-            viewFactory: libraryItemViewFactory
-        )
-        
-        let libraryCoordinatorFactory = LibraryCoordinatorFactoryImpl(
-            viewModelFactory: libraryViewModelFactory,
-            viewFactory: libraryViewFactory,
-            libraryItemCoordinatorFactory: libraryItemCoordinatorFactory
         )
         
         let browseDictionaryUseCase = BrowseDictionaryUseCaseImpl(
@@ -284,25 +278,31 @@ public class Application {
             browseDictionaryUseCase: browseDictionaryUseCase
         )
         
-        let dictionaryViewFactory = DictionaryListBrowserViewControllerFactory()
+        let libraryFlowModelFactory = LibraryFlowModelImplFactory(viewModelFactory: libraryViewModelFactory)
+        let dictionaryFlowModelFactory = DictionaryFlowModelImplFactory(viewModelFactory: dictionaryViewModelFactory)
         
-        let dictionaryCoordinatorFactory = DictionaryCoordinatorFactoryImpl(
-            viewModelFactory: dictionaryViewModelFactory,
-            viewFactory: dictionaryViewFactory
-        )
-        
-        let mainTabBarCoordinatorFactory = MainTabBarCoordinatorImplFactory(
+        return MainFlowModelImpl(
             mainTabBarViewModelFactory: mainTabBarViewModelFactory,
-            mainTabBarViewFactory: mainTabBarViewFactory,
-            libraryCoordinatorFactory: libraryCoordinatorFactory,
-            dictionaryCoordinatorFactory: dictionaryCoordinatorFactory
+            libraryFlowModelFactory: libraryFlowModelFactory,
+            dictionaryFlowModelFactory: dictionaryFlowModelFactory
+        )
+    }
+    
+    func makePresenter(flow: MainFlowModel) -> MainFlowPresenter {
+        
+        let libraryFlowPresenterFactory = LibraryFlowPresenterImplFactory(
+            listViewFactory: AudioFilesBrowserViewControllerFactory()
         )
         
-        let mainCoordinator = MainCoordinatorImpl(
-            mainTabBarCoordinatorFactory: mainTabBarCoordinatorFactory
+        let dictionaryFlowPresenterFactory = DictionaryFlowPresenterImplFactory(
+            listViewFactory: DictionaryListBrowserViewControllerFactory()
         )
         
-        self.mainCoordinator = mainCoordinator
-        mainCoordinator.start(at: container)
+        return MainFlowPresenterImpl(
+            mainFlowModel: flow,
+            mainTabBarViewFactory: MainTabBarViewControllerFactory(),
+            libraryFlowPresenterFactory: libraryFlowPresenterFactory,
+            dictionaryFlowPresenterFactory: dictionaryFlowPresenterFactory
+        )
     }
 }
