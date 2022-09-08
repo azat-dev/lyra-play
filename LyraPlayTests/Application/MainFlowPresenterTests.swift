@@ -79,7 +79,8 @@ class MainFlowPresenterTests: XCTestCase {
         let presenter = MainFlowPresenterImpl(
             mainFlowModel: flow,
             mainTabBarViewFactory: mainTabBarViewFactory,
-            libraryFlowPresenterFactory: libraryFlowPresenterFactory
+            libraryFlowPresenterFactory: libraryFlowPresenterFactory,
+            dictionaryFlowPresenterFactory: dictionaryFlowPresenterFactory
         )
         
         detectMemoryLeak(instance: presenter)
