@@ -11,7 +11,6 @@ import Mockingbird
 
 import LyraPlay
 
-
 class MainFlowModelTests: XCTestCase {
     
     typealias SUT = (
