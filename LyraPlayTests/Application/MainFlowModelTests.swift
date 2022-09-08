@@ -45,16 +45,15 @@ class MainFlowModelTests: XCTestCase {
         )
         
         detectMemoryLeak(instance: flow)
-        addTeardownBlock {
-            reset(
-                mainTabBarViewModel,
-                mainTabBarViewModelFactory,
-                libraryFlowModel,
-                libraryFlowModelFactory,
-                dictionaryFlowModel,
-                dictionaryFlowModelFactory
-            )
-        }
+
+        releaseMocks(
+            mainTabBarViewModel,
+            mainTabBarViewModelFactory,
+            libraryFlowModel,
+            libraryFlowModelFactory,
+            dictionaryFlowModel,
+            dictionaryFlowModelFactory
+        )
         
         return (
             flow,

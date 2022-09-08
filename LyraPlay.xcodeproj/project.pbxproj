@@ -206,6 +206,7 @@
 		AA55226928CA5E75007D5343 /* LibraryFlowPresenterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55226828CA5E75007D5343 /* LibraryFlowPresenterFactory.swift */; };
 		AA55226B28CA5EAD007D5343 /* LibraryFlowPresenterImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55226A28CA5EAD007D5343 /* LibraryFlowPresenterImpl.swift */; };
 		AA55226D28CA5FAB007D5343 /* LibraryFlowPresenterImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55226C28CA5FAB007D5343 /* LibraryFlowPresenterImplFactory.swift */; };
+		AA55226F28CA76A9007D5343 /* XCTestCase+Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55226E28CA76A9007D5343 /* XCTestCase+Mocks.swift */; };
 		AA5802192879A53700655B4A /* XCTestCase+Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5802182879A53700655B4A /* XCTestCase+Sequence.swift */; };
 		AA598D1B2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA598D192868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift */; };
 		AA598D1C2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA598D1A2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift */; };
@@ -593,6 +594,7 @@
 		AA55226828CA5E75007D5343 /* LibraryFlowPresenterFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryFlowPresenterFactory.swift; sourceTree = "<group>"; };
 		AA55226A28CA5EAD007D5343 /* LibraryFlowPresenterImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryFlowPresenterImpl.swift; sourceTree = "<group>"; };
 		AA55226C28CA5FAB007D5343 /* LibraryFlowPresenterImplFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryFlowPresenterImplFactory.swift; sourceTree = "<group>"; };
+		AA55226E28CA76A9007D5343 /* XCTestCase+Mocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Mocks.swift"; sourceTree = "<group>"; };
 		AA5802182879A53700655B4A /* XCTestCase+Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Sequence.swift"; sourceTree = "<group>"; };
 		AA598D192868D3EC001F3DE1 /* ManagedAudioFile+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedAudioFile+CoreDataClass.swift"; sourceTree = "<group>"; };
 		AA598D1A2868D3EC001F3DE1 /* ManagedAudioFile+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedAudioFile+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -1346,6 +1348,7 @@
 				AA0F69B1287EE64300BD13DB /* Int+Double.swift */,
 				AA5A1AD028AA887700DE29CD /* Subtitles+Helpers.swift */,
 				AA252C9B2874E302001B7AEE /* XCTestCase+MemoryLeakDetection.swift */,
+				AA55226E28CA76A9007D5343 /* XCTestCase+Mocks.swift */,
 				AA5802182879A53700655B4A /* XCTestCase+Sequence.swift */,
 			);
 			path = TestUtils;
@@ -2563,6 +2566,7 @@
 				AA09E173289BD9B00003EB83 /* SubtitlesTimeSlotsParserTests.swift in Sources */,
 				AAA2DE3C28BA1F05008C5923 /* LibraryItemCoordinatorTests.swift in Sources */,
 				AACD8EBF289667F4001BDECE /* PlaySubtitlesUseCaseTests.swift in Sources */,
+				AA55226F28CA76A9007D5343 /* XCTestCase+Mocks.swift in Sources */,
 				AA55225628CA4404007D5343 /* MainFlowPresenterTests.swift in Sources */,
 				AA66FD2A287A089F005AD524 /* SubtitlesRepositoryMock.swift in Sources */,
 				AA252C9C2874E302001B7AEE /* XCTestCase+MemoryLeakDetection.swift in Sources */,

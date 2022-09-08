@@ -27,11 +27,9 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
             delegate: dictionaryListBrowserDelegate,
             browseDictionaryUseCase: browseDictionaryUseCase
         )
+
         detectMemoryLeak(instance: viewModel, file: file, line: line)
-        
-        addTeardownBlock {
-            reset(dictionaryListBrowserDelegate)
-        }
+        releaseMocks(dictionaryListBrowserDelegate)
         
         return (
             viewModel,

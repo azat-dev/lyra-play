@@ -43,15 +43,13 @@ class LibraryItemCoordinatorTests: XCTestCase {
         )
 
         detectMemoryLeak(instance: coordinator, file: file, line: line)
-        addTeardownBlock {
-            reset(
-                rootContainer,
-                viewModel,
-                viewModelFactory,
-                view,
-                viewFactory
-            )
-        }
+        releaseMocks(
+            rootContainer,
+            viewModel,
+            viewModelFactory,
+            view,
+            viewFactory
+        )
 
         return (
             coordinator,

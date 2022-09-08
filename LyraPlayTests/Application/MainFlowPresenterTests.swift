@@ -62,17 +62,15 @@ class MainFlowPresenterTests: XCTestCase {
         
         detectMemoryLeak(instance: presenter)
 
-        addTeardownBlock {
-            reset(
-                flow,
-                viewModel,
-                mainTabBarView,
-                mainTabBarViewFactory,
-                libraryFlowPresenterFactory,
-                libraryFlowPresenter,
-                libraryContainer
-            )
-        }
+        releaseMocks(
+            flow,
+            viewModel,
+            mainTabBarView,
+            mainTabBarViewFactory,
+            libraryFlowPresenterFactory,
+            libraryFlowPresenter,
+            libraryContainer
+        )
         
         return (
             presenter,

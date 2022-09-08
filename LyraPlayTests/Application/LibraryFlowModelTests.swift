@@ -33,12 +33,10 @@ class LibraryFlowModelTests: XCTestCase {
         
         detectMemoryLeak(instance: flow)
         
-        addTeardownBlock {
-            reset(
-                viewModel,
-                viewModelFactory
-            )
-        }
+        releaseMocks(
+            viewModel,
+            viewModelFactory
+        )
         
         return (
             flow,

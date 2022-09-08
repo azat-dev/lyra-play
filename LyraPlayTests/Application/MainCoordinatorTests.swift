@@ -34,13 +34,11 @@ class MainCoordinatorTests: XCTestCase {
 
         detectMemoryLeak(instance: coordinator, file: file, line: line)
         
-        addTeardownBlock {
-            reset(
-                rootContainer,
-                mainTabBarCoordinator,
-                mainTabBarCoordinatorFactory
-            )
-        }
+        releaseMocks(
+            rootContainer,
+            mainTabBarCoordinator,
+            mainTabBarCoordinatorFactory
+        )
 
         return (
             coordinator,
