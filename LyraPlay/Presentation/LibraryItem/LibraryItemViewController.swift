@@ -50,6 +50,12 @@ public final class LibraryItemViewController: UIViewController, LibraryItemView 
         layout()
         bind(to: viewModel)
     }
+    
+    public override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        viewModel.finish()
+    }
 }
 
 // MARK: - Bind viewModel

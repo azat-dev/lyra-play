@@ -8,17 +8,17 @@
 import Foundation
 import Combine
 
-public protocol LibraryItemViewModelDelegate {
+public protocol LibraryItemViewModelDelegate: AnyObject {
     
+    func finish()
 }
-
 
 public final class LibraryItemViewModelImpl: LibraryItemViewModel {
 
     // MARK: - Properties
 
     private let trackId: UUID
-    private let delegate: LibraryItemViewModelDelegate
+    private weak var delegate: LibraryItemViewModelDelegate?
     
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
     private let currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput
@@ -186,5 +186,10 @@ extension LibraryItemViewModelImpl {
 //                await attachSubtitles(language, url)
 //            }
 //        }
+    }
+    
+    public func finish() {
+        
+        delegate?.finish()
     }
 }

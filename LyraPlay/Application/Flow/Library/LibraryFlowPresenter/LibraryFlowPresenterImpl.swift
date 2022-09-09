@@ -50,6 +50,8 @@ extension LibraryFlowPresenterImpl {
                 }
                 
                 guard let itemFlow = itemFlow else {
+                    
+                    self.itemFlowPresenter = nil
                     return
                 }
                 

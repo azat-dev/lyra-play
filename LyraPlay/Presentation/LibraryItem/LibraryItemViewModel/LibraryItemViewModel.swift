@@ -15,6 +15,8 @@ public protocol LibraryItemViewModelInput {
     func togglePlay() async
 
     func attachSubtitles(language: String) async
+    
+    func finish()
 }
 
 public protocol LibraryItemViewModelOutput {

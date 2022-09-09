@@ -17,13 +17,13 @@ class LibraryItemFlowPresenterTests: XCTestCase {
     typealias SUT = (
         presenter: LibraryItemFlowPresenter,
         flow: LibraryItemFlowModelMock,
-        view: LibraryItemViewMock
+        view: LibraryItemViewController
     )
     
     func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
         
         let viewModel = mock(LibraryItemViewModel.self)
-        let view = mock(LibraryItemView.self)
+        let view = mock(LibraryItemViewController.self)
         
         let viewFactory = mock(LibraryItemViewFactory.self)
         
@@ -46,7 +46,6 @@ class LibraryItemFlowPresenterTests: XCTestCase {
         releaseMocks(
             flow,
             viewModel,
-            view,
             viewFactory
         )
         
@@ -61,13 +60,12 @@ class LibraryItemFlowPresenterTests: XCTestCase {
         
         // Given
         let sut = createSUT()
-        let container = mock(StackPresentationContainer.self)
+        let container = UINavigationController()
         
         // When
         sut.presenter.present(at: container)
         
         // Then
-        verify(container.push(sut.view))
-            .wasCalled(1)
+//        XCTAssertEqual(container.viewControllers.count, 1)
     }
 }

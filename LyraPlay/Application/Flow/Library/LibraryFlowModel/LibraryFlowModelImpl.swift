@@ -51,6 +51,21 @@ extension LibraryFlowModelImpl: AudioFilesBrowserViewModelDelegate {
     
     public func runOpenLibraryItemFlow(mediaId: UUID) {
         
-        libraryItemFlow.value = libraryItemFlowModelFactory.create(for: mediaId)
+        guard libraryItemFlow.value == nil else {
+            return
+        }
+        
+        let itemFlow = libraryItemFlowModelFactory.create(for: mediaId)
+        itemFlow.delegate = self
+        
+        libraryItemFlow.value = itemFlow
+    }
+}
+
+extension LibraryFlowModelImpl: LibraryItemFlowModelDelegate {
+    
+    public func didFinishLibraryItemFlow() {
+        
+        libraryItemFlow.value = nil
     }
 }
