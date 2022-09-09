@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 public final class LibraryItemFlowPresenterImpl: LibraryItemFlowPresenter {
     
@@ -19,7 +20,7 @@ public final class LibraryItemFlowPresenterImpl: LibraryItemFlowPresenter {
     }
 
     // MARK: - Methods
-    public func present(at container: StackPresentationContainer) {
+    public func present(at container: UINavigationController) {
         
         let view = libraryItemViewFactory.create(viewModel: flow.viewModel)
         container.push(view)

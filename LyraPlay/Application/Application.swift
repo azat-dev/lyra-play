@@ -234,7 +234,7 @@ public class Application {
     
     // MARK: - Methods
     
-    public func start(container: WindowContainer) {
+    public func start(container: UIWindow) {
         
         appPresenter.present(at: container)
     }
@@ -297,8 +297,13 @@ public class Application {
     
     func makePresenter(flow: MainFlowModel) -> MainFlowPresenter {
         
+        let libraryItemFlowPresenterFactory = LibraryItemFlowPresenterImplFactory(
+            libraryItemViewFactory: LibraryItemViewControllerFactory()
+        )
+        
         let libraryFlowPresenterFactory = LibraryFlowPresenterImplFactory(
-            listViewFactory: AudioFilesBrowserViewControllerFactory()
+            listViewFactory: AudioFilesBrowserViewControllerFactory(),
+            libraryItemFlowPresenterFactory: libraryItemFlowPresenterFactory
         )
         
         let dictionaryFlowPresenterFactory = DictionaryFlowPresenterImplFactory(

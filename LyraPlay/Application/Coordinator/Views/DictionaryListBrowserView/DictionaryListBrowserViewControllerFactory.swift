@@ -15,7 +15,7 @@ public final class DictionaryListBrowserViewControllerFactory: DictionaryListBro
 
     // MARK: - Methods
 
-    public func create(viewModel: DictionaryListBrowserViewModel) -> DictionaryListBrowserView {
+    public func create(viewModel: DictionaryListBrowserViewModel) -> DictionaryListBrowserViewController {
 
         return DictionaryListBrowserViewController(viewModel: viewModel)
     }

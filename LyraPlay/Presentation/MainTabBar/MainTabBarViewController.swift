@@ -44,11 +44,11 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
         ]
     } ()
     
-    public var libraryContainer: StackPresentationContainer {
+    public var libraryContainer: UINavigationController {
         return tabControllers[.library]!
     }
     
-    public var dictionaryContainer: StackPresentationContainer {
+    public var dictionaryContainer: UINavigationController {
         return tabControllers[.dictionary]!
     }
     

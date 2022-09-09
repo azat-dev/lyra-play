@@ -10,17 +10,23 @@ import Foundation
 public final class LibraryFlowPresenterImplFactory: LibraryFlowPresenterFactory {
     
     private let listViewFactory: AudioFilesBrowserViewFactory
+    private let libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory
     
-    public init(listViewFactory: AudioFilesBrowserViewFactory) {
+    public init(
+        listViewFactory: AudioFilesBrowserViewFactory,
+        libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory
+    ) {
         
         self.listViewFactory = listViewFactory
+        self.libraryItemFlowPresenterFactory = libraryItemFlowPresenterFactory
     }
     
     public func create(for flowModel: LibraryFlowModel) -> LibraryFlowPresenter {
         
         return LibraryFlowPresenterImpl(
             flowModel: flowModel,
-            listViewFactory: listViewFactory
+            listViewFactory: listViewFactory,
+            libraryItemFlowPresenterFactory: libraryItemFlowPresenterFactory
         )
     }
 }

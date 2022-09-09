@@ -15,7 +15,7 @@ public final class LibraryItemViewControllerFactory: LibraryItemViewFactory {
 
     // MARK: - Methods
 
-    public func create(viewModel: LibraryItemViewModel) -> LibraryItemView {
+    public func create(viewModel: LibraryItemViewModel) -> LibraryItemViewController {
 
         return LibraryItemViewController(viewModel: viewModel)
     }

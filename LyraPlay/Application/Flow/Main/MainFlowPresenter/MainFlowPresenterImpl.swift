@@ -44,7 +44,7 @@ public final class MainFlowPresenterImpl: MainFlowPresenter {
     
     // MARK: - Methods
     
-    public func present(at container: WindowContainer) {
+    public func present(at container: UIWindow) {
         
         let mainTabBarView = mainTabBarViewFactory.create(viewModel: mainFlowModel.mainTabBarViewModel)
         

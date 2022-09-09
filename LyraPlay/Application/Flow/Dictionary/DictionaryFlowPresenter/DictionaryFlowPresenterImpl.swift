@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 public final class DictionaryFlowPresenterImpl: DictionaryFlowPresenter {
 
@@ -28,9 +29,9 @@ public final class DictionaryFlowPresenterImpl: DictionaryFlowPresenter {
 
 extension DictionaryFlowPresenterImpl {
 
-    public func present(at container: StackPresentationContainer) {
+    public func present(at container: UINavigationController) {
         
         let view = listViewFactory.create(viewModel: flowModel.listViewModel)
-        container.setRoot(view)
+        container.pushViewController(view, animated: true)
     }
 }

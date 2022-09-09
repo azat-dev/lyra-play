@@ -7,5 +7,5 @@
 
 public protocol AudioFilesBrowserViewFactory {
     
-    func create(viewModel: AudioFilesBrowserViewModel) -> AudioFilesBrowserView
+    func create(viewModel: AudioFilesBrowserViewModel) -> AudioFilesBrowserViewController
 }

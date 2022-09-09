@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import UIKit
 
 public protocol DictionaryFlowPresenter {
     
-    func present(at: StackPresentationContainer)
+    func present(at: UINavigationController)
 }

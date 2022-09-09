@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import UIKit
 
 public protocol MainFlowPresenter: AnyObject {
     
-    func present(at: WindowContainer)
+    func present(at: UIWindow)
 }

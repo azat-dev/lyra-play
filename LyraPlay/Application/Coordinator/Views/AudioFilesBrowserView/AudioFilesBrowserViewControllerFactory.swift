@@ -15,7 +15,7 @@ public final class AudioFilesBrowserViewControllerFactory: AudioFilesBrowserView
     
     // MARK: - Methods
     
-    public func create(viewModel: AudioFilesBrowserViewModel) -> AudioFilesBrowserView {
+    public func create(viewModel: AudioFilesBrowserViewModel) -> AudioFilesBrowserViewController {
         
         return AudioFilesBrowserViewController(viewModel: viewModel)
     }

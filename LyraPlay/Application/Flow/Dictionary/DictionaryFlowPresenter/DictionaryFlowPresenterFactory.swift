@@ -11,4 +11,3 @@ public protocol DictionaryFlowPresenterFactory {
     
     func create(for flowModel: DictionaryFlowModel) -> DictionaryFlowPresenter
 }
-
