@@ -6,23 +6,31 @@
 //
 
 import Foundation
+import Combine
 
-public final class LibraryFlowModelImpl: LibraryFlowModel, LibraryCoordinatorInput {
+public final class LibraryFlowModelImpl: LibraryFlowModel {
 
     // MARK: - Properties
 
     private let viewModelFactory: AudioFilesBrowserViewModelFactory
+    private let libraryItemFlowModelFactory: LibraryItemFlowModelFactory
     
     public lazy var listViewModel: AudioFilesBrowserViewModel = {
         
         return viewModelFactory.create(delegate: self)
     } ()
 
+    public var libraryItemFlow = CurrentValueSubject<LibraryItemFlowModel?, Never>(nil)
+    
     // MARK: - Initializers
 
-    public init(viewModelFactory: AudioFilesBrowserViewModelFactory) {
+    public init(
+        viewModelFactory: AudioFilesBrowserViewModelFactory,
+        libraryItemFlowModelFactory: LibraryItemFlowModelFactory
+    ) {
 
         self.viewModelFactory = viewModelFactory
+        self.libraryItemFlowModelFactory = libraryItemFlowModelFactory
     }
 }
 
@@ -43,6 +51,6 @@ extension LibraryFlowModelImpl: AudioFilesBrowserViewModelDelegate {
     
     public func runOpenLibraryItemFlow(mediaId: UUID) {
         
-        fatalError()
+        libraryItemFlow.value = libraryItemFlowModelFactory.create(for: mediaId)
     }
 }

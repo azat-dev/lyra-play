@@ -8,12 +8,17 @@
 import Foundation
 import Combine
 
+public protocol LibraryItemViewModelDelegate {
+    
+}
+
+
 public final class LibraryItemViewModelImpl: LibraryItemViewModel {
 
     // MARK: - Properties
 
     private let trackId: UUID
-    private weak var coordinator: LibraryItemCoordinatorInput?
+    private let delegate: LibraryItemViewModelDelegate
     
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
     private let currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput
@@ -31,7 +36,7 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
 
     public init(
         trackId: UUID,
-        coordinator: LibraryItemCoordinatorInput,
+        delegate: LibraryItemViewModelDelegate,
         showMediaInfoUseCase: ShowMediaInfoUseCase,
         currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput,
         playMediaUseCase: PlayMediaWithTranslationsUseCase,
@@ -40,7 +45,7 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
     ) {
 
         self.trackId = trackId
-        self.coordinator = coordinator
+        self.delegate = delegate
         self.showMediaInfoUseCase = showMediaInfoUseCase
         self.currentPlayerStateUseCase = currentPlayerStateUseCase
         self.playMediaUseCase = playMediaUseCase

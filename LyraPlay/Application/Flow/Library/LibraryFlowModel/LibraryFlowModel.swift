@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 public protocol LibraryFlowModelInput: AnyObject {
 
@@ -14,6 +15,8 @@ public protocol LibraryFlowModelInput: AnyObject {
 public protocol LibraryFlowModelOutput: AnyObject {
 
     var listViewModel: AudioFilesBrowserViewModel { get }
+    
+    var libraryItemFlow: CurrentValueSubject<LibraryItemFlowModel?, Never> { get }
 }
 
 public protocol LibraryFlowModel: LibraryFlowModelOutput, LibraryFlowModelInput {}

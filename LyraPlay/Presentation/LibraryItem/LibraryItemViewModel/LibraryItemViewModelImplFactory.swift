@@ -38,12 +38,12 @@ public final class LibraryItemViewModelImplFactory: LibraryItemViewModelFactory 
 
     public func create(
         mediaId: UUID,
-        coordinator: LibraryItemCoordinatorInput
+        delegate: LibraryItemViewModelDelegate
     ) -> LibraryItemViewModel {
 
         return LibraryItemViewModelImpl(
             trackId: mediaId,
-            coordinator: coordinator,
+            delegate: delegate,
             showMediaInfoUseCase: showMediaInfoUseCase,
             currentPlayerStateUseCase: currentPlayerStateUseCase,
             playMediaUseCase: playMediaUseCase,

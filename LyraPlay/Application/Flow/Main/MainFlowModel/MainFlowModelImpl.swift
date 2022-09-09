@@ -35,6 +35,8 @@ public final class MainFlowModelImpl: MainFlowModel {
         self.mainTabBarViewModelFactory = mainTabBarViewModelFactory
         self.libraryFlowModelFactory = libraryFlowModelFactory
         self.dictionaryFlowModelFactory = dictionaryFlowModelFactory
+        
+        runLibraryFlow()
     }
 }
 

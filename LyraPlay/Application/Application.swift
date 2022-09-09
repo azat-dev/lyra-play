@@ -278,7 +278,14 @@ public class Application {
             browseDictionaryUseCase: browseDictionaryUseCase
         )
         
-        let libraryFlowModelFactory = LibraryFlowModelImplFactory(viewModelFactory: libraryViewModelFactory)
+        let libraryItemFlowModelFactory = LibraryItemFlowModelImplFactory(
+            libraryItemViewModelFactory: libraryItemViewModelFactory
+        )
+        
+        let libraryFlowModelFactory = LibraryFlowModelImplFactory(
+            viewModelFactory: libraryViewModelFactory,
+            libraryItemFlowModelFactory: libraryItemFlowModelFactory
+        )
         let dictionaryFlowModelFactory = DictionaryFlowModelImplFactory(viewModelFactory: dictionaryViewModelFactory)
         
         return MainFlowModelImpl(
