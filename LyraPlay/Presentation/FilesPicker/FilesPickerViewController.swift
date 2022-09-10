@@ -1,5 +1,5 @@
 //
-//  SubtitlesPickerViewController.swift
+//  FilesPickerViewController.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 09.09.22.
@@ -9,15 +9,15 @@ import Foundation
 import UIKit
 import UniformTypeIdentifiers
 
-public final class SubtitlesPickerViewController: UIDocumentPickerViewController {
+public final class FilesPickerViewController: UIDocumentPickerViewController {
 
     // MARK: - Properties
     
-    private let viewModel: SubtitlesPickerViewModel
+    private let viewModel: FilesPickerViewModel
     
     // MARK: - Initializers
     
-    public init(viewModel: SubtitlesPickerViewModel) {
+    public init(viewModel: FilesPickerViewModel) {
         
         self.viewModel = viewModel
         if #available(iOS 14.0, *) {
@@ -28,7 +28,7 @@ public final class SubtitlesPickerViewController: UIDocumentPickerViewController
             super.init(documentTypes: viewModel.documentTypes, in: .import)
         }
 
-        allowsMultipleSelection = false
+        allowsMultipleSelection = viewModel.allowsMultipleSelection
         self.delegate = self
     }
     
@@ -39,7 +39,7 @@ public final class SubtitlesPickerViewController: UIDocumentPickerViewController
 
 // MARK: - UIDocumentPickerDelegate
 
-extension SubtitlesPickerViewController: UIDocumentPickerDelegate {
+extension FilesPickerViewController: UIDocumentPickerDelegate {
     
     public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
         
@@ -47,16 +47,12 @@ extension SubtitlesPickerViewController: UIDocumentPickerDelegate {
     }
     
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        
-        guard let url = urls.first else {
-            return
-        }
-        
-        viewModel.chooseFile(url: url)
+
+        viewModel.choose(urls: urls)
     }
     
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
         
-        viewModel.chooseFile(url: url)
+        viewModel.choose(urls: [url])
     }
 }

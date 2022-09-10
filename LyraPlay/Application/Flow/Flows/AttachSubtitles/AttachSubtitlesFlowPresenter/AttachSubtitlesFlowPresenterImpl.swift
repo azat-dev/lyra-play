@@ -17,7 +17,7 @@ public final class AttachSubtitlesFlowPresenterImpl: AttachSubtitlesFlowPresente
     private let subtitlesPickerViewFactory: SubtitlesPickerViewFactory
     private let attachingSubtitlesProgressViewFactory: AttachingSubtitlesProgressViewFactory
     
-    private var activeSubtitlesPickerView: SubtitlesPickerViewController?
+    private var activeSubtitlesPickerView: FilesPickerViewController?
     
     private var progressObserver: AnyCancellable?
     

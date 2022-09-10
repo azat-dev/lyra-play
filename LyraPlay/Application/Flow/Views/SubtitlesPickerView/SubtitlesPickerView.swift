@@ -7,5 +7,5 @@
 
 public protocol SubtitlesPickerView: PresentableView {
 
-    init(viewModel: SubtitlesPickerViewModel)
+    init(viewModel: FilesPickerViewModel)
 }

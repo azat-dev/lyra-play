@@ -21,7 +21,7 @@ public protocol AttachSubtitlesFlowModelInput: AnyObject {}
 
 public protocol AttachSubtitlesFlowModelOutput: AnyObject {
 
-    var subtitlesPickerViewModel: SubtitlesPickerViewModel { get }
+    var subtitlesPickerViewModel: FilesPickerViewModel { get }
     
     var progressViewModel: CurrentValueSubject<AttachingSubtitlesProgressViewModel?, Never> { get }
 }

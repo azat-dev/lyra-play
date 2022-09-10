@@ -15,15 +15,16 @@ public final class AttachSubtitlesFlowModelImpl: AttachSubtitlesFlowModel {
     private let mediaId: UUID
     private let allowedDocumentTypes: [String]
 
-    private let subtitlesPickerViewModelFactory: SubtitlesPickerViewModelFactory
+    private let subtitlesPickerViewModelFactory: FilesPickerViewModelFactory
     private let attachingSubtitlesProgressViewModelFactory: AttachingSubtitlesProgressViewModelFactory
 
     private weak var delegate: AttachSubtitlesFlowModelDelegate?
     
-    public lazy var subtitlesPickerViewModel: SubtitlesPickerViewModel = {
+    public lazy var subtitlesPickerViewModel: FilesPickerViewModel = {
         
         subtitlesPickerViewModelFactory.create(
             documentTypes: allowedDocumentTypes,
+            allowsMultipleSelection: false,
             delegate: self
         )
     } ()
@@ -40,7 +41,7 @@ public final class AttachSubtitlesFlowModelImpl: AttachSubtitlesFlowModel {
         mediaId: UUID,
         delegate: AttachSubtitlesFlowModelDelegate,
         allowedDocumentTypes: [String],
-        subtitlesPickerViewModelFactory: SubtitlesPickerViewModelFactory,
+        subtitlesPickerViewModelFactory: FilesPickerViewModelFactory,
         attachingSubtitlesProgressViewModelFactory: AttachingSubtitlesProgressViewModelFactory,
         importSubtitlesUseCaseFactory: ImportSubtitlesUseCaseFactory
     ) {
@@ -62,9 +63,9 @@ extension AttachSubtitlesFlowModelImpl {
 
 // MARK: - SubtitlesPickerViewModelDelegate
 
-extension AttachSubtitlesFlowModelImpl: SubtitlesPickerViewModelDelegate {
+extension AttachSubtitlesFlowModelImpl: FilesPickerViewModelDelegate {
 
-    public func subtitlesPickerDidCancel() {
+    public func filesPickerDidCancel() {
         
         delegate?.attachSubtitlesFlowDidCancel()
     }
@@ -104,14 +105,18 @@ extension AttachSubtitlesFlowModelImpl: SubtitlesPickerViewModelDelegate {
         })
     }
     
-    public func subtitlesPickerDidChooseFile(url: URL) {
+    public func filesPickerDidChoose(urls: [URL]) {
 
+        guard let url = urls.first else {
+            return
+        }
+        
         attachingTask = Task {
             await self.attachSubtitles(url: url)
         }
     }
     
-    public func subtitlesDidFinish() {
+    public func filesPickerDidFinish() {
         
         delegate?.attachSubtitlesFlowDidFinish()
     }

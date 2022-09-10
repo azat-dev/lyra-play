@@ -289,7 +289,7 @@ public class Application {
         
         let attachSubtitlesFlowModelFactory = AttachSubtitlesFlowModelImplFactory(
             allowedDocumentTypes: ["com.azatkaiumov.subtitles"],
-            subtitlesPickerViewModelFactory: SubtitlesPickerViewModelImplFactory(),
+            subtitlesPickerViewModelFactory: FilesPickerViewModelImplFactory(),
             attachingSubtitlesProgressViewModelFactory: attachingSubtitlesProgressViewModelFactory,
             importSubtitlesUseCaseFactory: importSubtitlesUseCaseFactory
         )
@@ -315,7 +315,7 @@ public class Application {
     func makePresenter(flow: MainFlowModel) -> MainFlowPresenter {
         
         let attachSubtitlesFlowPresenterFactory = AttachSubtitlesFlowPresenterImplFactory(
-            subtitlesPickerViewFactory: SubtitlesPickerViewControllerFactory(),
+            subtitlesPickerViewFactory: FilesPickerViewControllerFactory(),
             attachingSubtitlesProgressViewFactory: AttachingSubtitlesProgressViewControllerFactory()
         )
         

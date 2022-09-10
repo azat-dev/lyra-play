@@ -7,5 +7,5 @@
 
 public protocol SubtitlesPickerViewFactory {
 
-    func create(viewModel: SubtitlesPickerViewModel) -> SubtitlesPickerViewController
+    func create(viewModel: FilesPickerViewModel) -> FilesPickerViewController
 }

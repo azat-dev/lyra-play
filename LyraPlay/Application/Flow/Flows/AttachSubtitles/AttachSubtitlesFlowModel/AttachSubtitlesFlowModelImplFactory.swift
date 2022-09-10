@@ -12,7 +12,7 @@ public final class AttachSubtitlesFlowModelImplFactory: AttachSubtitlesFlowModel
     // MARK: - Properties
 
     private let allowedDocumentTypes: [String]
-    private let subtitlesPickerViewModelFactory: SubtitlesPickerViewModelFactory
+    private let subtitlesPickerViewModelFactory: FilesPickerViewModelFactory
     private let attachingSubtitlesProgressViewModelFactory: AttachingSubtitlesProgressViewModelFactory
     private let importSubtitlesUseCaseFactory: ImportSubtitlesUseCaseImplFactory
     
@@ -20,7 +20,7 @@ public final class AttachSubtitlesFlowModelImplFactory: AttachSubtitlesFlowModel
 
     public init(
         allowedDocumentTypes: [String],
-        subtitlesPickerViewModelFactory: SubtitlesPickerViewModelFactory,
+        subtitlesPickerViewModelFactory: FilesPickerViewModelFactory,
         attachingSubtitlesProgressViewModelFactory: AttachingSubtitlesProgressViewModelFactory,
         importSubtitlesUseCaseFactory: ImportSubtitlesUseCaseImplFactory
     ) {
