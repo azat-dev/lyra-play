@@ -278,8 +278,14 @@ public class Application {
             browseDictionaryUseCase: browseDictionaryUseCase
         )
         
+        let attachSubtitlesFlowModelFactory = AttachSubtitlesFlowModelImplFactory(
+            allowedDocumentTypes: ["com.azatkaiumov.subtitles"],
+            subtitlesPickerViewModelFactory: SubtitlesPickerViewModelImplFactory()
+        )
+        
         let libraryItemFlowModelFactory = LibraryItemFlowModelImplFactory(
-            libraryItemViewModelFactory: libraryItemViewModelFactory
+            libraryItemViewModelFactory: libraryItemViewModelFactory,
+            attachSubtitlesFlowModelFactory: attachSubtitlesFlowModelFactory
         )
         
         let libraryFlowModelFactory = LibraryFlowModelImplFactory(
@@ -297,8 +303,12 @@ public class Application {
     
     func makePresenter(flow: MainFlowModel) -> MainFlowPresenter {
         
+        let attachSubtitlesFlowPresenterFactory = AttachSubtitlesFlowPresenterImplFactory(subtitlesPickerViewFactory: SubtitlesPickerViewControllerFactory()
+        )
+        
         let libraryItemFlowPresenterFactory = LibraryItemFlowPresenterImplFactory(
-            libraryItemViewFactory: LibraryItemViewControllerFactory()
+            libraryItemViewFactory: LibraryItemViewControllerFactory(),
+            attachSubtitlesFlowPresenterFactory: attachSubtitlesFlowPresenterFactory
         )
         
         let libraryFlowPresenterFactory = LibraryFlowPresenterImplFactory(

@@ -6,10 +6,11 @@
 //
 
 import Foundation
+import Combine
 
 public protocol LibraryItemFlowModelInput: AnyObject {
 
-    func runAttachSubtitlesFlow(completion: @escaping (_ url: URL?) -> Void)
+    func runAttachSubtitlesFlow()
 }
 
 public protocol LibraryItemFlowModelDelegate: AnyObject {
@@ -20,6 +21,8 @@ public protocol LibraryItemFlowModelDelegate: AnyObject {
 public protocol LibraryItemFlowModelOutput: AnyObject {
 
     var viewModel: LibraryItemViewModel { get }
+    
+    var attachSubtitlesFlow: CurrentValueSubject<AttachSubtitlesFlowModel?, Never> { get }
     
     var delegate: LibraryItemFlowModelDelegate? { get set }
 }

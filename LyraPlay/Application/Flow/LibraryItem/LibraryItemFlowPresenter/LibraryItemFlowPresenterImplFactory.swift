@@ -12,12 +12,17 @@ public final class LibraryItemFlowPresenterImplFactory: LibraryItemFlowPresenter
     // MARK: - Properties
     
     private let libraryItemViewFactory: LibraryItemViewFactory
+    private let attachSubtitlesFlowPresenterFactory: AttachSubtitlesFlowPresenterFactory
     
     // MARK: - Initializers
     
-    public init(libraryItemViewFactory: LibraryItemViewFactory) {
+    public init(
+        libraryItemViewFactory: LibraryItemViewFactory,
+        attachSubtitlesFlowPresenterFactory: AttachSubtitlesFlowPresenterFactory
+    ) {
         
         self.libraryItemViewFactory = libraryItemViewFactory
+        self.attachSubtitlesFlowPresenterFactory = attachSubtitlesFlowPresenterFactory
     }
     
     // MARK: - Methods
@@ -26,7 +31,8 @@ public final class LibraryItemFlowPresenterImplFactory: LibraryItemFlowPresenter
         
         return LibraryItemFlowPresenterImpl(
             flowModel: flowModel,
-            libraryItemViewFactory: libraryItemViewFactory
+            libraryItemViewFactory: libraryItemViewFactory,
+            attachSubtitlesFlowPresenterFactory: attachSubtitlesFlowPresenterFactory
         )
     }
 }

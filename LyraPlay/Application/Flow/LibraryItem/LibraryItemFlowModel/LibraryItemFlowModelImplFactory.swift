@@ -12,12 +12,17 @@ public final class LibraryItemFlowModelImplFactory: LibraryItemFlowModelFactory 
     // MARK: - Properties
     
     private let libraryItemViewModelFactory: LibraryItemViewModelFactory
+    private let attachSubtitlesFlowModelFactory: AttachSubtitlesFlowModelFactory
 
     // MARK: - Initializers
     
-    public init(libraryItemViewModelFactory: LibraryItemViewModelFactory) {
+    public init(
+        libraryItemViewModelFactory: LibraryItemViewModelFactory,
+        attachSubtitlesFlowModelFactory: AttachSubtitlesFlowModelFactory
+    ) {
         
         self.libraryItemViewModelFactory = libraryItemViewModelFactory
+        self.attachSubtitlesFlowModelFactory = attachSubtitlesFlowModelFactory
     }
     
     // MARK: - Methods
@@ -26,7 +31,8 @@ public final class LibraryItemFlowModelImplFactory: LibraryItemFlowModelFactory 
 
         return LibraryItemFlowModelImpl(
             mediaId: mediaId,
-            viewModelFactory: libraryItemViewModelFactory
+            viewModelFactory: libraryItemViewModelFactory,
+            attachSubtitlesFlowModelFactory: attachSubtitlesFlowModelFactory
         )
     }
 }

@@ -11,6 +11,8 @@ import UIKit
 public protocol AttachSubtitlesFlowPresenterInput: AnyObject {
 
     func present(at container: UINavigationController)
+    
+    func dismiss()
 }
 
 public protocol AttachSubtitlesFlowPresenter: AttachSubtitlesFlowPresenterInput {}

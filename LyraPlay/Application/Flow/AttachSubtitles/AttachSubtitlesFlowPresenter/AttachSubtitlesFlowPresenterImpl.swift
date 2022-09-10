@@ -15,6 +15,9 @@ public final class AttachSubtitlesFlowPresenterImpl: AttachSubtitlesFlowPresente
     private let flowModel: AttachSubtitlesFlowModel
     private let subtitlesPickerViewFactory: SubtitlesPickerViewFactory
 
+    
+    private var activeSubtitlesPickerView: SubtitlesPickerViewController?
+    
     // MARK: - Initializers
 
     public init(
@@ -34,6 +37,13 @@ extension AttachSubtitlesFlowPresenterImpl {
     public func present(at container: UINavigationController) {
 
         let view = subtitlesPickerViewFactory.create(viewModel: flowModel.subtitlesPickerViewModel)
+        activeSubtitlesPickerView = view
+        
         container.present(view, animated: true)
+    }
+    
+    public func dismiss() {
+        
+        activeSubtitlesPickerView?.dismiss(animated: true)
     }
 }

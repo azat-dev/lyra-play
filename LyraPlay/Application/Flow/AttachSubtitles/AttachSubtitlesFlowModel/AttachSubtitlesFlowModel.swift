@@ -7,9 +7,17 @@
 
 import Foundation
 
-public protocol AttachSubtitlesFlowModelInput: AnyObject {
 
+public protocol AttachSubtitlesFlowModelDelegate: AnyObject {
+    
+    func attachSubtitlesFlowDidCancel()
+    
+    func attachSubtitlesFlowDidFinish()
+    
+    func attachSubtitlesFlowDidAttach()
 }
+
+public protocol AttachSubtitlesFlowModelInput: AnyObject {}
 
 public protocol AttachSubtitlesFlowModelOutput: AnyObject {
 

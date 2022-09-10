@@ -10,6 +10,8 @@ import Combine
 
 public protocol LibraryItemViewModelDelegate: AnyObject {
     
+    func runAttachSubtitlesFlow()
+    
     func finish()
 }
 
@@ -175,6 +177,8 @@ extension LibraryItemViewModelImpl {
     }
     
     public func attachSubtitles(language: String) async {
+        
+        delegate?.runAttachSubtitlesFlow()
         
 //        coordinator?.runAttachSubtitlesFlow { [weak self] url in
 //            

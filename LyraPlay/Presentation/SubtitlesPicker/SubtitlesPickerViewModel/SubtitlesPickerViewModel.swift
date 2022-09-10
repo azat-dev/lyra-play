@@ -12,6 +12,8 @@ public protocol SubtitlesPickerViewModelDelegate: AnyObject {
     func subtitlesPickerDidChooseFile(url: URL)
     
     func subtitlesPickerDidCancel()
+    
+    func subtitlesDidFinish()
 }
 
 public protocol SubtitlesPickerViewModelInput: AnyObject {
