@@ -13,6 +13,8 @@ public protocol ImportMediaFilesFlowPresenterInput: AnyObject {
     func present(at container: UINavigationController)
     
     func finish()
+    
+    func dismiss()
 }
 
 public protocol ImportMediaFilesFlowPresenter: AnyObject, ImportMediaFilesFlowPresenterInput {}

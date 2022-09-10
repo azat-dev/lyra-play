@@ -17,7 +17,7 @@ public final class LibraryItemFlowPresenterImpl: LibraryItemFlowPresenter {
     private let libraryItemViewFactory: LibraryItemViewFactory
     private let attachSubtitlesFlowPresenterFactory: AttachSubtitlesFlowPresenterFactory
     
-    private var attachSubtitlesFlowObserver: AnyCancellable?
+    private var observers = Set<AnyCancellable>()
     private var attachSubtitlesPresenter: AttachSubtitlesFlowPresenter?
     
     // MARK: - Initializers
@@ -33,25 +33,47 @@ public final class LibraryItemFlowPresenterImpl: LibraryItemFlowPresenter {
         self.attachSubtitlesFlowPresenterFactory = attachSubtitlesFlowPresenterFactory
     }
     
-    // MARK: - Methods
+    deinit {
+        
+        attachSubtitlesPresenter = nil
+        observers.removeAll()
+    }
+}
+
+// MARK: - Methods
+
+extension LibraryItemFlowPresenterImpl {
     
     public func present(at container: UINavigationController) {
         
-        attachSubtitlesFlowObserver = flow.attachSubtitlesFlow
+        flow.attachSubtitlesFlow
             .receive(on: RunLoop.main)
-            .sink { attachSubtitlesFlow in
+            .sink { [weak self] attachSubtitlesFlow in
+
+                guard let self = self else {
+                    return
+                }
                 
                 guard let attachSubtitlesFlow = attachSubtitlesFlow else {
                     
                     self.attachSubtitlesPresenter?.dismiss()
+                    self.attachSubtitlesPresenter = nil
                     return
                 }
                 
                 let presenter = self.attachSubtitlesFlowPresenterFactory.create(for: attachSubtitlesFlow)
+                self.attachSubtitlesPresenter = presenter
                 presenter.present(at: container)
-            }
+                
+            }.store(in: &observers)
         
         let view = libraryItemViewFactory.create(viewModel: flow.viewModel)
         container.push(view)
+    }
+    
+    public func dismiss() {
+        
+        attachSubtitlesPresenter?.dismiss()
+        attachSubtitlesPresenter = nil
     }
 }

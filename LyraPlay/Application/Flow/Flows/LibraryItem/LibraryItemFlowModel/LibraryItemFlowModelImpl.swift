@@ -28,11 +28,13 @@ public final class LibraryItemFlowModelImpl: LibraryItemFlowModel {
     
     public init(
         mediaId: UUID,
+        delegate: LibraryItemFlowModelDelegate,
         viewModelFactory: LibraryItemViewModelFactory,
         attachSubtitlesFlowModelFactory: AttachSubtitlesFlowModelFactory
     ) {
 
         self.mediaId = mediaId
+        self.delegate = delegate
         self.viewModelFactory = viewModelFactory
         self.attachSubtitlesFlowModelFactory = attachSubtitlesFlowModelFactory
     }
@@ -56,6 +58,7 @@ extension LibraryItemFlowModelImpl: LibraryItemViewModelDelegate {
     
     public func finish() {
         
+        self.attachSubtitlesFlow.value = nil
         self.delegate?.didFinishLibraryItemFlow()
     }
 }

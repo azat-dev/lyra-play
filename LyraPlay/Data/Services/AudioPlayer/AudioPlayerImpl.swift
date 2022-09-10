@@ -20,7 +20,6 @@ public final class AudioPlayerImpl: NSObject, AudioPlayer, AVAudioPlayerDelegate
     private var player: AVAudioPlayer? = nil
     private var playerIsPlayingObserver: NSKeyValueObservation? = nil
 
-
     // MARK: - Initializers
 
     public init(audioSession: AudioSession) {

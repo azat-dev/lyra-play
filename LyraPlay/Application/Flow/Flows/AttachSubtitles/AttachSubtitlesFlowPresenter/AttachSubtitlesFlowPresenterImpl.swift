@@ -10,46 +10,57 @@ import UIKit
 import Combine
 
 public final class AttachSubtitlesFlowPresenterImpl: AttachSubtitlesFlowPresenter {
-
+    
     // MARK: - Properties
-
+    
     private let flowModel: AttachSubtitlesFlowModel
     private let subtitlesPickerViewFactory: FilesPickerViewFactory
     private let attachingSubtitlesProgressViewFactory: AttachingSubtitlesProgressViewFactory
     
     private var activeSubtitlesPickerView: FilesPickerViewController?
     
-    private var progressObserver: AnyCancellable?
-    
     private weak var progressView: UIViewController?
+    private var observers = Set<AnyCancellable>()
     
     // MARK: - Initializers
-
+    
     public init(
         flowModel: AttachSubtitlesFlowModel,
         subtitlesPickerViewFactory: FilesPickerViewFactory,
         attachingSubtitlesProgressViewFactory: AttachingSubtitlesProgressViewFactory
     ) {
-
+        
         self.flowModel = flowModel
         self.subtitlesPickerViewFactory = subtitlesPickerViewFactory
         self.attachingSubtitlesProgressViewFactory = attachingSubtitlesProgressViewFactory
+    }
+    
+    deinit {
+
+        progressView = nil
+        activeSubtitlesPickerView = nil
+        observers.removeAll()
     }
 }
 
 // MARK: - Input Methods
 
 extension AttachSubtitlesFlowPresenterImpl {
-
+    
     public func present(at container: UINavigationController) {
-
-        progressObserver = flowModel.progressViewModel
+        
+        flowModel.progressViewModel
             .receive(on: RunLoop.main)
-            .sink { progressViewModel in
+            .sink { [weak self] progressViewModel in
+                
+                guard let self = self else {
+                    return
+                }
                 
                 guard let progressViewModel = progressViewModel else {
                     
                     self.progressView?.dismiss(animated: true)
+                    self.progressView = nil
                     return
                 }
                 
@@ -61,6 +72,7 @@ extension AttachSubtitlesFlowPresenterImpl {
                 
                 container.present(view, animated: true)
             }
+            .store(in: &observers)
         
         let view = subtitlesPickerViewFactory.create(viewModel: flowModel.subtitlesPickerViewModel)
         activeSubtitlesPickerView = view
@@ -72,5 +84,9 @@ extension AttachSubtitlesFlowPresenterImpl {
         
         progressView?.dismiss(animated: true)
         activeSubtitlesPickerView?.dismiss(animated: true)
+
+        progressView = nil
+        activeSubtitlesPickerView = nil
+        observers.removeAll()
     }
 }

@@ -19,11 +19,10 @@ public final class LibraryFlowPresenterImpl: LibraryFlowPresenter {
     private let libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory
     private let importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory
     
-    private var libraryItemFlowObserver: AnyCancellable?
     private var itemFlowPresenter: LibraryItemFlowPresenter?
-
-    private var importFlowObserver: AnyCancellable?
     private var importFlowPresenter: ImportMediaFilesFlowPresenter?
+    
+    private var observers = Set<AnyCancellable>()
     
     // MARK: - Initializers
     
@@ -39,6 +38,14 @@ public final class LibraryFlowPresenterImpl: LibraryFlowPresenter {
         self.libraryItemFlowPresenterFactory = libraryItemFlowPresenterFactory
         self.importMediaFilesFlowPresenterFactory = importMediaFilesFlowPresenterFactory
     }
+    
+    deinit {
+        
+        self.itemFlowPresenter = nil
+        self.importFlowPresenter = nil
+        
+        observers.removeAll()
+    }
 }
 
 // MARK: - Methods
@@ -47,7 +54,7 @@ extension LibraryFlowPresenterImpl {
     
     public func present(at container: UINavigationController) {
         
-        libraryItemFlowObserver = flowModel.libraryItemFlow
+        flowModel.libraryItemFlow
             .receive(on: RunLoop.main)
             .sink { [weak self] itemFlow in
                 
@@ -57,6 +64,7 @@ extension LibraryFlowPresenterImpl {
                 
                 guard let itemFlow = itemFlow else {
                     
+                    self.itemFlowPresenter?.dismiss()
                     self.itemFlowPresenter = nil
                     return
                 }
@@ -65,9 +73,9 @@ extension LibraryFlowPresenterImpl {
                 presenter.present(at: container)
                 
                 self.itemFlowPresenter = presenter
-            }
+            }.store(in: &observers)
         
-        importFlowObserver = flowModel.importMediaFilesFlow
+        flowModel.importMediaFilesFlow
             .receive(on: RunLoop.main)
             .sink { [weak self] importFlowModel in
                 
@@ -77,6 +85,7 @@ extension LibraryFlowPresenterImpl {
                 
                 guard let importFlowModel = importFlowModel else {
                     
+                    self.self.importFlowPresenter?.dismiss()
                     self.importFlowPresenter = nil
                     return
                 }
@@ -85,7 +94,7 @@ extension LibraryFlowPresenterImpl {
                 presenter.present(at: container)
                 
                 self.importFlowPresenter = presenter
-            }
+            }.store(in: &observers)
         
         let view = listViewFactory.create(viewModel: flowModel.listViewModel)
         container.pushViewController(view, animated: true)

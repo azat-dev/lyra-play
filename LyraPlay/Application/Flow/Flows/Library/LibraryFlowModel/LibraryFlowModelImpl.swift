@@ -60,7 +60,7 @@ extension LibraryFlowModelImpl: AudioFilesBrowserViewModelDelegate {
             return
         }
         
-        let itemFlow = libraryItemFlowModelFactory.create(for: mediaId)
+        let itemFlow = libraryItemFlowModelFactory.create(for: mediaId, delegate: self)
         itemFlow.delegate = self
         
         libraryItemFlow.value = itemFlow

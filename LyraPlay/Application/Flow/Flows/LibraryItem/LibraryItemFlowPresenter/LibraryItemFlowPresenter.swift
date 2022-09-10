@@ -11,4 +11,6 @@ import UIKit
 public protocol LibraryItemFlowPresenter {
  
     func present(at: UINavigationController)
+    
+    func dismiss()
 }

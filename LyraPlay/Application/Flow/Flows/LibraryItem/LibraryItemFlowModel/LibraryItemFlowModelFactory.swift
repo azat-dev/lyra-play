@@ -9,5 +9,5 @@ import Foundation
 
 public protocol LibraryItemFlowModelFactory {
 
-    func create(for mediaId: UUID) -> LibraryItemFlowModel
+    func create(for mediaId: UUID, delegate: LibraryItemFlowModelDelegate) -> LibraryItemFlowModel
 }

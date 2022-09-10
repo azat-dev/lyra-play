@@ -27,10 +27,11 @@ public final class LibraryItemFlowModelImplFactory: LibraryItemFlowModelFactory 
     
     // MARK: - Methods
     
-    public func create(for mediaId: UUID) -> LibraryItemFlowModel {
+    public func create(for mediaId: UUID, delegate: LibraryItemFlowModelDelegate) -> LibraryItemFlowModel {
 
         return LibraryItemFlowModelImpl(
             mediaId: mediaId,
+            delegate: delegate,
             viewModelFactory: libraryItemViewModelFactory,
             attachSubtitlesFlowModelFactory: attachSubtitlesFlowModelFactory
         )

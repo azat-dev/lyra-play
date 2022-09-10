@@ -24,7 +24,7 @@ public final class MainFlowPresenterImpl: MainFlowPresenter {
     private var libraryFlowObserver: AnyCancellable?
     
     private var dictionaryFlowPresenter: DictionaryFlowPresenter?
-    private var dictionaryFlowObserver: AnyCancellable?
+    private var observers = Set<AnyCancellable>()
     
     
     // MARK: - Initializers
@@ -42,18 +42,28 @@ public final class MainFlowPresenterImpl: MainFlowPresenter {
         self.dictionaryFlowPresenterFactory = dictionaryFlowPresenterFactory
     }
     
-    // MARK: - Methods
+    deinit {
+        observers.removeAll()
+    }
+}
+
+// MARK: - Methods
+
+extension MainFlowPresenterImpl {
     
     public func present(at container: UIWindow) {
         
         let mainTabBarView = mainTabBarViewFactory.create(viewModel: mainFlowModel.mainTabBarViewModel)
         
-        libraryFlowObserver = mainFlowModel.libraryFlow
+        mainFlowModel.libraryFlow
             .receive(on: RunLoop.main)
             .sink { [weak self] libraryFlow in
                 
+                guard let self = self else {
+                    return
+                }
+                
                 guard
-                    let self = self,
                     let libraryFlow = libraryFlow,
                     self.libraryFlowPresenter == nil
                 else {
@@ -64,15 +74,18 @@ public final class MainFlowPresenterImpl: MainFlowPresenter {
                 presenter.present(at: mainTabBarView.libraryContainer)
                 
                 self.libraryFlowPresenter = presenter
-            }
+            }.store(in: &observers)
         
         
-        dictionaryFlowObserver = mainFlowModel.dictionaryFlow
+        mainFlowModel.dictionaryFlow
             .receive(on: RunLoop.main)
-            .sink { [weak self] dictionaryFlow in
+            .sink { [weak self]  dictionaryFlow in
+                
+                guard let self = self else {
+                    return
+                }
                 
                 guard
-                    let self = self,
                     let dictionaryFlow = dictionaryFlow,
                     self.dictionaryFlowPresenter == nil
                 else {
@@ -83,7 +96,7 @@ public final class MainFlowPresenterImpl: MainFlowPresenter {
                 presenter.present(at: mainTabBarView.dictionaryContainer)
                 
                 self.dictionaryFlowPresenter = presenter
-            }
+            }.store(in: &observers)
         
         container.setRoot(mainTabBarView)
     }

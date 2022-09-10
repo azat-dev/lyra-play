@@ -10,34 +10,38 @@ import Combine
 import UIKit
 
 public final class ImportMediaFilesFlowPresenterImpl: ImportMediaFilesFlowPresenter {
-
+    
     // MARK: - Properties
-
+    
     private let flowModel: ImportMediaFilesFlowModel
     private let filesPickerViewFactory: FilesPickerViewFactory
-
+    
     private weak var activePickerView: UIViewController?
-    private var filesPickerObserver: AnyCancellable?
+    private var observers = Set<AnyCancellable>()
     
     // MARK: - Initializers
-
+    
     public init(
         flowModel: ImportMediaFilesFlowModel,
         filesPickerViewFactory: FilesPickerViewFactory
     ) {
-
+        
         self.flowModel = flowModel
         self.filesPickerViewFactory = filesPickerViewFactory
+    }
+    
+    deinit {
+        observers.removeAll()
     }
 }
 
 // MARK: - Input Methods
 
 extension ImportMediaFilesFlowPresenterImpl {
-
+    
     public func present(at container: UINavigationController) {
-
-        filesPickerObserver = flowModel.filesPickerViewModel
+        
+        flowModel.filesPickerViewModel
             .receive(on: RunLoop.main)
             .sink { [weak self] filesPickerViewModel in
                 
@@ -55,17 +59,17 @@ extension ImportMediaFilesFlowPresenterImpl {
                 let view = self.filesPickerViewFactory.create(viewModel: filesPickerViewModel)
                 self.activePickerView = view
                 container.present(view, animated: true)
-            }
+            }.store(in: &observers)
     }
     
     public func finish() {
         
-        filesPickerObserver?.cancel()
+        observers.removeAll()
     }
-}
-
-// MARK: - Output Methods
-
-extension ImportMediaFilesFlowPresenterImpl {
-
+    
+    public func dismiss() {
+        
+        activePickerView?.dismiss(animated: true)
+        activePickerView = nil
+    }
 }
