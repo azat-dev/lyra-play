@@ -287,9 +287,11 @@ public class Application {
         
         let attachingSubtitlesProgressViewModelFactory = AttachingSubtitlesProgressViewModelImplFactory()
         
+        let filesPickerViewModelFactory = FilesPickerViewModelImplFactory()
+        
         let attachSubtitlesFlowModelFactory = AttachSubtitlesFlowModelImplFactory(
             allowedDocumentTypes: ["com.azatkaiumov.subtitles"],
-            subtitlesPickerViewModelFactory: FilesPickerViewModelImplFactory(),
+            subtitlesPickerViewModelFactory: filesPickerViewModelFactory,
             attachingSubtitlesProgressViewModelFactory: attachingSubtitlesProgressViewModelFactory,
             importSubtitlesUseCaseFactory: importSubtitlesUseCaseFactory
         )
@@ -299,9 +301,16 @@ public class Application {
             attachSubtitlesFlowModelFactory: attachSubtitlesFlowModelFactory
         )
         
+        let importMediaFilesFlowModelFactory = ImportMediaFilesFlowModelImplFactory(
+            allowedDocumentTypes: ["public.audio"],
+            filesPickerViewModelFactory: filesPickerViewModelFactory,
+            importAudioFileUseCaseFactory: imporAudioFileUseCaseFactory
+        )
+        
         let libraryFlowModelFactory = LibraryFlowModelImplFactory(
             viewModelFactory: libraryViewModelFactory,
-            libraryItemFlowModelFactory: libraryItemFlowModelFactory
+            libraryItemFlowModelFactory: libraryItemFlowModelFactory,
+            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory
         )
         let dictionaryFlowModelFactory = DictionaryFlowModelImplFactory(viewModelFactory: dictionaryViewModelFactory)
         

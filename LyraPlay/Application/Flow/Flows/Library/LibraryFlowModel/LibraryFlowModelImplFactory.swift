@@ -13,16 +13,19 @@ public final class LibraryFlowModelImplFactory: LibraryFlowModelFactory {
 
     private let viewModelFactory: AudioFilesBrowserViewModelFactory
     private let libraryItemFlowModelFactory: LibraryItemFlowModelFactory
-
+    private let importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory
+    
     // MARK: - Initializers
 
     public init(
         viewModelFactory: AudioFilesBrowserViewModelFactory,
-        libraryItemFlowModelFactory: LibraryItemFlowModelFactory
+        libraryItemFlowModelFactory: LibraryItemFlowModelFactory,
+        importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory
     ) {
 
         self.viewModelFactory = viewModelFactory
         self.libraryItemFlowModelFactory = libraryItemFlowModelFactory
+        self.importMediaFilesFlowModelFactory = importMediaFilesFlowModelFactory
     }
 
     // MARK: - Methods
@@ -31,7 +34,8 @@ public final class LibraryFlowModelImplFactory: LibraryFlowModelFactory {
 
         return LibraryFlowModelImpl(
             viewModelFactory: viewModelFactory,
-            libraryItemFlowModelFactory: libraryItemFlowModelFactory
+            libraryItemFlowModelFactory: libraryItemFlowModelFactory,
+            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory
         )
     }
 }

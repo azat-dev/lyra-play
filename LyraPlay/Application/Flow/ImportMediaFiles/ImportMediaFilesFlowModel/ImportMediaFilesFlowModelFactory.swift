@@ -7,8 +7,5 @@
 
 public protocol ImportMediaFilesFlowModelFactory {
 
-    func create(
-        allowedDocumentTypes: [String],
-        delegate: ImportMediaFilesFlowModelDelegate
-    ) -> ImportMediaFilesFlowModel
+    func create(delegate: ImportMediaFilesFlowModelDelegate) -> ImportMediaFilesFlowModel
 }

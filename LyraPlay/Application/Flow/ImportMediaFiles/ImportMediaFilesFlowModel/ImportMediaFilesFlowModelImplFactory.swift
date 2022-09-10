@@ -11,19 +11,19 @@ public final class ImportMediaFilesFlowModelImplFactory: ImportMediaFilesFlowMod
 
     // MARK: - Properties
 
-    private let delegate: ImportMediaFilesFlowModel
+    private let allowedDocumentTypes: [String]
     private let filesPickerViewModelFactory: FilesPickerViewModelFactory
     private let importAudioFileUseCaseFactory: ImportAudioFileUseCaseFactory
 
     // MARK: - Initializers
 
     public init(
-        delegate: ImportMediaFilesFlowModel,
+        allowedDocumentTypes: [String],
         filesPickerViewModelFactory: FilesPickerViewModelFactory,
         importAudioFileUseCaseFactory: ImportAudioFileUseCaseFactory
     ) {
 
-        self.delegate = delegate
+        self.allowedDocumentTypes = allowedDocumentTypes
         self.filesPickerViewModelFactory = filesPickerViewModelFactory
         self.importAudioFileUseCaseFactory = importAudioFileUseCaseFactory
     }
@@ -31,7 +31,6 @@ public final class ImportMediaFilesFlowModelImplFactory: ImportMediaFilesFlowMod
     // MARK: - Methods
 
     public func create(
-        allowedDocumentTypes: [String],
         delegate: ImportMediaFilesFlowModelDelegate
     ) -> ImportMediaFilesFlowModel {
 
