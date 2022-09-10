@@ -44,7 +44,7 @@ extension LibraryFlowModelImpl {
 
 extension LibraryFlowModelImpl: AudioFilesBrowserViewModelDelegate {
 
-    public func runImportMediaFilesFlow(completion: @escaping ([URL]?) -> Void) {
+    public func runImportMediaFilesFlow() {
         
         fatalError()
     }

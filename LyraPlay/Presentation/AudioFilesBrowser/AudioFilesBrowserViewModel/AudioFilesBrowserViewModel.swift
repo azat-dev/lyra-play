@@ -9,7 +9,7 @@ import Foundation
 
 public protocol AudioFilesBrowserViewModelDelegate {
     
-    func runImportMediaFilesFlow(completion: @escaping (_ urls: [URL]?) -> Void)
+    func runImportMediaFilesFlow()
     
     func runOpenLibraryItemFlow(mediaId: UUID)
 }

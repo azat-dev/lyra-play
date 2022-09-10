@@ -95,39 +95,9 @@ extension AudioFilesBrowserViewModelImpl {
         self.isLoading.value = false
     }
     
-    private func importFiles(urls: [URL]) async {
-        
-        for url in urls {
-            
-            url.startAccessingSecurityScopedResource()
-            
-            guard let data = try? Data(contentsOf: url) else {
-                continue
-            }
-            
-            let result = await importFileUseCase.importFile(
-                originalFileName: url.lastPathComponent,
-                fileData: data
-            )
-        }
-        
-        await load()
-    }
-
     public func addNewItem() -> Void {
         
-        delegate.runImportMediaFilesFlow { [weak self] urls in
-            
-            guard let urls = urls, let self = self else {
-                return
-            }
-            
-            let importFiles = self.importFiles
-
-            Task {
-                await importFiles(urls)
-            }
-        }
+        delegate.runImportMediaFilesFlow()
     }
 }
 
