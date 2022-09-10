@@ -323,8 +323,10 @@ public class Application {
     
     func makePresenter(flow: MainFlowModel) -> MainFlowPresenter {
         
+        let filesPickerViewFactory = FilesPickerViewControllerFactory()
+        
         let attachSubtitlesFlowPresenterFactory = AttachSubtitlesFlowPresenterImplFactory(
-            subtitlesPickerViewFactory: FilesPickerViewControllerFactory(),
+            subtitlesPickerViewFactory: filesPickerViewFactory,
             attachingSubtitlesProgressViewFactory: AttachingSubtitlesProgressViewControllerFactory()
         )
         
@@ -333,9 +335,12 @@ public class Application {
             attachSubtitlesFlowPresenterFactory: attachSubtitlesFlowPresenterFactory
         )
         
+        let importMediaFilesFlowPresenterFactory = ImportMediaFilesFlowPresenterImplFactory(filesPickerViewFactory: filesPickerViewFactory)
+        
         let libraryFlowPresenterFactory = LibraryFlowPresenterImplFactory(
             listViewFactory: AudioFilesBrowserViewControllerFactory(),
-            libraryItemFlowPresenterFactory: libraryItemFlowPresenterFactory
+            libraryItemFlowPresenterFactory: libraryItemFlowPresenterFactory,
+            importMediaFilesFlowPresenterFactory: importMediaFilesFlowPresenterFactory
         )
         
         let dictionaryFlowPresenterFactory = DictionaryFlowPresenterImplFactory(

@@ -54,11 +54,13 @@ extension ImportMediaFilesFlowModelImpl: FilesPickerViewModelDelegate {
     
     public func filesPickerDidCancel() {
         
+        filesPickerViewModel.value = nil
         delegate?.importMediaFilesFlowDidFinish()
     }
 
     public func filesPickerDidFinish() {
         
+        filesPickerViewModel.value = nil
         delegate?.importMediaFilesFlowDidFinish()
     }
     
@@ -85,6 +87,7 @@ extension ImportMediaFilesFlowModelImpl: FilesPickerViewModelDelegate {
             delegate?.importMediaFilesFlowProgress(totalFilesCount: numberOfFiles, importedFilesCount: index + 1)
         }
         
+        filesPickerViewModel.value = nil
         delegate?.importMediaFilesFlowDidFinish()
     }
     

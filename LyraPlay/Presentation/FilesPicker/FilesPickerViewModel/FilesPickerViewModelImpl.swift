@@ -39,4 +39,9 @@ extension FilesPickerViewModelImpl {
 
         delegate?.filesPickerDidCancel()
     }
+    
+    public func finish() {
+        
+        delegate?.filesPickerDidFinish()
+    }
 }

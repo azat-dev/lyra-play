@@ -14,7 +14,7 @@ public final class AttachSubtitlesFlowPresenterImpl: AttachSubtitlesFlowPresente
     // MARK: - Properties
 
     private let flowModel: AttachSubtitlesFlowModel
-    private let subtitlesPickerViewFactory: SubtitlesPickerViewFactory
+    private let subtitlesPickerViewFactory: FilesPickerViewFactory
     private let attachingSubtitlesProgressViewFactory: AttachingSubtitlesProgressViewFactory
     
     private var activeSubtitlesPickerView: FilesPickerViewController?
@@ -27,7 +27,7 @@ public final class AttachSubtitlesFlowPresenterImpl: AttachSubtitlesFlowPresente
 
     public init(
         flowModel: AttachSubtitlesFlowModel,
-        subtitlesPickerViewFactory: SubtitlesPickerViewFactory,
+        subtitlesPickerViewFactory: FilesPickerViewFactory,
         attachingSubtitlesProgressViewFactory: AttachingSubtitlesProgressViewFactory
     ) {
 

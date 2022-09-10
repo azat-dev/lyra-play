@@ -21,6 +21,8 @@ public protocol FilesPickerViewModelInput: AnyObject {
     func choose(urls: [URL])
 
     func cancel()
+    
+    func finish()
 }
 
 public protocol FilesPickerViewModelOutput: AnyObject {

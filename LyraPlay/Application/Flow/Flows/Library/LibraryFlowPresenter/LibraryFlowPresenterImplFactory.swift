@@ -11,14 +11,17 @@ public final class LibraryFlowPresenterImplFactory: LibraryFlowPresenterFactory 
     
     private let listViewFactory: AudioFilesBrowserViewFactory
     private let libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory
+    private let importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory
     
     public init(
         listViewFactory: AudioFilesBrowserViewFactory,
-        libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory
+        libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory,
+        importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory
     ) {
         
         self.listViewFactory = listViewFactory
         self.libraryItemFlowPresenterFactory = libraryItemFlowPresenterFactory
+        self.importMediaFilesFlowPresenterFactory = importMediaFilesFlowPresenterFactory
     }
     
     public func create(for flowModel: LibraryFlowModel) -> LibraryFlowPresenter {
@@ -26,7 +29,8 @@ public final class LibraryFlowPresenterImplFactory: LibraryFlowPresenterFactory 
         return LibraryFlowPresenterImpl(
             flowModel: flowModel,
             listViewFactory: listViewFactory,
-            libraryItemFlowPresenterFactory: libraryItemFlowPresenterFactory
+            libraryItemFlowPresenterFactory: libraryItemFlowPresenterFactory,
+            importMediaFilesFlowPresenterFactory: importMediaFilesFlowPresenterFactory
         )
     }
 }

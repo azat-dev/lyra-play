@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class FilesPickerViewControllerFactory: SubtitlesPickerViewFactory {
+public final class FilesPickerViewControllerFactory: FilesPickerViewFactory {
 
     // MARK: - Initializers
 

@@ -11,13 +11,13 @@ public final class AttachSubtitlesFlowPresenterImplFactory: AttachSubtitlesFlowP
 
     // MARK: - Properties
 
-    private let subtitlesPickerViewFactory: SubtitlesPickerViewFactory
+    private let subtitlesPickerViewFactory: FilesPickerViewFactory
     private let attachingSubtitlesProgressViewFactory: AttachingSubtitlesProgressViewFactory
 
     // MARK: - Initializers
 
     public init(
-        subtitlesPickerViewFactory: SubtitlesPickerViewFactory,
+        subtitlesPickerViewFactory: FilesPickerViewFactory,
         attachingSubtitlesProgressViewFactory: AttachingSubtitlesProgressViewFactory
     ) {
 
