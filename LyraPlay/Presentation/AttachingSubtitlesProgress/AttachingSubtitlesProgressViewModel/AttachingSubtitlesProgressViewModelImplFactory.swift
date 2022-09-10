@@ -9,20 +9,13 @@ import Foundation
 
 public final class AttachingSubtitlesProgressViewModelImplFactory: AttachingSubtitlesProgressViewModelFactory {
 
-    // MARK: - Properties
-
-    private let delegate: AttachingSubtitlesProgressViewModelDelegate
-
     // MARK: - Initializers
 
-    public init(delegate: AttachingSubtitlesProgressViewModelDelegate) {
-
-        self.delegate = delegate
-    }
+    public init() {}
 
     // MARK: - Methods
 
-    public func create() -> AttachingSubtitlesProgressViewModel {
+    public func create(delegate: AttachingSubtitlesProgressViewModelDelegate) -> AttachingSubtitlesProgressViewModel {
 
         return AttachingSubtitlesProgressViewModelImpl(delegate: delegate)
     }

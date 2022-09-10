@@ -14,14 +14,18 @@ public enum AttachingSubtitlesProgressState {
     case succeded
 }
 
-public protocol AttachingSubtitlesProgressViewModelDelegate: AnyCancellable {
+public protocol AttachingSubtitlesProgressViewModelDelegate: AnyObject {
     
-    func cancel()
+    func attachingSubtitlesProgressViewModelDidCancel()
+    
+    func attachingSubtitlesProgressViewModelDidFinish()
 }
 
 public protocol AttachingSubtitlesProgressViewModelInput: AnyObject {
 
     func cancel()
+    
+    func showSuccess(completion: @escaping () -> Void)
 }
 
 public protocol AttachingSubtitlesProgressViewModelOutput: AnyObject {

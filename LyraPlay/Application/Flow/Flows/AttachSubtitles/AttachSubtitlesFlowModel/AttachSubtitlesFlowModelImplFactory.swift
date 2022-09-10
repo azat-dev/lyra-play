@@ -13,16 +13,22 @@ public final class AttachSubtitlesFlowModelImplFactory: AttachSubtitlesFlowModel
 
     private let allowedDocumentTypes: [String]
     private let subtitlesPickerViewModelFactory: SubtitlesPickerViewModelFactory
+    private let attachingSubtitlesProgressViewModelFactory: AttachingSubtitlesProgressViewModelFactory
+    private let importSubtitlesUseCaseFactory: ImportSubtitlesUseCaseImplFactory
     
     // MARK: - Initializers
 
     public init(
         allowedDocumentTypes: [String],
-        subtitlesPickerViewModelFactory: SubtitlesPickerViewModelFactory
+        subtitlesPickerViewModelFactory: SubtitlesPickerViewModelFactory,
+        attachingSubtitlesProgressViewModelFactory: AttachingSubtitlesProgressViewModelFactory,
+        importSubtitlesUseCaseFactory: ImportSubtitlesUseCaseImplFactory
     ) {
 
         self.allowedDocumentTypes = allowedDocumentTypes
         self.subtitlesPickerViewModelFactory = subtitlesPickerViewModelFactory
+        self.attachingSubtitlesProgressViewModelFactory = attachingSubtitlesProgressViewModelFactory
+        self.importSubtitlesUseCaseFactory = importSubtitlesUseCaseFactory
     }
 
     // MARK: - Methods
@@ -33,7 +39,9 @@ public final class AttachSubtitlesFlowModelImplFactory: AttachSubtitlesFlowModel
             mediaId: mediaId,
             delegate: delegate,
             allowedDocumentTypes: allowedDocumentTypes,
-            subtitlesPickerViewModelFactory: subtitlesPickerViewModelFactory
+            subtitlesPickerViewModelFactory: subtitlesPickerViewModelFactory,
+            attachingSubtitlesProgressViewModelFactory: attachingSubtitlesProgressViewModelFactory,
+            importSubtitlesUseCaseFactory: importSubtitlesUseCaseFactory
         )
     }
 }

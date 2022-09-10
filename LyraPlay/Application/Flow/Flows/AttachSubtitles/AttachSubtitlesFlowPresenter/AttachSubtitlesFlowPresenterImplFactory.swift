@@ -12,12 +12,17 @@ public final class AttachSubtitlesFlowPresenterImplFactory: AttachSubtitlesFlowP
     // MARK: - Properties
 
     private let subtitlesPickerViewFactory: SubtitlesPickerViewFactory
+    private let attachingSubtitlesProgressViewFactory: AttachingSubtitlesProgressViewFactory
 
     // MARK: - Initializers
 
-    public init(subtitlesPickerViewFactory: SubtitlesPickerViewFactory) {
+    public init(
+        subtitlesPickerViewFactory: SubtitlesPickerViewFactory,
+        attachingSubtitlesProgressViewFactory: AttachingSubtitlesProgressViewFactory
+    ) {
 
         self.subtitlesPickerViewFactory = subtitlesPickerViewFactory
+        self.attachingSubtitlesProgressViewFactory = attachingSubtitlesProgressViewFactory
     }
 
     // MARK: - Methods
@@ -26,7 +31,8 @@ public final class AttachSubtitlesFlowPresenterImplFactory: AttachSubtitlesFlowP
 
         return AttachSubtitlesFlowPresenterImpl(
             flowModel: flowModel,
-            subtitlesPickerViewFactory: subtitlesPickerViewFactory
+            subtitlesPickerViewFactory: subtitlesPickerViewFactory,
+            attachingSubtitlesProgressViewFactory: attachingSubtitlesProgressViewFactory
         )
     }
 }

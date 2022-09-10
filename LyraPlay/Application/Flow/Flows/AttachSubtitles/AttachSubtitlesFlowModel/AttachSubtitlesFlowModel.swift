@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import Combine
 
 public protocol AttachSubtitlesFlowModelDelegate: AnyObject {
     
@@ -22,6 +22,8 @@ public protocol AttachSubtitlesFlowModelInput: AnyObject {}
 public protocol AttachSubtitlesFlowModelOutput: AnyObject {
 
     var subtitlesPickerViewModel: SubtitlesPickerViewModel { get }
+    
+    var progressViewModel: CurrentValueSubject<AttachingSubtitlesProgressViewModel?, Never> { get }
 }
 
 public protocol AttachSubtitlesFlowModel: AttachSubtitlesFlowModelOutput, AttachSubtitlesFlowModelInput {}

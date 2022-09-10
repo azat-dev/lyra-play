@@ -256,6 +256,13 @@ public class Application {
             imagesRepository: imagesRepository,
             tagsParser: tagsParser
         )
+        
+        let importSubtitlesUseCaseFactory = ImportSubtitlesUseCaseImplFactory(
+            supportedExtensions: [".srt", ".lrc"],
+            subtitlesRepository: subtitlesRepository,
+            subtitlesParser: subtitlesParser,
+            subtitlesFilesRepository: subtitlesFilesRepository
+        )
 
         let libraryViewModelFactory = AudioFilesBrowserViewModelImplFactory(
             browseAudioLibraryUseCaseFactory: browseAudioLibraryUseCaseFactory,
@@ -278,9 +285,13 @@ public class Application {
             browseDictionaryUseCase: browseDictionaryUseCase
         )
         
+        let attachingSubtitlesProgressViewModelFactory = AttachingSubtitlesProgressViewModelImplFactory()
+        
         let attachSubtitlesFlowModelFactory = AttachSubtitlesFlowModelImplFactory(
             allowedDocumentTypes: ["com.azatkaiumov.subtitles"],
-            subtitlesPickerViewModelFactory: SubtitlesPickerViewModelImplFactory()
+            subtitlesPickerViewModelFactory: SubtitlesPickerViewModelImplFactory(),
+            attachingSubtitlesProgressViewModelFactory: attachingSubtitlesProgressViewModelFactory,
+            importSubtitlesUseCaseFactory: importSubtitlesUseCaseFactory
         )
         
         let libraryItemFlowModelFactory = LibraryItemFlowModelImplFactory(
@@ -303,7 +314,9 @@ public class Application {
     
     func makePresenter(flow: MainFlowModel) -> MainFlowPresenter {
         
-        let attachSubtitlesFlowPresenterFactory = AttachSubtitlesFlowPresenterImplFactory(subtitlesPickerViewFactory: SubtitlesPickerViewControllerFactory()
+        let attachSubtitlesFlowPresenterFactory = AttachSubtitlesFlowPresenterImplFactory(
+            subtitlesPickerViewFactory: SubtitlesPickerViewControllerFactory(),
+            attachingSubtitlesProgressViewFactory: AttachingSubtitlesProgressViewControllerFactory()
         )
         
         let libraryItemFlowPresenterFactory = LibraryItemFlowPresenterImplFactory(

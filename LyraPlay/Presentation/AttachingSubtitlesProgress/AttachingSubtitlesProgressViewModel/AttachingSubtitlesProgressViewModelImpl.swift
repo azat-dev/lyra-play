@@ -13,6 +13,7 @@ public final class AttachingSubtitlesProgressViewModelImpl: AttachingSubtitlesPr
     // MARK: - Properties
 
     private weak var delegate: AttachingSubtitlesProgressViewModelDelegate?
+
     public var state = CurrentValueSubject<AttachingSubtitlesProgressState, Never>(.processing)
 
     // MARK: - Initializers
@@ -29,6 +30,21 @@ extension AttachingSubtitlesProgressViewModelImpl {
 
     public func cancel() {
 
-        delegate?.cancel()
+        delegate?.attachingSubtitlesProgressViewModelDidCancel()
+    }
+    
+    public func finish() {
+        
+        delegate?.attachingSubtitlesProgressViewModelDidFinish()
+    }
+    
+    public func showSuccess(completion: @escaping () -> Void) {
+        
+        state.value = .succeded
+        
+        DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.3) {
+            
+            self.delegate?.attachingSubtitlesProgressViewModelDidFinish()
+        }
     }
 }
