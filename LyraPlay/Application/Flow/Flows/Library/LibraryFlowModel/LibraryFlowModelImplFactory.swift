@@ -11,14 +11,14 @@ public final class LibraryFlowModelImplFactory: LibraryFlowModelFactory {
 
     // MARK: - Properties
 
-    private let viewModelFactory: AudioFilesBrowserViewModelFactory
+    private let viewModelFactory: MediaLibraryBrowserViewModelFactory
     private let libraryItemFlowModelFactory: LibraryItemFlowModelFactory
     private let importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory
     
     // MARK: - Initializers
 
     public init(
-        viewModelFactory: AudioFilesBrowserViewModelFactory,
+        viewModelFactory: MediaLibraryBrowserViewModelFactory,
         libraryItemFlowModelFactory: LibraryItemFlowModelFactory,
         importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory
     ) {

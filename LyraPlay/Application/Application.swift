@@ -31,9 +31,9 @@ public class Application {
     } ()
     
     
-    private lazy var audioLibraryRepository: AudioLibraryRepository = {
+    private lazy var mediaLibraryRepository: MediaLibraryRepository = {
         
-        return CoreDataAudioLibraryRepository(coreDataStore: coreDataStore)
+        return CoreDataMediaLibraryRepository(coreDataStore: coreDataStore)
     } ()
     
     private lazy var dictionaryRepository: DictionaryRepository = {
@@ -51,7 +51,7 @@ public class Application {
         )
         
         
-        let imagesDirectory = url.appendingPathComponent("audiofiles_images", isDirectory: true)
+        let imagesDirectory = url.appendingPathComponent("mediafiles_images", isDirectory: true)
         
         return try! LocalFilesRepository(baseDirectory: imagesDirectory)
     } ()
@@ -66,9 +66,9 @@ public class Application {
         )
         
         
-        let imagesDirectory = url.appendingPathComponent("audiofiles_data", isDirectory: true)
+        let mediaFilesDirectory = url.appendingPathComponent("mediafiles_data", isDirectory: true)
         
-        return try! LocalFilesRepository(baseDirectory: imagesDirectory)
+        return try! LocalFilesRepository(baseDirectory: mediaFilesDirectory)
     } ()
     
     
@@ -100,7 +100,7 @@ public class Application {
     private lazy var showMediaInfoUseCase: ShowMediaInfoUseCase = {
         
         return ShowMediaInfoUseCaseImpl(
-            audioLibraryRepository: audioLibraryRepository,
+            mediaLibraryRepository: mediaLibraryRepository,
             imagesRepository: imagesRepository,
             defaultImage: UIImage(named: "Image.CoverPlaceholder")!.pngData()!
         )
@@ -136,7 +136,7 @@ public class Application {
     private lazy var loadTrackUseCase: LoadTrackUseCase = {
         
         return LoadTrackUseCaseImpl(
-            audioLibraryRepository: audioLibraryRepository,
+            mediaLibraryRepository: mediaLibraryRepository,
             audioFilesRepository: audioFilesRepository
         )
     } ()
@@ -243,15 +243,15 @@ public class Application {
         
         let mainTabBarViewModelFactory = MainTabBarViewModelImplFactory()
 
-        let browseAudioLibraryUseCaseFactory = BrowseAudioLibraryUseCaseImplFactory(
-            audioLibraryRepository: audioLibraryRepository,
+        let browseMediaLibraryUseCaseFactory = BrowseMediaLibraryUseCaseImplFactory(
+            mediaLibraryRepository: mediaLibraryRepository,
             imagesRepository: imagesRepository
         )
         
         let tagsParser = TagsParserImpl()
         
         let imporAudioFileUseCaseFactory = ImportAudioFileUseCaseImplFactory(
-            audioLibraryRepository: audioLibraryRepository,
+            mediaLibraryRepository: mediaLibraryRepository,
             audioFilesRepository: audioFilesRepository,
             imagesRepository: imagesRepository,
             tagsParser: tagsParser
@@ -264,8 +264,8 @@ public class Application {
             subtitlesFilesRepository: subtitlesFilesRepository
         )
 
-        let libraryViewModelFactory = AudioFilesBrowserViewModelImplFactory(
-            browseAudioLibraryUseCaseFactory: browseAudioLibraryUseCaseFactory,
+        let libraryViewModelFactory = MediaLibraryBrowserViewModelImplFactory(
+            browseMediaLibraryUseCaseFactory: browseMediaLibraryUseCaseFactory,
             importAudioFileUseCaseFactory: imporAudioFileUseCaseFactory
         )
         
@@ -338,7 +338,7 @@ public class Application {
         let importMediaFilesFlowPresenterFactory = ImportMediaFilesFlowPresenterImplFactory(filesPickerViewFactory: filesPickerViewFactory)
         
         let libraryFlowPresenterFactory = LibraryFlowPresenterImplFactory(
-            listViewFactory: AudioFilesBrowserViewControllerFactory(),
+            listViewFactory: MediaLibraryBrowserViewControllerFactory(),
             libraryItemFlowPresenterFactory: libraryItemFlowPresenterFactory,
             importMediaFilesFlowPresenterFactory: importMediaFilesFlowPresenterFactory
         )

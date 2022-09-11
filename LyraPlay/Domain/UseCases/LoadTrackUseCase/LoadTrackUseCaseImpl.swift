@@ -11,17 +11,17 @@ public final class LoadTrackUseCaseImpl: LoadTrackUseCase {
     
     // MARK: - Properties
     
-    private let audioLibraryRepository: AudioLibraryRepository
+    private let mediaLibraryRepository: MediaLibraryRepository
     private let audioFilesRepository: FilesRepository
     
     // MARK: - Initializers
     
     public init(
-        audioLibraryRepository: AudioLibraryRepository,
+        mediaLibraryRepository: MediaLibraryRepository,
         audioFilesRepository: FilesRepository
     ) {
         
-        self.audioLibraryRepository = audioLibraryRepository
+        self.mediaLibraryRepository = mediaLibraryRepository
         self.audioFilesRepository = audioFilesRepository
     }
 }
@@ -32,7 +32,7 @@ extension LoadTrackUseCaseImpl {
     
     public func load(trackId: UUID) async -> Result<Data, LoadTrackUseCaseError> {
         
-        let resultLibraryItem = await audioLibraryRepository.getInfo(fileId: trackId)
+        let resultLibraryItem = await mediaLibraryRepository.getInfo(fileId: trackId)
         
         guard case.success(let libraryItem) = resultLibraryItem else {
             return .failure(resultLibraryItem.error!.map())
@@ -50,7 +50,7 @@ extension LoadTrackUseCaseImpl {
 
 // MARK: - Error Mappings
 
-fileprivate extension AudioLibraryRepositoryError {
+fileprivate extension MediaLibraryRepositoryError {
     
     func map() -> LoadTrackUseCaseError {
         

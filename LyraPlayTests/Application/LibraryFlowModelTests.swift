@@ -15,14 +15,14 @@ class LibraryFlowModelTests: XCTestCase {
     
     typealias SUT = (
         flow: LibraryFlowModelImpl,
-        listViewModel: AudioFilesBrowserViewModelMock,
+        listViewModel: MediaLibraryBrowserViewModelMock,
         libraryItemFlow: LibraryItemFlowModelMock
     )
     
     func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
         
-        let viewModel = mock(AudioFilesBrowserViewModel.self)
-        let viewModelFactory = mock(AudioFilesBrowserViewModelFactory.self)
+        let viewModel = mock(MediaLibraryBrowserViewModel.self)
+        let viewModelFactory = mock(MediaLibraryBrowserViewModelFactory.self)
         
         given(viewModelFactory.create(delegate: any()))
             .willReturn(viewModel)
@@ -30,13 +30,17 @@ class LibraryFlowModelTests: XCTestCase {
         let libraryItemFlow = mock(LibraryItemFlowModel.self)
         let libraryItemFlowModelFactory = mock(LibraryItemFlowModelFactory.self)
         
-        given(libraryItemFlowModelFactory.create(for: any()))
-            .willReturn(libraryItemFlow)
+        let importMediaFilesFlowModelFactory = mock(ImportMediaFilesFlowModelFactory.self)
         
+        let delegate = mock(LibraryItemFlowModelDelegate.self)
+        
+        given(libraryItemFlowModelFactory.create(for: any(), delegate: delegate))
+            .willReturn(libraryItemFlow)
         
         let flow = LibraryFlowModelImpl(
             viewModelFactory: viewModelFactory,
-            libraryItemFlowModelFactory: libraryItemFlowModelFactory
+            libraryItemFlowModelFactory: libraryItemFlowModelFactory,
+            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory
         )
         
         detectMemoryLeak(instance: flow)
@@ -45,7 +49,9 @@ class LibraryFlowModelTests: XCTestCase {
             viewModel,
             viewModelFactory,
             libraryItemFlow,
-            libraryItemFlowModelFactory
+            libraryItemFlowModelFactory,
+            delegate,
+            importMediaFilesFlowModelFactory
         )
         
         return (

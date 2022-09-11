@@ -9,12 +9,12 @@ import Foundation
 
 public final class LibraryFlowPresenterImplFactory: LibraryFlowPresenterFactory {
     
-    private let listViewFactory: AudioFilesBrowserViewFactory
+    private let listViewFactory: MediaLibraryBrowserViewFactory
     private let libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory
     private let importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory
     
     public init(
-        listViewFactory: AudioFilesBrowserViewFactory,
+        listViewFactory: MediaLibraryBrowserViewFactory,
         libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory,
         importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory
     ) {

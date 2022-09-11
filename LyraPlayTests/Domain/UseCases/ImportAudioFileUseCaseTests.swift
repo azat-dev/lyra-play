@@ -14,7 +14,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
 
     typealias SUT = (
         importAudioFileUseCase: ImportAudioFileUseCase,
-        audioLibraryRepository: AudioLibraryRepository,
+        mediaLibraryRepository: MediaLibraryRepository,
         imagesRepository: FilesRepository,
         audioFilesRepository: FilesRepository,
         tagsParser: TagsParserMock
@@ -24,12 +24,12 @@ class ImportAudioFileUseCaseTests: XCTestCase {
 
         let tagsParser = TagsParserMock()
         
-        let audioLibraryRepository = AudioLibraryRepositoryMock()
+        let mediaLibraryRepository = MediaLibraryRepositoryMock()
         let imagesRepository = FilesRepositoryMock()
         let audioFilesRepository = FilesRepositoryMock()
         
         let importAudioFileUseCase = ImportAudioFileUseCaseImpl(
-            audioLibraryRepository: audioLibraryRepository,
+            mediaLibraryRepository: mediaLibraryRepository,
             audioFilesRepository: audioFilesRepository,
             imagesRepository: imagesRepository,
             tagsParser: tagsParser
@@ -39,7 +39,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         
         return (
             importAudioFileUseCase,
-            audioLibraryRepository,
+            mediaLibraryRepository,
             imagesRepository,
             audioFilesRepository,
             tagsParser
@@ -50,7 +50,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         
         let (
             importAudioFileUseCase,
-            audioLibraryRepository,
+            mediaLibraryRepository,
             _,
             audioFilesRepository,
             tagsParser
@@ -77,7 +77,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
             try AssertResultSucceded(result, "Can't import a file: \(originalName)")
         }
 
-        let resultListFiles = await audioLibraryRepository.listFiles()
+        let resultListFiles = await mediaLibraryRepository.listFiles()
         let importedAudioFiles = try AssertResultSucceded(resultListFiles)
 
         var importedData = [String: Data]()
@@ -105,7 +105,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         
         let (
             importAudioFileUseCase,
-            audioLibraryRepository,
+            mediaLibraryRepository,
             imagesRepository,
             audioFilesRepository,
             tagsParser
@@ -135,7 +135,7 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         let result = await importAudioFileUseCase.importFile(originalFileName: originalName, fileData: testFile)
         try AssertResultSucceded(result, "Can't import a file: \(originalName)")
 
-        let resultListFiles = await audioLibraryRepository.listFiles()
+        let resultListFiles = await mediaLibraryRepository.listFiles()
         let importedAudioFiles = try AssertResultSucceded(resultListFiles)
         
         XCTAssertEqual(importedAudioFiles.count, 1)

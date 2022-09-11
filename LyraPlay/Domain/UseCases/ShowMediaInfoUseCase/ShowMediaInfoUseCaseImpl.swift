@@ -11,19 +11,19 @@ public final class ShowMediaInfoUseCaseImpl: ShowMediaInfoUseCase {
     
     // MARK: - Properties
     
-    private let audioLibraryRepository: AudioLibraryRepository
+    private let mediaLibraryRepository: MediaLibraryRepository
     private let imagesRepository: FilesRepository
     private let defaultImage: Data
     
     // MARK: - Initializers
     
     public init(
-        audioLibraryRepository: AudioLibraryRepository,
+        mediaLibraryRepository: MediaLibraryRepository,
         imagesRepository: FilesRepository,
         defaultImage: Data
     ) {
         
-        self.audioLibraryRepository = audioLibraryRepository
+        self.mediaLibraryRepository = mediaLibraryRepository
         self.imagesRepository = imagesRepository
         self.defaultImage = defaultImage
     }
@@ -36,7 +36,7 @@ extension ShowMediaInfoUseCaseImpl {
     
     public func fetchInfo(trackId: UUID) async -> Result<MediaInfo, ShowMediaInfoUseCaseError> {
         
-        let fileInfoResult = await audioLibraryRepository.getInfo(fileId: trackId)
+        let fileInfoResult = await mediaLibraryRepository.getInfo(fileId: trackId)
         
         guard case .success(let fileInfo) = fileInfoResult else {
             
@@ -65,7 +65,7 @@ extension ShowMediaInfoUseCaseImpl {
 
 // MARK: - Error Mapping
 
-fileprivate extension AudioLibraryRepositoryError {
+fileprivate extension MediaLibraryRepositoryError {
     
     func map() -> ShowMediaInfoUseCaseError {
         

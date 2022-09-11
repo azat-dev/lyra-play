@@ -34,11 +34,13 @@ class LibraryItemFlowPresenterTests: XCTestCase {
         
         given(flow.viewModel)
             .willReturn(viewModel)
-
+        
+        let attachSubtitlesFlowPresenterFactory = mock(AttachSubtitlesFlowPresenterFactory.self)
 
         let presenter = LibraryItemFlowPresenterImpl(
             flowModel: flow,
-            libraryItemViewFactory: viewFactory
+            libraryItemViewFactory: viewFactory,
+            attachSubtitlesFlowPresenterFactory: attachSubtitlesFlowPresenterFactory
         )
         
         detectMemoryLeak(instance: presenter)
@@ -46,7 +48,8 @@ class LibraryItemFlowPresenterTests: XCTestCase {
         releaseMocks(
             flow,
             viewModel,
-            viewFactory
+            viewFactory,
+            attachSubtitlesFlowPresenterFactory
         )
         
         return (

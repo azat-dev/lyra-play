@@ -14,7 +14,7 @@ public protocol LibraryFlowModelInput: AnyObject {
 
 public protocol LibraryFlowModelOutput: AnyObject {
 
-    var listViewModel: AudioFilesBrowserViewModel { get }
+    var listViewModel: MediaLibraryBrowserViewModel { get }
     
     var libraryItemFlow: CurrentValueSubject<LibraryItemFlowModel?, Never> { get }
     

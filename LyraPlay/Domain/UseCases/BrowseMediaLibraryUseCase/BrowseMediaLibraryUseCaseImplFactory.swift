@@ -1,42 +1,37 @@
 //
-//  ShowMediaInfoUseCaseImplFactory.swift
+//  BrowseMediaLibraryUseCaseImplFactory.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 01.09.2022.
+//  Created by Azat Kaiumov on 30.08.2022.
 //
 
 import Foundation
 
-public final class ShowMediaInfoUseCaseImplFactory: ShowMediaInfoUseCaseFactory {
+public final class BrowseMediaLibraryUseCaseImplFactory: BrowseMediaLibraryUseCaseFactory {
 
     // MARK: - Properties
 
     private let mediaLibraryRepository: MediaLibraryRepository
     private let imagesRepository: FilesRepository
-    private let defaultImage: Data
 
     // MARK: - Initializers
 
     public init(
         mediaLibraryRepository: MediaLibraryRepository,
-        imagesRepository: FilesRepository,
-        defaultImage: Data
+        imagesRepository: FilesRepository
     ) {
 
         self.mediaLibraryRepository = mediaLibraryRepository
         self.imagesRepository = imagesRepository
-        self.defaultImage = defaultImage
     }
 
     // MARK: - Methods
 
-    public func create() -> ShowMediaInfoUseCase {
+    public func create() -> BrowseMediaLibraryUseCase {
 
-        return ShowMediaInfoUseCaseImpl(
+        return BrowseMediaLibraryUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,
-            imagesRepository: imagesRepository,
-            defaultImage: defaultImage
+            imagesRepository: imagesRepository
         )
     }
-
 }

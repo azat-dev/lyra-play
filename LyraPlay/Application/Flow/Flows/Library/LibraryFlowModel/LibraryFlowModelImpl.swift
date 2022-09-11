@@ -12,11 +12,11 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
     
     // MARK: - Properties
     
-    private let viewModelFactory: AudioFilesBrowserViewModelFactory
+    private let viewModelFactory: MediaLibraryBrowserViewModelFactory
     private let libraryItemFlowModelFactory: LibraryItemFlowModelFactory
     private let importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory
     
-    public lazy var listViewModel: AudioFilesBrowserViewModel = {
+    public lazy var listViewModel: MediaLibraryBrowserViewModel = {
         
         return viewModelFactory.create(delegate: self)
     } ()
@@ -27,7 +27,7 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
     // MARK: - Initializers
     
     public init(
-        viewModelFactory: AudioFilesBrowserViewModelFactory,
+        viewModelFactory: MediaLibraryBrowserViewModelFactory,
         libraryItemFlowModelFactory: LibraryItemFlowModelFactory,
         importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory
     ) {
@@ -44,9 +44,9 @@ extension LibraryFlowModelImpl {
     
 }
 
-// MARK: - AudioFilesBrowserViewModelDelegate
+// MARK: - MediaLibraryBrowserViewModelDelegate
 
-extension LibraryFlowModelImpl: AudioFilesBrowserViewModelDelegate {
+extension LibraryFlowModelImpl: MediaLibraryBrowserViewModelDelegate {
     
     public func runImportMediaFilesFlow() {
         

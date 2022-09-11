@@ -56,7 +56,7 @@
 //    private lazy var loadTrackUseCase: LoadTrackUseCase = {
 //        
 //        return LoadTrackUseCaseImpl(
-//            audioLibraryRepository: audioLibraryRepository,
+//            mediaLibraryRepository: mediaLibraryRepository,
 //            audioFilesRepository: audioFilesRepository
 //        )
 //    } ()
@@ -99,15 +99,15 @@
 //    } ()
 //
 //    
-//    private lazy var audioLibraryRepository: AudioLibraryRepository = {
+//    private lazy var mediaLibraryRepository: MediaLibraryRepository = {
 //        
-//        return CoreDataAudioLibraryRepository(coreDataStore: coreDataStore)
+//        return CoreDataMediaLibraryRepository(coreDataStore: coreDataStore)
 //    } ()
 //    
-//    private lazy var browseFilesUseCase: BrowseAudioLibraryUseCase = {
+//    private lazy var browseFilesUseCase: BrowseMediaLibraryUseCase = {
 //        
-//        return BrowseAudioLibraryUseCaseImpl(
-//            audioLibraryRepository: audioLibraryRepository,
+//        return BrowseMediaLibraryUseCaseImpl(
+//            mediaLibraryRepository: mediaLibraryRepository,
 //            imagesRepository: imagesRepository
 //        )
 //    } ()
@@ -115,7 +115,7 @@
 //    private lazy var showMediaInfoUseCase: ShowMediaInfoUseCase = {
 //        
 //        return ShowMediaInfoUseCaseImpl(
-//            audioLibraryRepository: audioLibraryRepository,
+//            mediaLibraryRepository: mediaLibraryRepository,
 //            imagesRepository: imagesRepository,
 //            defaultImage: UIImage(named: "Image.CoverPlaceholder")!.pngData()!
 //        )
@@ -157,7 +157,7 @@
 //    private lazy var importFileUseCase: ImportAudioFileUseCase = {
 //        
 //        return ImportAudioFileUseCaseImpl(
-//            audioLibraryRepository: audioLibraryRepository,
+//            mediaLibraryRepository: mediaLibraryRepository,
 //            audioFilesRepository: audioFilesRepository,
 //            imagesRepository: imagesRepository,
 //            tagsParser: TagsParserImpl()
@@ -285,7 +285,7 @@
 //        super.init()
 //    }
 //    
-//    func makeAudioFilesBrowserVC() -> AudioFilesBrowserViewController {
+//    func makeAudioFilesBrowserVC() -> MediaLibraryBrowserViewController {
 //        
 //        fatalError()
 //    }
@@ -334,31 +334,11 @@
 //    }
 //}
 //
-//// MARK: - AudioFilesBrowserCoordinator
+//// MARK: - MediaLibraryBrowserCoordinator
 //
 //extension AppCoordinatorImpl: LibraryCoordinator {
 //    func start(at: StackPresentationContainer) {
 //        
-//    }
-//    
-//    
-//    func runOpenLibraryItemFlow(mediaId: UUID) {
-//        
-////        let viewModelFactory = LibraryItemViewModelFactoryImpl()
-////
-////        let viewModel = viewModelFactory.create(
-////            mediaId: mediaId,
-////            coordinator: self,
-////            showMediaInfoUseCase: showMediaInfoUseCase,
-////            currentPlayerStateUseCaseOutput: currentPlayerStateUseCase,
-////            playMediaWithTranslationsUseCase: playMediaWithTranslationsUseCase,
-////            importSubtitlesUseCase: importSubtitlesUseCase,
-////            loadSubtitlesUseCase: loadSubtitlesUseCase
-////        )
-////
-////        let vc = LibraryItemViewController(viewModel: viewModel)
-////
-////        navigationController.pushViewController(vc, animated: true)
 //    }
 //    
 //    func openAudioPlayer(trackId: UUID) {

@@ -15,16 +15,16 @@ class LoadTrackUseCaseTests: XCTestCase {
     typealias SUT = (
         useCase: LoadTrackUseCase,
         audioFilesRepository: FilesRepositoryMock,
-        audioLibraryRepository: AudioLibraryRepositoryMock
+        mediaLibraryRepository: MediaLibraryRepositoryMock
     )
     
     func createSUT() -> SUT  {
         
         let audioFilesRepository = FilesRepositoryMock()
-        let audioLibraryRepository = AudioLibraryRepositoryMock()
+        let mediaLibraryRepository = MediaLibraryRepositoryMock()
         
         let useCase = LoadTrackUseCaseImpl(
-            audioLibraryRepository: audioLibraryRepository,
+            mediaLibraryRepository: mediaLibraryRepository,
             audioFilesRepository: audioFilesRepository
         )
         
@@ -33,13 +33,13 @@ class LoadTrackUseCaseTests: XCTestCase {
         return (
             useCase,
             audioFilesRepository,
-            audioLibraryRepository
+            mediaLibraryRepository
         )
     }
     
     func testLoadTrack() async throws {
         
-        let (useCase, audioFilesRepository, audioLibraryRepository) = createSUT()
+        let (useCase, audioFilesRepository, mediaLibraryRepository) = createSUT()
         
         let testData = "testdata".data(using: .utf8)!
         let testName = "test.mp3"
@@ -48,7 +48,7 @@ class LoadTrackUseCaseTests: XCTestCase {
         
         let _ = await audioFilesRepository.putFile(name: testName, data: testData)
         
-        let resultPut = await audioLibraryRepository.putFile(info: testFileInfo)
+        let resultPut = await mediaLibraryRepository.putFile(info: testFileInfo)
         let savedLibraryItem = try AssertResultSucceded(resultPut)
         
         let result = await useCase.load(trackId: savedLibraryItem.id!)
@@ -75,13 +75,13 @@ class LoadTrackUseCaseTests: XCTestCase {
     
     func testLoadTrackWithoutAudioFile() async throws {
         
-        let (useCase, _, audioLibraryRepository) = createSUT()
+        let (useCase, _, mediaLibraryRepository) = createSUT()
         
         let testName = "test.mp3"
         
         let testFileInfo = AudioFileInfo.create(name: "test", duration: 10, audioFile: testName)
         
-        let resultPut = await audioLibraryRepository.putFile(info: testFileInfo)
+        let resultPut = await mediaLibraryRepository.putFile(info: testFileInfo)
         let savedLibraryItem = try AssertResultSucceded(resultPut)
         
         let result = await useCase.load(trackId: savedLibraryItem.id!)

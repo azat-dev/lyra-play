@@ -15,7 +15,7 @@ public final class LibraryFlowPresenterImpl: LibraryFlowPresenter {
     
     private let flowModel: LibraryFlowModel
     
-    private let listViewFactory: AudioFilesBrowserViewFactory
+    private let listViewFactory: MediaLibraryBrowserViewFactory
     private let libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory
     private let importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory
     
@@ -28,7 +28,7 @@ public final class LibraryFlowPresenterImpl: LibraryFlowPresenter {
     
     public init(
         flowModel: LibraryFlowModel,
-        listViewFactory: AudioFilesBrowserViewFactory,
+        listViewFactory: MediaLibraryBrowserViewFactory,
         libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory,
         importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory
     ) {

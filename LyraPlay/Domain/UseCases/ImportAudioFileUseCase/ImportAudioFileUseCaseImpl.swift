@@ -13,7 +13,7 @@ public final class ImportAudioFileUseCaseImpl: ImportAudioFileUseCase {
 
     // MARK: - Properties
 
-    private let audioLibraryRepository: AudioLibraryRepository
+    private let mediaLibraryRepository: MediaLibraryRepository
     private let audioFilesRepository: FilesRepository
     private let imagesRepository: FilesRepository
     private let tagsParser: TagsParser
@@ -21,13 +21,13 @@ public final class ImportAudioFileUseCaseImpl: ImportAudioFileUseCase {
     // MARK: - Initializers
 
     public init(
-        audioLibraryRepository: AudioLibraryRepository,
+        mediaLibraryRepository: MediaLibraryRepository,
         audioFilesRepository: FilesRepository,
         imagesRepository: FilesRepository,
         tagsParser: TagsParser
     ) {
 
-        self.audioLibraryRepository = audioLibraryRepository
+        self.mediaLibraryRepository = mediaLibraryRepository
         self.audioFilesRepository = audioFilesRepository
         self.imagesRepository = imagesRepository
         self.tagsParser = tagsParser
@@ -93,7 +93,7 @@ extension ImportAudioFileUseCaseImpl {
             coverImage: savedCoverImageName
         )
         
-        let resultPutFile = await audioLibraryRepository.putFile(info: audioFile)
+        let resultPutFile = await mediaLibraryRepository.putFile(info: audioFile)
         
         guard case .success(let savedFileInfo) = resultPutFile else {
             return .failure(.internalError(nil))

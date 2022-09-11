@@ -14,20 +14,20 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
     
     typealias SUT = (
         useCase: ShowMediaInfoUseCase,
-        audioLibraryRepository: AudioLibraryRepository,
+        mediaLibraryRepository: MediaLibraryRepository,
         imagesRepository: FilesRepository,
         defaultImage: Data
     )
     
     func createSUT() -> SUT {
         
-        let audioLibraryRepository = AudioLibraryRepositoryMock()
+        let mediaLibraryRepository = MediaLibraryRepositoryMock()
         let imagesRepository = FilesRepositoryMock()
         
         let defaultImage = "defaultImage".data(using: .utf8)!
         
         let useCase = ShowMediaInfoUseCaseImpl(
-            audioLibraryRepository: audioLibraryRepository,
+            mediaLibraryRepository: mediaLibraryRepository,
             imagesRepository: imagesRepository,
             defaultImage: defaultImage
         )
@@ -36,7 +36,7 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         
         return (
             useCase,
-            audioLibraryRepository,
+            mediaLibraryRepository,
             imagesRepository,
             defaultImage
         )
@@ -46,7 +46,7 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         
         let (
             useCase,
-            audioLibraryRepository,
+            mediaLibraryRepository,
             imagesRepository,
             _
         ) = createSUT()
@@ -60,7 +60,7 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         var testFileInfo = AudioFileInfo.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
         testFileInfo.coverImage = testImageName
         
-        let putResult = await audioLibraryRepository.putFile(info: testFileInfo)
+        let putResult = await mediaLibraryRepository.putFile(info: testFileInfo)
         try AssertResultSucceded(putResult)
         
         let savedFileInfo = try AssertResultSucceded(putResult)
@@ -80,14 +80,14 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         
         let (
             useCase,
-            audioLibraryRepository,
+            mediaLibraryRepository,
             _,
             defaultImage
         ) = createSUT()
         
         let testFileInfo = AudioFileInfo.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
         
-        let putResult = await audioLibraryRepository.putFile(info: testFileInfo)
+        let putResult = await mediaLibraryRepository.putFile(info: testFileInfo)
         let savedFileInfo = try AssertResultSucceded(putResult)
         
         let resultMediaInfo = await useCase.fetchInfo(trackId: savedFileInfo.id!)
@@ -100,7 +100,7 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         
         let (
             useCase,
-            audioLibraryRepository,
+            mediaLibraryRepository,
             _,
             defaultImage
         ) = createSUT()
@@ -108,7 +108,7 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         var testFileInfo = AudioFileInfo.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
         testFileInfo.coverImage = "someimage.png"
         
-        let putResult = await audioLibraryRepository.putFile(info: testFileInfo)
+        let putResult = await mediaLibraryRepository.putFile(info: testFileInfo)
         let savedFileInfo = try AssertResultSucceded(putResult)
         
         let resultMediaInfo = await useCase.fetchInfo(trackId: savedFileInfo.id!)

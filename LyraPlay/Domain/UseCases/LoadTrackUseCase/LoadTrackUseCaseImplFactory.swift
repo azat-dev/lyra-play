@@ -11,17 +11,17 @@ public final class LoadTrackUseCaseImplFactory: LoadTrackUseCaseFactory {
 
     // MARK: - Properties
 
-    private let audioLibraryRepository: AudioLibraryRepository
+    private let mediaLibraryRepository: MediaLibraryRepository
     private let audioFilesRepository: FilesRepository
 
     // MARK: - Initializers
 
     public init(
-        audioLibraryRepository: AudioLibraryRepository,
+        mediaLibraryRepository: MediaLibraryRepository,
         audioFilesRepository: FilesRepository
     ) {
 
-        self.audioLibraryRepository = audioLibraryRepository
+        self.mediaLibraryRepository = mediaLibraryRepository
         self.audioFilesRepository = audioFilesRepository
     }
 
@@ -30,7 +30,7 @@ public final class LoadTrackUseCaseImplFactory: LoadTrackUseCaseFactory {
     public func create() -> LoadTrackUseCase {
 
         return LoadTrackUseCaseImpl(
-            audioLibraryRepository: audioLibraryRepository,
+            mediaLibraryRepository: mediaLibraryRepository,
             audioFilesRepository: audioFilesRepository
         )
     }
