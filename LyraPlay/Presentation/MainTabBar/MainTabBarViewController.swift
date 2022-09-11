@@ -133,5 +133,8 @@ extension MainTabBarViewController {
 
 extension MainTabBarViewController {
     
-    private func style() {}
+    private func style() {
+        
+        Styles.apply(tabBar: tabBar)
+    }
 }

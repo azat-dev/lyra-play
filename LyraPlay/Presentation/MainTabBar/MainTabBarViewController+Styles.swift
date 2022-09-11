@@ -12,5 +12,13 @@ extension MainTabBarViewController {
     
     final class Styles {
         
+        private static let iconColor = UIColor(named: "Color.Text.Secondary")
+        private static let activeIconColor = UIColor(named: "Color.Text")
+ 
+        static func apply(tabBar: UITabBar) {
+            
+            tabBar.tintColor = activeIconColor
+            tabBar.unselectedItemTintColor = iconColor
+        }
     }
 }
