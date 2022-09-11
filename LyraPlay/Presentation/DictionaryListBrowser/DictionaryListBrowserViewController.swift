@@ -112,10 +112,10 @@ extension DictionaryListBrowserViewController {
             action: #selector(Self.didAddItem)
         )
         
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.largeContentTitle = "Dictionary"
-        navigationItem.largeTitleDisplayMode = .always
         navigationItem.rightBarButtonItem = addButton
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
     }
 
     private func setupViews() {

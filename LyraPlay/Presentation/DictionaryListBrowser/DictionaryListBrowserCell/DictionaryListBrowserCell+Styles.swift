@@ -18,8 +18,8 @@ extension DictionaryListBrowserCell {
         private static let separatorColor = UIColor(named: "Color.Separator")
         private static let textColor = UIColor(named: "Color.Text")
         
-        private static let titleFont: UIFont = Fonts.RedHatDisplay.medium.preferred(with: .title3)
-        private static let descriptionFont: UIFont = Fonts.RedHatDisplay.regular.preferred(with: .subheadline)
+        private static let titleFont: UIFont = Fonts.RedHatDisplay.medium.preferred(with: .headline)
+        private static let descriptionFont: UIFont = Fonts.RedHatDisplay.regular.preferred(with: .footnote)
         
         private static let playButtonIcon = UIImage(systemName: "speaker.wave.2.fill")
         

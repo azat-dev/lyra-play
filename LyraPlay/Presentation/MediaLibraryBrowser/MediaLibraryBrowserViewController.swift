@@ -68,6 +68,8 @@ extension MediaLibraryBrowserViewController {
         )
         
         navigationItem.rightBarButtonItem = addButton
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
     }
     
     private func setupViews() {

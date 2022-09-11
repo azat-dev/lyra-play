@@ -23,6 +23,7 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
     private lazy var tabControllers: [Tab: UINavigationController] = {
         
         let libraryView = UINavigationController()
+        libraryView.navigationBar.prefersLargeTitles = true
         
         libraryView.tabBarItem = .init(
             title: "Library",
@@ -31,6 +32,7 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
         )
         
         let dictionaryView = UINavigationController()
+        dictionaryView.navigationBar.prefersLargeTitles = true
         
         dictionaryView.tabBarItem = .init(
             title: "Dictionary",
