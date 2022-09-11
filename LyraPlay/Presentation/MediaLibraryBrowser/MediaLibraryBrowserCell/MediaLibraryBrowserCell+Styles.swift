@@ -11,11 +11,17 @@ import UIKit
 extension MediaLibraryBrowserCell {
     
     final class Styles {
+
+        // MARK: - Properties
         
         private static let secondaryTextColor = UIColor(named: "Color.Text.Secondary")
         private static let textColor = UIColor(named: "Color.Text")
         private static let titleFont: UIFont = Fonts.RedHatDisplay.medium.preferred(with: .headline)
-        private static let descriptionFont: UIFont = Fonts.RedHatDisplay.regular.preferred(with: .subheadline)
+        private static let descriptionFont: UIFont = Fonts.RedHatDisplay.regular.preferred(with: .footnote)
+        
+        private static let separatorColor = UIColor(named: "Color.Separator")
+        
+        // MARK: - Methods
         
         static func apply(contentView: UIView) {
             
@@ -42,6 +48,11 @@ extension MediaLibraryBrowserCell {
             descriptionLabel.font = descriptionFont
             descriptionLabel.textColor = secondaryTextColor
             descriptionLabel.textAlignment = .left
+        }
+        
+        static func apply(bottomBorder: UIView) {
+            
+            bottomBorder.backgroundColor = separatorColor
         }
     }
 }

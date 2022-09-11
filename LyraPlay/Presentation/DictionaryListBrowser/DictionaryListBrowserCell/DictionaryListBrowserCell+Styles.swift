@@ -23,7 +23,6 @@ extension DictionaryListBrowserCell {
         
         private static let playButtonIcon = UIImage(systemName: "speaker.wave.2.fill")
         
-        
         // MARK: - Methods
         
         static func apply(contentView: UIView) {

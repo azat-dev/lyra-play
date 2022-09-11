@@ -12,9 +12,13 @@ extension DictionaryListBrowserCell {
 
     final class Layout {
 
-        static let padding = UIEdgeInsets(top: 10, left: 25, bottom: 10, right: 25)
+        // MARK: - Properties
+        
+        static let padding = UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 15)
         static let seperatorHeight = 0.5
         static let playButtonSize = CGFloat(25)
+        
+        // MARK: - Methods
         
         static func apply(
             contentView: UIView,
