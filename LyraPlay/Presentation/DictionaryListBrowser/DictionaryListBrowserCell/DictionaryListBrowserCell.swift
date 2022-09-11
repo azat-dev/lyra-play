@@ -10,11 +10,18 @@ import UIKit
 
 public final class DictionaryListBrowserCell: UITableViewCell {
     
-    public static var reuseIdentifier = "DictionaryListBrowserCell"
-
-    private var textGroup = UIStackView()
-    private var titleLabel = UILabel()
-    private var descritionLabel = UILabel()
+    // MARK: - Properties
+    
+    public static let reuseIdentifier = "DictionaryListBrowserCell"
+    
+    private let textGroup = UIStackView()
+    private let titleLabel = UILabel()
+    private let descritionLabel = UILabel()
+    private let bottomBorder = UIView()
+    
+    private let playButton = UIImageView()
+    
+    // MARK: - Initializers
     
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         
@@ -27,6 +34,8 @@ public final class DictionaryListBrowserCell: UITableViewCell {
         super.init(coder: coder)
         setup()
     }
+    
+    // MARK: - Methods
     
     private func setup() {
         setupViews()
@@ -57,7 +66,10 @@ extension DictionaryListBrowserCell {
         textGroup.addArrangedSubview(titleLabel)
         textGroup.addArrangedSubview(descritionLabel)
         
+        textGroup.addSubview(playButton)
+        
         contentView.addSubview(textGroup)
+        contentView.addSubview(bottomBorder)
     }
 }
 
@@ -73,6 +85,9 @@ extension DictionaryListBrowserCell {
         Styles.apply(contentView: contentView)
         Styles.apply(titleLabel: titleLabel)
         Styles.apply(descriptionLabel: descritionLabel)
+        Styles.apply(bottomBorder: bottomBorder)
+        
+        Styles.apply(playButton: playButton)
     }
 }
 
@@ -86,7 +101,9 @@ extension DictionaryListBrowserCell {
             contentView: contentView,
             textGroup: textGroup,
             titleLabel: titleLabel,
-            descriptionLabel: descritionLabel
+            descriptionLabel: descritionLabel,
+            bottomBorder: bottomBorder,
+            playButton: playButton
         )
     }
 }
