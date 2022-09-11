@@ -43,6 +43,8 @@ extension DictionaryListBrowserCell {
                 
                 bottomBorder.leftAnchor.constraint(equalTo: textGroup.leftAnchor),
                 bottomBorder.rightAnchor.constraint(equalTo: textGroup.rightAnchor),
+                
+                bottomBorder.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
                 bottomBorder.heightAnchor.constraint(equalToConstant: seperatorHeight)
             ])
             
