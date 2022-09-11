@@ -27,7 +27,14 @@ extension LoadDictionaryItemUseCaseImpl {
 
     public func load(itemId: UUID) async -> Result<DictionaryItem, LoadDictionaryItemUseCaseError> {
 
-        fatalError()
+        let result = await dictionaryRepository.getItem(id: itemId)
+        
+        guard case .success(let item) = result else {
+            
+            return .failure(result.error!.map())
+        }
+        
+        return .success(item)
     }
 }
 
@@ -35,4 +42,24 @@ extension LoadDictionaryItemUseCaseImpl {
 
 extension LoadDictionaryItemUseCaseImpl {
 
+}
+
+// MARK: - Error Mappings
+
+fileprivate extension DictionaryRepositoryError {
+    
+    func map() -> LoadDictionaryItemUseCaseError {
+        
+        switch self {
+            
+        case .itemNotFound:
+            return .itemNotFound
+            
+        case .internalError(let err):
+            return .internalError(err)
+            
+        case .itemMustBeUnique:
+            return .internalError(nil)
+        }
+    }
 }

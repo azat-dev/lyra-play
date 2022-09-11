@@ -17,4 +17,4 @@ public protocol ImportMediaFilesFlowPresenterInput: AnyObject {
     func dismiss()
 }
 
-public protocol ImportMediaFilesFlowPresenter: AnyObject, ImportMediaFilesFlowPresenterInput {}
+public protocol ImportMediaFilesFlowPresenter: ImportMediaFilesFlowPresenterInput {}

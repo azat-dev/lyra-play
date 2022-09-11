@@ -1876,22 +1876,22 @@
 			isa = PBXGroup;
 			children = (
 				AACEA3132869A31900111565 /* Mocks */,
-				AA9BEAFD2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift */,
+				AABB49E528AFDFAF0088484B /* BrowseDictionaryUseCaseTests.swift */,
 				AACEA31128699F5500111565 /* BrowseMediaLibraryUseCaseTests.swift */,
-				AA731CC228706CBB0044412F /* ShowMediaInfoUseCaseTests.swift */,
 				AA7B0D80287234F70067DDB5 /* CurrentPlayerStateUseCaseTests.swift */,
-				AA731CC92870BE890044412F /* LoadTrackUseCaseTests.swift */,
+				AA9BEAFD2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift */,
+				AA2895AA28772B0100B168C4 /* ImportSubtitlesUseCaseTests.swift */,
 				AA976F9A28CE27DE00BC608A /* LoadDictionaryItemUseCaseTests.swift */,
 				AA66FD25287A02F9005AD524 /* LoadSubtitlesUseCaseTests.swift */,
-				AA2895AA28772B0100B168C4 /* ImportSubtitlesUseCaseTests.swift */,
-				AACD8EBE289667F4001BDECE /* PlaySubtitlesUseCaseTests.swift */,
+				AA731CC92870BE890044412F /* LoadTrackUseCaseTests.swift */,
+				AAD6746528A441D4005AFD91 /* PlayMediaUseCaseTests.swift */,
 				AA26B06928A6CC8E002E4920 /* PlayMediaWithSubtitlesUseCaseTests.swift */,
+				AA2DD32528A2F5B20053A17A /* PlayMediaWithTranslationsUseCaseTests.swift */,
+				AACD8EBE289667F4001BDECE /* PlaySubtitlesUseCaseTests.swift */,
+				AA0DADFC28A1893A00B11B95 /* PronounceTranslationsUseCaseTests.swift */,
 				AAEE8A152889C2C6007E41F3 /* ProvideTranslationsForSubtitlesUseCaseTests.swift */,
 				AAA87990289EE0D100E04CA9 /* ProvideTranslationsToPlayUseCaseTests.swift */,
-				AA0DADFC28A1893A00B11B95 /* PronounceTranslationsUseCaseTests.swift */,
-				AA2DD32528A2F5B20053A17A /* PlayMediaWithTranslationsUseCaseTests.swift */,
-				AAD6746528A441D4005AFD91 /* PlayMediaUseCaseTests.swift */,
-				AABB49E528AFDFAF0088484B /* BrowseDictionaryUseCaseTests.swift */,
+				AA731CC228706CBB0044412F /* ShowMediaInfoUseCaseTests.swift */,
 			);
 			path = UseCases;
 			sourceTree = "<group>";
@@ -1978,14 +1978,14 @@
 		AACEA3132869A31900111565 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
-				AACEA3142869A32A00111565 /* MediaLibraryRepositoryMock.swift */,
-				AA415089286B2ECA004549F4 /* FilesRepositoryMock.swift */,
-				AA35E57D286A993B0086DB28 /* TagsParserMock.swift */,
 				AA0930C728739B8500E62DB3 /* AudioPlayerMock.swift */,
+				AA415089286B2ECA004549F4 /* FilesRepositoryMock.swift */,
+				AA252C9628744481001B7AEE /* LoadTrackUseCaseMock.swift */,
+				AACEA3142869A32A00111565 /* MediaLibraryRepositoryMock.swift */,
 				AA0930C928739BD900E62DB3 /* ShowMediaInfoUseCaseMock.swift */,
 				AA66FD27287A0795005AD524 /* SubtitlesParserMock.swift */,
-				AA252C9628744481001B7AEE /* LoadTrackUseCaseMock.swift */,
 				AA66FD29287A089F005AD524 /* SubtitlesRepositoryMock.swift */,
+				AA35E57D286A993B0086DB28 /* TagsParserMock.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";

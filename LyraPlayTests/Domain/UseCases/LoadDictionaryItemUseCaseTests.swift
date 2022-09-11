@@ -56,4 +56,35 @@ class LoadDictionaryItemUseCaseTests: XCTestCase {
             return
         }
     }
+    
+    private func anyExistingDictionaryItem() -> DictionaryItem {
+        
+        return DictionaryItem(
+            id: UUID(),
+            createdAt: nil,
+            updatedAt: nil,
+            originalText: "",
+            lemma: "",
+            language: "",
+            translations: []
+        )
+    }
+    
+    func test_load__existing_item() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        let existingItem = anyExistingDictionaryItem()
+
+        given(await sut.dictionaryRepository.getItem(id: existingItem.id!))
+            .willReturn(.success(existingItem))
+        
+        // When
+        let result = await sut.useCase.load(itemId: existingItem.id!)
+        
+        // Then
+        let receivedItem = try! AssertResultSucceded(result)
+        XCTAssertEqual(receivedItem.id, existingItem.id)
+    }
 }
