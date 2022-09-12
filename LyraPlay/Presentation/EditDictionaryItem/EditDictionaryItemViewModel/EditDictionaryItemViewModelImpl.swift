@@ -92,25 +92,115 @@ extension EditDictionaryItemViewModelImpl {
 
         delegate.editDictionaryItemViewModelDidCancel()
     }
+    
+    private func updateExistingItem(itemId: UUID, newData: EditDictionaryItemPresentationData) async {
+        
+        let loadResult = await loadDictionaryItemUseCase.load(itemId: itemId)
+        
+        guard case .success(let existingItem) = loadResult else {
+            return
+        }
+        
+        var updatedItem = existingItem
+        updatedItem.originalText = newData.originalText
+        
+        if let existingTranslation = updatedItem.translations.first {
+            
+            var updatedTranslation = existingTranslation
+            updatedTranslation.text = newData.translation
+            
+            updatedItem.translations[0] = updatedTranslation
+        }
+        
+        let saveResult = await editDictionaryItemUseCase.putItem(item: updatedItem)
+        
+        guard case .success = saveResult else {
+            // TODO: Handle error
+            return
+        }
+        
+        delegate.editDictionaryItemViewModelDidUpdate()
+        state.value = .saved
+    }
+    
+    private func createNewItem(newData: EditDictionaryItemPresentationData) async {
+        
+        let updatedItem = DictionaryItem(
+            id: nil,
+            createdAt: nil,
+            updatedAt: nil,
+            originalText: newData.originalText,
+            lemma: "",
+            language: "English",
+            translations: [
+                .init(id: UUID(), text: newData.translation)
+            ]
+        )
+
+        let saveResult = await editDictionaryItemUseCase.putItem(item: updatedItem)
+        
+        guard case .success = saveResult else {
+            // TODO: Handle error
+            return
+        }
+        
+        delegate.editDictionaryItemViewModelDidUpdate()
+        state.value = .saved
+        
+    }
+    
+    private func savePresentationData() async {
+        
+        guard case .editing(let data) = state.value else {
+            return
+        }
+        
+        state.value = .saving(data: data)
+        switch params {
+            
+        case .existingItem(let itemId):
+            await updateExistingItem(itemId: itemId, newData: data)
+            
+        case .newItem:
+            await createNewItem(newData: data)
+        }
+    }
 
     public func save() {
 
-        fatalError()
+        Task {
+            await savePresentationData()
+        }
+    }
+    
+    private func updateData(_ update: (_ prevData: EditDictionaryItemPresentationData) -> EditDictionaryItemPresentationData) {
+        
+        guard case .editing(let data) = state.value else {
+            return
+        }
+        
+        state.value = .editing(data: update(data))
     }
 
     public func setOriginalText(value: String) {
 
-        fatalError()
+        updateData { prevData in
+            
+            var newData = prevData
+            newData.originalText = value
+            
+            return newData
+        }
     }
 
     public func setTranslationText(value: String) {
-
-        fatalError()
+        
+        updateData { prevData in
+            
+            var newData = prevData
+            newData.translation = value
+            
+            return newData
+        }
     }
-}
-
-// MARK: - Output Methods
-
-extension EditDictionaryItemViewModelImpl {
-
 }

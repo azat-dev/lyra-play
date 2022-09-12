@@ -11,6 +11,10 @@ import Combine
 public protocol EditDictionaryItemViewModelDelegate {
     
     func editDictionaryItemViewModelDidCancel()
+    
+    func editDictionaryItemViewModelDidUpdate()
+    
+    func editDictionaryItemViewModelDidFinish()
 }
 
 public enum EditDictionaryItemParams {
@@ -23,7 +27,7 @@ public enum EditDictionaryItemViewModelState {
 
     case loading
     case editing(data: EditDictionaryItemPresentationData)
-    case saving
+    case saving(data: EditDictionaryItemPresentationData)
     case saved
 }
 
