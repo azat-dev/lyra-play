@@ -12,7 +12,7 @@ public final class DictionaryListBrowserViewModelImpl: DictionaryListBrowserView
     
     // MARK: - Properties
     
-    private var delegate: DictionaryListBrowserViewModelDelegate
+    private weak var delegate: DictionaryListBrowserViewModelDelegate?
     private let browseDictionaryUseCase: BrowseDictionaryUseCase
     
     public var isLoading = CurrentValueSubject<Bool, Never>(true)
@@ -62,7 +62,7 @@ extension DictionaryListBrowserViewModelImpl {
     
     public func addNewItem() {
 
-        delegate.runCreationFlow()
+        delegate?.runCreationFlow()
     }
 }
 

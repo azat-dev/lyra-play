@@ -13,7 +13,7 @@ public final class EditDictionaryItemViewModelImpl: EditDictionaryItemViewModel 
     // MARK: - Properties
 
     private let params: EditDictionaryItemParams
-    private let delegate: EditDictionaryItemViewModelDelegate
+    private weak var delegate: EditDictionaryItemViewModelDelegate?
     private let loadDictionaryItemUseCase: LoadDictionaryItemUseCase
     private let editDictionaryItemUseCase: EditDictionaryItemUseCase
     
@@ -90,7 +90,7 @@ extension EditDictionaryItemViewModelImpl {
 
     public func cancel() {
 
-        delegate.editDictionaryItemViewModelDidCancel()
+        delegate?.editDictionaryItemViewModelDidCancel()
     }
     
     private func updateExistingItem(itemId: UUID, newData: EditDictionaryItemPresentationData) async {
@@ -119,7 +119,7 @@ extension EditDictionaryItemViewModelImpl {
             return
         }
         
-        delegate.editDictionaryItemViewModelDidUpdate()
+        delegate?.editDictionaryItemViewModelDidUpdate()
         state.value = .saved
     }
     
@@ -144,7 +144,7 @@ extension EditDictionaryItemViewModelImpl {
             return
         }
         
-        delegate.editDictionaryItemViewModelDidUpdate()
+        delegate?.editDictionaryItemViewModelDidUpdate()
         state.value = .saved
         
     }

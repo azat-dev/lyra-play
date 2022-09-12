@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 public protocol DictionaryFlowModelInput {
 
@@ -14,6 +15,8 @@ public protocol DictionaryFlowModelInput {
 public protocol DictionaryFlowModelOutput {
 
     var listViewModel: DictionaryListBrowserViewModel { get }
+    
+    var addDictionaryItemFlow: CurrentValueSubject<AddDictionaryItemFlowModel?, Never> { get }
 }
 
 public protocol DictionaryFlowModel: DictionaryFlowModelOutput, DictionaryFlowModelInput {

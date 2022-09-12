@@ -312,7 +312,29 @@ public class Application {
             libraryItemFlowModelFactory: libraryItemFlowModelFactory,
             importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory
         )
-        let dictionaryFlowModelFactory = DictionaryFlowModelImplFactory(viewModelFactory: dictionaryViewModelFactory)
+        
+        let editDictionaryItemUseCaseFactory = EditDictionaryItemUseCaseImplFactory(
+            dictionaryRepository: dictionaryRepository,
+            lemmatizer: LemmatizerImpl()
+        )
+        
+        let loadDictionaryItemUseCaseFactory = LoadDictionaryItemUseCaseImplFactory(
+            dictionaryRepository: dictionaryRepository
+        )
+        
+        let editDictionaryItemViewModelFactory = EditDictionaryItemViewModelImplFactory(
+            loadDictionaryItemUseCaseFactory: loadDictionaryItemUseCaseFactory,
+            editDictionaryItemUseCaseFactory: editDictionaryItemUseCaseFactory
+        )
+        
+        let addDictionaryItemFlowModelFactory = AddDictionaryItemFlowModelImplFactory(
+            editDictionaryItemViewModelFactory: editDictionaryItemViewModelFactory
+        )
+        
+        let dictionaryFlowModelFactory = DictionaryFlowModelImplFactory(
+            viewModelFactory: dictionaryViewModelFactory,
+            addDictionaryItemFlowModelFactory: addDictionaryItemFlowModelFactory
+        )
         
         return MainFlowModelImpl(
             mainTabBarViewModelFactory: mainTabBarViewModelFactory,
@@ -343,8 +365,13 @@ public class Application {
             importMediaFilesFlowPresenterFactory: importMediaFilesFlowPresenterFactory
         )
         
+        let addDictionaryItemFlowPresenterFactory = AddDictionaryItemFlowPresenterImplFactory(
+            editDictionaryItemViewFactory: EditDictionaryItemViewControllerFactory()
+        )
+        
         let dictionaryFlowPresenterFactory = DictionaryFlowPresenterImplFactory(
-            listViewFactory: DictionaryListBrowserViewControllerFactory()
+            listViewFactory: DictionaryListBrowserViewControllerFactory(),
+            addDictionaryItemFlowPresenterFactory: addDictionaryItemFlowPresenterFactory
         )
         
         return MainFlowPresenterImpl(

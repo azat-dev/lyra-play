@@ -7,5 +7,8 @@
 
 public protocol EditDictionaryItemViewModelFactory {
 
-    func create(with params: EditDictionaryItemParams) -> EditDictionaryItemViewModel
+    func create(
+        with params: EditDictionaryItemParams,
+        delegate: EditDictionaryItemViewModelDelegate
+    ) -> EditDictionaryItemViewModel
 }

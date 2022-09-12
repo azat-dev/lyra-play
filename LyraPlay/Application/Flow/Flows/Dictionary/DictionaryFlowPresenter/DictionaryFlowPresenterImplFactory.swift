@@ -9,18 +9,30 @@ import Foundation
 
 public final class DictionaryFlowPresenterImplFactory: DictionaryFlowPresenterFactory {
     
-    private let listViewFactory: DictionaryListBrowserViewFactory
+    // MARK: - Properties
     
-    public init(listViewFactory: DictionaryListBrowserViewFactory) {
+    private let listViewFactory: DictionaryListBrowserViewFactory
+    private let addDictionaryItemFlowPresenterFactory: AddDictionaryItemFlowPresenterFactory
+    
+    // MARK: - Initializers
+    
+    public init(
+        listViewFactory: DictionaryListBrowserViewFactory,
+        addDictionaryItemFlowPresenterFactory: AddDictionaryItemFlowPresenterFactory
+    ) {
         
         self.listViewFactory = listViewFactory
+        self.addDictionaryItemFlowPresenterFactory = addDictionaryItemFlowPresenterFactory
     }
+    
+    // MARK: - Methods
     
     public func create(for flowModel: DictionaryFlowModel) -> DictionaryFlowPresenter {
         
         return DictionaryFlowPresenterImpl(
             flowModel: flowModel,
-            listViewFactory: listViewFactory
+            listViewFactory: listViewFactory,
+            addDictionaryItemFlowPresenterFactory: addDictionaryItemFlowPresenterFactory
         )
     }
 }

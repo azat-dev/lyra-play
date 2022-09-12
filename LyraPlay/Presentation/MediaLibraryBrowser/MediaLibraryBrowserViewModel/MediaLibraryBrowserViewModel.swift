@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol MediaLibraryBrowserViewModelDelegate {
+public protocol MediaLibraryBrowserViewModelDelegate: AnyObject {
     
     func runImportMediaFilesFlow()
     
@@ -19,14 +19,14 @@ public protocol MediaLibraryBrowserUpdateDelegate: AnyObject {
     func filesDidUpdate(updatedFiles: [MediaLibraryBrowserCellViewModel])
 }
 
-public protocol MediaLibraryBrowserViewModelInput {
+public protocol MediaLibraryBrowserViewModelInput: AnyObject {
     
     func load() async -> Void
     
     func addNewItem() -> Void
 }
 
-public protocol MediaLibraryBrowserViewModelOutput {
+public protocol MediaLibraryBrowserViewModelOutput: AnyObject {
     
     var isLoading: Observable<Bool> { get }
     

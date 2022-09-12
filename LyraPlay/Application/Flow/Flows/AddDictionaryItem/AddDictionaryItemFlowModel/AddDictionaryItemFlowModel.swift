@@ -8,8 +8,9 @@
 import Foundation
 import Combine
 
-public protocol AddDictionaryItemFlowModelDelegate {
-    
+public protocol AddDictionaryItemFlowModelDelegate: AnyObject {
+ 
+    func addDictionaryItemFlowModelDidFinish()
 }
 
 public protocol AddDictionaryItemFlowModelInput: AnyObject {

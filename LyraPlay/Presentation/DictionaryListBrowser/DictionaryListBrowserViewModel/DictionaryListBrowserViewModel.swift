@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-public protocol DictionaryListBrowserViewModelDelegate {
+public protocol DictionaryListBrowserViewModelDelegate: AnyObject {
     
     func runCreationFlow()
 }
@@ -18,14 +18,14 @@ public enum DictionaryListBrowserChangeEvent: Equatable {
     case loaded(items: [DictionaryListBrowserItemViewModel])
 }
 
-public protocol DictionaryListBrowserViewModelInput {
+public protocol DictionaryListBrowserViewModelInput: AnyObject {
     
     func load() async
     
     func addNewItem()
 }
 
-public protocol DictionaryListBrowserViewModelOutput {
+public protocol DictionaryListBrowserViewModelOutput: AnyObject {
     
     var isLoading: CurrentValueSubject<Bool, Never> { get }
     

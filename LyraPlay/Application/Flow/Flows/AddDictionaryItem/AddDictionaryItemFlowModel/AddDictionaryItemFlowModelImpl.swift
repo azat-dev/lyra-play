@@ -13,7 +13,7 @@ public final class AddDictionaryItemFlowModelImpl: AddDictionaryItemFlowModel {
     // MARK: - Properties
 
     private let originalText: String?
-    private let delegate: AddDictionaryItemFlowModelDelegate
+    private weak var delegate: AddDictionaryItemFlowModelDelegate?
     private let editDictionaryItemViewModelFactory: EditDictionaryItemViewModelFactory
     
     public var editDictionaryItemViewModel = CurrentValueSubject<EditDictionaryItemViewModel?, Never>(nil)
@@ -30,7 +30,10 @@ public final class AddDictionaryItemFlowModelImpl: AddDictionaryItemFlowModel {
         self.delegate = delegate
         self.editDictionaryItemViewModelFactory = editDictionaryItemViewModelFactory
         
-        editDictionaryItemViewModel.value = editDictionaryItemViewModelFactory.create(with: .newItem(originalText: originalText ?? ""))
+        editDictionaryItemViewModel.value = editDictionaryItemViewModelFactory.create(
+            with: .newItem(originalText: originalText ?? ""),
+            delegate: self
+        )
     }
 }
 
@@ -40,8 +43,22 @@ extension AddDictionaryItemFlowModelImpl {
 
 }
 
-// MARK: - Output Methods
+// MARK: - EditDictionaryItemViewModelDelegate
 
-extension AddDictionaryItemFlowModelImpl {
+extension AddDictionaryItemFlowModelImpl: EditDictionaryItemViewModelDelegate {
 
+    public func editDictionaryItemViewModelDidCancel() {
+        
+        delegate?.addDictionaryItemFlowModelDidFinish()
+    }
+    
+    public func editDictionaryItemViewModelDidUpdate() {
+        
+        delegate?.addDictionaryItemFlowModelDidFinish()
+    }
+    
+    public func editDictionaryItemViewModelDidFinish() {
+        
+        delegate?.addDictionaryItemFlowModelDidFinish()
+    }
 }

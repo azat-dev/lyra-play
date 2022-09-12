@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-public protocol EditDictionaryItemViewModelDelegate {
+public protocol EditDictionaryItemViewModelDelegate: AnyObject {
     
     func editDictionaryItemViewModelDidCancel()
     

@@ -82,7 +82,7 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
         style()
         layout()
         bind(to: viewModel)
-    }
+    }    
 }
 
 // MARK: - Bind viewModel

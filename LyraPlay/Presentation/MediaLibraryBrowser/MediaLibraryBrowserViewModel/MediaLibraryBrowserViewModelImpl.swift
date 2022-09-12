@@ -12,7 +12,7 @@ public final class MediaLibraryBrowserViewModelImpl: MediaLibraryBrowserViewMode
 
     // MARK: - Properties
 
-    private var delegate: MediaLibraryBrowserViewModelDelegate
+    private weak var delegate: MediaLibraryBrowserViewModelDelegate?
     private let browseUseCase: BrowseMediaLibraryUseCase
     private let importFileUseCase: ImportAudioFileUseCase
     
@@ -47,7 +47,7 @@ extension MediaLibraryBrowserViewModelImpl {
     
     private func onPlay(_ trackId: UUID) {
         
-        delegate.runOpenLibraryItemFlow(mediaId: trackId)
+        delegate?.runOpenLibraryItemFlow(mediaId: trackId)
     }
     
     private func loadImages(names: [String]) async -> [String: UIImage] {
@@ -97,7 +97,7 @@ extension MediaLibraryBrowserViewModelImpl {
     
     public func addNewItem() -> Void {
         
-        delegate.runImportMediaFilesFlow()
+        delegate?.runImportMediaFilesFlow()
     }
 }
 

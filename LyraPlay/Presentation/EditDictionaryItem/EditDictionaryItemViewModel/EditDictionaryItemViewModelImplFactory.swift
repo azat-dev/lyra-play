@@ -11,32 +11,32 @@ public final class EditDictionaryItemViewModelImplFactory: EditDictionaryItemVie
 
     // MARK: - Properties
 
-    private let delegate: EditDictionaryItemViewModelDelegate
-    private let loadDictionaryItemUseCase: LoadDictionaryItemUseCase
-    private let editDictionaryItemUseCase: EditDictionaryItemUseCase
+    private let loadDictionaryItemUseCaseFactory: LoadDictionaryItemUseCaseFactory
+    private let editDictionaryItemUseCaseFactory: EditDictionaryItemUseCaseFactory
 
     // MARK: - Initializers
 
     public init(
-        delegate: EditDictionaryItemViewModelDelegate,
-        loadDictionaryItemUseCase: LoadDictionaryItemUseCase,
-        editDictionaryItemUseCase: EditDictionaryItemUseCase
+        loadDictionaryItemUseCaseFactory: LoadDictionaryItemUseCaseFactory,
+        editDictionaryItemUseCaseFactory: EditDictionaryItemUseCaseFactory
     ) {
 
-        self.delegate = delegate
-        self.loadDictionaryItemUseCase = loadDictionaryItemUseCase
-        self.editDictionaryItemUseCase = editDictionaryItemUseCase
+        self.loadDictionaryItemUseCaseFactory = loadDictionaryItemUseCaseFactory
+        self.editDictionaryItemUseCaseFactory = editDictionaryItemUseCaseFactory
     }
 
     // MARK: - Methods
 
-    public func create(with params: EditDictionaryItemParams) -> EditDictionaryItemViewModel {
+    public func create(
+        with params: EditDictionaryItemParams,
+        delegate: EditDictionaryItemViewModelDelegate
+    ) -> EditDictionaryItemViewModel {
 
         return EditDictionaryItemViewModelImpl(
             params: params,
             delegate: delegate,
-            loadDictionaryItemUseCase: loadDictionaryItemUseCase,
-            editDictionaryItemUseCase: editDictionaryItemUseCase
+            loadDictionaryItemUseCase: loadDictionaryItemUseCaseFactory.create(),
+            editDictionaryItemUseCase: editDictionaryItemUseCaseFactory.create()
         )
     }
 }
