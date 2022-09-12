@@ -27,7 +27,13 @@ extension EditDictionaryItemUseCaseImpl {
 
     public func putItem(item: DictionaryItem) async -> Result<DictionaryItem, EditDictionaryItemUseCaseError> {
 
-        fatalError()
+        let result = await dictionaryRepository.putItem(item)
+        
+        guard case .success(let savedItem) = result else {
+            return .failure(result.error!.map())
+        }
+        
+        return .success(savedItem)
     }
 }
 
