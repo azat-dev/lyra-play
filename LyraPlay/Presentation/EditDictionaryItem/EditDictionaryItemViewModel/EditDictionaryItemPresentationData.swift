@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct EditDictionaryItemPresentationData {
+public struct EditDictionaryItemPresentationData: Equatable {
 
     // MARK: - Properties
 

@@ -21,12 +21,10 @@ class EditDictionaryItemViewModelTests: XCTestCase {
     
     // MARK: - Methods
     
-    func createSUT(params: EditDictionaryItemParams) -> SUT {
+    func createSUT(params: EditDictionaryItemParams, loadUseCase: LoadDictionaryItemUseCaseMock? = nil) -> SUT {
         
         let delegate = mock(EditDictionaryItemViewModelDelegate.self)
-        
-        let loadDictionaryItemUseCase = mock(LoadDictionaryItemUseCase.self)
-        
+        let loadDictionaryItemUseCase = loadUseCase ?? mock(LoadDictionaryItemUseCase.self)
         let editDictionaryItemUseCase = mock(EditDictionaryItemUseCase.self)
         
         let viewModel = EditDictionaryItemViewModelImpl(
@@ -51,12 +49,12 @@ class EditDictionaryItemViewModelTests: XCTestCase {
         // Given
         
         // When
-        let sut = createSUT(params: .newItem(originalText: "test"))
+        let sut = createSUT(params: .newItem(originalText: ""))
         
         // Then
         guard case .editing(let data) = sut.viewModel.state.value else {
             
-            XCTFail("Wrong state")
+            XCTFail("Wrong state \(sut.viewModel.state.value)")
             return
         }
 
@@ -84,20 +82,39 @@ class EditDictionaryItemViewModelTests: XCTestCase {
     func test__load_existing() async throws {
         
         // Given
-        let existingDictionaryItem = DictionaryItem.anyExistingDictonaryItem()
         
-        // When
-        let sut = createSUT(params: .existingItem(itemId: existingDictionaryItem.id!))
-        given(await sut.loadDictionaryItemUseCase.load(itemId: existingDictionaryItem.id!))
+        let stateSequence = expectSequence(["loaded"])
+        
+        let existingDictionaryItem = DictionaryItem.anyExistingDictonaryItem()
+        let loadDictionaryItemUseCase = mock(LoadDictionaryItemUseCase.self)
+        
+        given(await loadDictionaryItemUseCase.load(itemId: existingDictionaryItem.id!))
             .willReturn(.success(existingDictionaryItem))
         
+        
+        // When
+        let sut = createSUT(
+            params: .existingItem(itemId: existingDictionaryItem.id!),
+            loadUseCase: loadDictionaryItemUseCase
+        )
+
         // Then
-        guard case .editing(let data) = sut.viewModel.state.value else {
-            
-            XCTFail("Wrong state")
-            return
+        let stateObserver = sut.viewModel.state.sink { state in
+
+            switch state {
+                
+            case .editing(let data):
+                
+                if data.originalText == existingDictionaryItem.originalText {
+                    stateSequence.fulfill(with: "loaded")
+                }
+                
+            default:
+                break
+            }
         }
 
-        XCTAssertEqual(data.originalText, existingDictionaryItem.originalText)
+        stateSequence.wait(timeout: 1, enforceOrder: true)
+        stateObserver.cancel()
     }
 }
