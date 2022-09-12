@@ -12,18 +12,26 @@ public final class EditDictionaryItemUseCaseImplFactory: EditDictionaryItemUseCa
     // MARK: - Properties
 
     private let dictionaryRepository: DictionaryRepository
+    private let lemmatizer: Lemmatizer
 
     // MARK: - Initializers
 
-    public init(dictionaryRepository: DictionaryRepository) {
+    public init(
+        dictionaryRepository: DictionaryRepository,
+        lemmatizer: Lemmatizer
+    ) {
 
         self.dictionaryRepository = dictionaryRepository
+        self.lemmatizer = lemmatizer
     }
 
     // MARK: - Methods
 
     public func create() -> EditDictionaryItemUseCase {
 
-        return EditDictionaryItemUseCaseImpl(dictionaryRepository: dictionaryRepository)
+        return EditDictionaryItemUseCaseImpl(
+            dictionaryRepository: dictionaryRepository,
+            lemmatizer: lemmatizer
+        )
     }
 }

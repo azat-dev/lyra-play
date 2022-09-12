@@ -14,22 +14,31 @@ class EditDictionaryItemUseCaseImplTests: XCTestCase {
     
     typealias SUT = (
         useCase: EditDictionaryItemUseCase,
-        dictionaryRepository: DictionaryRepositoryMock
+        dictionaryRepository: DictionaryRepositoryMock,
+        lemmatizer: LemmatizerMock
     )
-    
+
     // MARK: - Methods
-    
+
     func createSUT() -> SUT {
-        
+
         let dictionaryRepository = mock(DictionaryRepository.self)
-        
-        let useCase = EditDictionaryItemUseCaseImpl(dictionaryRepository: dictionaryRepository)
-        
+
+        let lemmatizer = mock(Lemmatizer.self)
+
+        let useCase = EditDictionaryItemUseCaseImpl(
+            dictionaryRepository: dictionaryRepository,
+            lemmatizer: lemmatizer
+        )
+
         detectMemoryLeak(instance: useCase)
         
+        
+
         return (
             useCase: useCase,
-            dictionaryRepository: dictionaryRepository
+            dictionaryRepository: dictionaryRepository,
+            lemmatizer: lemmatizer
         )
     }
     
@@ -46,6 +55,9 @@ class EditDictionaryItemUseCaseImplTests: XCTestCase {
                 itemCopy.id = UUID()
                 return .success(itemCopy)
             }
+
+        given(sut.lemmatizer.lemmatize(text: any()))
+            .willReturn([.init(lemma: "test", range: "a".range(of: "a")!)])
         
         // When
         let result = await sut.useCase.putItem(item: dictionaryItem)
@@ -55,5 +67,6 @@ class EditDictionaryItemUseCaseImplTests: XCTestCase {
         
         XCTAssertNotNil(savedItem.id)
         XCTAssertEqual(savedItem.originalText, dictionaryItem.originalText)
+        XCTAssertEqual(savedItem.lemma, "test")
     }
 }
