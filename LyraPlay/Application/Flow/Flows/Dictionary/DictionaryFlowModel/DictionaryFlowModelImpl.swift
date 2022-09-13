@@ -52,6 +52,10 @@ extension DictionaryFlowModelImpl: AddDictionaryItemFlowModelDelegate {
     public func addDictionaryItemFlowModelDidFinish() {
     
         addDictionaryItemFlow.value = nil
+        
+        Task {
+            await listViewModel.load()
+        }
     }
 }
 

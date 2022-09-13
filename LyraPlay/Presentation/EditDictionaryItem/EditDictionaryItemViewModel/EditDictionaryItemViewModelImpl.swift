@@ -56,7 +56,6 @@ public final class EditDictionaryItemViewModelImpl: EditDictionaryItemViewModel 
         
         state.value = .editing(
             data: .init(
-                title: "Add a new word",
                 originalText: originalText,
                 translation: "",
                 originalTextLanguage: "English",
@@ -78,7 +77,6 @@ public final class EditDictionaryItemViewModelImpl: EditDictionaryItemViewModel 
         
         state.value = .editing(
             data: .init(
-                title: "Editing",
                 originalText: item.originalText,
                 translation: item.translations.first?.text ?? "",
                 originalTextLanguage: "English",

@@ -11,7 +11,6 @@ public struct EditDictionaryItemPresentationData: Equatable {
 
     // MARK: - Properties
 
-    public var title: String
     public var originalText: String
     public var translation: String
     public var originalTextLanguage: String
@@ -20,14 +19,12 @@ public struct EditDictionaryItemPresentationData: Equatable {
     // MARK: - Initializers
 
     public init(
-        title: String,
         originalText: String,
         translation: String,
         originalTextLanguage: String,
         translationTextLanguage: String
     ) {
 
-        self.title = title
         self.originalText = originalText
         self.translation = translation
         self.originalTextLanguage = originalTextLanguage
