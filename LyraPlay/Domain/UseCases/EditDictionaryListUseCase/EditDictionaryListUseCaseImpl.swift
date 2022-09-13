@@ -27,7 +27,13 @@ extension EditDictionaryListUseCaseImpl {
 
     public func deleteItem(itemId: UUID) async -> Result<Void, EditDictionaryListUseCaseError> {
 
-        fatalError()
+        let result = await dictionaryRepository.deleteItem(id: itemId)
+        
+        guard case .success = result else {
+            return .failure(result.error!.map())
+        }
+        
+        return .success(())
     }
 }
 
