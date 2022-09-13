@@ -24,25 +24,47 @@ extension EditDictionaryItemViewController {
             contentView.backgroundColor = colorBackground
         }
         
-        static func apply(originalTextGroup group: UIView) {
+        static func apply(textGroup group: UIView) {
             
             group.backgroundColor = colorGroupBackground
             group.layer.cornerRadius = 10
         }
         
-        static func apply(originalTextInput input: UITextField) {
+        static func apply(groupTextInput input: UITextField) {
             
             input.backgroundColor = colorGroupBackground
-            input.placeholder = "Add a word"
             input.font = fontOriginalText
             input.textColor = .white
         }
         
-        static func apply(languageLabel label: UILabel) {
+        static func apply(groupLabel label: UILabel) {
             
-            label.text = "English"
             label.textColor = .white
             label.font = fontLabel
+        }
+        
+        static func apply(originalTextInput input: UITextField) {
+            
+            apply(groupTextInput: input)
+            input.placeholder = "Add a word"
+        }
+        
+        static func apply(originalLanguageLabel label: UILabel) {
+
+            apply(groupLabel: label)
+            label.text = "English"
+        }
+        
+        static func apply(translationTextInput input: UITextField) {
+            
+            apply(groupTextInput: input)
+            input.placeholder = "Add translation"
+        }
+        
+        static func apply(translationLanguageLabel label: UILabel) {
+
+            apply(groupLabel: label)
+            label.text = "Russian"
         }
     }
 }

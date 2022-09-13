@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 import UIKit
 
 public final class EditDictionaryItemViewController: UIViewController, EditDictionaryItemView {
@@ -21,9 +22,13 @@ public final class EditDictionaryItemViewController: UIViewController, EditDicti
     
     private let originalTextGroup = UIView()
     private let originalLanguageLabel = UILabel()
-    
     private let originalTextInput = UITextField()
+
+    private let translationTextGroup = UIView()
+    private let translationLanguageLabel = UILabel()
     private let translationTextInput = UITextField()
+    
+    private var observers = Set<AnyCancellable>()
     
     // MARK: - Initializers
     
@@ -65,15 +70,48 @@ public final class EditDictionaryItemViewController: UIViewController, EditDicti
         
         originalTextInput.becomeFirstResponder()
     }
+    
+    deinit {
+        observers.removeAll()
+    }
 }
 
 // MARK: - Bind viewModel
 
 extension EditDictionaryItemViewController {
     
+    private func updateState(state: EditDictionaryItemViewModelState) {
+        
+        switch state {
+            
+        case .loading:
+            activityIndicator.startAnimating()
+            contentGroup.isHidden = true
+            
+        case .saving:
+            activityIndicator.startAnimating()
+            
+        case .saved:
+            activityIndicator.stopAnimating()
+            
+        case .editing(let data):
+            
+            contentGroup.isHidden = false
+            activityIndicator.stopAnimating()
+            
+            originalTextInput.text = data.originalText
+            translationTextInput.text = data.translation
+        }
+    }
+    
     private func bind(to viewModel: EditDictionaryItemViewModel) {
 
         self.title = viewModel.title
+        
+        viewModel.state
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.updateState(state: $0) }
+            .store(in: &observers)
     }
 }
 
@@ -116,17 +154,38 @@ extension EditDictionaryItemViewController {
         viewModel.setOriginalText(value: originalTextInput.text ?? "")
     }
     
+    @objc
+    private func translationTextDidChange() {
+        
+        viewModel.setTranslationText(value: translationTextInput.text ?? "")
+    }
+    
     private func setupViews() {
         
         setupNavigationBar()
         
-        originalTextInput.addTarget(self, action: #selector(Self.originalTextDidChange), for: .valueChanged)
+        activityIndicator.hidesWhenStopped = true
+        
+        originalTextInput.addTarget(
+            self,
+            action: #selector(Self.originalTextDidChange),
+            for: .editingChanged
+        )
         
         originalTextGroup.addSubview(originalLanguageLabel)
         originalTextGroup.addSubview(originalTextInput)
         
+        translationTextInput.addTarget(
+            self,
+            action: #selector(Self.translationTextDidChange),
+            for: .editingChanged
+        )
+        
+        translationTextGroup.addSubview(translationLanguageLabel)
+        translationTextGroup.addSubview(translationTextInput)
+        
         contentGroup.addSubview(originalTextGroup)
-        contentGroup.addSubview(translationTextInput)
+        contentGroup.addSubview(translationTextGroup)
         
         view.addSubview(activityIndicator)
         view.addSubview(contentGroup)
@@ -145,6 +204,8 @@ extension EditDictionaryItemViewController {
             originalTextGroup: originalTextGroup,
             originalLanguageLabel: originalLanguageLabel,
             originalTextInput: originalTextInput,
+            translationTextGroup: translationTextGroup,
+            translationLanguageLabel: translationLanguageLabel,
             translationTextInput: translationTextInput
         )
     }
@@ -157,9 +218,13 @@ extension EditDictionaryItemViewController {
     private func style() {
         
         Styles.apply(contentView: view)
-        Styles.apply(originalTextGroup: originalTextGroup)
-        Styles.apply(languageLabel: originalLanguageLabel)
+        
+        Styles.apply(textGroup: originalTextGroup)
+        Styles.apply(originalLanguageLabel: originalLanguageLabel)
         Styles.apply(originalTextInput: originalTextInput)
+        
+        Styles.apply(textGroup: translationTextGroup)
+        Styles.apply(translationLanguageLabel: translationLanguageLabel)
+        Styles.apply(translationTextInput: translationTextInput)
     }
 }
-
