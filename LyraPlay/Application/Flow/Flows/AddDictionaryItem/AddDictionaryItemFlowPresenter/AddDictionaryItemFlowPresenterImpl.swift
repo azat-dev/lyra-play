@@ -57,9 +57,13 @@ extension AddDictionaryItemFlowPresenterImpl {
                 }
                 
                 let view = self.editDictionaryItemViewFactory.create(viewModel: editItemViewModel)
-                self.activeView = view
+                let navigationController = UINavigationController(rootViewController: view)
+                self.activeView = navigationController
                 
-                container.pushViewController(view, animated: true)
+                view.modalPresentationStyle = .pageSheet
+                view.modalTransitionStyle = .coverVertical
+                
+                container.present(navigationController, animated: true)
                 
             }.store(in: &observers)
     }

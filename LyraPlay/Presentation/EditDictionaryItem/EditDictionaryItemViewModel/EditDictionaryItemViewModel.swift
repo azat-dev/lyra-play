@@ -44,6 +44,8 @@ public protocol EditDictionaryItemViewModelInput: AnyObject {
 
 public protocol EditDictionaryItemViewModelOutput: AnyObject {
 
+    var title: String { get }
+    
     var state: CurrentValueSubject<EditDictionaryItemViewModelState, Never> { get }
 }
 

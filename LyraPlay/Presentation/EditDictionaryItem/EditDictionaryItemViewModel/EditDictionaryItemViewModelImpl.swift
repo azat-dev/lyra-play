@@ -17,6 +17,7 @@ public final class EditDictionaryItemViewModelImpl: EditDictionaryItemViewModel 
     private let loadDictionaryItemUseCase: LoadDictionaryItemUseCase
     private let editDictionaryItemUseCase: EditDictionaryItemUseCase
     
+    public var title = ""
     public var state = CurrentValueSubject<EditDictionaryItemViewModelState, Never>(.loading)
 
     // MARK: - Initializers
@@ -51,6 +52,8 @@ public final class EditDictionaryItemViewModelImpl: EditDictionaryItemViewModel 
     
     private func initPresentationData(originalText: String) {
         
+        title = "Add a new word"
+        
         state.value = .editing(
             data: .init(
                 title: "Add a new word",
@@ -64,6 +67,7 @@ public final class EditDictionaryItemViewModelImpl: EditDictionaryItemViewModel 
     
     private func initPresentationData(itemId: UUID) async {
         
+        title = "Editing"
         state.value = .loading
         
         let loadResult = await loadDictionaryItemUseCase.load(itemId: itemId)

@@ -12,14 +12,37 @@ extension EditDictionaryItemViewController {
     
     final class Styles {
         
+        private static let colorBackground = UIColor(named: "Color.Background")
+        private static let colorText = UIColor(named: "Color.Text")
+        private static let colorGroupBackground = UIColor(named: "Color.Group.Background")
+        
+        private static let fontLabel = Fonts.RedHatDisplay.bold.preferred(with: .footnote)
+        private static let fontOriginalText = Fonts.RedHatDisplay.bold.preferred(with: .title3)
+        
         static func apply(contentView: UIView) {
             
-            contentView.backgroundColor = .red
-            
+            contentView.backgroundColor = colorBackground
         }
         
-        static func apply(titleLabel: UILabel) {
+        static func apply(originalTextGroup group: UIView) {
             
+            group.backgroundColor = colorGroupBackground
+            group.layer.cornerRadius = 10
+        }
+        
+        static func apply(originalTextInput input: UITextField) {
+            
+            input.backgroundColor = colorGroupBackground
+            input.placeholder = "Add a word"
+            input.font = fontOriginalText
+            input.textColor = .white
+        }
+        
+        static func apply(languageLabel label: UILabel) {
+            
+            label.text = "English"
+            label.textColor = .white
+            label.font = fontLabel
         }
     }
 }
