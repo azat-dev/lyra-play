@@ -14,12 +14,14 @@ public final class DictionaryFlowModelImpl: DictionaryFlowModel {
 
     private let viewModelFactory: DictionaryListBrowserViewModelFactory
     private let addDictionaryItemFlowModelFactory: AddDictionaryItemFlowModelFactory
+    private let deleteDictionaryItemFlowModelFactory: DeleteDictionaryItemFlowModelFactory
     
     public lazy var listViewModel: DictionaryListBrowserViewModel  = {
         return viewModelFactory.create(delegate: self)
     } ()
     
     public var addDictionaryItemFlow = CurrentValueSubject<AddDictionaryItemFlowModel?, Never>(nil)
+    public var deleteDictionaryItemFlow = CurrentValueSubject<DeleteDictionaryItemFlowModel?, Never>(nil)
     
     private var observers = Set<AnyCancellable>()
 
@@ -27,11 +29,13 @@ public final class DictionaryFlowModelImpl: DictionaryFlowModel {
 
     public init(
         viewModelFactory: DictionaryListBrowserViewModelFactory,
-        addDictionaryItemFlowModelFactory: AddDictionaryItemFlowModelFactory
+        addDictionaryItemFlowModelFactory: AddDictionaryItemFlowModelFactory,
+        deleteDictionaryItemFlowModelFactory: DeleteDictionaryItemFlowModelFactory
     ) {
 
         self.viewModelFactory = viewModelFactory
         self.addDictionaryItemFlowModelFactory = addDictionaryItemFlowModelFactory
+        self.deleteDictionaryItemFlowModelFactory = deleteDictionaryItemFlowModelFactory
     }
     
     deinit {
@@ -39,10 +43,16 @@ public final class DictionaryFlowModelImpl: DictionaryFlowModel {
     }
 }
 
-// MARK: - Input Methods
+// MARK: - Helpers
 
 extension DictionaryFlowModelImpl {
 
+    private func reloadList() {
+        
+        Task {
+            await listViewModel.load()
+        }
+    }
 }
 
 // MARK: - AddDictionaryItemFlowModelDelegate
@@ -52,10 +62,27 @@ extension DictionaryFlowModelImpl: AddDictionaryItemFlowModelDelegate {
     public func addDictionaryItemFlowModelDidFinish() {
     
         addDictionaryItemFlow.value = nil
+        reloadList()
+    }
+}
+
+extension DictionaryFlowModelImpl: DeleteDictionaryItemFlowDelegate {
+    
+    public func deleteDictionaryItemFlowDidFail() {
         
-        Task {
-            await listViewModel.load()
-        }
+        deleteDictionaryItemFlow.value = nil
+        reloadList()
+    }
+    
+    public func deleteDictionaryItemFlowDidCancel() {
+        
+        deleteDictionaryItemFlow.value = nil
+    }
+    
+    public func deleteDictionaryItemFlowDidFinish(deleteIds: [UUID]) {
+        
+        deleteDictionaryItemFlow.value = nil
+        reloadList()
     }
 }
 
@@ -71,6 +98,18 @@ extension DictionaryFlowModelImpl: DictionaryListBrowserViewModelDelegate {
         
         addDictionaryItemFlow.value = addDictionaryItemFlowModelFactory.create(
             originalText: "",
+            delegate: self
+        )
+    }
+    
+    public func runDeleteDictionaryItemFlow(itemId: UUID) {
+        
+        guard deleteDictionaryItemFlow.value == nil else {
+            return
+        }
+        
+        deleteDictionaryItemFlow.value = deleteDictionaryItemFlowModelFactory.create(
+            itemId: itemId,
             delegate: self
         )
     }

@@ -331,9 +331,16 @@ public class Application {
             editDictionaryItemViewModelFactory: editDictionaryItemViewModelFactory
         )
         
+        let editDictionaryListUseCaseFactory = EditDictionaryListUseCaseImplFactory(dictionaryRepository: dictionaryRepository)
+        
+        let deleteDictionaryItemFlowModelFactory = DeleteDictionaryItemFlowModelImplFactory(
+            editDictionaryListUseCaseFactory: editDictionaryListUseCaseFactory
+        )
+        
         let dictionaryFlowModelFactory = DictionaryFlowModelImplFactory(
             viewModelFactory: dictionaryViewModelFactory,
-            addDictionaryItemFlowModelFactory: addDictionaryItemFlowModelFactory
+            addDictionaryItemFlowModelFactory: addDictionaryItemFlowModelFactory,
+            deleteDictionaryItemFlowModelFactory: deleteDictionaryItemFlowModelFactory
         )
         
         return MainFlowModelImpl(

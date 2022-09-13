@@ -141,7 +141,7 @@ extension DictionaryListBrowserViewController {
             }
         )
         
-//        dataSource.onDeleteItem = { [weak self] in self?.viewModel.deleteItem(id: $0) }
+        dataSource.onDeleteItem = { [weak self] in self?.viewModel.deleteItem($0.id) }
         
         tableDataSource = dataSource
         tableDataSource.defaultRowAnimation = .fade

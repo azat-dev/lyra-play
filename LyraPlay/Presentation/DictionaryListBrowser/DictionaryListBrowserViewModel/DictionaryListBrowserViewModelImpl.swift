@@ -65,8 +65,9 @@ extension DictionaryListBrowserViewModelImpl {
         delegate?.runCreationFlow()
     }
     
-    public func deleteItem() {
-         fatalError()
+    public func deleteItem(_ itemId: UUID) {
+         
+        delegate?.runDeleteDictionaryItemFlow(itemId: itemId)
     }
 }
 

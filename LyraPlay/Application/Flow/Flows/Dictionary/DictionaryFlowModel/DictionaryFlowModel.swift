@@ -8,17 +8,18 @@
 import Foundation
 import Combine
 
-public protocol DictionaryFlowModelInput {
-
-}
 
 public protocol DictionaryFlowModelOutput {
 
     var listViewModel: DictionaryListBrowserViewModel { get }
     
     var addDictionaryItemFlow: CurrentValueSubject<AddDictionaryItemFlowModel?, Never> { get }
+    
+    var deleteDictionaryItemFlow: CurrentValueSubject<DeleteDictionaryItemFlowModel?, Never> { get }
 }
 
-public protocol DictionaryFlowModel: DictionaryFlowModelOutput, DictionaryFlowModelInput {
-
+public protocol DictionaryFlowModelInput {
+    
 }
+
+public protocol DictionaryFlowModel: DictionaryFlowModelOutput, DictionaryFlowModelInput {}

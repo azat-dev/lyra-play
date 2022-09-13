@@ -11,6 +11,8 @@ import Combine
 public protocol DictionaryListBrowserViewModelDelegate: AnyObject {
     
     func runCreationFlow()
+    
+    func runDeleteDictionaryItemFlow(itemId: UUID)
 }
 
 public enum DictionaryListBrowserChangeEvent: Equatable {
@@ -24,7 +26,7 @@ public protocol DictionaryListBrowserViewModelInput: AnyObject {
     
     func addNewItem()
     
-    func deleteItem()
+    func deleteItem(_ itemId: UUID)
 }
 
 public protocol DictionaryListBrowserViewModelOutput: AnyObject {

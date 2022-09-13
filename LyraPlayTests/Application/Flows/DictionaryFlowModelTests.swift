@@ -30,12 +30,15 @@ class DictionaryFlowModelTests: XCTestCase {
         let addDictionaryItemFlowModelFactory = mock(AddDictionaryItemFlowModelFactory.self)
         let delegate = mock(AddDictionaryItemFlowModelDelegate.self)
         
+        let deleteDictionaryItemFlowModelFactory = mock(DeleteDictionaryItemFlowModelFactory.self)
+        
         given(addDictionaryItemFlowModelFactory.create(originalText: "", delegate: delegate))
             .willReturn(addFlowModel)
         
         let flow = DictionaryFlowModelImpl(
             viewModelFactory: viewModelFactory,
-            addDictionaryItemFlowModelFactory: addDictionaryItemFlowModelFactory
+            addDictionaryItemFlowModelFactory: addDictionaryItemFlowModelFactory,
+            deleteDictionaryItemFlowModelFactory: deleteDictionaryItemFlowModelFactory
         )
         
         detectMemoryLeak(instance: flow)
