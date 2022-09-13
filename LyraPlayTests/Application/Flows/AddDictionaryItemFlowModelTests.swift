@@ -27,7 +27,9 @@ class AddDictionaryItemFlowModelTests: XCTestCase {
         let editDictionaryItemViewModel = mock(EditDictionaryItemViewModel.self)
         let editDictionaryItemViewModelFactory = mock(EditDictionaryItemViewModelFactory.self)
         
-        given(editDictionaryItemViewModelFactory.create(with: any()))
+        let editDelegate = mock(EditDictionaryItemViewModelDelegate.self)
+        
+        given(editDictionaryItemViewModelFactory.create(with: any(), delegate: editDelegate))
             .willReturn(editDictionaryItemViewModel)
 
         let flowModel = AddDictionaryItemFlowModelImpl(

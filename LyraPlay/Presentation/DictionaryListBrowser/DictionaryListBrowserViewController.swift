@@ -14,7 +14,7 @@ public final class DictionaryListBrowserViewController: UIViewController, Dictio
     private var observers = Set<AnyCancellable>()
     
     private var tableView = UITableView()
-    private var tableDataSource: UITableViewDiffableDataSource<Int, DictionaryListBrowserItemViewModel>!
+    private var tableDataSource: DataSource<Int, DictionaryListBrowserItemViewModel>!
     
     private let viewModel: DictionaryListBrowserViewModel
     
@@ -122,12 +122,12 @@ extension DictionaryListBrowserViewController {
         
         setupNavigatioBar()
         
-        self.tableView.register(
+        tableView.register(
             DictionaryListBrowserCell.self,
             forCellReuseIdentifier: DictionaryListBrowserCell.reuseIdentifier
         )
 
-        self.tableDataSource = UITableViewDiffableDataSource(
+        let dataSource = DataSource<Int, DictionaryListBrowserItemViewModel>(
             tableView: tableView,
             cellProvider: { tableView, indexPath, cellViewModel in
 
@@ -141,10 +141,13 @@ extension DictionaryListBrowserViewController {
             }
         )
         
-        self.tableDataSource.defaultRowAnimation = .fade
+//        dataSource.onDeleteItem = { [weak self] in self?.viewModel.deleteItem(id: $0) }
+        
+        tableDataSource = dataSource
+        tableDataSource.defaultRowAnimation = .fade
 
-        self.tableView.dataSource = tableDataSource
-        view.addSubview(self.tableView)
+        tableView.dataSource = tableDataSource
+        view.addSubview(tableView)
     }
 }
 
@@ -169,5 +172,38 @@ extension DictionaryListBrowserViewController {
         Styles.apply(navigationItem: navigationItem)
         Styles.apply(contentView: view)
         Styles.apply(tableView: tableView)
+    }
+}
+
+// MARK: - Helper Classes
+
+fileprivate final class DataSource<SectionIdentifierType, ItemIdentifierType>: UITableViewDiffableDataSource<SectionIdentifierType, ItemIdentifierType>
+    where SectionIdentifierType: Hashable, ItemIdentifierType: Hashable {
+    
+    typealias DeleteItemCallBack = (_ id: ItemIdentifierType) -> Void
+    
+    // MARK: - Properties
+    
+    public var onDeleteItem: DeleteItemCallBack?
+    
+    // MARK: - Methods
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(
+        _ tableView: UITableView,
+        commit editingStyle: UITableViewCell.EditingStyle,
+        forRowAt indexPath: IndexPath
+    ) {
+        
+        if editingStyle == .delete {
+    
+            if let identifierToDelete = itemIdentifier(for: indexPath) {
+            
+                onDeleteItem?(identifierToDelete)
+            }
+        }
     }
 }

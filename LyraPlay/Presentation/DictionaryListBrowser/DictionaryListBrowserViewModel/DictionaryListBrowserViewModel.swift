@@ -23,6 +23,8 @@ public protocol DictionaryListBrowserViewModelInput: AnyObject {
     func load() async
     
     func addNewItem()
+    
+    func deleteItem()
 }
 
 public protocol DictionaryListBrowserViewModelOutput: AnyObject {

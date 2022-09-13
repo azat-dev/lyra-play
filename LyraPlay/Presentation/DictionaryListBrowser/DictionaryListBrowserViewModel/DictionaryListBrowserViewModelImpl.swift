@@ -64,6 +64,10 @@ extension DictionaryListBrowserViewModelImpl {
 
         delegate?.runCreationFlow()
     }
+    
+    public func deleteItem() {
+         fatalError()
+    }
 }
 
 // MARK: - Output Methods
