@@ -45,16 +45,19 @@ extension PronounceTextUseCaseImpl {
                     let _ = self.audioPlayer.stop()
                 }
                 
+                state.value = .loading
                 continuation.yield(.loading)
-
+                
                 let convertionResult = await self.textToSpeechConverter.convert(text: text, language: language)
                 
                 guard case .success(let data) = convertionResult else {
-                    
+                
+                    state.value = .finished
                     continuation.finish(throwing: .none)
                     return
                 }
                 
+                state.value = .playing
                 continuation.yield(.playing)
                 
                 let prepareResult = audioPlayer.prepare(
@@ -63,30 +66,26 @@ extension PronounceTextUseCaseImpl {
                 )
                 
                 guard case .success = prepareResult else {
+                    
+                    state.value = .finished
                     continuation.finish(throwing: NSError())
                     return
                 }
 
-                continuation.yield(.playing)
                 
                 for try await playerState in audioPlayer.playAndWaitForEnd() {
                     
                     switch playerState {
                         
-                    case .stopped:
-                        continuation.yield(.finished)
-                        continuation.finish()
-                        
-                    case .paused:
-                        continuation.yield(.finished)
-                        continuation.finish()
-                        return
+                    case .paused, .stopped:
+                        break
                         
                     default:
-                        break
+                        continue
                     }
                 }
                 
+                state.value = .finished
                 continuation.yield(.finished)
                 continuation.finish()
             }

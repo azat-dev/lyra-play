@@ -14,12 +14,16 @@ public final class DictionaryListBrowserCell: UITableViewCell {
     
     public static let reuseIdentifier = "DictionaryListBrowserCell"
     
+    private var viewModel: DictionaryListBrowserItemViewModel!
+    
     private let textGroup = UIStackView()
     private let titleLabel = UILabel()
     private let descritionLabel = UILabel()
     private let bottomBorder = UIView()
     
     private let playButton = UIImageView()
+    
+    private var tapRecognizer: UITapGestureRecognizer?
     
     // MARK: - Initializers
     
@@ -50,8 +54,17 @@ extension DictionaryListBrowserCell {
 
     func fill(with viewModel: DictionaryListBrowserItemViewModel) {
         
+        self.viewModel = viewModel
+        
         titleLabel.text = viewModel.title
         descritionLabel.text = viewModel.description
+        
+        if viewModel.isSoundPlaying {
+
+            Styles.apply(activePlayButton: playButton)
+        } else {
+            Styles.apply(playButton: playButton)
+        }
     }
 }
 
@@ -59,7 +72,22 @@ extension DictionaryListBrowserCell {
 
 extension DictionaryListBrowserCell {
 
+    @objc
+    private func didTapPlay() {
+        
+        viewModel.playSound()
+    }
+    
     private func setupViews() {
+        
+        let tapRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.didTapPlay)
+        )
+        
+        playButton.isUserInteractionEnabled = true
+        playButton.addGestureRecognizer(tapRecognizer)
+        self.tapRecognizer = tapRecognizer
         
         textGroup.axis = .vertical
         
@@ -86,7 +114,6 @@ extension DictionaryListBrowserCell {
         Styles.apply(titleLabel: titleLabel)
         Styles.apply(descriptionLabel: descritionLabel)
         Styles.apply(bottomBorder: bottomBorder)
-        
         Styles.apply(playButton: playButton)
     }
 }

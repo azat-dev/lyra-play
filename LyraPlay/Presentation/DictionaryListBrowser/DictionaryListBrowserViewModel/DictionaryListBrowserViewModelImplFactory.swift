@@ -12,12 +12,20 @@ public final class DictionaryListBrowserViewModelImplFactory: DictionaryListBrow
     // MARK: - Properties
 
     private let browseDictionaryUseCase: BrowseDictionaryUseCase
+    private let pronounceTextUseCaseFactory: PronounceTextUseCaseFactory
+    private let dictionaryListBrowserItemViewModelFactory: DictionaryListBrowserItemViewModelFactory
 
     // MARK: - Initializers
 
-    public init(browseDictionaryUseCase: BrowseDictionaryUseCase) {
+    public init(
+        browseDictionaryUseCase: BrowseDictionaryUseCase,
+        pronounceTextUseCaseFactory: PronounceTextUseCaseFactory,
+        dictionaryListBrowserItemViewModelFactory: DictionaryListBrowserItemViewModelFactory
+    ) {
 
         self.browseDictionaryUseCase = browseDictionaryUseCase
+        self.pronounceTextUseCaseFactory = pronounceTextUseCaseFactory
+        self.dictionaryListBrowserItemViewModelFactory = dictionaryListBrowserItemViewModelFactory
     }
 
     // MARK: - Methods
@@ -26,7 +34,9 @@ public final class DictionaryListBrowserViewModelImplFactory: DictionaryListBrow
 
         return DictionaryListBrowserViewModelImpl(
             delegate: delegate,
-            browseDictionaryUseCase: browseDictionaryUseCase
+            dictionaryListBrowserItemViewModelFactory: dictionaryListBrowserItemViewModelFactory,
+            browseDictionaryUseCase: browseDictionaryUseCase,
+            pronounceTextUseCaseFactory: pronounceTextUseCaseFactory
         )
     }
 }

@@ -281,8 +281,18 @@ public class Application {
             dictionaryRepository: dictionaryRepository
         )
         
+        let audioPlayerFactory = AudioPlayerImplFactory(audioSession: audioSession)
+        let textToSpeechConverterFactory = TextToSpeechConverterImplFactory()
+        
+        let pronounceTextUseCaseFactory = PronounceTextUseCaseImplFactory(
+            textToSpeechConverterFactory: textToSpeechConverterFactory,
+            audioPlayerFactory: audioPlayerFactory
+        )
+        
         let dictionaryViewModelFactory = DictionaryListBrowserViewModelImplFactory(
-            browseDictionaryUseCase: browseDictionaryUseCase
+            browseDictionaryUseCase: browseDictionaryUseCase,
+            pronounceTextUseCaseFactory: pronounceTextUseCaseFactory,
+            dictionaryListBrowserItemViewModelFactory: DictionaryListBrowserItemViewModelImplFactory()
         )
         
         let attachingSubtitlesProgressViewModelFactory = AttachingSubtitlesProgressViewModelImplFactory()

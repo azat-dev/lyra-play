@@ -22,6 +22,7 @@ extension DictionaryListBrowserCell {
         private static let descriptionFont: UIFont = Fonts.RedHatDisplay.regular.preferred(with: .footnote)
         
         private static let playButtonIcon = UIImage(systemName: "speaker.wave.2.fill")
+        private static let activePlayButtonIcon = UIImage(systemName: "speaker.wave.2.fill")
         
         // MARK: - Methods
         
@@ -59,8 +60,16 @@ extension DictionaryListBrowserCell {
             
             playButton.image = playButtonIcon
             playButton.contentMode = .scaleAspectFit
+            playButton.tintColor = secondaryTextColor
+        }
+        
+        static func apply(activePlayButton playButton: UIImageView) {
+            
+            playButton.image = activePlayButtonIcon
+            playButton.contentMode = .scaleAspectFit
             playButton.tintColor = textColor
         }
+ 
     }
 }
 

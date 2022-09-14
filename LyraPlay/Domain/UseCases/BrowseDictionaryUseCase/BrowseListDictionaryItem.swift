@@ -14,18 +14,21 @@ public struct BrowseListDictionaryItem: Equatable {
     public var id: UUID
     public var originalText: String
     public var translatedText: String
+    public var language: String
 
     // MARK: - Initializers
 
     public init(
         id: UUID,
         originalText: String,
-        translatedText: String
+        translatedText: String,
+        language: String
     ) {
 
         self.id = id
         self.originalText = originalText
         self.translatedText = translatedText
+        self.language = language
     }
 }
 
@@ -36,5 +39,6 @@ extension BrowseListDictionaryItem {
         id = item.id!
         originalText = item.originalText
         translatedText = item.translations.first?.text ?? ""
+        language = item.language
     }
 }

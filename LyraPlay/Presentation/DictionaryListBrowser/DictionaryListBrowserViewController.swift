@@ -11,12 +11,16 @@ import UIKit
 
 public final class DictionaryListBrowserViewController: UIViewController, DictionaryListBrowserView {
     
+    // MARK: - Properties
+    
     private var observers = Set<AnyCancellable>()
     
     private var tableView = UITableView()
-    private var tableDataSource: DataSource<Int, DictionaryListBrowserItemViewModel>!
+    private var tableDataSource: DataSource<Int, UUID>!
     
     private let viewModel: DictionaryListBrowserViewModel
+
+    // MARK: - Initializers
     
     public init(viewModel: DictionaryListBrowserViewModel) {
         
@@ -28,6 +32,8 @@ public final class DictionaryListBrowserViewController: UIViewController, Dictio
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Methods
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,9 +79,9 @@ extension DictionaryListBrowserViewController {
 
 extension DictionaryListBrowserViewController {
     
-    private func listLoaded(items: [DictionaryListBrowserItemViewModel]) {
+    private func listLoaded(items: [UUID]) {
         
-        var snapshot = NSDiffableDataSourceSnapshot<Int, DictionaryListBrowserItemViewModel>()
+        var snapshot = NSDiffableDataSourceSnapshot<Int, UUID>()
         
         snapshot.appendSections([0])
         snapshot.appendItems(items, toSection: 0)
@@ -85,11 +91,25 @@ extension DictionaryListBrowserViewController {
         }
     }
     
+    private func updateItem(with id: UUID) {
+
+        var snapshot = tableDataSource.snapshot()
+        snapshot.reconfigureItems([id])
+        
+        DispatchQueue.main.async {
+            self.tableDataSource.apply(snapshot, animatingDifferences: true)
+        }
+    }
+    
     private func listChanged(event: DictionaryListBrowserChangeEvent) {
         
         switch event {
+            
         case .loaded(let items):
             listLoaded(items: items)
+            
+        case .changed(let itemId):
+            updateItem(with: itemId)
         }
     }
 }
@@ -127,21 +147,28 @@ extension DictionaryListBrowserViewController {
             forCellReuseIdentifier: DictionaryListBrowserCell.reuseIdentifier
         )
 
-        let dataSource = DataSource<Int, DictionaryListBrowserItemViewModel>(
+        let dataSource = DataSource<Int, UUID>(
             tableView: tableView,
-            cellProvider: { tableView, indexPath, cellViewModel in
+            cellProvider: { [weak self] tableView, indexPath, itemId in
 
+                guard let self = self else {
+                    return nil
+                }
+                
                 let cell = tableView.dequeueReusableCell(
                     withIdentifier: DictionaryListBrowserCell.reuseIdentifier,
                     for: indexPath
                 ) as! DictionaryListBrowserCell
                 
+                
+                let cellViewModel = self.viewModel.getItem(with: itemId)
                 cell.fill(with: cellViewModel)
+                
                 return cell
             }
         )
         
-        dataSource.onDeleteItem = { [weak self] in self?.viewModel.deleteItem($0.id) }
+        dataSource.onDeleteItem = { [weak self] in self?.viewModel.deleteItem($0) }
         
         tableDataSource = dataSource
         tableDataSource.defaultRowAnimation = .fade
@@ -201,7 +228,6 @@ fileprivate final class DataSource<SectionIdentifierType, ItemIdentifierType>: U
         if editingStyle == .delete {
     
             if let identifierToDelete = itemIdentifier(for: indexPath) {
-            
                 onDeleteItem?(identifierToDelete)
             }
         }

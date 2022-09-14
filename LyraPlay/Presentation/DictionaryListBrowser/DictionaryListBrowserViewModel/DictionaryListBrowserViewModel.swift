@@ -15,9 +15,11 @@ public protocol DictionaryListBrowserViewModelDelegate: AnyObject {
     func runDeleteDictionaryItemFlow(itemId: UUID)
 }
 
-public enum DictionaryListBrowserChangeEvent: Equatable {
+public enum DictionaryListBrowserChangeEvent {
     
-    case loaded(items: [DictionaryListBrowserItemViewModel])
+    case loaded(items: [UUID])
+    
+    case changed(itemId: UUID)
 }
 
 public protocol DictionaryListBrowserViewModelInput: AnyObject {
@@ -34,6 +36,8 @@ public protocol DictionaryListBrowserViewModelOutput: AnyObject {
     var isLoading: CurrentValueSubject<Bool, Never> { get }
     
     var listChanged: PassthroughSubject<DictionaryListBrowserChangeEvent, Never> { get }
+    
+    func getItem(with: UUID) -> DictionaryListBrowserItemViewModel
 }
 
 public protocol DictionaryListBrowserViewModel: DictionaryListBrowserViewModelOutput, DictionaryListBrowserViewModelInput {}
