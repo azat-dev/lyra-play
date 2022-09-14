@@ -23,9 +23,14 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
         let dictionaryListBrowserDelegate = mock(DictionaryListBrowserViewModelDelegate.self)
         let browseDictionaryUseCase = BrowseDictionaryUseCaseMock()
         
+        let pronounceTextUseCaseFactory = mock(PronounceTextUseCaseFactory.self)
+        let dictionaryListBrowserItemViewModelFactory = mock(DictionaryListBrowserItemViewModelFactory.self)
+        
         let viewModel = DictionaryListBrowserViewModelImpl(
             delegate: dictionaryListBrowserDelegate,
-            browseDictionaryUseCase: browseDictionaryUseCase
+            dictionaryListBrowserItemViewModelFactory: dictionaryListBrowserItemViewModelFactory,
+            browseDictionaryUseCase: browseDictionaryUseCase,
+            pronounceTextUseCaseFactory: pronounceTextUseCaseFactory
         )
 
         detectMemoryLeak(instance: viewModel, file: file, line: line)
@@ -91,7 +96,8 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
         return .init(
             id: UUID(),
             originalText: UUID().uuidString,
-            translatedText: UUID().uuidString
+            translatedText: UUID().uuidString,
+            language: "English"
         )
     }
     
@@ -191,10 +197,11 @@ extension DictionaryListBrowserViewModelTests {
                 return nil
             }
             
-            switch item {
-            case .loaded(let items):
-                return .loaded(items: items.map { $0.id })
-            }
+            fatalError()
+//            switch item {
+//            case .loaded(let items):
+//                return .loaded(items: items.map { $0.id })
+//            }
         }
     }
 }

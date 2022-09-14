@@ -19,7 +19,7 @@ public struct AudioFileInfo {
     public var coverImage: String?
     public var audioFile: String
     
-    init(
+    public init(
         id: UUID?,
         createdAt: Date?,
         updatedAt: Date?,
