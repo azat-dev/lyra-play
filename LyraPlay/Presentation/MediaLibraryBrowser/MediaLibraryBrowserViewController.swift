@@ -11,7 +11,7 @@ import UIKit
 public final class MediaLibraryBrowserViewController: UIViewController, MediaLibraryBrowserView {
     
     private var tableView = UITableView()
-    private var tableDataSource: UITableViewDiffableDataSource<Int, MediaLibraryBrowserCellViewModel>!
+    private var tableDataSource: DataSource<Int, UUID>!
     private var viewModel: MediaLibraryBrowserViewModel!
     
     public override func viewDidLoad() {
@@ -83,14 +83,20 @@ extension MediaLibraryBrowserViewController {
             forCellReuseIdentifier: MediaLibraryBrowserCell.reuseIdentifier
         )
 
-        self.tableDataSource = UITableViewDiffableDataSource(
+        self.tableDataSource = DataSource(
             tableView: tableView,
-            cellProvider: { tableView, indexPath, cellViewModel in
+            cellProvider: { [weak self] tableView, indexPath, itemId in
 
+                guard let self = self else {
+                    return nil
+                }
+                
                 let cell = tableView.dequeueReusableCell(
                     withIdentifier: MediaLibraryBrowserCell.reuseIdentifier,
                     for: indexPath
                 ) as! MediaLibraryBrowserCell
+                
+                let cellViewModel = self.viewModel.getItem(id: itemId)
                 
                 cell.fill(with: cellViewModel)
                 return cell
@@ -134,9 +140,9 @@ extension MediaLibraryBrowserViewController {
 
 extension MediaLibraryBrowserViewController: MediaLibraryBrowserUpdateDelegate {
     
-    public func filesDidUpdate(updatedFiles: [MediaLibraryBrowserCellViewModel]) {
+    public func filesDidUpdate(updatedFiles: [UUID]) {
         
-        var snapshot = NSDiffableDataSourceSnapshot<Int, MediaLibraryBrowserCellViewModel>()
+        var snapshot = NSDiffableDataSourceSnapshot<Int, UUID>()
         
         snapshot.appendSections([0])
         snapshot.appendItems(updatedFiles, toSection: 0)
@@ -151,10 +157,43 @@ extension MediaLibraryBrowserViewController: UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        guard let cellViewModel = tableDataSource.itemIdentifier(for: indexPath) else {
+        guard let itemId = tableDataSource.itemIdentifier(for: indexPath) else {
             return
         }
         
+        let cellViewModel = viewModel.getItem(id: itemId)
         cellViewModel.play()
+    }
+}
+
+// MARK: - Helper Classes
+
+fileprivate final class DataSource<SectionIdentifierType, ItemIdentifierType>: UITableViewDiffableDataSource<SectionIdentifierType, ItemIdentifierType>
+    where SectionIdentifierType: Hashable, ItemIdentifierType: Hashable {
+    
+    typealias DeleteItemCallBack = (_ id: ItemIdentifierType) -> Void
+    
+    // MARK: - Properties
+    
+    public var onDeleteItem: DeleteItemCallBack?
+    
+    // MARK: - Methods
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(
+        _ tableView: UITableView,
+        commit editingStyle: UITableViewCell.EditingStyle,
+        forRowAt indexPath: IndexPath
+    ) {
+        
+        if editingStyle == .delete {
+    
+            if let identifierToDelete = itemIdentifier(for: indexPath) {
+                onDeleteItem?(identifierToDelete)
+            }
+        }
     }
 }

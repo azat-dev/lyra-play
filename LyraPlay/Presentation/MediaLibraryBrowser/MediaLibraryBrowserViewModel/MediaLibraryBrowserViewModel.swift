@@ -16,7 +16,7 @@ public protocol MediaLibraryBrowserViewModelDelegate: AnyObject {
 
 public protocol MediaLibraryBrowserUpdateDelegate: AnyObject {
     
-    func filesDidUpdate(updatedFiles: [MediaLibraryBrowserCellViewModel])
+    func filesDidUpdate(updatedFiles: [UUID])
 }
 
 public protocol MediaLibraryBrowserViewModelInput: AnyObject {
@@ -31,6 +31,8 @@ public protocol MediaLibraryBrowserViewModelOutput: AnyObject {
     var isLoading: Observable<Bool> { get }
     
     var filesDelegate: MediaLibraryBrowserUpdateDelegate? { get set }
+    
+    func getItem(id: UUID) -> MediaLibraryBrowserCellViewModel
 }
 
 public protocol MediaLibraryBrowserViewModel: MediaLibraryBrowserViewModelOutput, MediaLibraryBrowserViewModelInput {}

@@ -20,6 +20,8 @@ public final class MediaLibraryBrowserViewModelImpl: MediaLibraryBrowserViewMode
     public var filesDelegate: MediaLibraryBrowserUpdateDelegate?
     
     private var stubItemImage = UIImage(named: "Image.CoverPlaceholder")!
+    
+    private var items = [UUID: MediaLibraryBrowserCellViewModel]()
 
     // MARK: - Initializers
 
@@ -79,9 +81,13 @@ extension MediaLibraryBrowserViewModelImpl {
         
         let images = await loadImages(names: loadedFiles.compactMap { $0.coverImage })
         
-        let files = loadedFiles.map { file in
+        var newItems = [UUID: MediaLibraryBrowserCellViewModel]()
+        var ids = [UUID]()
+        
+        loadedFiles.forEach { file in
             
-            return MediaLibraryBrowserCellViewModel(
+            
+            let item = MediaLibraryBrowserCellViewModel(
                 id: file.id!,
                 title: file.name,
                 description: file.artist ?? "Unknown",
@@ -89,10 +95,17 @@ extension MediaLibraryBrowserViewModelImpl {
                 onOpen: self.onOpen,
                 onPlay: self.onPlay
             )
+            
+            newItems[item.id] = item
+            ids.append(item.id)
         }
         
-        filesDelegate?.filesDidUpdate(updatedFiles: files)
-        self.isLoading.value = false
+        DispatchQueue.main.async { [newItems, ids] in
+
+            self.items = newItems
+            self.filesDelegate?.filesDidUpdate(updatedFiles: ids)
+            self.isLoading.value = false
+        }
     }
     
     public func addNewItem() -> Void {
@@ -105,4 +118,8 @@ extension MediaLibraryBrowserViewModelImpl {
 
 extension MediaLibraryBrowserViewModelImpl {
 
+    public func getItem(id: UUID) -> MediaLibraryBrowserCellViewModel {
+        
+        return items[id]!
+    }
 }

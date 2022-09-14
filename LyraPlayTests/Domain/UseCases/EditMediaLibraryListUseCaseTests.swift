@@ -92,8 +92,8 @@ class EditMediaLibraryListUseCaseTests: XCTestCase {
             coverImage: imageFileName
         )
         
-        given(await sut.mediaLibraryRepository.delete(fileId: mediaId))
-            .willReturn(.success(()))
+//        given(sut.mediaLibraryRepository.delete(fileId: mediaId))
+//            .willReturn(.success(()))
 //
 //        given(sut.mediaFilesRepository.deleteFile(name: mediaFileName))
 //            .willReturn(.success(()))
