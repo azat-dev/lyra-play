@@ -14,6 +14,9 @@ extension LibraryItemViewController {
         
         static let textColor = UIColor(named: "Color.Text")
         static let textColorSecondary = UIColor(named: "Color.Text.Secondary")
+        static let colorButtonBackground = UIColor(named: "Color.Group.Background")
+        
+        static let fontButton = Fonts.RedHatDisplay.bold.preferred(with: .footnote)
         
         static var imageCornerRadius: CGFloat {
             10
@@ -81,23 +84,56 @@ extension LibraryItemViewController {
             durationLabel.isHidden = true
         }
         
+        static func apply(playButton button: UIButton, title: String) {
+
+            var config = UIButton.Configuration.filled()
+            
+            var attrTitle = AttributedString(title)
+            attrTitle.font = fontButton
+            
+            config.attributedTitle = attrTitle
+            config.baseBackgroundColor = colorButtonBackground
+            config.cornerStyle = .capsule
+            config.titleAlignment = .center
+            config.contentInsets.top = 15
+            config.contentInsets.bottom = 15
+            config.baseForegroundColor = .white
+
+            button.configuration = config
+        }
+        
         static func apply(playButton: UIButton) {
-            
-            playButton.setTitle("Play", for: .normal)
-            playButton.setTitleColor(textColor, for: .normal)
+
+            apply(playButton: playButton, title: "PLAY")
         }
         
-        static func apply(pauseButton: UIButton) {
+        static func apply(pauseButton button: UIButton) {
             
-            pauseButton.setTitle("Pause", for: .normal)
-            pauseButton.setTitleColor(textColor, for: .normal)
+            apply(playButton: button, title: "PAUSE")
         }
         
-        
-        static func apply(attachSubtitlesButton: UIButton) {
+        static func apply(attachSubtitlesButton button: UIButton) {
+         
+            var config = UIButton.Configuration.plain()
             
-            attachSubtitlesButton.setTitle("Add subtitles", for: .normal)
-            attachSubtitlesButton.setTitleColor(textColor, for: .normal)
+            var attrTitle = AttributedString("ATTACH SUBTITLES")
+            attrTitle.font = fontButton
+            
+            config.attributedTitle = attrTitle
+            config.cornerStyle = .capsule
+            config.titleAlignment = .center
+            config.contentInsets.top = 15
+            config.contentInsets.bottom = 15
+            config.baseForegroundColor = .white
+            
+            config.background.backgroundColor = .clear
+            config.background.strokeWidth = 3
+            
+            config.background.strokeColor = colorButtonBackground
+            config.image = UIImage(systemName: "captions.bubble.fill")
+            config.imagePadding = 5
+
+            button.configuration = config
         }
     }
 }
