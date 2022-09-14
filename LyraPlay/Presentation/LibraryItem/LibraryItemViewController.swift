@@ -10,6 +10,8 @@ import UIKit
 
 public final class LibraryItemViewController: UIViewController, LibraryItemView {
     
+    // MARK: - Properties
+    
     private let viewModel: LibraryItemViewModel
     
     private var activityIndicator = UIActivityIndicatorView()
@@ -23,6 +25,8 @@ public final class LibraryItemViewController: UIViewController, LibraryItemView 
     private var mainGroup = UIView()
     private var subtitlesPresenter = SubtitlesPresenterView()
     
+    // MARK: - Initializers
+    
     public init(viewModel: LibraryItemViewModel) {
         
         self.viewModel = viewModel
@@ -32,6 +36,8 @@ public final class LibraryItemViewController: UIViewController, LibraryItemView 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Methods
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,6 +55,12 @@ public final class LibraryItemViewController: UIViewController, LibraryItemView 
         style()
         layout()
         bind(to: viewModel)
+    }
+
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationItem.largeTitleDisplayMode = .never
     }
     
     public override func viewDidDisappear(_ animated: Bool) {
