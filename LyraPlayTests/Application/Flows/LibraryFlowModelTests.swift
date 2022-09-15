@@ -37,10 +37,13 @@ class LibraryFlowModelTests: XCTestCase {
         given(libraryItemFlowModelFactory.create(for: any(), delegate: delegate))
             .willReturn(libraryItemFlow)
         
+        let deleteMediaLibraryItemFlowModelFactory = mock(DeleteMediaLibraryItemFlowModelFactory.self)
+        
         let flow = LibraryFlowModelImpl(
             viewModelFactory: viewModelFactory,
             libraryItemFlowModelFactory: libraryItemFlowModelFactory,
-            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory
+            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory,
+            deleteMediaLibraryItemFlowModelFactory: deleteMediaLibraryItemFlowModelFactory
         )
         
         detectMemoryLeak(instance: flow)
@@ -51,7 +54,8 @@ class LibraryFlowModelTests: XCTestCase {
             libraryItemFlow,
             libraryItemFlowModelFactory,
             delegate,
-            importMediaFilesFlowModelFactory
+            importMediaFilesFlowModelFactory,
+            deleteMediaLibraryItemFlowModelFactory
         )
         
         return (
