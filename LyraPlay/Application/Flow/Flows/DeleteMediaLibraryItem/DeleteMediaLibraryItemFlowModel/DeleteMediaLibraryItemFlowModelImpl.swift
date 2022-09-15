@@ -33,7 +33,7 @@ public final class DeleteMediaLibraryItemFlowModelImpl: DeleteMediaLibraryItemFl
         
         self.confirmDialogViewModel.value = confirmDialogViewModelFactory.create(
             messageText: "Do you want to delete library item?",
-            confirmText: "Ok",
+            confirmText: "Delete",
             cancelText: "Cancel",
             isDestructive: true,
             delegate: self

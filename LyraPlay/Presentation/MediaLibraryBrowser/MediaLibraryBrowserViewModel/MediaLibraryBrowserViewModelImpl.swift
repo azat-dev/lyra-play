@@ -84,14 +84,6 @@ extension MediaLibraryBrowserViewModelImpl {
         var newItems = [UUID: MediaLibraryBrowserCellViewModel]()
         var ids = [UUID]()
         
-        let onOpen = { (_: UUID) -> Void in
-            
-        }
-        
-        let onPlay: PlaySoundCallback = { _ in
-            
-        }
-        
         loadedFiles.forEach { file in
 
             let item = MediaLibraryBrowserCellViewModel(
@@ -99,8 +91,8 @@ extension MediaLibraryBrowserViewModelImpl {
                 title: file.name,
                 description: file.artist ?? "Unknown",
                 image: images[file.coverImage ?? ""] ?? stubItemImage,
-                onOpen: onOpen,
-                onPlay: onPlay
+                onOpen: self.onOpen,
+                onPlay: self.onPlay
             )
 
             newItems[item.id] = item
