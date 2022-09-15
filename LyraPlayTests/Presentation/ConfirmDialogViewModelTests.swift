@@ -27,6 +27,7 @@ class ConfirmDialogViewModelTests: XCTestCase {
             messageText: "",
             confirmText: "",
             cancelText: "",
+            isDestructive: false,
             delegate: delegate
         )
 

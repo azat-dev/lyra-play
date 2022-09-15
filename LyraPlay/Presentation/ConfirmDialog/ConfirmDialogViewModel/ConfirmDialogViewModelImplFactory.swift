@@ -19,6 +19,7 @@ public final class ConfirmDialogViewModelImplFactory: ConfirmDialogViewModelFact
         messageText: String,
         confirmText: String,
         cancelText: String,
+        isDestructive: Bool,
         delegate: ConfirmDialogViewModelDelegate
     ) -> ConfirmDialogViewModel {
         
@@ -26,6 +27,7 @@ public final class ConfirmDialogViewModelImplFactory: ConfirmDialogViewModelFact
             messageText: messageText,
             confirmText: confirmText,
             cancelText: cancelText,
+            isDestructive: isDestructive,
             delegate: delegate
         )
     }

@@ -396,10 +396,17 @@ public class Application {
         
         let importMediaFilesFlowPresenterFactory = ImportMediaFilesFlowPresenterImplFactory(filesPickerViewFactory: filesPickerViewFactory)
         
+        let confirmDialogViewFactory = ConfirmDialogViewControllerFactory()
+        
+        let deleteMediaLibraryItemFlowPresenterFactory = DeleteMediaLibraryItemFlowPresenterImplFactory(
+            confirmDialogViewFactory: confirmDialogViewFactory
+        )
+        
         let libraryFlowPresenterFactory = LibraryFlowPresenterImplFactory(
             listViewFactory: MediaLibraryBrowserViewControllerFactory(),
             libraryItemFlowPresenterFactory: libraryItemFlowPresenterFactory,
-            importMediaFilesFlowPresenterFactory: importMediaFilesFlowPresenterFactory
+            importMediaFilesFlowPresenterFactory: importMediaFilesFlowPresenterFactory,
+            deleteMediaLibraryItemFlowPresenterFactory: deleteMediaLibraryItemFlowPresenterFactory
         )
         
         let addDictionaryItemFlowPresenterFactory = AddDictionaryItemFlowPresenterImplFactory(

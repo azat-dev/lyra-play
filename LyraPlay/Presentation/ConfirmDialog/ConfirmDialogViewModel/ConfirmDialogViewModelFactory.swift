@@ -11,6 +11,7 @@ public protocol ConfirmDialogViewModelFactory {
         messageText: String,
         confirmText: String,
         cancelText: String,
+        isDestructive: Bool,
         delegate: ConfirmDialogViewModelDelegate
     ) -> ConfirmDialogViewModel
 }

@@ -13,9 +13,10 @@ public final class ConfirmDialogViewModelImpl: ConfirmDialogViewModel {
 
     private weak var delegate: ConfirmDialogViewModelDelegate?
     
-    public var messageText: String = ""
-    public var confirmText: String = .init()
-    public var cancelText: String = .init()
+    public var messageText: String
+    public var confirmText: String
+    public var cancelText: String
+    public var isDestructive: Bool
 
     // MARK: - Initializers
 
@@ -23,12 +24,14 @@ public final class ConfirmDialogViewModelImpl: ConfirmDialogViewModel {
         messageText: String,
         confirmText: String,
         cancelText: String,
+        isDestructive: Bool,
         delegate: ConfirmDialogViewModelDelegate
     ) {
 
         self.messageText = messageText
         self.confirmText = confirmText
         self.cancelText = cancelText
+        self.isDestructive = isDestructive
         self.delegate = delegate
     }
 }

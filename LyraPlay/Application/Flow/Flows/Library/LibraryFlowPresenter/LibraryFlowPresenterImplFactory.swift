@@ -12,16 +12,19 @@ public final class LibraryFlowPresenterImplFactory: LibraryFlowPresenterFactory 
     private let listViewFactory: MediaLibraryBrowserViewFactory
     private let libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory
     private let importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory
+    private let deleteMediaLibraryItemFlowPresenterFactory: DeleteMediaLibraryItemFlowPresenterFactory
     
     public init(
         listViewFactory: MediaLibraryBrowserViewFactory,
         libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory,
-        importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory
+        importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory,
+        deleteMediaLibraryItemFlowPresenterFactory: DeleteMediaLibraryItemFlowPresenterFactory
     ) {
         
         self.listViewFactory = listViewFactory
         self.libraryItemFlowPresenterFactory = libraryItemFlowPresenterFactory
         self.importMediaFilesFlowPresenterFactory = importMediaFilesFlowPresenterFactory
+        self.deleteMediaLibraryItemFlowPresenterFactory = deleteMediaLibraryItemFlowPresenterFactory
     }
     
     public func create(for flowModel: LibraryFlowModel) -> LibraryFlowPresenter {
@@ -30,7 +33,8 @@ public final class LibraryFlowPresenterImplFactory: LibraryFlowPresenterFactory 
             flowModel: flowModel,
             listViewFactory: listViewFactory,
             libraryItemFlowPresenterFactory: libraryItemFlowPresenterFactory,
-            importMediaFilesFlowPresenterFactory: importMediaFilesFlowPresenterFactory
+            importMediaFilesFlowPresenterFactory: importMediaFilesFlowPresenterFactory,
+            deleteMediaLibraryItemFlowPresenterFactory: deleteMediaLibraryItemFlowPresenterFactory
         )
     }
 }

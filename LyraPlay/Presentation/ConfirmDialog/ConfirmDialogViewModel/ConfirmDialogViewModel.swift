@@ -32,6 +32,8 @@ public protocol ConfirmDialogViewModelOutput: AnyObject {
     var confirmText: String { get }
 
     var cancelText: String { get }
+    
+    var isDestructive: Bool { get }
 }
 
 public protocol ConfirmDialogViewModel: ConfirmDialogViewModelOutput, ConfirmDialogViewModelInput {}

@@ -35,6 +35,7 @@ public final class DeleteMediaLibraryItemFlowModelImpl: DeleteMediaLibraryItemFl
             messageText: "Do you want to delete library item?",
             confirmText: "Ok",
             cancelText: "Cancel",
+            isDestructive: true,
             delegate: self
         )
     }
