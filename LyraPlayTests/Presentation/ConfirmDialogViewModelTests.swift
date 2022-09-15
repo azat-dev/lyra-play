@@ -23,7 +23,12 @@ class ConfirmDialogViewModelTests: XCTestCase {
 
         let delegate = mock(ConfirmDialogViewModelDelegate.self)
 
-        let viewModel = ConfirmDialogViewModelImpl(delegate: delegate)
+        let viewModel = ConfirmDialogViewModelImpl(
+            messageText: "",
+            confirmText: "",
+            cancelText: "",
+            delegate: delegate
+        )
 
         detectMemoryLeak(instance: viewModel)
 

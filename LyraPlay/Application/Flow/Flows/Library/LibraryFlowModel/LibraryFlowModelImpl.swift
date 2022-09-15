@@ -70,6 +70,12 @@ extension LibraryFlowModelImpl: DeleteMediaLibraryItemFlowDelegate {
         deleteMediaLibraryItemFlow.value = nil
         reloadList()
     }
+    
+    public func deleteMediaLibraryItemFlowDidDispose() {
+        
+        deleteMediaLibraryItemFlow.value = nil
+        reloadList()
+    }
 }
 
 // MARK: - MediaLibraryBrowserViewModelDelegate

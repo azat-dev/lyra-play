@@ -329,8 +329,11 @@ public class Application {
             imagesRepository: imagesRepository
         )
         
+        let confirmDialogViewModelFactory = ConfirmDialogViewModelImplFactory()
+        
         let deleteMediaLibraryItemFlowModelFactory = DeleteMediaLibraryItemFlowModelImplFactory(
-            editMediaLibraryListUseCaseFactory: editMediaLibraryListUseCaseFactory
+            editMediaLibraryListUseCaseFactory: editMediaLibraryListUseCaseFactory,
+            confirmDialogViewModelFactory: confirmDialogViewModelFactory
         )
         
         let libraryFlowModelFactory = LibraryFlowModelImplFactory(

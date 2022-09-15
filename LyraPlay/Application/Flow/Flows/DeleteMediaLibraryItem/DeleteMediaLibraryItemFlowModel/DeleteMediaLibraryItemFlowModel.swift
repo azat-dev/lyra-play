@@ -6,16 +6,22 @@
 //
 
 import Foundation
+import Combine
 
 public protocol DeleteMediaLibraryItemFlowDelegate: AnyObject {
 
     func deleteMediaLibraryItemFlowDidCancel()
     
     func deleteMediaLibraryItemFlowDidFinish()
+    
+    func deleteMediaLibraryItemFlowDidDispose()
 }
 
 public protocol DeleteMediaLibraryItemFlowModelInput: AnyObject {}
 
-public protocol DeleteMediaLibraryItemFlowModelOutput: AnyObject {}
+public protocol DeleteMediaLibraryItemFlowModelOutput: AnyObject {
+    
+    var confirmDialogViewModel: CurrentValueSubject<ConfirmDialogViewModel?, Never> { get }
+}
 
 public protocol DeleteMediaLibraryItemFlowModel: DeleteMediaLibraryItemFlowModelOutput, DeleteMediaLibraryItemFlowModelInput {}

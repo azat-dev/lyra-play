@@ -12,12 +12,17 @@ public final class DeleteMediaLibraryItemFlowModelImplFactory: DeleteMediaLibrar
     // MARK: - Properties
 
     private let editMediaLibraryListUseCaseFactory: EditMediaLibraryListUseCaseFactory
+    private let confirmDialogViewModelFactory: ConfirmDialogViewModelFactory
 
     // MARK: - Initializers
 
-    public init(editMediaLibraryListUseCaseFactory: EditMediaLibraryListUseCaseFactory) {
+    public init(
+        editMediaLibraryListUseCaseFactory: EditMediaLibraryListUseCaseFactory,
+        confirmDialogViewModelFactory: ConfirmDialogViewModelFactory
+    ) {
 
         self.editMediaLibraryListUseCaseFactory = editMediaLibraryListUseCaseFactory
+        self.confirmDialogViewModelFactory = confirmDialogViewModelFactory
     }
 
     // MARK: - Methods
@@ -30,7 +35,8 @@ public final class DeleteMediaLibraryItemFlowModelImplFactory: DeleteMediaLibrar
         return DeleteMediaLibraryItemFlowModelImpl(
             itemId: itemId,
             delegate: delegate,
-            editMediaLibraryListUseCaseFactory: editMediaLibraryListUseCaseFactory
+            editMediaLibraryListUseCaseFactory: editMediaLibraryListUseCaseFactory,
+            confirmDialogViewModelFactory: confirmDialogViewModelFactory
         )
     }
 }

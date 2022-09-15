@@ -6,51 +6,76 @@
 //
 
 import Foundation
+import Combine
 
 public final class DeleteMediaLibraryItemFlowModelImpl: DeleteMediaLibraryItemFlowModel {
-
+    
     // MARK: - Properties
-
+    
     private let itemId: UUID
     private weak var delegate: DeleteMediaLibraryItemFlowDelegate?
     private let editMediaLibraryListUseCaseFactory: EditMediaLibraryListUseCaseFactory
-
+    
+    public var confirmDialogViewModel = CurrentValueSubject<ConfirmDialogViewModel?, Never>(nil)
+    
     // MARK: - Initializers
-
+    
     public init(
         itemId: UUID,
         delegate: DeleteMediaLibraryItemFlowDelegate,
-        editMediaLibraryListUseCaseFactory: EditMediaLibraryListUseCaseFactory
+        editMediaLibraryListUseCaseFactory: EditMediaLibraryListUseCaseFactory,
+        confirmDialogViewModelFactory: ConfirmDialogViewModelFactory
     ) {
-
+        
         self.itemId = itemId
         self.delegate = delegate
         self.editMediaLibraryListUseCaseFactory = editMediaLibraryListUseCaseFactory
         
-        Task {
-            
-            let editMediaLibraryListUseCase = editMediaLibraryListUseCaseFactory.create()
-            let result = await editMediaLibraryListUseCase.deleteItem(itemId: itemId)
-
-            guard case .success = result else {
-                // TODO: Handle error
-                self.delegate?.deleteMediaLibraryItemFlowDidFinish()
-                return
-            }
-            
-            self.delegate?.deleteMediaLibraryItemFlowDidFinish()
-        }
+        self.confirmDialogViewModel.value = confirmDialogViewModelFactory.create(
+            messageText: "Do you want to delete library item?",
+            confirmText: "Ok",
+            cancelText: "Cancel",
+            delegate: self
+        )
     }
 }
 
 // MARK: - Input Methods
 
-extension DeleteMediaLibraryItemFlowModelImpl {
-
-}
-
-// MARK: - Output Methods
-
-extension DeleteMediaLibraryItemFlowModelImpl {
-
+extension DeleteMediaLibraryItemFlowModelImpl: ConfirmDialogViewModelDelegate {
+    
+    private func delete() async {
+        
+        let editMediaLibraryListUseCase = editMediaLibraryListUseCaseFactory.create()
+        let result = await editMediaLibraryListUseCase.deleteItem(itemId: itemId)
+        
+        guard case .success = result else {
+            // TODO: Handle error
+            self.delegate?.deleteMediaLibraryItemFlowDidFinish()
+            return
+        }
+        
+        self.delegate?.deleteMediaLibraryItemFlowDidFinish()
+    }
+    
+    public func confirmDialogDidCancel() {
+        
+        confirmDialogViewModel.value = nil
+        delegate?.deleteMediaLibraryItemFlowDidCancel()
+    }
+    
+    public func confirmDialogDidConfirm() {
+        
+        confirmDialogViewModel.value = nil
+        
+        Task {
+            await self.delete()
+        }
+    }
+    
+    public func confirmDialogDispose() {
+        
+        confirmDialogViewModel.value = nil
+        delegate?.deleteMediaLibraryItemFlowDidDispose()
+    }
 }
