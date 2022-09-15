@@ -26,7 +26,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let subtitlesIterator = SubtitlesIteratorImpl(
             subtitlesTimeSlots: timeSlotsParser.parse(from: subtitles)
         )
-        let timer = ActionTimerMock2()
+        let timer = ActionTimerMockDeprecated()
         
         let scheduler = SchedulerImpl(timer: timer)
         

@@ -1,5 +1,5 @@
 //
-//  FilesRepositoryMock2.swift
+//  FilesRepositoryMockDeprecated.swift
 //  LyraPlayTests
 //
 //  Created by Azat Kaiumov on 28.06.22.
@@ -8,7 +8,7 @@
 import Foundation
 import LyraPlay
 
-class FilesRepositoryMock2: FilesRepository {
+class FilesRepositoryMockDeprecated: FilesRepository {
     
     public var files = [String: Data]()
     

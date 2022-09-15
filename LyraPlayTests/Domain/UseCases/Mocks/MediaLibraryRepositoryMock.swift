@@ -8,7 +8,7 @@
 import Foundation
 import LyraPlay
 
-class MediaLibraryRepositoryMock2: MediaLibraryRepository {
+class MediaLibraryRepositoryMockDeprecated: MediaLibraryRepository {
     
     public var files = [AudioFileInfo]()
     

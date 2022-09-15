@@ -21,7 +21,7 @@ class SchedulerTests: XCTestCase {
         
         let iterator = TimeLineIteratorMock()
         
-        let timer = ActionTimerMock2()
+        let timer = ActionTimerMockDeprecated()
         
         let scheduler = SchedulerImpl(timer: timer)
         detectMemoryLeak(instance: scheduler, file: file, line: line)
@@ -335,7 +335,7 @@ struct ExpectedWillChange: Equatable {
 
 // MARK: - Mocks
 
-final class ActionTimerMock2: ActionTimer {
+final class ActionTimerMockDeprecated: ActionTimer {
     
     let timer = ActionTimerImpl()
     

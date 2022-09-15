@@ -35,7 +35,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         
         let provideTranslationsToPlayUseCase = ProvideTranslationsToPlayUseCaseMock()
         
-        let subtitlesTimer = ActionTimerMock2()
+        let subtitlesTimer = ActionTimerMockDeprecated()
         
         let subtitlesScheduler = SchedulerImpl(timer: subtitlesTimer)
         let schedulerFactory = mock(SchedulerFactory.self)

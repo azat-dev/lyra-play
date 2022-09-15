@@ -21,8 +21,8 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
     
     func createSUT() -> SUT {
         
-        let mediaLibraryRepository = MediaLibraryRepositoryMock2()
-        let imagesRepository = FilesRepositoryMock2()
+        let mediaLibraryRepository = MediaLibraryRepositoryMockDeprecated()
+        let imagesRepository = FilesRepositoryMockDeprecated()
         
         let defaultImage = "defaultImage".data(using: .utf8)!
         

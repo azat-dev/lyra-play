@@ -14,14 +14,14 @@ class LoadTrackUseCaseTests: XCTestCase {
 
     typealias SUT = (
         useCase: LoadTrackUseCase,
-        audioFilesRepository: FilesRepositoryMock2,
-        mediaLibraryRepository: MediaLibraryRepositoryMock2
+        audioFilesRepository: FilesRepositoryMockDeprecated,
+        mediaLibraryRepository: MediaLibraryRepositoryMockDeprecated
     )
     
     func createSUT() -> SUT  {
         
-        let audioFilesRepository = FilesRepositoryMock2()
-        let mediaLibraryRepository = MediaLibraryRepositoryMock2()
+        let audioFilesRepository = FilesRepositoryMockDeprecated()
+        let mediaLibraryRepository = MediaLibraryRepositoryMockDeprecated()
         
         let useCase = LoadTrackUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,

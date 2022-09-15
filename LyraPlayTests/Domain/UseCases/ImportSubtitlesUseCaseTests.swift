@@ -15,16 +15,16 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
  
     typealias SUT = (
         useCase: ImportSubtitlesUseCase,
-        subtitlesRepository: SubtitlesRepositoryMock2,
+        subtitlesRepository: SubtitlesRepositoryMockDeprecated,
         subtitlesParser: SubtitlesParserMock,
-        subtitlesFilesRepository: FilesRepositoryMock2
+        subtitlesFilesRepository: FilesRepositoryMockDeprecated
     )
     
     func createSUT() -> SUT {
         
-        let subtitlesRepository = SubtitlesRepositoryMock2()
+        let subtitlesRepository = SubtitlesRepositoryMockDeprecated()
         let subtitlesParser = SubtitlesParserMock()
-        let subtitlesFilesRepository = FilesRepositoryMock2()
+        let subtitlesFilesRepository = FilesRepositoryMockDeprecated()
         
         let useCase = ImportSubtitlesUseCaseImpl(
             supportedExtensions: [".lrc"],

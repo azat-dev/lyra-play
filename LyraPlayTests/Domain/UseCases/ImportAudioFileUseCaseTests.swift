@@ -25,9 +25,9 @@ class ImportAudioFileUseCaseTests: XCTestCase {
 
         let tagsParser = mock(TagsParser.self)
         
-        let mediaLibraryRepository = MediaLibraryRepositoryMock2()
-        let imagesRepository = FilesRepositoryMock2()
-        let audioFilesRepository = FilesRepositoryMock2()
+        let mediaLibraryRepository = MediaLibraryRepositoryMockDeprecated()
+        let imagesRepository = FilesRepositoryMockDeprecated()
+        let audioFilesRepository = FilesRepositoryMockDeprecated()
         
         let useCase = ImportAudioFileUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,
