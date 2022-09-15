@@ -16,12 +16,12 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
     typealias SUT = (
         useCase: CurrentPlayerStateUseCase,
         audioPlayer: AudioPlayerMock,
-        showMediaInfoUseCase: ShowMediaInfoUseCaseMock
+        showMediaInfoUseCase: ShowMediaInfoUseCaseMockDeprecated
     )
     
     func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
         
-        let showMediaInfoUseCase = ShowMediaInfoUseCaseMock()
+        let showMediaInfoUseCase = ShowMediaInfoUseCaseMockDeprecated()
         let audioPlayer = AudioPlayerMock()
         
         let useCase = CurrentPlayerStateUseCaseImpl(
@@ -38,7 +38,7 @@ class CurrentPlayerStateUseCaseTests: XCTestCase {
         )
     }
     
-    private func setupTracks(showMediaInfoUseCase: ShowMediaInfoUseCaseMock) -> [MediaInfo] {
+    private func setupTracks(showMediaInfoUseCase: ShowMediaInfoUseCaseMockDeprecated) -> [MediaInfo] {
         
         var tracks = [MediaInfo]()
         

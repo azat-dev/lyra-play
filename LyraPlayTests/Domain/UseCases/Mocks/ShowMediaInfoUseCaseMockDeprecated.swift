@@ -8,7 +8,7 @@
 import Foundation
 import LyraPlay
 
-class ShowMediaInfoUseCaseMock: ShowMediaInfoUseCase {
+class ShowMediaInfoUseCaseMockDeprecated: ShowMediaInfoUseCase {
 
     public var tracks = [UUID: MediaInfo]()
     

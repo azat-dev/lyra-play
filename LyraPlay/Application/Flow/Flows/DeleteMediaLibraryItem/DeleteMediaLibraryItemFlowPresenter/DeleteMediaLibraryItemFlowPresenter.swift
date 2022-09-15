@@ -15,4 +15,4 @@ public protocol DeleteMediaLibraryItemFlowPresenterInput: AnyObject {
     func dismiss()
 }
 
-public protocol DeleteMediaLibraryItemFlowPresenter: AnyObject, DeleteMediaLibraryItemFlowPresenterInput {}
+public protocol DeleteMediaLibraryItemFlowPresenter: DeleteMediaLibraryItemFlowPresenterInput {}

@@ -47,7 +47,7 @@ public class PublisherWithSession<Output, Failure> where Failure: Error {
         get { publisher.value }
     }
     
-    init(_ value: Output) {
+    public init(_ value: Output) {
         publisher = CurrentValueSubject(value)
     }
     

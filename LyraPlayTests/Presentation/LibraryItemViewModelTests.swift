@@ -243,9 +243,9 @@ final class CurrentPlayerStateUseCaseMock: CurrentPlayerStateUseCase {
     
     var volume: Observable<Double> = Observable(0.0)
     
-    private var showMediaInfoUseCase: ShowMediaInfoUseCaseMock
+    private var showMediaInfoUseCase: ShowMediaInfoUseCaseMockDeprecated
     
-    init(showMediaInfoUseCase: ShowMediaInfoUseCaseMock) {
+    init(showMediaInfoUseCase: ShowMediaInfoUseCaseMockDeprecated) {
         self.showMediaInfoUseCase = showMediaInfoUseCase
     }
     
