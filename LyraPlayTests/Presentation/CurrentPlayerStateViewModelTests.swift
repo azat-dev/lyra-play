@@ -34,7 +34,7 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
             .willReturn(state)
 
         let showMediaInfoUseCase = mock(ShowMediaInfoUseCase.self)
-
+        
         let viewModel = CurrentPlayerStateViewModelImpl(
             delegate: delegate,
             playMediaUseCase: playMediaUseCase,
@@ -52,18 +52,40 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         )
     }
     
-    func test_change_state__playing() {
+    func anyMediaInfo() -> MediaInfo {
         
-        // Given
+        return .init(
+            id: "",
+            coverImage: "".data(using: .utf8)!,
+            title: "",
+            artist: nil,
+            duration: 0
+        )
+    }
+    
+    func test_change_state__playing() async throws {
+        
         let sut = createSUT()
+
+        // Given
+        let mediaId = UUID()
+        
+        given(await sut.showMediaInfoUseCase.fetchInfo(trackId: mediaId))
+            .willReturn(.success(anyMediaInfo()))
         
         // When
         sut.playerState.value = .playing(
-            session: .init(mediaId: UUID(), learningLanguage: "", nativeLanguage: ""),
+            session: .init(mediaId: mediaId, learningLanguage: "", nativeLanguage: ""),
             subtitlesState: nil
         )
-        
+
         // Then
+        for await state in sut.viewModel.state.values {
+            guard case .loading = state else {
+                break
+            }
+        }
+
         let state = sut.viewModel.state.value
         
         guard case .active(_, let playerState) = state else {
@@ -79,19 +101,30 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         }
     }
     
-    func test_change_state__paused() {
-        
-        // Given
+    func test_change_state__paused() async throws {
+
         let sut = createSUT()
+
+        // Given
+        let mediaId = UUID()
+        
+        given(await sut.showMediaInfoUseCase.fetchInfo(trackId: mediaId))
+            .willReturn(.success(anyMediaInfo()))
         
         // When
         sut.playerState.value = .paused(
-            session: .init(mediaId: UUID(), learningLanguage: "", nativeLanguage: ""),
+            session: .init(mediaId: mediaId, learningLanguage: "", nativeLanguage: ""),
             subtitlesState: nil,
             time: 10
         )
-        
+
         // Then
+        for await state in sut.viewModel.state.values {
+            guard case .loading = state else {
+                break
+            }
+        }
+
         let state = sut.viewModel.state.value
         
         guard case .active(_, let playerState) = state else {
@@ -107,24 +140,6 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         }
     }
     
-    func test_change_state__initial() {
-        
-        // Given
-        let sut = createSUT()
-        
-        // When
-        sut.playerState.value = .initial
-        
-        // Then
-        let state = sut.viewModel.state.value
-        
-        guard case .notActive = state else {
-            
-            XCTFail("Wrong state \(state)")
-            return
-        }
-    }
-
     func test_open() async throws {
 
         // Given
