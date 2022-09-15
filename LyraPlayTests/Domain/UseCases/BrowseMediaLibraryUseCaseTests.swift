@@ -18,8 +18,8 @@ class BrowseMediaLibraryUseCaseTests: XCTestCase {
 
     func createSUT() -> SUT {
         
-        let mediaLibraryRepository = MediaLibraryRepositoryMock()
-        let imagesRepository = FilesRepositoryMock()
+        let mediaLibraryRepository = MediaLibraryRepositoryMock2()
+        let imagesRepository = FilesRepositoryMock2()
         
         let useCase = BrowseMediaLibraryUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,

@@ -15,48 +15,37 @@ class MediaLibraryBrowserViewModelTests: XCTestCase {
     
     typealias SUT = (
         viewModel: MediaLibraryBrowserViewModel,
-        mediaLibraryRepository: MediaLibraryRepository,
-        imagesRepository: FilesRepository,
-        useCase: BrowseMediaLibraryUseCase,
-        tagsParser: TagsParserMock
+        browseUseCase: BrowseMediaLibraryUseCaseMock,
+        filesDelegate: MediaLibraryBrowserUpdateDelegateMock
     )
     
-    func createSUT() -> SUT {
+    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
         
-        let mediaLibraryRepository = MediaLibraryRepositoryMock()
-        let imagesRepository = FilesRepositoryMock()
+        let browseUseCase = mock(BrowseMediaLibraryUseCase.self)
         
-        let useCase = BrowseMediaLibraryUseCaseImpl(
-            mediaLibraryRepository: mediaLibraryRepository,
-            imagesRepository: imagesRepository
-        )
-        
-        let tagsParser = TagsParserMock()
-        let audioFilesRepository = FilesRepositoryMock()
-        
-        let importFileUseCase = ImportAudioFileUseCaseImpl(
-            mediaLibraryRepository: mediaLibraryRepository,
-            audioFilesRepository: audioFilesRepository,
-            imagesRepository: imagesRepository,
-            tagsParser: tagsParser
-        )
-        
+        let filesDelegate = mock(MediaLibraryBrowserUpdateDelegate.self)
+        let importFileUseCase = mock(ImportAudioFileUseCase.self)
         let delegate = mock(MediaLibraryBrowserViewModelDelegate.self)
         
         let viewModel = MediaLibraryBrowserViewModelImpl(
             delegate: delegate,
-            browseUseCase: useCase,
+            browseUseCase: browseUseCase,
             importFileUseCase: importFileUseCase
         )
+        viewModel.filesDelegate = filesDelegate
         
-        detectMemoryLeak(instance: viewModel)
+        detectMemoryLeak(instance: viewModel, file: file, line: line)
+        
+        releaseMocks(
+            filesDelegate,
+            delegate,
+            importFileUseCase
+        )
         
         return (
             viewModel,
-            mediaLibraryRepository,
-            imagesRepository,
-            useCase,
-            tagsParser
+            browseUseCase,
+            filesDelegate
         )
     }
     
@@ -67,81 +56,25 @@ class MediaLibraryBrowserViewModelTests: XCTestCase {
         )
     }
     
-    func testListFiles() async throws {
+    func test_load() async throws {
         
-        var (
-            viewModel,
-            mediaLibraryRepository,
-            _,
-            _,
-            tagsParser
-        ) = createSUT()
+        let sut = createSUT()
         
-        let numberOfTestFiles = 5
-        let testFiles = (0..<numberOfTestFiles).map { self.getTestFile(index: $0) }
-        let testImages = (0..<numberOfTestFiles).map { index in
-            return "Cover \(index)".data(using: .utf8)!
-        }
+        let testFiles: [AudioFileInfo] = (0...3).map { _ in .anyExistingItem() }
         
-        for file in testFiles {
-            let _ = await mediaLibraryRepository.putFile(info: file.info)
-        }
-        
-        let expectation = XCTestExpectation()
-        
-        tagsParser.callback = { url in
-            
-            let index = testFiles.firstIndex { $0.info.audioFile == url.absoluteString }
-            
-            guard let index = index else {
-                fatalError()
-            }
-            
-            return AudioFileTags(
-                title: "Title \(index)",
-                genre: "Genre \(index)",
-                coverImage: TagsImageData(
-                    data: testImages[index],
-                    fileExtension:"png"
-                ),
-                artist: "Artist \(index)",
-                duration: 10,
-                lyrics: "Lyrics \(index)"
-            )
-        }
-        
-        let filesDelegate = FilesDelegateMock(onUpdateFiles: { files in
-            
-            let expectedTitles = testFiles.map { $0.info.name }
-            let expectedDescriptions = testFiles.map { $0.info.artist ?? "Unknown" }
-            
-            XCTAssertEqual(files.map { $0.title }, expectedTitles)
-            XCTAssertEqual(files.map { $0.description }, expectedDescriptions)
-            
-            expectation.fulfill()
-        })
-        
-        viewModel.filesDelegate = filesDelegate
-        
-        await viewModel.load()
-        wait(for: [expectation], timeout: 3, enforceOrder: true)
-    }
-}
+        // Given
+        given(await sut.browseUseCase.listFiles())
+            .willReturn(.success(testFiles))
 
-// MARK: - Mocks
+        // When
+        await sut.viewModel.load()
 
-fileprivate class FilesDelegateMock: MediaLibraryBrowserUpdateDelegate {
-    
-    typealias FilesUpdateCallback = (_ updatedFiles: [MediaLibraryBrowserCellViewModel]) -> Void
-    private var onUpdateFiles: FilesUpdateCallback
-    
-    init(onUpdateFiles: @escaping FilesUpdateCallback) {
-        
-        self.onUpdateFiles = onUpdateFiles
-    }
-    
-    func filesDidUpdate(updatedFiles: [MediaLibraryBrowserCellViewModel]) {
-        
-        onUpdateFiles(updatedFiles)
+        // Then
+        eventually {
+            verify(sut.filesDelegate.filesDidUpdate(updatedFiles: testFiles.map { $0.id! }))
+                .wasCalled(1)
+        }
+
+        await waitForExpectations(timeout: 1)
     }
 }

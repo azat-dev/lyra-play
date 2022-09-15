@@ -9,11 +9,12 @@ import Foundation
 
 import XCTest
 @testable import LyraPlay
+import Mockingbird
 
 class ImportAudioFileUseCaseTests: XCTestCase {
 
     typealias SUT = (
-        importAudioFileUseCase: ImportAudioFileUseCase,
+        useCase: ImportAudioFileUseCase,
         mediaLibraryRepository: MediaLibraryRepository,
         imagesRepository: FilesRepository,
         audioFilesRepository: FilesRepository,
@@ -22,23 +23,23 @@ class ImportAudioFileUseCaseTests: XCTestCase {
     
     func createSUT() -> SUT {
 
-        let tagsParser = TagsParserMock()
+        let tagsParser = mock(TagsParser.self)
         
-        let mediaLibraryRepository = MediaLibraryRepositoryMock()
-        let imagesRepository = FilesRepositoryMock()
-        let audioFilesRepository = FilesRepositoryMock()
+        let mediaLibraryRepository = MediaLibraryRepositoryMock2()
+        let imagesRepository = FilesRepositoryMock2()
+        let audioFilesRepository = FilesRepositoryMock2()
         
-        let importAudioFileUseCase = ImportAudioFileUseCaseImpl(
+        let useCase = ImportAudioFileUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,
             audioFilesRepository: audioFilesRepository,
             imagesRepository: imagesRepository,
             tagsParser: tagsParser
         )
         
-        detectMemoryLeak(instance: importAudioFileUseCase)
+        detectMemoryLeak(instance: useCase)
         
         return (
-            importAudioFileUseCase,
+            useCase,
             mediaLibraryRepository,
             imagesRepository,
             audioFilesRepository,
@@ -46,15 +47,10 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         )
     }
     
-    func testImportingWithoutId3Tags() async throws {
-        
-        let (
-            importAudioFileUseCase,
-            mediaLibraryRepository,
-            _,
-            audioFilesRepository,
-            tagsParser
-        ) = createSUT()
+    func test_import_without_id3_tags() async throws {
+
+        // Given
+        let sut = createSUT()
         
         let testFilesOriginalNames: [String] = [
             "test1.mp3",
@@ -66,25 +62,29 @@ class ImportAudioFileUseCaseTests: XCTestCase {
             "test2".data(using: .utf8)!,
         ]
         
-        tagsParser.callback = { url in
-            return AudioFileTags(duration: 10)
-        }
+        given(await sut.tagsParser.parse(url: any()))
+            .willReturn(.success(AudioFileTags(duration: 10)))
 
+        // When
         for (index, testFile) in testFiles.enumerated() {
             
             let originalName = testFilesOriginalNames[index]
-            let result = await importAudioFileUseCase.importFile(originalFileName: originalName, fileData: testFile)
+            let result = await sut.useCase.importFile(
+                originalFileName: originalName,
+                fileData: testFile
+            )
             try AssertResultSucceded(result, "Can't import a file: \(originalName)")
         }
 
-        let resultListFiles = await mediaLibraryRepository.listFiles()
+        // Then
+        let resultListFiles = await sut.mediaLibraryRepository.listFiles()
         let importedAudioFiles = try AssertResultSucceded(resultListFiles)
 
         var importedData = [String: Data]()
         
         for libraryItem in importedAudioFiles {
             
-            let result = await audioFilesRepository.getFile(name: libraryItem.audioFile)
+            let result = await sut.audioFilesRepository.getFile(name: libraryItem.audioFile)
             let data = try AssertResultSucceded(result)
             importedData[libraryItem.audioFile] = data
         }
@@ -101,17 +101,11 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         XCTAssertEqual(checkDataResults, testFiles.map { _ in true })
     }
 
-    func testImportingWithId3Tags() async throws {
+    func test_importing_with_id3_tags() async throws {
         
-        let (
-            importAudioFileUseCase,
-            mediaLibraryRepository,
-            imagesRepository,
-            audioFilesRepository,
-            tagsParser
-        ) = createSUT()
+        let sut = createSUT()
 
-        
+        // Given
         let originalName = "test1.mp3"
         let testFile = "data".data(using: .utf8)!
 
@@ -127,15 +121,17 @@ class ImportAudioFileUseCaseTests: XCTestCase {
             lyrics: "Lyrics"
         )
         
-        tagsParser.callback = { url in
+        given(await sut.tagsParser.parse(url: any()))
+            .willReturn(.success(testTags))
 
-            return testTags
-        }
-
-        let result = await importAudioFileUseCase.importFile(originalFileName: originalName, fileData: testFile)
+        // When
+        let result = await sut.useCase.importFile(
+            originalFileName: originalName,
+            fileData: testFile
+        )
         try AssertResultSucceded(result, "Can't import a file: \(originalName)")
 
-        let resultListFiles = await mediaLibraryRepository.listFiles()
+        let resultListFiles = await sut.mediaLibraryRepository.listFiles()
         let importedAudioFiles = try AssertResultSucceded(resultListFiles)
         
         XCTAssertEqual(importedAudioFiles.count, 1)
@@ -147,47 +143,46 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         XCTAssertEqual(imortedFile.artist, testTags.artist)
         XCTAssertEqual(imortedFile.duration, testTags.duration)
 
-        let resutlAudioData = await audioFilesRepository.getFile(name: imortedFile.audioFile)
+        let resutlAudioData = await sut.audioFilesRepository.getFile(name: imortedFile.audioFile)
         let audioData = try AssertResultSucceded(resutlAudioData)
         XCTAssertEqual(audioData, testFile)
         
-        let resultCoverImageData = await imagesRepository.getFile(name: imortedFile.coverImage!)
+        let resultCoverImageData = await sut.imagesRepository.getFile(name: imortedFile.coverImage!)
         let imageData = try AssertResultSucceded(resultCoverImageData)
         XCTAssertEqual(imageData, testTags.coverImage?.data)
     }
     
-    func testFetchingData() async throws {
+    func test_getFile() async throws {
         
-        let (
-            importAudioFileUseCase,
-            _,
-            _,
-            audioFilesRepository,
-            tagsParser
-        ) = createSUT()
+        let sut = createSUT()
 
-        tagsParser.callback = { data in
-            return AudioFileTags(
-                title: "Test",
-                genre: nil,
-                coverImage: nil,
-                artist: nil,
-                duration: 10,
-                lyrics: nil
-            )
-        }
+        // When
+        let tagsData = AudioFileTags(
+            title: "Test",
+            genre: nil,
+            coverImage: nil,
+            artist: nil,
+            duration: 10,
+            lyrics: nil
+        )
+        
+        given(await sut.tagsParser.parse(url: any()))
+            .willReturn(.success(tagsData))
         
         let data = "test".data(using: .utf8)!
         
-        let resultImport = await importAudioFileUseCase.importFile(
+        let resultImport = await sut.useCase.importFile(
             originalFileName: "Test1",
             fileData: data
         )
         
         let fileInfo = try AssertResultSucceded(resultImport)
-        let resultFileData = await audioFilesRepository.getFile(name: fileInfo.audioFile)
-        let fileData = try AssertResultSucceded(resultFileData)
         
+        // When
+        let resultFileData = await sut.audioFilesRepository.getFile(name: fileInfo.audioFile)
+        
+        // Then
+        let fileData = try AssertResultSucceded(resultFileData)
         XCTAssertEqual(fileData, data)
     }
 }

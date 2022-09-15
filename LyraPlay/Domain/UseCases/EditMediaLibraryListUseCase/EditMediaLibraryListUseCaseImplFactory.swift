@@ -13,7 +13,7 @@ public final class EditMediaLibraryListUseCaseImplFactory: EditMediaLibraryListU
 
     private let mediaLibraryRepository: MediaLibraryRepository
     private let mediaFilesRepository: FilesRepository
-    private let subtitlesRepository: SubtitlesRepository
+    private let manageSubtitlesUseCase: ManageSubtitlesUseCase
     private let imagesRepository: FilesRepository
 
     // MARK: - Initializers
@@ -21,13 +21,13 @@ public final class EditMediaLibraryListUseCaseImplFactory: EditMediaLibraryListU
     public init(
         mediaLibraryRepository: MediaLibraryRepository,
         mediaFilesRepository: FilesRepository,
-        subtitlesRepository: SubtitlesRepository,
+        manageSubtitlesUseCase: ManageSubtitlesUseCase,
         imagesRepository: FilesRepository
     ) {
 
         self.mediaLibraryRepository = mediaLibraryRepository
         self.mediaFilesRepository = mediaFilesRepository
-        self.subtitlesRepository = subtitlesRepository
+        self.manageSubtitlesUseCase = manageSubtitlesUseCase
         self.imagesRepository = imagesRepository
     }
 
@@ -38,7 +38,7 @@ public final class EditMediaLibraryListUseCaseImplFactory: EditMediaLibraryListU
         return EditMediaLibraryListUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,
             mediaFilesRepository: mediaFilesRepository,
-            subtitlesRepository: subtitlesRepository,
+            manageSubtitlesUseCase: manageSubtitlesUseCase,
             imagesRepository: imagesRepository
         )
     }

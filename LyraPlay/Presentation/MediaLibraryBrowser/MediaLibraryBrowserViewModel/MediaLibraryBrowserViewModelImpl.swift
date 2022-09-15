@@ -84,22 +84,29 @@ extension MediaLibraryBrowserViewModelImpl {
         var newItems = [UUID: MediaLibraryBrowserCellViewModel]()
         var ids = [UUID]()
         
+        let onOpen = { (_: UUID) -> Void in
+            
+        }
+        
+        let onPlay: PlaySoundCallback = { _ in
+            
+        }
+        
         loadedFiles.forEach { file in
-            
-            
+
             let item = MediaLibraryBrowserCellViewModel(
                 id: file.id!,
                 title: file.name,
                 description: file.artist ?? "Unknown",
                 image: images[file.coverImage ?? ""] ?? stubItemImage,
-                onOpen: self.onOpen,
-                onPlay: self.onPlay
+                onOpen: onOpen,
+                onPlay: onPlay
             )
-            
+
             newItems[item.id] = item
             ids.append(item.id)
         }
-        
+
         DispatchQueue.main.async { [newItems, ids] in
 
             self.items = newItems

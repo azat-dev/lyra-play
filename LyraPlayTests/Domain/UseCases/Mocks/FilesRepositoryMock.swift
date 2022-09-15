@@ -1,5 +1,5 @@
 //
-//  FilesRepositoryMock.swift
+//  FilesRepositoryMock2.swift
 //  LyraPlayTests
 //
 //  Created by Azat Kaiumov on 28.06.22.
@@ -8,9 +8,9 @@
 import Foundation
 import LyraPlay
 
-class FilesRepositoryMock: FilesRepository {
+class FilesRepositoryMock2: FilesRepository {
     
-    private var files = [String: Data]()
+    public var files = [String: Data]()
     
     func putFile(name: String, data: Data) async -> Result<Void, FilesRepositoryError> {
 

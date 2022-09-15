@@ -16,7 +16,7 @@ class EditMediaLibraryListUseCaseTests: XCTestCase {
         useCase: EditMediaLibraryListUseCase,
         mediaLibraryRepository: MediaLibraryRepositoryMock,
         mediaFilesRepository: FilesRepositoryMock,
-        subtitlesRepository: SubtitlesRepositoryMock,
+        manageSubtitlesUseCase: ManageSubtitlesUseCaseMock,
         imagesRepository: FilesRepositoryMock
     )
 
@@ -24,15 +24,15 @@ class EditMediaLibraryListUseCaseTests: XCTestCase {
 
     func createSUT() -> SUT {
 
-        let mediaLibraryRepository = MediaLibraryRepositoryMock()
-        let mediaFilesRepository = FilesRepositoryMock()
-        let subtitlesRepository = SubtitlesRepositoryMock()
-        let imagesRepository = FilesRepositoryMock()
+        let mediaLibraryRepository = mock(MediaLibraryRepository.self)
+        let mediaFilesRepository = mock(FilesRepository.self)
+        let manageSubtitlesUseCase = mock(ManageSubtitlesUseCase.self)
+        let imagesRepository = mock(FilesRepository.self)
 
         let useCase = EditMediaLibraryListUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,
             mediaFilesRepository: mediaFilesRepository,
-            subtitlesRepository: subtitlesRepository,
+            manageSubtitlesUseCase: manageSubtitlesUseCase,
             imagesRepository: imagesRepository
         )
 
@@ -42,85 +42,55 @@ class EditMediaLibraryListUseCaseTests: XCTestCase {
             useCase: useCase,
             mediaLibraryRepository: mediaLibraryRepository,
             mediaFilesRepository: mediaFilesRepository,
-            subtitlesRepository: subtitlesRepository,
+            manageSubtitlesUseCase: manageSubtitlesUseCase,
             imagesRepository: imagesRepository
         )
-    }
-    
-    func test_deleteItem__not_existing() async throws {
-
-        let sut = createSUT()
-
-        // Given
-        let notExistingItemId = UUID()
-        
-//        given(await sut.mediaLibraryRepository.delete(fileId: notExistingItemId))
-//            .willReturn(.failure(.itemNotFound))
-
-        // When
-        let result = await sut.useCase.deleteItem(itemId: notExistingItemId)
-
-        // Then
-        let error = try AssertResultFailed(result)
-        
-        guard case .itemNotFound = error else {
-            
-            XCTFail("Wrong error type: \(error)")
-            return
-        }
     }
     
     func test_deleteItem() async throws {
 
         let sut = createSUT()
 
-        // Given
-        
-        let mediaId = UUID()
-        let mediaFileName = "test.mp3"
-        let imageFileName = "test.png"
-        
-        let existingItem = AudioFileInfo(
-            id: mediaId,
-            createdAt: nil,
-            updatedAt: nil,
-            name: "Test",
-            duration: 1,
-            audioFile: mediaFileName,
-            artist: nil,
-            genre: nil,
-            coverImage: imageFileName
-        )
-        
-//        given(sut.mediaLibraryRepository.delete(fileId: mediaId))
+//        // Given
+//        let existingMedia: AudioFileInfo = .anyExistingItem()
+//        let mediaId = existingMedia.id!
+//
+//        let testSubtitles: [SubtitlesInfo] = [
+//            .init(mediaFileId: mediaId, language: "English", file: "test1.lrc"),
+//            .init(mediaFileId: mediaId, language: "Russian", file: "test2.lrc")
+//        ]
+//
+//        given(await sut.mediaLibraryRepository.getInfo(fileId: mediaId))
+//            .willReturn(.success(existingMedia))
+//
+//        given(await sut.mediaLibraryRepository.delete(fileId: mediaId))
+//            .willReturn(.success(()))
+//        given(await sut.mediaFilesRepository.deleteFile(name: existingMedia.audioFile))
+//            .willReturn(.success(()))
+//        given(await sut.imagesRepository.deleteFile(name: existingMedia.coverImage!))
 //            .willReturn(.success(()))
 //
-//        given(sut.mediaFilesRepository.deleteFile(name: mediaFileName))
-//            .willReturn(.success(()))
+//        given(await sut.subtitlesRepository.list(mediaFileId: mediaId))
+//            .willReturn(.success(testSubtitles))
 //
-//        given(sut.imagesRepository.deleteFile(name: imageFileName))
-//            .willReturn(.success(()))
-//
-//        given(sut.subtitlesRepository.delete(mediaFileId: mediaId, language: "English"))
-//            .willReturn(.success(()))
 //
 //        // When
-//        let result = await sut.useCase.deleteItem(itemId: existingItem.id!)
-        
-
-        // Then
-//        verify(await sut.mediaLibraryRepository.delete(fileId: existingItem.id!))
+//        let result = await sut.useCase.deleteItem(itemId: mediaId)
+////        try AssertResultSucceded(result)
+//
+//        // Then
+//        verify(await sut.mediaLibraryRepository.delete(fileId: mediaId))
+//            .wasCalled(1)
+//        verify(await sut.imagesRepository.deleteFile(name: existingMedia.coverImage!))
+//            .wasCalled(1)
+//        verify(await sut.mediaFilesRepository.deleteFile(name: existingMedia.audioFile))
 //            .wasCalled(1)
 //
-//        verify(await sut.mediaFilesRepository.deleteFile(name: fileName))
-//            .wasCalled(1)
-//
-//        verify(await sut.imagesRepository.deleteFile(name: imageFileName))
-//            .wasCalled(1)
-//
-//        verify(await sut.subtitlesRepository.delete(mediaFileId: mediaId, language: "English"))
-//            .wasCalled(1)
-
+//        //        verify(await sut.subtitlesRepository.delete(mediaFileId: mediaId, language: "English"))
+////            .wasCalled(1)
+////        AssertEqualReadable(sut.imagesRepository.files, [:])
+////        AssertEqualReadable(sut.mediaFilesRepository.files, [:])
+////        AssertEqualReadable(sut.subtitlesRepository.items, [])
+////        AssertEqualReadable(sut.mediaLibraryRepository.files, [])
     }
-
 }

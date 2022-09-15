@@ -8,9 +8,9 @@
 import Foundation
 import LyraPlay
 
-class MediaLibraryRepositoryMock: MediaLibraryRepository {
+class MediaLibraryRepositoryMock2: MediaLibraryRepository {
     
-    private var files = [AudioFileInfo]()
+    public var files = [AudioFileInfo]()
     
     func listFiles() async -> Result<[AudioFileInfo], MediaLibraryRepositoryError> {
         
