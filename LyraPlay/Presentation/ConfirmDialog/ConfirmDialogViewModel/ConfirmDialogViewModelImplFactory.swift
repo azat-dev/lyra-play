@@ -8,15 +8,25 @@
 import Foundation
 
 public final class ConfirmDialogViewModelImplFactory: ConfirmDialogViewModelFactory {
-
+    
     // MARK: - Initializers
-
+    
     public init() {}
-
+    
     // MARK: - Methods
-
-    public func create(delegate: ConfirmDialogViewModelDelegate) -> ConfirmDialogViewModel {
-
-        return ConfirmDialogViewModelImpl(delegate: delegate)
+    
+    public func create(
+        messageText: String,
+        confirmText: String,
+        cancelText: String,
+        delegate: ConfirmDialogViewModelDelegate
+    ) -> ConfirmDialogViewModel {
+        
+        return ConfirmDialogViewModelImpl(
+            messageText: messageText,
+            confirmText: confirmText,
+            cancelText: cancelText,
+            delegate: delegate
+        )
     }
 }

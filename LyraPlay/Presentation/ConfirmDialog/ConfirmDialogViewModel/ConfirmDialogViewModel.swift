@@ -34,6 +34,4 @@ public protocol ConfirmDialogViewModelOutput: AnyObject {
     var cancelText: String { get }
 }
 
-public protocol ConfirmDialogViewModel: ConfirmDialogViewModelOutput, ConfirmDialogViewModelInput {
-
-}
+public protocol ConfirmDialogViewModel: ConfirmDialogViewModelOutput, ConfirmDialogViewModelInput {}

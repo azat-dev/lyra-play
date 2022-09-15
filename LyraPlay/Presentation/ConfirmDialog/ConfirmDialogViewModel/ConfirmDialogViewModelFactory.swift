@@ -7,5 +7,10 @@
 
 public protocol ConfirmDialogViewModelFactory {
 
-    func create(delegate: ConfirmDialogViewModelDelegate) -> ConfirmDialogViewModel
+    func create(
+        messageText: String,
+        confirmText: String,
+        cancelText: String,
+        delegate: ConfirmDialogViewModelDelegate
+    ) -> ConfirmDialogViewModel
 }

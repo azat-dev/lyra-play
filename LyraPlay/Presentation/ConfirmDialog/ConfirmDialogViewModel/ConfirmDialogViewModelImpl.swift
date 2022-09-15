@@ -12,14 +12,23 @@ public final class ConfirmDialogViewModelImpl: ConfirmDialogViewModel {
     // MARK: - Properties
 
     private weak var delegate: ConfirmDialogViewModelDelegate?
-    public var messageText: String = .init()
+    
+    public var messageText: String = ""
     public var confirmText: String = .init()
     public var cancelText: String = .init()
 
     // MARK: - Initializers
 
-    public init(delegate: ConfirmDialogViewModelDelegate) {
+    public init(
+        messageText: String,
+        confirmText: String,
+        cancelText: String,
+        delegate: ConfirmDialogViewModelDelegate
+    ) {
 
+        self.messageText = messageText
+        self.confirmText = confirmText
+        self.cancelText = cancelText
         self.delegate = delegate
     }
 }
@@ -30,16 +39,16 @@ extension ConfirmDialogViewModelImpl {
 
     public func confirm() {
 
-        fatalError()
+        delegate?.confirmDialogDidConfirm()
     }
 
     public func cancel() {
 
-        fatalError()
+        delegate?.confirmDialogDidCancel()
     }
     
     public func dispose() {
-        
-        fatalError()
+
+        delegate?.confirmDialogDispose()
     }
 }
