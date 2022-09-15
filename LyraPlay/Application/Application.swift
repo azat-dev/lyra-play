@@ -317,10 +317,27 @@ public class Application {
             importAudioFileUseCaseFactory: imporAudioFileUseCaseFactory
         )
         
+        let manageSubtitlesUseCase = ManageSubtitlesUseCaseImpl(
+            subtitlesRepository: subtitlesRepository,
+            subtitlesFilesRepository: subtitlesFilesRepository
+        )
+        
+        let editMediaLibraryListUseCaseFactory = EditMediaLibraryListUseCaseImplFactory(
+            mediaLibraryRepository: mediaLibraryRepository,
+            mediaFilesRepository: audioFilesRepository,
+            manageSubtitlesUseCase: manageSubtitlesUseCase,
+            imagesRepository: imagesRepository
+        )
+        
+        let deleteMediaLibraryItemFlowModelFactory = DeleteMediaLibraryItemFlowModelImplFactory(
+            editMediaLibraryListUseCaseFactory: editMediaLibraryListUseCaseFactory
+        )
+        
         let libraryFlowModelFactory = LibraryFlowModelImplFactory(
             viewModelFactory: libraryViewModelFactory,
             libraryItemFlowModelFactory: libraryItemFlowModelFactory,
-            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory
+            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory,
+            deleteMediaLibraryItemFlowModelFactory: deleteMediaLibraryItemFlowModelFactory
         )
         
         let editDictionaryItemUseCaseFactory = EditDictionaryItemUseCaseImplFactory(

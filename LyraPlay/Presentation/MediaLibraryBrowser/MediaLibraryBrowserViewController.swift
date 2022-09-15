@@ -83,7 +83,7 @@ extension MediaLibraryBrowserViewController {
             forCellReuseIdentifier: MediaLibraryBrowserCell.reuseIdentifier
         )
 
-        self.tableDataSource = DataSource(
+        let dataSource = DataSource<Int, UUID>(
             tableView: tableView,
             cellProvider: { [weak self] tableView, indexPath, itemId in
 
@@ -102,6 +102,9 @@ extension MediaLibraryBrowserViewController {
                 return cell
             }
         )
+        
+        dataSource.onDeleteItem = { [weak self] itemId in self?.viewModel.deleteItem(itemId) }
+        self.tableDataSource = dataSource
         
         self.tableDataSource.defaultRowAnimation = .fade
 

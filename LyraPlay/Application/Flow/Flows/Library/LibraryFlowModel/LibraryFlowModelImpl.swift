@@ -15,6 +15,7 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
     private let viewModelFactory: MediaLibraryBrowserViewModelFactory
     private let libraryItemFlowModelFactory: LibraryItemFlowModelFactory
     private let importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory
+    private let deleteMediaLibraryItemFlowModelFactory: DeleteMediaLibraryItemFlowModelFactory
     
     public lazy var listViewModel: MediaLibraryBrowserViewModel = {
         
@@ -23,18 +24,21 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
     
     public var libraryItemFlow = CurrentValueSubject<LibraryItemFlowModel?, Never>(nil)
     public var importMediaFilesFlow = CurrentValueSubject<ImportMediaFilesFlowModel?, Never>(nil)
+    public var deleteMediaLibraryItemFlow = CurrentValueSubject<DeleteMediaLibraryItemFlowModel?, Never>(nil)
     
     // MARK: - Initializers
     
     public init(
         viewModelFactory: MediaLibraryBrowserViewModelFactory,
         libraryItemFlowModelFactory: LibraryItemFlowModelFactory,
-        importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory
+        importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory,
+        deleteMediaLibraryItemFlowModelFactory: DeleteMediaLibraryItemFlowModelFactory
     ) {
         
         self.viewModelFactory = viewModelFactory
         self.libraryItemFlowModelFactory = libraryItemFlowModelFactory
         self.importMediaFilesFlowModelFactory = importMediaFilesFlowModelFactory
+        self.deleteMediaLibraryItemFlowModelFactory = deleteMediaLibraryItemFlowModelFactory
     }
 }
 
@@ -42,6 +46,30 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
 
 extension LibraryFlowModelImpl {
     
+}
+
+// MARK: - DeleteLibraryItem
+
+extension LibraryFlowModelImpl: DeleteMediaLibraryItemFlowDelegate {
+    
+    private func reloadList() {
+        
+        Task {
+            await self.listViewModel.load()
+        }
+    }
+    
+    public func deleteMediaLibraryItemFlowDidCancel() {
+        
+        deleteMediaLibraryItemFlow.value = nil
+        reloadList()
+    }
+    
+    public func deleteMediaLibraryItemFlowDidFinish() {
+        
+        deleteMediaLibraryItemFlow.value = nil
+        reloadList()
+    }
 }
 
 // MARK: - MediaLibraryBrowserViewModelDelegate
@@ -64,6 +92,16 @@ extension LibraryFlowModelImpl: MediaLibraryBrowserViewModelDelegate {
         itemFlow.delegate = self
         
         libraryItemFlow.value = itemFlow
+    }
+    
+    public func runDeleteLibraryItemFlow(mediaId: UUID) {
+        
+        guard deleteMediaLibraryItemFlow.value == nil else {
+            return
+        }
+        
+        let deleteMediaLibraryItemFlow = deleteMediaLibraryItemFlowModelFactory.create(itemId: mediaId, delegate: self)
+        self.deleteMediaLibraryItemFlow.value = deleteMediaLibraryItemFlow
     }
 }
 

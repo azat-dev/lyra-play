@@ -14,18 +14,21 @@ public final class LibraryFlowModelImplFactory: LibraryFlowModelFactory {
     private let viewModelFactory: MediaLibraryBrowserViewModelFactory
     private let libraryItemFlowModelFactory: LibraryItemFlowModelFactory
     private let importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory
+    private let deleteMediaLibraryItemFlowModelFactory: DeleteMediaLibraryItemFlowModelFactory
     
     // MARK: - Initializers
 
     public init(
         viewModelFactory: MediaLibraryBrowserViewModelFactory,
         libraryItemFlowModelFactory: LibraryItemFlowModelFactory,
-        importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory
+        importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory,
+        deleteMediaLibraryItemFlowModelFactory: DeleteMediaLibraryItemFlowModelFactory
     ) {
 
         self.viewModelFactory = viewModelFactory
         self.libraryItemFlowModelFactory = libraryItemFlowModelFactory
         self.importMediaFilesFlowModelFactory = importMediaFilesFlowModelFactory
+        self.deleteMediaLibraryItemFlowModelFactory = deleteMediaLibraryItemFlowModelFactory
     }
 
     // MARK: - Methods
@@ -35,7 +38,8 @@ public final class LibraryFlowModelImplFactory: LibraryFlowModelFactory {
         return LibraryFlowModelImpl(
             viewModelFactory: viewModelFactory,
             libraryItemFlowModelFactory: libraryItemFlowModelFactory,
-            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory
+            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory,
+            deleteMediaLibraryItemFlowModelFactory: deleteMediaLibraryItemFlowModelFactory
         )
     }
 }

@@ -119,6 +119,11 @@ extension MediaLibraryBrowserViewModelImpl {
         
         delegate?.runImportMediaFilesFlow()
     }
+    
+    public func deleteItem(_ id: UUID) {
+        
+        delegate?.runDeleteLibraryItemFlow(mediaId: id)
+    }
 }
 
 // MARK: - Output Methods

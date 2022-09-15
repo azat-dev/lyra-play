@@ -19,6 +19,8 @@ public protocol LibraryFlowModelOutput: AnyObject {
     var libraryItemFlow: CurrentValueSubject<LibraryItemFlowModel?, Never> { get }
     
     var importMediaFilesFlow: CurrentValueSubject<ImportMediaFilesFlowModel?, Never> { get }
+    
+    var deleteMediaLibraryItemFlow: CurrentValueSubject<DeleteMediaLibraryItemFlowModel?, Never> { get }
 }
 
 public protocol LibraryFlowModel: LibraryFlowModelOutput, LibraryFlowModelInput {}

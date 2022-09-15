@@ -12,6 +12,8 @@ public protocol MediaLibraryBrowserViewModelDelegate: AnyObject {
     func runImportMediaFilesFlow()
     
     func runOpenLibraryItemFlow(mediaId: UUID)
+    
+    func runDeleteLibraryItemFlow(mediaId: UUID)
 }
 
 public protocol MediaLibraryBrowserUpdateDelegate: AnyObject {
@@ -24,6 +26,8 @@ public protocol MediaLibraryBrowserViewModelInput: AnyObject {
     func load() async -> Void
     
     func addNewItem() -> Void
+    
+    func deleteItem(_ id: UUID) -> Void
 }
 
 public protocol MediaLibraryBrowserViewModelOutput: AnyObject {
