@@ -241,7 +241,14 @@ public class Application {
     
     func makeFlow() -> MainFlowModel {
         
-        let mainTabBarViewModelFactory = MainTabBarViewModelImplFactory()
+        let currentPlayerStateViewModelFactory = CurrentPlayerStateViewModelImplFactory(
+            playMediaUseCase: playMediaWithTranslationsUseCase,
+            showMediaInfoUseCase: showMediaInfoUseCase
+        )
+        
+        let mainTabBarViewModelFactory = MainTabBarViewModelImplFactory(
+            currentPlayerStateViewModelFactory: currentPlayerStateViewModelFactory
+        )
 
         let browseMediaLibraryUseCaseFactory = BrowseMediaLibraryUseCaseImplFactory(
             mediaLibraryRepository: mediaLibraryRepository,

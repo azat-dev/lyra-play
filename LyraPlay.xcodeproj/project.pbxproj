@@ -331,6 +331,9 @@
 		AA7B16BB28D32C9900D3DBE1 /* Library+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B16BA28D32C9900D3DBE1 /* Library+Helpers.swift */; };
 		AA7B761B28C5C5BA00EC0BDA /* Mockingbird in Frameworks */ = {isa = PBXBuildFile; productRef = AA7B761A28C5C5BA00EC0BDA /* Mockingbird */; };
 		AA89C05028D3988C004902C5 /* ConfirmDialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA89C04F28D3988C004902C5 /* ConfirmDialogViewController.swift */; };
+		AA89C05228D3C8FB004902C5 /* CurrentPlayerStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA89C05128D3C8FB004902C5 /* CurrentPlayerStateView.swift */; };
+		AA89C05428D3CDAB004902C5 /* CurrentPlayerStateView+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA89C05328D3CDAB004902C5 /* CurrentPlayerStateView+Styles.swift */; };
+		AA89C05628D3CDDE004902C5 /* CurrentPlayerStateView+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA89C05528D3CDDE004902C5 /* CurrentPlayerStateView+Layout.swift */; };
 		AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74928567A1C0010FA1E /* AppDelegate.swift */; };
 		AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */; };
 		AA8BF75628567A1F0010FA1E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA8BF75528567A1F0010FA1E /* Assets.xcassets */; };
@@ -831,6 +834,9 @@
 		AA7B0D80287234F70067DDB5 /* CurrentPlayerStateUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPlayerStateUseCaseTests.swift; sourceTree = "<group>"; };
 		AA7B16BA28D32C9900D3DBE1 /* Library+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Library+Helpers.swift"; sourceTree = "<group>"; };
 		AA89C04F28D3988C004902C5 /* ConfirmDialogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmDialogViewController.swift; sourceTree = "<group>"; };
+		AA89C05128D3C8FB004902C5 /* CurrentPlayerStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPlayerStateView.swift; sourceTree = "<group>"; };
+		AA89C05328D3CDAB004902C5 /* CurrentPlayerStateView+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CurrentPlayerStateView+Styles.swift"; sourceTree = "<group>"; };
+		AA89C05528D3CDDE004902C5 /* CurrentPlayerStateView+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CurrentPlayerStateView+Layout.swift"; sourceTree = "<group>"; };
 		AA8BF74628567A1C0010FA1E /* LyraPlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LyraPlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA8BF74928567A1C0010FA1E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -1302,6 +1308,9 @@
 			isa = PBXGroup;
 			children = (
 				ABD752A7373A8F05FBC52F90 /* CurrentPlayerStateViewModel */,
+				AA89C05128D3C8FB004902C5 /* CurrentPlayerStateView.swift */,
+				AA89C05328D3CDAB004902C5 /* CurrentPlayerStateView+Styles.swift */,
+				AA89C05528D3CDDE004902C5 /* CurrentPlayerStateView+Layout.swift */,
 			);
 			path = CurrentPlayerState;
 			sourceTree = "<group>";
@@ -2914,6 +2923,7 @@
 				AA3C535528BE631D00CBE3C6 /* LoadTrackUseCaseImplFactory.swift in Sources */,
 				AA3C534128BE5F7F00CBE3C6 /* ImportSubtitlesUseCaseFactory.swift in Sources */,
 				AA0F69BF287F58A600BD13DB /* RowCell.swift in Sources */,
+				AA89C05428D3CDAB004902C5 /* CurrentPlayerStateView+Styles.swift in Sources */,
 				AA8BF74A28567A1C0010FA1E /* AppDelegate.swift in Sources */,
 				AAF2CFE82876CC650003FCF7 /* CoreDataSubtitlesRepository.swift in Sources */,
 				AA3BAB1B286C7225005EE01E /* PlayerState.swift in Sources */,
@@ -3029,6 +3039,7 @@
 				FF8425950AC2F494925E0BC1 /* ProvideTranslationsForSubtitlesUseCase.swift in Sources */,
 				AA6774DE28CB168600023392 /* LibraryItemFlowPresenterFactory.swift in Sources */,
 				C9BA0CD95D444BF57A2BECC8 /* ProvideTranslationsForSubtitlesUseCaseImpl.swift in Sources */,
+				AA89C05228D3C8FB004902C5 /* CurrentPlayerStateView.swift in Sources */,
 				C91050C34473572BC74B4E90 /* ProvideTranslationsForSubtitlesUseCaseImplFactory.swift in Sources */,
 				AA55226D28CA5FAB007D5343 /* LibraryFlowPresenterImplFactory.swift in Sources */,
 				80A3A9E8B9709DBDDFB1DE4A /* ProvideTranslationsForSubtitlesUseCaseFactory.swift in Sources */,
@@ -3179,6 +3190,7 @@
 				386DA8803569D0FFEABB0788 /* AddDictionaryItemFlowModelImplFactory.swift in Sources */,
 				CC037BA576B941177375C920 /* EditDictionaryItemView.swift in Sources */,
 				D7A048BEAE05CFD514C03C88 /* EditDictionaryItemViewControllerFactory.swift in Sources */,
+				AA89C05628D3CDDE004902C5 /* CurrentPlayerStateView+Layout.swift in Sources */,
 				FD009A4E8BB664F39B0E6106 /* EditDictionaryItemViewFactory.swift in Sources */,
 				C12457050D0B745096BFE4C3 /* AddDictionaryItemFlowPresenter.swift in Sources */,
 				E330C3C9B3F365152E5B42BC /* AddDictionaryItemFlowPresenterFactory.swift in Sources */,

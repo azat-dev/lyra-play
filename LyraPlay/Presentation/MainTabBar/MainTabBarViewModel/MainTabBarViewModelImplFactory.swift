@@ -9,14 +9,26 @@ import Foundation
 
 public final class MainTabBarViewModelImplFactory: MainTabBarViewModelFactory {
 
+    // MARK: - Properties
+    
+    private let currentPlayerStateViewModelFactory: CurrentPlayerStateViewModelFactory
+    
     // MARK: - Initializers
 
-    public init() {}
+    public init(
+        currentPlayerStateViewModelFactory: CurrentPlayerStateViewModelFactory
+    ) {
+        
+        self.currentPlayerStateViewModelFactory = currentPlayerStateViewModelFactory
+    }
 
     // MARK: - Methods
 
     public func create(delegate: MainTabBarViewModelDelegate) -> MainTabBarViewModel {
 
-        return MainTabBarViewModelImpl(delegate: delegate)
+        return MainTabBarViewModelImpl(
+            delegate: delegate,
+            currentPlayerStateViewModelFactory: currentPlayerStateViewModelFactory
+        )
     }
 }

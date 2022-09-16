@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 public protocol MainTabBarViewModelDelegate: AnyObject {
     
@@ -21,6 +22,9 @@ public protocol MainTabBarViewModelInput: AnyObject {
     func selectDictionaryTab() -> Void
 }
 
-public protocol MainTabBarViewModelOutput: AnyObject {}
+public protocol MainTabBarViewModelOutput: AnyObject {
+    
+    var currentPlayerStateViewModel: CurrentValueSubject<CurrentPlayerStateViewModel?, Never> { get }
+}
 
 public protocol MainTabBarViewModel: MainTabBarViewModelOutput, MainTabBarViewModelInput {}

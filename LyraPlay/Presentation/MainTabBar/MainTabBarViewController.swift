@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 import UIKit
 
 public final class MainTabBarViewController: UITabBarController, MainTabBarView {
@@ -18,7 +19,10 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
     
     // MARK: - Properties
     
+    private var observers = Set<AnyCancellable>()
     private let viewModel: MainTabBarViewModel
+    
+    public var currentPlayerStateView: CurrentPlayerStateView?
     
     private lazy var tabControllers: [Tab: UINavigationController] = {
         
@@ -68,6 +72,10 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        observers.removeAll()
+    }
+    
     // MARK: - Methods
     
     public override func viewDidLoad() {
@@ -82,7 +90,7 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
         style()
         layout()
         bind(to: viewModel)
-    }    
+    }
 }
 
 // MARK: - Bind viewModel
@@ -90,6 +98,34 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
 extension MainTabBarViewController {
     
     private func bind(to viewModel: MainTabBarViewModel) {
+        
+        viewModel.currentPlayerStateViewModel
+            .receive(on: RunLoop.main)
+            .sink { [weak self] viewModel in
+                
+                guard let self = self else {
+                    return
+                }
+                
+                self.currentPlayerStateView?.removeFromSuperview()
+                self.currentPlayerStateView = nil
+                
+                guard let viewModel = viewModel else {
+                    return
+                }
+
+                let stateView = CurrentPlayerStateView(viewModel: viewModel)
+                self.currentPlayerStateView = stateView
+                
+                self.view.addSubview(stateView)
+                
+                Layout.apply(
+                    contentView: self.view,
+                    tabBar: self.tabBar,
+                    currentPlayerStateView: stateView
+                )
+                
+            }.store(in: &observers)
     }
 }
 

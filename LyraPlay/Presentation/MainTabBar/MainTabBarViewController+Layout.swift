@@ -14,6 +14,23 @@ extension MainTabBarViewController {
         
         static func apply() {
         }
+        
+        static func apply(
+            contentView: UIView,
+            tabBar: UITabBar,
+            currentPlayerStateView: CurrentPlayerStateView
+        ) {
+            
+            currentPlayerStateView.constraintToHorizontalEdges(of: contentView)
+            currentPlayerStateView.setContentHuggingPriority(.defaultHigh, for: .vertical)
+            currentPlayerStateView.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+            
+            NSLayoutConstraint.activate([
+                
+                currentPlayerStateView.heightAnchor.constraint(equalToConstant: 100),
+                currentPlayerStateView.bottomAnchor.constraint(equalTo: tabBar.topAnchor)
+            ])
+        }
     }
 }
 
