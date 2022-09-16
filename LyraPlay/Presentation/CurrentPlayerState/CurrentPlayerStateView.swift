@@ -144,6 +144,7 @@ extension CurrentPlayerStateView {
     private func style() {
         
         Styles.apply(contentView: self)
+        Styles.apply(imageView: imageView)
         Styles.apply(titleLabel: titleLabel)
         Styles.apply(descriptionLabel: descriptionLabel)
     }

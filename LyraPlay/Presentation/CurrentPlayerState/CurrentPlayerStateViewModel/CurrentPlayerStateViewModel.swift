@@ -20,6 +20,21 @@ public enum CurrentPlayerStateViewModelState {
     case active(mediaInfo: MediaInfo, state: PlayerState)
 }
 
+extension CurrentPlayerStateViewModelState {
+    
+    public var mediaInfo: MediaInfo? {
+        
+        switch self {
+            
+        case .notActive, .loading:
+            return nil
+
+        case .active(let mediaInfo, _):
+            return mediaInfo
+        }
+    }
+}
+
 public protocol CurrentPlayerStateViewModelInput: AnyObject {
 
     func open()

@@ -13,9 +13,9 @@ extension CurrentPlayerStateView {
     
     final class Layout {
         
-        static let imageSize: CGFloat = 30
-        static let togglePlayButtonSize: CGFloat = 30
-        static let contentViewPadding = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        static let imageSize: CGFloat = 50
+        static let togglePlayButtonSize: CGFloat = 20
+        static let contentViewPadding = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 15)
         
         static func apply(
             view contentView: UIView,

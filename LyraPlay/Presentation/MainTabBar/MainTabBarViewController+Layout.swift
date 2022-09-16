@@ -27,7 +27,6 @@ extension MainTabBarViewController {
             
             NSLayoutConstraint.activate([
                 
-                currentPlayerStateView.heightAnchor.constraint(equalToConstant: 100),
                 currentPlayerStateView.bottomAnchor.constraint(equalTo: tabBar.topAnchor)
             ])
         }

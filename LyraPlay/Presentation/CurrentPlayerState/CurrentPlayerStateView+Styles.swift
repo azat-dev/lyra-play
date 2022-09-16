@@ -12,11 +12,18 @@ extension CurrentPlayerStateView {
     
     final class Styles {
 
+        // MARK: - Properties
+        
         static let fontTitle = Fonts.RedHatDisplay.bold.preferred(with: .subheadline)
         static let fontDescription = Fonts.RedHatDisplay.medium.preferred(with: .footnote)
         
-        static let iconPlay = UIImage(systemName: "play")
-        static let iconPause = UIImage(systemName: "pause")
+        static let imageConfig = UIImage.SymbolConfiguration(weight: .bold)
+        static let iconPlay = UIImage(systemName: "play.fill")
+        static let iconPause = UIImage(systemName: "pause.fill")
+        
+        static let imageCornerRadius: CGFloat = 5
+        
+        // MARK: - Methods
         
         static func apply(contentView: UIView) {
             
@@ -35,12 +42,14 @@ extension CurrentPlayerStateView {
         
         static func apply(imageView: UIImageView) {
             
-            imageView.layer.cornerRadius = 3
+            imageView.layer.cornerRadius = imageCornerRadius
+            imageView.clipsToBounds = true
         }
         
         static func apply(button: UIImageView) {
             
             button.tintColor = .white
+            button.contentMode = .scaleAspectFit
         }
         
         static func apply(playButton button: UIImageView) {

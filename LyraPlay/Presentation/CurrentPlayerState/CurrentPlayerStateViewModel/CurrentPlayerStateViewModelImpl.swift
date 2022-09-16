@@ -84,6 +84,11 @@ public final class CurrentPlayerStateViewModelImpl: CurrentPlayerStateViewModel 
                 return
             }
             
+            self.state.value = .active(
+                mediaInfo: self.state.value.mediaInfo!,
+                state: state.map()
+            )
+            
         }.store(in: &observers)
     }
 }
