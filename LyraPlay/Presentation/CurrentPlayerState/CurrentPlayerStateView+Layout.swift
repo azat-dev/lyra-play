@@ -23,7 +23,8 @@ extension CurrentPlayerStateView {
             textGroup: UIStackView,
             titleLabel: UILabel,
             descriptionLabel: UILabel,
-            togglePlayButton: UIImageView
+            togglePlayButton: UIImageView,
+            separatorView: UIView
         ) {
             
             textGroup.axis = .vertical
@@ -37,6 +38,7 @@ extension CurrentPlayerStateView {
             togglePlayButton.translatesAutoresizingMaskIntoConstraints = false
             
             blurView.constraintTo(view: contentView)
+            separatorView.constraintToHorizontalEdges(of: contentView)
             
             NSLayoutConstraint.activate([
                 
@@ -52,6 +54,9 @@ extension CurrentPlayerStateView {
                 textGroup.leftAnchor.constraint(equalTo: imageView.rightAnchor, constant: 10),
                 textGroup.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: 10),
                 textGroup.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -10),
+                
+                separatorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+                separatorView.heightAnchor.constraint(equalToConstant: 1)
             ])
             
             NSLayoutConstraint.activate([

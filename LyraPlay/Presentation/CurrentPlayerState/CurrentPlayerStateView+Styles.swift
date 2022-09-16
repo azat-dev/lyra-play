@@ -11,7 +11,7 @@ import UIKit
 extension CurrentPlayerStateView {
     
     final class Styles {
-
+        
         // MARK: - Properties
         
         static let fontTitle = Fonts.RedHatDisplay.bold.preferred(with: .subheadline)
@@ -21,6 +21,9 @@ extension CurrentPlayerStateView {
         static let iconPlay = UIImage(systemName: "play.fill")
         static let iconPause = UIImage(systemName: "pause.fill")
         
+        static let colorSeparator = UIColor(named: "Color.Separator")
+        
+        
         static let imageCornerRadius: CGFloat = 5
         
         // MARK: - Methods
@@ -29,7 +32,7 @@ extension CurrentPlayerStateView {
         }
         
         static func apply(blurView: UIVisualEffectView) {
-
+            
             blurView.effect = UIBlurEffect(style: .systemUltraThinMaterialDark)
         }
         
@@ -56,15 +59,20 @@ extension CurrentPlayerStateView {
         }
         
         static func apply(playButton button: UIImageView) {
-        
+            
             apply(button: button)
             button.image = iconPlay
         }
         
         static func apply(pauseButton button: UIImageView) {
-        
+            
             apply(button: button)
             button.image = iconPause
+        }
+        
+        static func apply(separator: UIView) {
+            
+            separator.backgroundColor = colorSeparator
         }
     }
 }

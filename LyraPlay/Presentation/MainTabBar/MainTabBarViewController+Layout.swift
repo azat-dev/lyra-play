@@ -30,6 +30,15 @@ extension MainTabBarViewController {
                 currentPlayerStateView.bottomAnchor.constraint(equalTo: tabBar.topAnchor)
             ])
         }
+        
+        static func apply(
+            contentView: UIView,
+            tabBar: UITabBar,
+            tabBarBackgroundView: UIVisualEffectView
+        ) {
+            
+            tabBarBackgroundView.constraintTo(view: tabBar)
+        }
     }
 }
 

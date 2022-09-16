@@ -22,6 +22,7 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
     private var observers = Set<AnyCancellable>()
     private let viewModel: MainTabBarViewModel
     
+    private let tabBarBackgroundView = UIVisualEffectView()
     public var currentPlayerStateView: CurrentPlayerStateView?
     
     private lazy var tabControllers: [Tab: UINavigationController] = {
@@ -156,7 +157,8 @@ extension MainTabBarViewController {
 extension MainTabBarViewController {
     
     private func setupViews() {
-        
+
+        view.insertSubview(tabBarBackgroundView, belowSubview: tabBar)
         viewControllers = Tab.allCases.compactMap { tabControllers[$0] }
     }
 }
@@ -164,7 +166,14 @@ extension MainTabBarViewController {
 // MARK: - Layout
 extension MainTabBarViewController {
     
-    private func layout() {}
+    private func layout() {
+        
+        Layout.apply(
+            contentView: view,
+            tabBar: tabBar,
+            tabBarBackgroundView: tabBarBackgroundView
+        )
+    }
 }
 
 // MARK: - Styles
@@ -174,5 +183,6 @@ extension MainTabBarViewController {
     private func style() {
         
         Styles.apply(tabBar: tabBar)
+        Styles.apply(tabBarBackground: tabBarBackgroundView)
     }
 }

@@ -21,6 +21,7 @@ public final class CurrentPlayerStateView: UIView {
     private let descriptionLabel = UILabel()
     private let imageView = UIImageView()
     private let togglePlayButton = UIImageView()
+    private let separatorView = UIView()
     
     private var observers = Set<AnyCancellable>()
     
@@ -120,6 +121,7 @@ extension CurrentPlayerStateView {
         
         addSubview(textGroup)
         addSubview(togglePlayButton)
+        addSubview(separatorView)
     }
 }
 
@@ -135,7 +137,8 @@ extension CurrentPlayerStateView {
             textGroup: textGroup,
             titleLabel: titleLabel,
             descriptionLabel: descriptionLabel,
-            togglePlayButton: togglePlayButton
+            togglePlayButton: togglePlayButton,
+            separatorView: separatorView
         )
     }
 }
@@ -151,6 +154,7 @@ extension CurrentPlayerStateView {
         Styles.apply(imageView: imageView)
         Styles.apply(titleLabel: titleLabel)
         Styles.apply(descriptionLabel: descriptionLabel)
+        Styles.apply(separator: separatorView)
     }
 }
 
