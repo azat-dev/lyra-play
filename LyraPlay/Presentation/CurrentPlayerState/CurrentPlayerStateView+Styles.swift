@@ -26,8 +26,11 @@ extension CurrentPlayerStateView {
         // MARK: - Methods
         
         static func apply(contentView: UIView) {
-            
-            contentView.backgroundColor = .red
+        }
+        
+        static func apply(blurView: UIVisualEffectView) {
+
+            blurView.effect = UIBlurEffect(style: .systemUltraThinMaterialDark)
         }
         
         static func apply(titleLabel label: UILabel) {

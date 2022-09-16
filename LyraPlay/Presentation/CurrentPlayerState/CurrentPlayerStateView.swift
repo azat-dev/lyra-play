@@ -14,8 +14,8 @@ public final class CurrentPlayerStateView: UIView {
     // MARK: - Properties
     
     private let viewModel: CurrentPlayerStateViewModel
-    
-    
+
+    private let blurView = UIVisualEffectView()
     private let textGroup = UIStackView()
     private let titleLabel = UILabel()
     private let descriptionLabel = UILabel()
@@ -105,6 +105,8 @@ extension CurrentPlayerStateView {
     
     private func setupViews() {
         
+        addSubview(blurView)
+        
         let tapRecognizer = UITapGestureRecognizer(
             target: self,
             action: #selector(self.didTap)
@@ -128,6 +130,7 @@ extension CurrentPlayerStateView {
         
         Layout.apply(
             view: self,
+            blurView: blurView,
             imageView: imageView,
             textGroup: textGroup,
             titleLabel: titleLabel,
@@ -144,6 +147,7 @@ extension CurrentPlayerStateView {
     private func style() {
         
         Styles.apply(contentView: self)
+        Styles.apply(blurView: blurView)
         Styles.apply(imageView: imageView)
         Styles.apply(titleLabel: titleLabel)
         Styles.apply(descriptionLabel: descriptionLabel)

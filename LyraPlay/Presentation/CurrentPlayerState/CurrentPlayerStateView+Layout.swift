@@ -10,7 +10,6 @@ import UIKit
 
 extension CurrentPlayerStateView {
     
-    
     final class Layout {
         
         static let imageSize: CGFloat = 50
@@ -19,6 +18,7 @@ extension CurrentPlayerStateView {
         
         static func apply(
             view contentView: UIView,
+            blurView: UIVisualEffectView,
             imageView: UIImageView,
             textGroup: UIStackView,
             titleLabel: UILabel,
@@ -36,6 +36,8 @@ extension CurrentPlayerStateView {
             
             togglePlayButton.translatesAutoresizingMaskIntoConstraints = false
             
+            blurView.constraintTo(view: contentView)
+            
             NSLayoutConstraint.activate([
                 
                 imageView.heightAnchor.constraint(equalToConstant: imageSize),
@@ -45,7 +47,7 @@ extension CurrentPlayerStateView {
                 imageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
                 imageView.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: contentViewPadding.top),
                 imageView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -contentViewPadding.bottom),
-
+                
                 textGroup.centerYAnchor.constraint(equalTo: imageView.centerYAnchor),
                 textGroup.leftAnchor.constraint(equalTo: imageView.rightAnchor, constant: 10),
                 textGroup.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: 10),
