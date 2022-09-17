@@ -9,8 +9,6 @@ import Foundation
 
 public struct DictionaryListBrowserItemViewModelImpl: DictionaryListBrowserItemViewModel {
 
-    public typealias PlaySoundCallback = (_ id: UUID) -> Void
-    
     // MARK: - Properties
 
     public var id: UUID
@@ -18,17 +16,17 @@ public struct DictionaryListBrowserItemViewModelImpl: DictionaryListBrowserItemV
     public var description: String
     public var isSoundPlaying: Bool
     
-    private let playSoundCallback: PlaySoundCallback
+    private weak var delegate: DictionaryListBrowserItemViewModelDelegate?
 
     // MARK: - Initializers
 
-    public init(for item: BrowseListDictionaryItem, isPlaying: Bool, onPlaySound: @escaping PlaySoundCallback) {
+    public init(for item: BrowseListDictionaryItem, isPlaying: Bool, delegate: DictionaryListBrowserItemViewModelDelegate) {
 
         id = item.id
         title = item.originalText
         isSoundPlaying = isPlaying
         description = item.translatedText
-        self.playSoundCallback = onPlaySound
+        self.delegate = delegate
     }
 }
 
@@ -38,7 +36,7 @@ extension DictionaryListBrowserItemViewModelImpl {
 
     public func playSound() {
 
-        playSoundCallback(id)
+        delegate?.dictionaryListBrowserItemViewModelDidPlay(itemId: id)
     }
     
     mutating public func setIsPlaying(_ value: Bool) {

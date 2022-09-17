@@ -29,7 +29,12 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
         let dictionaryListBrowserItemViewModel = mock(DictionaryListBrowserItemViewModel.self)
         let dictionaryListBrowserItemViewModelFactory = mock(DictionaryListBrowserItemViewModelFactory.self)
         
-        given(dictionaryListBrowserItemViewModelFactory.create(for: any(), isPlaying: any(), onPlaySound: any()))
+        given(
+            dictionaryListBrowserItemViewModelFactory.create(
+                for: any(),
+                isPlaying: any(),
+                delegate: any()
+            ))
             .willReturn(dictionaryListBrowserItemViewModel)
         
         let viewModel = DictionaryListBrowserViewModelImpl(
@@ -43,7 +48,14 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
             .willReturn(.success([]))
 
         detectMemoryLeak(instance: viewModel, file: file, line: line)
-        releaseMocks(dictionaryListBrowserDelegate)
+        
+        releaseMocks(
+            dictionaryListBrowserDelegate,
+            browseDictionaryUseCase,
+            pronounceTextUseCaseFactory,
+            dictionaryListBrowserItemViewModel,
+            dictionaryListBrowserItemViewModelFactory
+        )
         
         return (
             viewModel,

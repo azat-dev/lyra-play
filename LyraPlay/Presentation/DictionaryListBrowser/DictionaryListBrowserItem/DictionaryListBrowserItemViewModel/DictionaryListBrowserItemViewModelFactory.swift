@@ -10,6 +10,6 @@ public protocol DictionaryListBrowserItemViewModelFactory {
     func create(
         for item: BrowseListDictionaryItem,
         isPlaying: Bool,
-        onPlaySound: @escaping PlaySoundCallback
+        delegate: DictionaryListBrowserItemViewModelDelegate
     ) -> DictionaryListBrowserItemViewModel
 }

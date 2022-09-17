@@ -7,7 +7,11 @@
 
 import Foundation
 
-public typealias PlaySoundCallback = (_ id: UUID) -> Void
+
+public protocol DictionaryListBrowserItemViewModelDelegate: AnyObject {
+    
+    func dictionaryListBrowserItemViewModelDidPlay(itemId: UUID)
+}
 
 public protocol DictionaryListBrowserItemViewModelInput {
 

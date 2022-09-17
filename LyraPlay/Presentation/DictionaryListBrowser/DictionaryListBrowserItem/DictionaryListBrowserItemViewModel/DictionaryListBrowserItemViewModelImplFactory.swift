@@ -18,13 +18,13 @@ public final class DictionaryListBrowserItemViewModelImplFactory: DictionaryList
     public func create(
         for item: BrowseListDictionaryItem,
         isPlaying: Bool,
-        onPlaySound: @escaping PlaySoundCallback
+        delegate: DictionaryListBrowserItemViewModelDelegate
     ) -> DictionaryListBrowserItemViewModel {
 
         return DictionaryListBrowserItemViewModelImpl(
             for: item,
             isPlaying: isPlaying,
-            onPlaySound: onPlaySound
+            delegate: delegate
         )
     }
 }

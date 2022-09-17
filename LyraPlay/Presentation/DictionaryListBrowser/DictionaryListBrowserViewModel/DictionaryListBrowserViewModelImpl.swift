@@ -43,9 +43,9 @@ public final class DictionaryListBrowserViewModelImpl: DictionaryListBrowserView
     }
 }
 
-// MARK: - Input Methods
+// MARK: - DictionaryListBrowserItemViewModelDelegate
 
-extension DictionaryListBrowserViewModelImpl {
+extension DictionaryListBrowserViewModelImpl: DictionaryListBrowserItemViewModelDelegate {
     
     private func updatePlayingItem(id: UUID) {
 
@@ -110,6 +110,16 @@ extension DictionaryListBrowserViewModelImpl {
         updatePlayingItem(id: itemId)
     }
     
+    public func dictionaryListBrowserItemViewModelDidPlay(itemId: UUID) {
+        
+        playSound(for: itemId)
+    }
+}
+
+// MARK: - Input Methods
+
+extension DictionaryListBrowserViewModelImpl {
+    
     public func load() async {
         
         if !isLoading.value {
@@ -122,8 +132,6 @@ extension DictionaryListBrowserViewModelImpl {
             // TODO: Show error message
             return
         }
-        
-        let onPlaySound: PlaySoundCallback = { [weak self] id in self?.playSound(for: id)}
         
         DispatchQueue.main.async {
             
@@ -139,7 +147,7 @@ extension DictionaryListBrowserViewModelImpl {
                 self.itemsById[itemId] = self.dictionaryListBrowserItemViewModelFactory.create(
                     for: item,
                     isPlaying: self.playingItems[itemId] != nil,
-                    onPlaySound: onPlaySound
+                    delegate: self
                 )
             }
             
