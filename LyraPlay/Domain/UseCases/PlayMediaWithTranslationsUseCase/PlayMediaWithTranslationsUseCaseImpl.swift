@@ -122,6 +122,21 @@ extension PlayMediaWithTranslationsUseCaseImpl {
         pronounceTranslationsUseCase.stop()
         return playMediaWithSubtitlesUseCase.stop().mapResult()
     }
+    
+    public func togglePlay() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+        
+        switch state.value {
+            
+        case .playing, .pronouncingTranslations:
+            return pause()
+            
+        case .paused:
+            return play()
+            
+        default:
+            return .failure(.noActiveMedia)
+        }
+    }
 }
 
 

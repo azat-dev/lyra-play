@@ -59,7 +59,7 @@ extension LibraryItemFlowModelImpl: LibraryItemViewModelDelegate {
     public func finish() {
         
         self.attachSubtitlesFlow.value = nil
-        self.delegate?.didFinishLibraryItemFlow()
+        self.delegate?.libraryItemFlowDidDispose()
     }
 }
 

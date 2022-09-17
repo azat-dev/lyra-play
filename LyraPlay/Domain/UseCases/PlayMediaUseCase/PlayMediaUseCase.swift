@@ -38,6 +38,8 @@ public protocol PlayMediaUseCaseInput {
     func pause() -> Result<Void, PlayMediaUseCaseError>
 
     func stop() -> Result<Void, PlayMediaUseCaseError>
+    
+    func togglePlay() -> Result<Void, PlayMediaUseCaseError>
 }
 
 public protocol PlayMediaUseCaseOutput {
@@ -45,6 +47,4 @@ public protocol PlayMediaUseCaseOutput {
     var state: CurrentValueSubject<PlayMediaUseCaseState, Never> { get }
 }
 
-public protocol PlayMediaUseCase: PlayMediaUseCaseOutput, PlayMediaUseCaseInput {
-
-}
+public protocol PlayMediaUseCase: PlayMediaUseCaseOutput, PlayMediaUseCaseInput {}

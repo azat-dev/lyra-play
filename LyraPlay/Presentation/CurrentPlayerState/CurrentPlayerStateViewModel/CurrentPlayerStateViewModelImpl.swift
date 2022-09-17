@@ -104,7 +104,7 @@ extension CurrentPlayerStateViewModelImpl {
 
     public func togglePlay() {
 
-        fatalError()
+        playMediaUseCase.togglePlay()
     }
 }
 

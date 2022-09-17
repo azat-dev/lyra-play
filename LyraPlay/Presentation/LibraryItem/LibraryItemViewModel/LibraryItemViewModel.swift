@@ -16,7 +16,7 @@ public protocol LibraryItemViewModelInput {
 
     func attachSubtitles(language: String) async
     
-    func finish()
+    func dispose()
 }
 
 public protocol LibraryItemViewModelOutput {
@@ -24,10 +24,6 @@ public protocol LibraryItemViewModelOutput {
     var isPlaying: Observable<Bool> { get }
 
     var info: Observable<LibraryItemInfoPresentation?> { get }
-
-    var subtitlesPresenterViewModel: Observable<SubtitlesPresenterViewModel?> { get }
 }
 
-public protocol LibraryItemViewModel: LibraryItemViewModelOutput, LibraryItemViewModelInput {
-
-}
+public protocol LibraryItemViewModel: LibraryItemViewModelOutput, LibraryItemViewModelInput {}

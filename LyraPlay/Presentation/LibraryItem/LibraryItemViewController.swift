@@ -23,7 +23,6 @@ public final class LibraryItemViewController: UIViewController, LibraryItemView 
     private var addSubtitlesButton = UIButton()
     
     private var mainGroup = UIView()
-    private var subtitlesPresenter = SubtitlesPresenterView()
     
     // MARK: - Initializers
     
@@ -66,7 +65,7 @@ public final class LibraryItemViewController: UIViewController, LibraryItemView 
     public override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
-        viewModel.finish()
+        viewModel.dispose()
     }
 }
 
@@ -89,16 +88,6 @@ extension LibraryItemViewController {
         activityIndicator.isHidden = !isLoading
     }
     
-    private func showSubtitles() {
-        
-        subtitlesPresenter.viewModel = viewModel.subtitlesPresenterViewModel.value
-        subtitlesPresenter.isHidden = false
-    }
-    
-    private func hideSubtitles() {
-        subtitlesPresenter.isHidden = true
-    }
-
     private func bind(to viewModel: LibraryItemViewModel) {
         
         viewModel.info.observe(on: self, queue: .main) { [weak self] mediaInfo in
@@ -124,24 +113,14 @@ extension LibraryItemViewController {
             guard let self = self else {
                 return
             }
-            
+
             guard isPlaying else {
+
                 Styles.apply(playButton: self.playButton)
-                self.showSubtitles()
                 return
             }
-            
+
             Styles.apply(pauseButton: self.playButton)
-        }
-        
-        viewModel.subtitlesPresenterViewModel.observe(on: self, queue: .main) { [weak self] model in
-            
-            guard model != nil else {
-                self?.hideSubtitles()
-                return
-            }
-            
-            self?.showSubtitles()
         }
     }
 }
@@ -156,6 +135,8 @@ extension LibraryItemViewController {
         Task {
             await viewModel.togglePlay()
         }
+        
+        print("NKext")
     }
     
     @objc
@@ -177,8 +158,6 @@ extension LibraryItemViewController {
         
         view.addSubview(activityIndicator)
         view.addSubview(mainGroup)
-        
-        view.addSubview(subtitlesPresenter)
         
         playButton.addTarget(
             self,
@@ -210,8 +189,6 @@ extension LibraryItemViewController {
             playButton: playButton,
             attachSubtitlesButton: addSubtitlesButton
         )
-        
-        subtitlesPresenter.constraintTo(view: view)
     }
 }
 

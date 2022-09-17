@@ -29,7 +29,6 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
     
     public var isPlaying: Observable<Bool> = .init(false)
     public var info: Observable<LibraryItemInfoPresentation?> = .init(nil)
-    public var subtitlesPresenterViewModel: Observable<SubtitlesPresenterViewModel?> = .init(nil)
     
     private var subtitlesObserver: AnyCancellable?
     private var observers = Set<AnyCancellable>()
@@ -113,15 +112,10 @@ extension LibraryItemViewModelImpl {
         self.info.value = mapInfo(mediaInfo)
     }
     
-    public func togglePlay() async {
-     
-        if self.isPlaying.value {
-            
-            let _ = playMediaUseCase.pause()
-            return
-        }
+    private func startNewSession() async {
         
-        let _ = await playMediaUseCase.prepare(
+        
+        let prepareResult = await playMediaUseCase.prepare(
             session: .init(
                 mediaId: trackId,
                 learningLanguage: "English",
@@ -129,13 +123,25 @@ extension LibraryItemViewModelImpl {
             )
         )
         
-        subtitlesPresenterViewModel.value = SubtitlesPresenterViewModelImpl()
-        
-        subtitlesObserver = playMediaUseCase.state.publisher.sink { state in
-            self.subtitlesPresenterViewModel.value?.update(with: state.subtitlesState)
+        guard case .success = prepareResult else {
+            return
         }
         
         let _ = playMediaUseCase.play()
+    }
+    
+    public func togglePlay() async {
+     
+        if
+            let session = playMediaUseCase.state.value.session,
+            session.mediaId == trackId
+        {
+           
+            let _ = playMediaUseCase.togglePlay()
+            return
+        }
+        
+        await startNewSession()
     }
     
     
@@ -178,7 +184,7 @@ extension LibraryItemViewModelImpl {
         delegate?.runAttachSubtitlesFlow()
     }
     
-    public func finish() {
+    public func dispose() {
         
         delegate?.finish()
     }

@@ -38,6 +38,8 @@ public protocol PlayMediaWithSubtitlesUseCaseInput {
     func pause() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
 
     func stop() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
+    
+    func togglePlay() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
 }
 
 public protocol PlayMediaWithSubtitlesUseCaseOutput {

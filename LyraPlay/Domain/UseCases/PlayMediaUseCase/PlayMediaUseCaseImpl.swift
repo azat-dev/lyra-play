@@ -140,6 +140,21 @@ extension PlayMediaUseCaseImpl {
         
         return audioPlayer.stop().mapResult()
     }
+    
+    public func togglePlay() -> Result<Void, PlayMediaUseCaseError> {
+        
+        switch state.value {
+        
+        case .playing:
+            return pause()
+            
+        case .paused:
+            return play()
+            
+        default:
+            return .failure(.noActiveTrack)
+        }
+    }
 }
 
 // MARK: - Error Mapping

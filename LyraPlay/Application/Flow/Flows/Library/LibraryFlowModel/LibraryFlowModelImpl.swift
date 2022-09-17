@@ -44,9 +44,7 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
 
 // MARK: - Input Methods
 
-extension LibraryFlowModelImpl {
-    
-}
+extension LibraryFlowModelImpl {}
 
 // MARK: - DeleteLibraryItem
 
@@ -115,7 +113,7 @@ extension LibraryFlowModelImpl: MediaLibraryBrowserViewModelDelegate {
 
 extension LibraryFlowModelImpl: LibraryItemFlowModelDelegate {
     
-    public func didFinishLibraryItemFlow() {
+    public func libraryItemFlowDidDispose() {
         
         libraryItemFlow.value = nil
     }

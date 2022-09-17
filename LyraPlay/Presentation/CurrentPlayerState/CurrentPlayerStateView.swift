@@ -99,21 +99,34 @@ extension CurrentPlayerStateView {
 extension CurrentPlayerStateView {
     
     @objc
-    private func didTap() {
+    private func didTapBackground() {
         
         viewModel.open()
     }
     
+    @objc
+    private func didTapTogglePlayButton() {
+        
+        viewModel.togglePlay()
+    }
+    
     private func setupViews() {
         
-        addSubview(blurView)
-        
-        let tapRecognizer = UITapGestureRecognizer(
+        let backgroundTapRecognizer = UITapGestureRecognizer(
             target: self,
-            action: #selector(self.didTap)
+            action: #selector(self.didTapBackground)
+        )
+        addGestureRecognizer(backgroundTapRecognizer)
+        
+        let toogleButtonTapRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.didTapTogglePlayButton)
         )
         
-        addGestureRecognizer(tapRecognizer)
+        togglePlayButton.isUserInteractionEnabled = true
+        togglePlayButton.addGestureRecognizer(toogleButtonTapRecognizer)
+        
+        addSubview(blurView)
         addSubview(imageView)
         
         textGroup.addArrangedSubview(titleLabel)

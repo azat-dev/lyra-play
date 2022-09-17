@@ -191,6 +191,21 @@ extension PlayMediaWithSubtitlesUseCaseImpl {
         
         return .success(())
     }
+    
+    public func togglePlay() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+        
+        switch state.value {
+        
+        case .playing:
+            return pause()
+            
+        case .paused:
+            return play()
+            
+        default:
+            return .failure(.noActiveMedia)
+        }
+    }
 }
 
 // MARK: - Helpers

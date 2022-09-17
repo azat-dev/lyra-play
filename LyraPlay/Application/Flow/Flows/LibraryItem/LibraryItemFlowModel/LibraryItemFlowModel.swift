@@ -15,7 +15,7 @@ public protocol LibraryItemFlowModelInput: AnyObject {
 
 public protocol LibraryItemFlowModelDelegate: AnyObject {
     
-    func didFinishLibraryItemFlow()
+    func libraryItemFlowDidDispose()
 }
 
 public protocol LibraryItemFlowModelOutput: AnyObject {
