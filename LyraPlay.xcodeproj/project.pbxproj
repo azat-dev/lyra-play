@@ -251,6 +251,8 @@
 		AA4F9707286E3C380087F45A /* MediaLibraryBrowserViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F9706286E3C380087F45A /* MediaLibraryBrowserViewController+Styles.swift */; };
 		AA4F9709286E3C4C0087F45A /* MediaLibraryBrowserViewController+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F9708286E3C4C0087F45A /* MediaLibraryBrowserViewController+Layout.swift */; };
 		AA520F7728D5F4160095C475 /* LibraryItemViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA520F7628D5F4160095C475 /* LibraryItemViewModelTests.swift */; };
+		AA520F7C28D66CB70095C475 /* ManagedLibraryItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA520F7928D66CA90095C475 /* ManagedLibraryItem+CoreDataProperties.swift */; };
+		AA520F7D28D66CB70095C475 /* ManagedLibraryItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA520F7828D66CA90095C475 /* ManagedLibraryItem+CoreDataClass.swift */; };
 		AA55225628CA4404007D5343 /* MainFlowPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55225528CA4404007D5343 /* MainFlowPresenterTests.swift */; };
 		AA55226028CA4FAF007D5343 /* UIWindow+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55225F28CA4FAF007D5343 /* UIWindow+Utils.swift */; };
 		AA55226328CA4FF6007D5343 /* WindowContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55226228CA4FF6007D5343 /* WindowContainer.swift */; };
@@ -754,6 +756,8 @@
 		AA4F9706286E3C380087F45A /* MediaLibraryBrowserViewController+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaLibraryBrowserViewController+Styles.swift"; sourceTree = "<group>"; };
 		AA4F9708286E3C4C0087F45A /* MediaLibraryBrowserViewController+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaLibraryBrowserViewController+Layout.swift"; sourceTree = "<group>"; };
 		AA520F7628D5F4160095C475 /* LibraryItemViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemViewModelTests.swift; sourceTree = "<group>"; };
+		AA520F7828D66CA90095C475 /* ManagedLibraryItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedLibraryItem+CoreDataClass.swift"; sourceTree = "<group>"; };
+		AA520F7928D66CA90095C475 /* ManagedLibraryItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedLibraryItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		AA55225528CA4404007D5343 /* MainFlowPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainFlowPresenterTests.swift; sourceTree = "<group>"; };
 		AA55225F28CA4FAF007D5343 /* UIWindow+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Utils.swift"; sourceTree = "<group>"; };
 		AA55226228CA4FF6007D5343 /* WindowContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowContainer.swift; sourceTree = "<group>"; };
@@ -1910,6 +1914,8 @@
 				AACCE804288815C0002EA7C5 /* ManagedDictionaryItem+CoreDataClass.swift */,
 				AACCE805288815C0002EA7C5 /* ManagedDictionaryItem+CoreDataProperties.swift */,
 				AA3B59CF2887035900F68AF8 /* ManagedDictionaryItem+Mapping.swift */,
+				AA520F7828D66CA90095C475 /* ManagedLibraryItem+CoreDataClass.swift */,
+				AA520F7928D66CA90095C475 /* ManagedLibraryItem+CoreDataProperties.swift */,
 				AA1D7E7E2876E71F0095E490 /* ManagedSubtitles+CoreDataClass.swift */,
 				AA1D7E7F2876E71F0095E490 /* ManagedSubtitles+CoreDataProperties.swift */,
 				AAF2CFE32876CA370003FCF7 /* ManagedSubtitles+Mapping.swift */,
@@ -2984,6 +2990,7 @@
 				AAC5FFAE28BFEFFE00D402FF /* PlayMediaWithTranslationsUseCaseState+Utils.swift in Sources */,
 				AA41508E286B647D004549F4 /* MediaLibraryBrowserCell+Layout.swift in Sources */,
 				AAF2EEC0287DF83F00894F71 /* ActionTimerFactory.swift in Sources */,
+				AA520F7C28D66CB70095C475 /* ManagedLibraryItem+CoreDataProperties.swift in Sources */,
 				AAC5FFB428C000E000D402FF /* SchedulerFactoryImpl.swift in Sources */,
 				AACEA32F286A418600111565 /* FilePickerViewController.swift in Sources */,
 				AACCE806288815C0002EA7C5 /* ManagedDictionaryItem+CoreDataClass.swift in Sources */,
@@ -3226,6 +3233,7 @@
 				9177E79C58ACE09224CF39E0 /* DeleteMediaLibraryItemFlowPresenter.swift in Sources */,
 				FE51DB1A96D26BCEEB3CB0D3 /* DeleteMediaLibraryItemFlowPresenterFactory.swift in Sources */,
 				618DB1E48A51877AE5FE94B7 /* DeleteMediaLibraryItemFlowPresenterImpl.swift in Sources */,
+				AA520F7D28D66CB70095C475 /* ManagedLibraryItem+CoreDataClass.swift in Sources */,
 				75968190AFA913CFCC5F017A /* DeleteMediaLibraryItemFlowPresenterImplFactory.swift in Sources */,
 				FC72B638068C770528268141 /* CurrentPlayerStateViewModel.swift in Sources */,
 				D786C10B0E0E1D8C8D1CDB15 /* CurrentPlayerStateViewModelFactory.swift in Sources */,
