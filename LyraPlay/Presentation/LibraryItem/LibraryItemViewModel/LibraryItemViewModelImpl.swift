@@ -24,13 +24,10 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
     
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
     private let playMediaUseCase: PlayMediaWithTranslationsUseCase
-    private let importSubtitlesUseCase: ImportSubtitlesUseCase
-    private let loadSubtitlesUseCase: LoadSubtitlesUseCase
     
     public var isPlaying: Observable<Bool> = .init(false)
     public var info: Observable<LibraryItemInfoPresentation?> = .init(nil)
     
-    private var subtitlesObserver: AnyCancellable?
     private var observers = Set<AnyCancellable>()
 
     // MARK: - Initializers
@@ -39,24 +36,18 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
         trackId: UUID,
         delegate: LibraryItemViewModelDelegate,
         showMediaInfoUseCase: ShowMediaInfoUseCase,
-        playMediaUseCase: PlayMediaWithTranslationsUseCase,
-        importSubtitlesUseCase: ImportSubtitlesUseCase,
-        loadSubtitlesUseCase: LoadSubtitlesUseCase
+        playMediaUseCase: PlayMediaWithTranslationsUseCase
     ) {
 
         self.trackId = trackId
         self.delegate = delegate
         self.showMediaInfoUseCase = showMediaInfoUseCase
         self.playMediaUseCase = playMediaUseCase
-        self.importSubtitlesUseCase = importSubtitlesUseCase
-        self.loadSubtitlesUseCase = loadSubtitlesUseCase
         
         bind(to: playMediaUseCase)
     }
     
     deinit {
-        
-        subtitlesObserver?.cancel()
         observers.removeAll()
     }
     
@@ -68,9 +59,13 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
                 return
             }
             
+            let currentPlayingMediaId = state.session?.mediaId
             var isPlaying = false
             
-            if case .playing = state {
+            if
+                case .playing = state,
+                currentPlayingMediaId == self.trackId
+            {
                 isPlaying = true
             }
             
@@ -114,7 +109,6 @@ extension LibraryItemViewModelImpl {
     
     private func startNewSession() async {
         
-        
         let prepareResult = await playMediaUseCase.prepare(
             session: .init(
                 mediaId: trackId,
@@ -149,34 +143,6 @@ extension LibraryItemViewModelImpl {
         
         // TODO:
         print("Import success")
-    }
-    
-    private func attachSubtitlesAfter(language: String, url: URL?) async {
-        
-        guard let url = url else {
-            return
-        }
-        
-        url.startAccessingSecurityScopedResource()
-        
-        guard let fileData = try? Data(contentsOf: url) else {
-            return
-        }
-        
-        let fileName = url.lastPathComponent
-        
-        let importResult = await importSubtitlesUseCase.importFile(
-            trackId: trackId,
-            language: language,
-            fileName: fileName,
-            data: fileData
-        )
-        
-        guard case .success() = importResult else {
-            return
-        }
-        
-        showImportSuccess()
     }
     
     public func attachSubtitles(language: String) async {

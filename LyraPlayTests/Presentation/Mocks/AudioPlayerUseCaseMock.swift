@@ -87,4 +87,9 @@ final class PlayMediaUseCaseMock: PlayMediaUseCase {
         
         self.state.value = .finished(mediaId: currentTrackId)
     }
+    
+    func togglePlay() -> Result<Void, PlayMediaUseCaseError> {
+        
+        fatalError()
+    }
 }

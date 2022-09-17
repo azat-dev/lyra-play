@@ -258,9 +258,7 @@ public class Application {
         
         let libraryItemViewModelFactory = LibraryItemViewModelImplFactory(
             showMediaInfoUseCase: showMediaInfoUseCase,
-            playMediaUseCase: playMediaWithTranslationsUseCase,
-            importSubtitlesUseCase: importSubtitlesUseCase,
-            loadSubtitlesUseCase: loadSubtitlesUseCase
+            playMediaUseCase: playMediaWithTranslationsUseCase
         )
         
         let browseDictionaryUseCase = BrowseDictionaryUseCaseImpl(

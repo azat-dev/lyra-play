@@ -250,6 +250,7 @@
 		AA4F9705286E32C10087F45A /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F9704286E32C10087F45A /* PlayerViewModel.swift */; };
 		AA4F9707286E3C380087F45A /* MediaLibraryBrowserViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F9706286E3C380087F45A /* MediaLibraryBrowserViewController+Styles.swift */; };
 		AA4F9709286E3C4C0087F45A /* MediaLibraryBrowserViewController+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F9708286E3C4C0087F45A /* MediaLibraryBrowserViewController+Layout.swift */; };
+		AA520F7728D5F4160095C475 /* LibraryItemViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA520F7628D5F4160095C475 /* LibraryItemViewModelTests.swift */; };
 		AA55225628CA4404007D5343 /* MainFlowPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55225528CA4404007D5343 /* MainFlowPresenterTests.swift */; };
 		AA55226028CA4FAF007D5343 /* UIWindow+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55225F28CA4FAF007D5343 /* UIWindow+Utils.swift */; };
 		AA55226328CA4FF6007D5343 /* WindowContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55226228CA4FF6007D5343 /* WindowContainer.swift */; };
@@ -752,6 +753,7 @@
 		AA4F9704286E32C10087F45A /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
 		AA4F9706286E3C380087F45A /* MediaLibraryBrowserViewController+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaLibraryBrowserViewController+Styles.swift"; sourceTree = "<group>"; };
 		AA4F9708286E3C4C0087F45A /* MediaLibraryBrowserViewController+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaLibraryBrowserViewController+Layout.swift"; sourceTree = "<group>"; };
+		AA520F7628D5F4160095C475 /* LibraryItemViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemViewModelTests.swift; sourceTree = "<group>"; };
 		AA55225528CA4404007D5343 /* MainFlowPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainFlowPresenterTests.swift; sourceTree = "<group>"; };
 		AA55225F28CA4FAF007D5343 /* UIWindow+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Utils.swift"; sourceTree = "<group>"; };
 		AA55226228CA4FF6007D5343 /* WindowContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowContainer.swift; sourceTree = "<group>"; };
@@ -2341,6 +2343,7 @@
 			isa = PBXGroup;
 			children = (
 				6EED0011301A98C649F3E1FE /* ConfirmDialogViewModelTests.swift */,
+				AA520F7628D5F4160095C475 /* LibraryItemViewModelTests.swift */,
 				BC214ECB52B5C056C173C9E5 /* CurrentPlayerStateViewModelTests.swift */,
 				AABB49EE28AFFE3C0088484B /* DictionaryListBrowserViewModelTests.swift */,
 				0DB8778B0EFD4412C4CBF672 /* EditDictionaryItemViewModelTests.swift */,
@@ -3260,6 +3263,7 @@
 				AA252C9728744481001B7AEE /* LoadTrackUseCaseMock.swift in Sources */,
 				AAB4483A28B15827004CB9F9 /* SubtitlesParserImplTests.swift in Sources */,
 				AABB49E628AFDFAF0088484B /* BrowseDictionaryUseCaseTests.swift in Sources */,
+				AA520F7728D5F4160095C475 /* LibraryItemViewModelTests.swift in Sources */,
 				AA190E6F287ABC9C000514AB /* SubtitlesPresenterViewModelTests.swift in Sources */,
 				AABB49EF28AFFE3C0088484B /* DictionaryListBrowserViewModelTests.swift in Sources */,
 				AA5DD70D28B970FA00929906 /* LyraPlayTests-LyraPlayMocks.generated.swift in Sources */,
