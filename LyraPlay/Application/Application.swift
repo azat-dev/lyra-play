@@ -76,27 +76,7 @@ public class Application {
 
         return AudioPlayerImpl(audioSession: audioSession)
     } ()
-    
-    private lazy var currentPlayerStateUseCase: CurrentPlayerStateUseCase = {
-        
-        let currentState = CurrentPlayerStateUseCaseImpl(
-            audioPlayer: audioPlayer,
-            showMediaInfoUseCase: showMediaInfoUseCase
-        )
-        
-        currentState.info.observe(on: self) { [weak self] info in
-            
-            guard let info = info else {
-                return
-            }
 
-            // FIXME:
-//            self?.playingNowService.update(from: info)
-        }
-        
-        return currentState
-    } ()
-    
     private lazy var showMediaInfoUseCase: ShowMediaInfoUseCase = {
         
         return ShowMediaInfoUseCaseImpl(
@@ -278,7 +258,6 @@ public class Application {
         
         let libraryItemViewModelFactory = LibraryItemViewModelImplFactory(
             showMediaInfoUseCase: showMediaInfoUseCase,
-            currentPlayerStateUseCase: currentPlayerStateUseCase,
             playMediaUseCase: playMediaWithTranslationsUseCase,
             importSubtitlesUseCase: importSubtitlesUseCase,
             loadSubtitlesUseCase: loadSubtitlesUseCase

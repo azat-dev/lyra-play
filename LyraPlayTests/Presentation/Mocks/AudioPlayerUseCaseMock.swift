@@ -13,13 +13,9 @@ import LyraPlay
 final class PlayMediaUseCaseMock: PlayMediaUseCase {
     
     private var currentTrackId: UUID? = nil
-    private var currentPlayerStateUseCase: CurrentPlayerStateUseCaseMock?
     var state = CurrentValueSubject<PlayMediaUseCaseState, Never>(.initial)
     
-    public init(currentPlayerStateUseCase: CurrentPlayerStateUseCaseMock? = nil) {
-        
-        self.currentPlayerStateUseCase = currentPlayerStateUseCase
-    }
+    public init() {}
     
     var prepareWillReturn: ((_ mediaId: UUID) -> Result<Void, PlayMediaUseCaseError>)?
     
@@ -49,9 +45,6 @@ final class PlayMediaUseCaseMock: PlayMediaUseCase {
             return .failure(.noActiveTrack)
         }
         
-//        await currentPlayerStateUseCase?.setTrack(trackId: currentTrackId)
-//        currentPlayerStateUseCase?.state.value = .playing
-        
         self.state.value = .playing(mediaId: currentTrackId)
         
         return .success(())
@@ -62,9 +55,6 @@ final class PlayMediaUseCaseMock: PlayMediaUseCase {
         guard let currentTrackId = currentTrackId else {
             return .failure(.noActiveTrack)
         }
-        
-//        await currentPlayerStateUseCase?.setTrack(trackId: currentTrackId)
-//        currentPlayerStateUseCase?.state.value = .playing
         
         self.state.value = .playing(mediaId: currentTrackId)
         
@@ -77,7 +67,6 @@ final class PlayMediaUseCaseMock: PlayMediaUseCase {
             return .failure(.noActiveTrack)
         }
         
-        currentPlayerStateUseCase?.state.value = .paused
         state.value = .paused(mediaId: currentTrackId!, time: 0)
         return .success(())
     }

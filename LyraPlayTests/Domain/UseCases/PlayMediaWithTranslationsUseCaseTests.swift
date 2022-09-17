@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import Combine
 import LyraPlay
 import Mockingbird
 
@@ -19,7 +20,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory,
         provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCaseMock,
         pronounceTranslationsUseCase: PronounceTranslationsUseCase,
-        subtitlesScheduler: Scheduler
+        subtitlesScheduler: LyraPlay.Scheduler
     )
     
     func createSUT() -> SUT {
@@ -209,6 +210,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         
         let sut = createSUT()
         
+        // Given
         let session = anySession()
         
         try await prepare(
@@ -223,16 +225,9 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             ]
         )
         
-        let expectedStateItems: [PlayMediaWithTranslationsUseCaseState] = [
-            .loaded(session: session, subtitlesState: nil),
-            .playing(session: session, subtitlesState: nil),
-            .finished(session: session)
-        ]
-        
-        let stateSequence = expectSequence(expectedStateItems)
-        let observer = sut.useCase.state.publisher
+        let controlledPublisher = sut.useCase.state.publisher
             .enumerated()
-            .map { index, item in
+            .map { index, item -> PlayMediaWithTranslationsUseCaseState in
                 
                 if index == 1 {
                     Task {
@@ -241,22 +236,31 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
                 }
                 
                 return item
-                
-            }.sink { stateSequence.fulfill(with: $0) }
+            }
         
+        let statePromise = watch(controlledPublisher)
+        
+        // When
         let result = sut.useCase.play()
         
+        // Then
         try AssertResultSucceded(result)
         
-        stateSequence.wait(timeout: 3, enforceOrder: true)
-        observer.cancel()
+        statePromise.expect(
+            [
+                .loaded(session: session, subtitlesState: nil),
+                .playing(session: session, subtitlesState: nil),
+                .finished(session: session)
+            ],
+            timeout: 3
+        )
     }
     
     func test_play__with_subtitles_without_translations() async throws {
         
         let sut = createSUT()
         
-        
+        // Given
         let subtitles = Subtitles(
             duration: 10,
             sentences: [
@@ -279,28 +283,31 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             ]
         )
         
-        let expectedStateItems: [PlayMediaWithTranslationsUseCaseState] = [
-            .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
-            .playing(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
-            .playing(session: session, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
-            .playing(session: session, subtitlesState: .init(position: .sentence(1), subtitles: subtitles)),
-            .playing(session: session, subtitlesState: .init(position: .sentence(2), subtitles: subtitles)),
-        ]
+        let statePromise = watch(sut.useCase.state.publisher)
         
-        let stateSequence = expectSequence(expectedStateItems)
-        let observer = stateSequence.observe(sut.useCase.state.publisher)
+        // When
         let result = sut.useCase.play()
-        
+
+        // Then
         try AssertResultSucceded(result)
         
-        stateSequence.wait(timeout: 3, enforceOrder: true)
-        observer.cancel()
+        statePromise.expect(
+            [
+                .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
+                .playing(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
+                .playing(session: session, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
+                .playing(session: session, subtitlesState: .init(position: .sentence(1), subtitles: subtitles)),
+                .playing(session: session, subtitlesState: .init(position: .sentence(2), subtitles: subtitles)),
+            ],
+            timeout: 3
+        )
     }
     
     func test_play__with_subtitles_with_translations() async throws {
         
         let sut = createSUT()
         
+        // Given
         let translation1 = SubtitlesTranslationItem(
             dictionaryItemId: UUID(),
             translationId: UUID(),
@@ -363,42 +370,44 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             ]
         )
         
-        let expectedStateItems: [PlayMediaWithTranslationsUseCaseState] = [
-            .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
-            .playing(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
-            .playing(session: session, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
-            .pronouncingTranslations(
-                session: session,
-                subtitlesState: .init(position: .sentence(0), subtitles: subtitles),
-                data: .group(translations: [translation1, translation2], currentTranslationIndex: 0)
-            ),
-            .pronouncingTranslations(
-                session: session,
-                subtitlesState: .init(position: .sentence(0), subtitles: subtitles),
-                data: .group(translations: [translation1, translation2], currentTranslationIndex: 1)
-            ),
-            .playing(session: session, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
-            .playing(session: session, subtitlesState: .init(position: .sentence(1), subtitles: subtitles)),
-            .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 0), subtitles: subtitles)),
-            .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 1), subtitles: subtitles)),
-            .pronouncingTranslations(
-                session: session,
-                subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 1), subtitles: subtitles),
-                data: .single(translation: translation2)
-            ),
-            .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 1), subtitles: subtitles)),
-            .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 2), subtitles: subtitles)),
-            .playing(session: session, subtitlesState: .init(position: .sentence(2), subtitles: subtitles)),
-        ]
+        let statePromise = watch(sut.useCase.state.publisher)
         
-        let stateSequence = expectSequence(expectedStateItems)
-        let observer = stateSequence.observe(sut.useCase.state.publisher)
+        // When
         let result = sut.useCase.play()
         
+        // Then
         try AssertResultSucceded(result)
         
-        stateSequence.wait(timeout: 3, enforceOrder: true)
-        observer.cancel()
+        statePromise.expect(
+            [
+                .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
+                .playing(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
+                .playing(session: session, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
+                .pronouncingTranslations(
+                    session: session,
+                    subtitlesState: .init(position: .sentence(0), subtitles: subtitles),
+                    data: .group(translations: [translation1, translation2], currentTranslationIndex: 0)
+                ),
+                .pronouncingTranslations(
+                    session: session,
+                    subtitlesState: .init(position: .sentence(0), subtitles: subtitles),
+                    data: .group(translations: [translation1, translation2], currentTranslationIndex: 1)
+                ),
+                .playing(session: session, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
+                .playing(session: session, subtitlesState: .init(position: .sentence(1), subtitles: subtitles)),
+                .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 0), subtitles: subtitles)),
+                .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 1), subtitles: subtitles)),
+                .pronouncingTranslations(
+                    session: session,
+                    subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 1), subtitles: subtitles),
+                    data: .single(translation: translation2)
+                ),
+                .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 1), subtitles: subtitles)),
+                .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 2), subtitles: subtitles)),
+                .playing(session: session, subtitlesState: .init(position: .sentence(2), subtitles: subtitles)),
+            ],
+            timeout: 3
+        )
     }
 }
 

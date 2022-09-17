@@ -13,6 +13,13 @@ public protocol CurrentPlayerStateViewModelDelegate: AnyObject {
     func currentPlayerStateViewModelDidOpen()
 }
 
+public enum PlayerState: Equatable, CaseIterable {
+    
+    case playing
+    case stopped
+    case paused
+}
+
 public enum CurrentPlayerStateViewModelState {
 
     case loading

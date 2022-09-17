@@ -23,44 +23,19 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         return viewModel
     }
     
-    private func observeStates(
-        _ sut: SUT,
-        timeout: TimeInterval = 1,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) throws -> (([ExpectedState]) async -> Void) {
-        
-        var result = [ExpectedState]()
-        var stateObserver = sut.state
-            .sink { _ in result.append(.init(from: sut)) }
-        
-        return { expectedStates in
-            
-            stateObserver.cancel()
-            let sequence = self.expectSequence(expectedStates)
-            
-            result.forEach { sequence.fulfill(with: $0) }
-            
-            stateObserver = sut.state.dropFirst().sink { _ in sequence.fulfill(with: .init(from: sut)) }
-            
-            sequence.wait(timeout: timeout, enforceOrder: true, file: file, line: line)
-            stateObserver.cancel()
-        }
-    }
-    
     func test_update_on_change__empty_subtitles() async throws {
         
         // Given
         let emptySubtitles = Subtitles(duration: 0, sentences: [])
         let sut = createSUT()
         
-        let assertStatesToEqual = try observeStates(sut)
+        let statesPromise = watch(sut.state, mapper: { ExpectedState(from: $0) })
         
         // When
         sut.update(with: .init(position: nil, subtitles: emptySubtitles))
         
         // Then
-        await assertStatesToEqual([
+        statesPromise.expect([
             .loading,
             .playing(activeSentenceIndex: nil, rows: [])
         ])
@@ -79,7 +54,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         )
         let sut = createSUT()
         
-        let assertStatesToEqual = try observeStates(sut)
+        let statesPromise = watch(sut.state, mapper: { ExpectedState(from: $0) })
         
         // When
         sut.update(with: .init(position: nil, subtitles: notEmptySubtitles))
@@ -89,7 +64,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         sut.update(with: .init(position: .sentence(2), subtitles: notEmptySubtitles))
         
         // Then
-        await assertStatesToEqual([
+        statesPromise.expect([
             .loading,
             .playing(activeSentenceIndex: nil, rows: [false, false, false]),
             .playing(activeSentenceIndex: 0, rows: [true, false, false]),

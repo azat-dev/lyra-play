@@ -23,7 +23,6 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
     private weak var delegate: LibraryItemViewModelDelegate?
     
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
-    private let currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput
     private let playMediaUseCase: PlayMediaWithTranslationsUseCase
     private let importSubtitlesUseCase: ImportSubtitlesUseCase
     private let loadSubtitlesUseCase: LoadSubtitlesUseCase
@@ -33,6 +32,7 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
     public var subtitlesPresenterViewModel: Observable<SubtitlesPresenterViewModel?> = .init(nil)
     
     private var subtitlesObserver: AnyCancellable?
+    private var observers = Set<AnyCancellable>()
 
     // MARK: - Initializers
 
@@ -40,7 +40,6 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
         trackId: UUID,
         delegate: LibraryItemViewModelDelegate,
         showMediaInfoUseCase: ShowMediaInfoUseCase,
-        currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput,
         playMediaUseCase: PlayMediaWithTranslationsUseCase,
         importSubtitlesUseCase: ImportSubtitlesUseCase,
         loadSubtitlesUseCase: LoadSubtitlesUseCase
@@ -49,41 +48,39 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
         self.trackId = trackId
         self.delegate = delegate
         self.showMediaInfoUseCase = showMediaInfoUseCase
-        self.currentPlayerStateUseCase = currentPlayerStateUseCase
         self.playMediaUseCase = playMediaUseCase
         self.importSubtitlesUseCase = importSubtitlesUseCase
         self.loadSubtitlesUseCase = loadSubtitlesUseCase
         
-        bind(to: currentPlayerStateUseCase)
+        bind(to: playMediaUseCase)
     }
     
     deinit {
+        
         subtitlesObserver?.cancel()
+        observers.removeAll()
     }
     
-    private func updatePlayingState() {
+    private func bind(to: PlayMediaWithTranslationsUseCase) {
         
-        let currentTrackId = currentPlayerStateUseCase.info.value?.id
-        let state = currentPlayerStateUseCase.state.value
-        
-        let isPlaying = (state == .playing && currentTrackId == trackId.uuidString)
-        
-        guard isPlaying != self.isPlaying.value else {
-            return
-        }
+        playMediaUseCase.state.publisher.sink { [weak self] state in
+         
+            guard let self = self else {
+                return
+            }
+            
+            var isPlaying = false
+            
+            if case .playing = state {
+                isPlaying = true
+            }
+            
+            guard isPlaying != self.isPlaying.value else {
+                return
+            }
 
-        self.isPlaying.value = isPlaying
-    }
-    
-    private func bind(to currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput) {
-        
-        currentPlayerStateUseCase.state.observe(on: self) { [weak self] _ in
-            self?.updatePlayingState()
-        }
-        
-        currentPlayerStateUseCase.info.observe(on: self) { [weak self] _ in
-            self?.updatePlayingState()
-        }
+            self.isPlaying.value = isPlaying
+        }.store(in: &observers)
     }
 }
 
@@ -179,17 +176,6 @@ extension LibraryItemViewModelImpl {
     public func attachSubtitles(language: String) async {
         
         delegate?.runAttachSubtitlesFlow()
-        
-//        coordinator?.runAttachSubtitlesFlow { [weak self] url in
-//            
-//            guard let attachSubtitles = self?.attachSubtitlesAfter else {
-//                return
-//            }
-//            
-//            Task {
-//                await attachSubtitles(language, url)
-//            }
-//        }
     }
     
     public func finish() {

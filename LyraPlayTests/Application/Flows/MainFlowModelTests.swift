@@ -84,16 +84,13 @@ class MainFlowModelTests: XCTestCase {
         // Given
         let sut = createSUT()
         
-        let sequence = expectSequence([true, false])
-        let disposible = sut.flow.dictionaryFlow.sink { sequence.fulfill(with: $0 == nil) }
+        let dictionaryFlowSequence = watch(sut.flow.dictionaryFlow, mapper: { $0 == nil })
         
         // When
         sut.flow.runDictionaryFlow()
         sut.flow.runDictionaryFlow()
         
         // Then
-        sequence.wait(timeout: 1, enforceOrder: true)
-        
-        disposible.cancel()
+        dictionaryFlowSequence.expect([true, false])
     }
 }

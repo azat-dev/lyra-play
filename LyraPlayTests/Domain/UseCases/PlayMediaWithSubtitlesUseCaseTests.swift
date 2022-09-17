@@ -66,23 +66,16 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         
         let sut = createSUT()
         
+        // Given
+        
         sut.loadSubtitlesUseCase.willReturn = { _, _ in .failure(.itemNotFound) }
         sut.playMediaUseCase.prepareWillReturn = { _ in .failure(.trackNotFound) }
         
         let sessionParams = anySessionParams()
         
-        let expectedStateItems: [PlayMediaWithSubtitlesUseCaseState] = [
-            .initial,
-            .loading(session: sessionParams),
-            .loadFailed(session: sessionParams)
-        ]
+        let statePromise = watch(sut.useCase.state)
         
-        let stateSequence = self.expectSequence(expectedStateItems)
-        
-        sut.useCase.state.sink { [weak stateSequence] in
-            stateSequence?.fulfill(with: $0)
-        }.store(in: &disposables)
-        
+        // When
         let result = await sut.useCase.prepare(params: sessionParams)
         
         let error = try AssertResultFailed(result)
@@ -93,83 +86,84 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
             return
         }
         
-        stateSequence.wait(timeout: 1, enforceOrder: true)
+        statePromise.expect([
+            .initial,
+            .loading(session: sessionParams),
+            .loadFailed(session: sessionParams)
+        ], timeout: 1)
     }
     
     func test_prepare__not_existing_subtitles() async throws {
         
         let sut = createSUT()
         
+        // Given
         
         sut.loadSubtitlesUseCase.willReturn = { _, _ in .failure(.itemNotFound) }
         sut.playMediaUseCase.prepareWillReturn = { _ in .success(()) }
         
         let sessionParams = anySessionParams()
+
+        let statePromise = watch(sut.useCase.state)
         
-        let expectedStateItems: [PlayMediaWithSubtitlesUseCaseState] = [
-            .initial,
-            .loading(session: sessionParams),
-            .loaded(session: sessionParams, subtitlesState: nil)
-        ]
-        
-        let stateSequence = self.expectSequence(expectedStateItems)
-        let disposable = sut.useCase.state.sink { stateSequence.fulfill(with: $0) }
-        
+        // When
         let result = await sut.useCase.prepare(params: sessionParams)
         try AssertResultSucceded(result)
         
-        stateSequence.wait(timeout: 1, enforceOrder: true)
-        disposable.cancel()
+        // Then
+        statePromise.expect([
+            .initial,
+            .loading(session: sessionParams),
+            .loaded(session: sessionParams, subtitlesState: nil)
+        ], timeout: 1)
     }
     
     func test_prepare__has_all_data() async throws {
         
         let sut = createSUT()
         
+        // Given
         let subtitles = anySubtitles()
         
         sut.loadSubtitlesUseCase.willReturn = { _, _ in  .success(subtitles) }
         sut.playMediaUseCase.prepareWillReturn = { _ in .success(()) }
         
         let sessionParams = anySessionParams()
+
+        let statePromise = watch(sut.useCase.state)
         
-        let expectedStateItems: [PlayMediaWithSubtitlesUseCaseState] = [
+        // When
+        let result = await sut.useCase.prepare(params: sessionParams)
+        try AssertResultSucceded(result)
+
+        // Then
+        statePromise.expect([
             .initial,
             .loading(session: sessionParams),
             .loaded(session: sessionParams, subtitlesState: .init(position: nil, subtitles: subtitles))
-        ]
-        
-        let stateSequence = self.expectSequence(expectedStateItems)
-        let disposable = sut.useCase.state.sink { stateSequence.fulfill(with: $0) }
-        
-        let result = await sut.useCase.prepare(params: sessionParams)
-        try AssertResultSucceded(result)
-        
-        stateSequence.wait(timeout: 1, enforceOrder: true)
-        disposable.cancel()
+        ])
     }
     
     func test_play__without_preparation() async throws {
         
         let sut = createSUT()
         
-        let expectedStateItems: [PlayMediaWithSubtitlesUseCaseState] = [
-            .initial,
-        ]
+        // Given
+        let statePromise = watch(sut.useCase.state)
         
-        let stateSequence = self.expectSequence(expectedStateItems)
-        let disposable = sut.useCase.state.sink { stateSequence.fulfill(with: $0) }
-        
+        // When
         let result = sut.useCase.play()
         let error = try AssertResultFailed(result)
         
+        // Then
         guard case .noActiveMedia = error else {
             XCTFail("Wrong error type \(error)")
             return
         }
         
-        stateSequence.wait(timeout: 1, enforceOrder: true)
-        disposable.cancel()
+        statePromise.expect([
+            .initial
+        ])
     }
     
     private func testAction(
@@ -185,13 +179,10 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         line: UInt = #line
     ) {
         
-        let stateSequence = self.expectSequence(expectedStateItems)
-        let subtitlesChangesSequence = self.expectSequence(expecteSubtitlesChanges)
-        
-        let subtitlesChangesObserver = subtitlesChangesSequence.observe(sut.useCase.willChangeSubtitlesPosition)
-        
         let controlledState = PassthroughSubject<PlayMediaWithSubtitlesUseCaseState, Never>()
-        let controlledStateObserver = stateSequence.observe(controlledState, file: file, line: line)
+        
+        let statePromise = watch(controlledState)
+        let subtitlesChangesPromise = watch(sut.useCase.willChangeSubtitlesPosition)
         
         let stateObserver = sut.useCase.state
             .enumerated()
@@ -201,14 +192,25 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
                 controlFlow?(index, item)
             }
         
+        // When
         action()
         
-        stateSequence.wait(timeout: waitFor, enforceOrder: true, file: file, line: line)
-        subtitlesChangesSequence.wait(timeout: waitFor, enforceOrder: true, file: file, line: line)
+        // Then
+        statePromise.expect(
+            expectedStateItems,
+            timeout: waitFor,
+            file: file,
+            line: line
+        )
         
-        controlledStateObserver.cancel()
+        subtitlesChangesPromise.expect(
+            expecteSubtitlesChanges,
+            timeout: waitFor,
+            file: file,
+            line: line
+        )
+        
         stateObserver.cancel()
-        subtitlesChangesObserver.cancel()
     }
 
     func test_play__finish_media_before_subtitles() async throws {

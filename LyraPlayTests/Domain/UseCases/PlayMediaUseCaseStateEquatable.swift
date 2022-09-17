@@ -9,7 +9,7 @@ import XCTest
 import Combine
 import LyraPlay
 
-class PlayMediaUseCaseTests: XCTestCase {
+class PlayMediaUseCaseStateEquatable: XCTestCase {
     
     // MARK: - Helpers
     
@@ -35,35 +35,6 @@ class PlayMediaUseCaseTests: XCTestCase {
             audioPlayer,
             loadTrackUseCase
         )
-    }
-    
-    private func observeStates(
-        _ sut: SUT,
-        timeout: TimeInterval = 1,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) throws -> (([ExpectedState]) async -> Void) {
-        
-        var result = [ExpectedState]()
-        let observer = sut.useCase.state
-            .sink { state in
-                result.append(.init(from: sut))
-            }
-        
-        return { expectedStates in
-            
-            observer.cancel()
-            let sequence = self.expectSequence(expectedStates)
-            
-            result.forEach { sequence.fulfill(with: $0) }
-            
-            let sequenceObserver = sut.useCase.state.dropFirst().sink { state in
-                sequence.fulfill(with: .init(from: sut))
-            }
-            
-            sequence.wait(timeout: timeout, enforceOrder: true, file: file, line: line)
-            sequenceObserver.cancel()
-        }
     }
     
     private func waitForState(_ sut: SUT, where whereState: (PlayMediaUseCaseState) -> Bool) async throws {
@@ -142,13 +113,15 @@ class PlayMediaUseCaseTests: XCTestCase {
         let mediaId = UUID()
         givenMediaExists(sut, mediaId: mediaId)
         
+        let statePromise = watch(sut.useCase.state, mapper: { _ in ExpectedState(from: sut) })
+        
         // When
-        let statesToObserver = try observeStates(sut)
         let result = await sut.useCase.prepare(mediaId: mediaId)
         
         // Then
         try AssertResultSucceded(result)
-        await statesToObserver([
+        
+        statePromise.expect([
             .init(.initial, audioPlayer: .initial),
             .init(.loading(mediaId: mediaId), audioPlayer: .initial),
             .init(.loaded(mediaId: mediaId), audioPlayer: .loaded(session: .init(fileId: mediaId.uuidString))),
@@ -267,7 +240,7 @@ class PlayMediaUseCaseTests: XCTestCase {
 
 // MARK: - Helpers
 
-extension PlayMediaUseCaseTests {
+extension PlayMediaUseCaseStateEquatable {
     
     struct ExpectedState: Equatable {
         

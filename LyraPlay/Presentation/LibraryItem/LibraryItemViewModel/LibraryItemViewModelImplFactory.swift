@@ -12,7 +12,6 @@ public final class LibraryItemViewModelImplFactory: LibraryItemViewModelFactory 
     // MARK: - Properties
 
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
-    private let currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput
     private let playMediaUseCase: PlayMediaWithTranslationsUseCase
     private let importSubtitlesUseCase: ImportSubtitlesUseCase
     private let loadSubtitlesUseCase: LoadSubtitlesUseCase
@@ -21,14 +20,12 @@ public final class LibraryItemViewModelImplFactory: LibraryItemViewModelFactory 
 
     public init(
         showMediaInfoUseCase: ShowMediaInfoUseCase,
-        currentPlayerStateUseCase: CurrentPlayerStateUseCaseOutput,
         playMediaUseCase: PlayMediaWithTranslationsUseCase,
         importSubtitlesUseCase: ImportSubtitlesUseCase,
         loadSubtitlesUseCase: LoadSubtitlesUseCase
     ) {
 
         self.showMediaInfoUseCase = showMediaInfoUseCase
-        self.currentPlayerStateUseCase = currentPlayerStateUseCase
         self.playMediaUseCase = playMediaUseCase
         self.importSubtitlesUseCase = importSubtitlesUseCase
         self.loadSubtitlesUseCase = loadSubtitlesUseCase
@@ -45,7 +42,6 @@ public final class LibraryItemViewModelImplFactory: LibraryItemViewModelFactory 
             trackId: mediaId,
             delegate: delegate,
             showMediaInfoUseCase: showMediaInfoUseCase,
-            currentPlayerStateUseCase: currentPlayerStateUseCase,
             playMediaUseCase: playMediaUseCase,
             importSubtitlesUseCase: importSubtitlesUseCase,
             loadSubtitlesUseCase: loadSubtitlesUseCase
