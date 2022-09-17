@@ -8,6 +8,10 @@
 import Foundation
 import UIKit
 
+public protocol MediaLibraryBrowserCellViewModelDelegate: AnyObject {
+
+    func mediaLibraryBrowserCellViewModelDidOpen(itemId: UUID)
+}
 
 // MARK: - Implementations
 
@@ -17,33 +21,27 @@ public struct MediaLibraryBrowserCellViewModel {
     public var title: String
     public var description: String
     public var image: UIImage
-    
-    private var onOpen: (_ id: UUID) -> Void
-    private var onPlay: (_ id: UUID) -> Void
+
+    private weak var delegate: MediaLibraryBrowserCellViewModelDelegate?
     
     public init(
         id: UUID,
         title: String,
         description: String,
         image: UIImage,
-        onOpen: @escaping (_ id: UUID) -> Void,
-        onPlay: @escaping (_ id: UUID) -> Void
+        delegate: MediaLibraryBrowserCellViewModelDelegate
     ) {
         
         self.id = id
         self.title = title
         self.description = description
-        self.onOpen = onOpen
         self.image = image
-        self.onPlay = onPlay
+        self.delegate = delegate
     }
     
     public func open() {
-        self.onOpen(id)
-    }
-    
-    public func play() {
-        self.onPlay(id)
+        
+        self.delegate?.mediaLibraryBrowserCellViewModelDidOpen(itemId: id)
     }
 }
 

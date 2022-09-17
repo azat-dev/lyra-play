@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 public protocol MediaLibraryBrowserViewModelDelegate: AnyObject {
     
@@ -14,11 +15,6 @@ public protocol MediaLibraryBrowserViewModelDelegate: AnyObject {
     func runOpenLibraryItemFlow(mediaId: UUID)
     
     func runDeleteLibraryItemFlow(mediaId: UUID)
-}
-
-public protocol MediaLibraryBrowserUpdateDelegate: AnyObject {
-    
-    func filesDidUpdate(updatedFiles: [UUID])
 }
 
 public protocol MediaLibraryBrowserViewModelInput: AnyObject {
@@ -34,7 +30,9 @@ public protocol MediaLibraryBrowserViewModelOutput: AnyObject {
     
     var isLoading: Observable<Bool> { get }
     
-    var filesDelegate: MediaLibraryBrowserUpdateDelegate? { get set }
+    var items: CurrentValueSubject<[UUID], Never> { get }
+    
+    var changedItems: PassthroughSubject<[UUID], Never> { get }
     
     func getItem(id: UUID) -> MediaLibraryBrowserCellViewModel
 }

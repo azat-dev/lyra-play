@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 import XCTest
 import Mockingbird
 
@@ -15,15 +16,16 @@ class MediaLibraryBrowserViewModelTests: XCTestCase {
     
     typealias SUT = (
         viewModel: MediaLibraryBrowserViewModel,
-        browseUseCase: BrowseMediaLibraryUseCaseMock,
-        filesDelegate: MediaLibraryBrowserUpdateDelegateMock
+        browseUseCase: BrowseMediaLibraryUseCaseMock
     )
     
-    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
+    func createSUT(file: StaticString = #filePath, line: UInt = #line) async -> SUT {
         
         let browseUseCase = mock(BrowseMediaLibraryUseCase.self)
         
-        let filesDelegate = mock(MediaLibraryBrowserUpdateDelegate.self)
+        given(await browseUseCase.fetchImage(name: any()))
+            .willReturn(.success("".data(using: .utf8)!))
+        
         let importFileUseCase = mock(ImportAudioFileUseCase.self)
         let delegate = mock(MediaLibraryBrowserViewModelDelegate.self)
         
@@ -32,20 +34,18 @@ class MediaLibraryBrowserViewModelTests: XCTestCase {
             browseUseCase: browseUseCase,
             importFileUseCase: importFileUseCase
         )
-        viewModel.filesDelegate = filesDelegate
         
         detectMemoryLeak(instance: viewModel, file: file, line: line)
         
         releaseMocks(
-            filesDelegate,
             delegate,
-            importFileUseCase
+            importFileUseCase,
+            browseUseCase
         )
         
         return (
             viewModel,
-            browseUseCase,
-            filesDelegate
+            browseUseCase
         )
     }
     
@@ -58,23 +58,28 @@ class MediaLibraryBrowserViewModelTests: XCTestCase {
     
     func test_load() async throws {
         
-        let sut = createSUT()
-        
-        let testFiles: [AudioFileInfo] = (0...3).map { _ in .anyExistingItem() }
+        let sut = await createSUT()
         
         // Given
+        let testFiles: [AudioFileInfo] = (0...3).map { _ in .anyExistingItem() }
+
         given(await sut.browseUseCase.listFiles())
             .willReturn(.success(testFiles))
+        
+        let itemsPromise = watch(sut.viewModel.items)
+        let changedItemsPromise = watch(sut.viewModel.changedItems)
 
         // When
         await sut.viewModel.load()
 
         // Then
-        eventually {
-            verify(sut.filesDelegate.filesDidUpdate(updatedFiles: testFiles.map { $0.id! }))
-                .wasCalled(1)
-        }
+        let ids = testFiles.map { $0.id! }
 
-        await waitForExpectations(timeout: 1)
+        itemsPromise.expect([
+            [],
+            ids
+        ])
+
+        changedItemsPromise.expect([])
     }
 }

@@ -6,13 +6,32 @@
 //
 
 import Foundation
+import Combine
 import UIKit
 
 public final class MediaLibraryBrowserViewController: UIViewController, MediaLibraryBrowserView {
     
+    // MARK: - Properties
+    
     private var tableView = UITableView()
     private var tableDataSource: DataSource<Int, UUID>!
     private var viewModel: MediaLibraryBrowserViewModel!
+    
+    private var observers = Set<AnyCancellable>()
+    
+    // MARK: - Initializers
+    
+    public required init?(coder: NSCoder) {
+        fatalError("Not implemented")
+    }
+    
+    public init(viewModel: MediaLibraryBrowserViewModel) {
+        
+        super.init(nibName: nil, bundle: nil)
+        self.viewModel = viewModel
+    }
+
+    // MARK: - Methods
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,26 +45,51 @@ public final class MediaLibraryBrowserViewController: UIViewController, MediaLib
             await viewModel.load()
         }
     }
-    
-    public required init?(coder: NSCoder) {
-        fatalError("Not implemented")
-    }
-
-    public init(viewModel: MediaLibraryBrowserViewModel) {
-
-        super.init(nibName: nil, bundle: nil)
-        self.viewModel = viewModel
-    }
 }
 
 // MARK: - Bind ViewModel
 
 extension MediaLibraryBrowserViewController {
     
+    private func updateList(with ids: [UUID]) {
+        
+        var snapshot = NSDiffableDataSourceSnapshot<Int, UUID>()
+        
+        snapshot.appendSections([0])
+        snapshot.appendItems(ids, toSection: 0)
+
+        DispatchQueue.main.async {
+            self.tableDataSource.apply(snapshot, animatingDifferences: true)
+        }
+    }
+    
+    private func updateItems(with ids: [UUID]) {
+
+        var snapshot = tableDataSource.snapshot()
+        snapshot.reconfigureItems(ids)
+        
+        DispatchQueue.main.async {
+            self.tableDataSource.apply(snapshot, animatingDifferences: true)
+        }
+    }
+    
     private func bind(to viewModel: MediaLibraryBrowserViewModel) {
         
         self.viewModel.isLoading.observe(on: self, queue: .main) { isLoading in }
-        self.viewModel.filesDelegate = self
+        
+        self.viewModel.items
+            .receive(on: RunLoop.main)
+            .sink { [weak self] ids in
+
+                self?.updateList(with: ids)
+            }.store(in: &observers)
+        
+        self.viewModel.changedItems
+            .receive(on: RunLoop.main)
+            .sink { [weak self] ids in
+
+                self?.updateItems(with: ids)
+            }.store(in: &observers)
     }
 }
 
@@ -139,23 +183,6 @@ extension MediaLibraryBrowserViewController {
     }
 }
 
-// MARK: - Table View
-
-extension MediaLibraryBrowserViewController: MediaLibraryBrowserUpdateDelegate {
-    
-    public func filesDidUpdate(updatedFiles: [UUID]) {
-        
-        var snapshot = NSDiffableDataSourceSnapshot<Int, UUID>()
-        
-        snapshot.appendSections([0])
-        snapshot.appendItems(updatedFiles, toSection: 0)
-
-        DispatchQueue.main.async {
-            self.tableDataSource.apply(snapshot, animatingDifferences: true)
-        }
-    }
-}
-
 extension MediaLibraryBrowserViewController: UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -165,7 +192,7 @@ extension MediaLibraryBrowserViewController: UITableViewDelegate {
         }
         
         let cellViewModel = viewModel.getItem(id: itemId)
-        cellViewModel.play()
+        cellViewModel.open()
     }
 }
 
