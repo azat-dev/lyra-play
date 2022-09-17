@@ -19,10 +19,13 @@ public final class DictionaryListBrowserViewModelImpl: DictionaryListBrowserView
     private let pronounceTextUseCaseFactory: PronounceTextUseCaseFactory
     
     public var isLoading = CurrentValueSubject<Bool, Never>(true)
-    public var listChanged: PassthroughSubject<DictionaryListBrowserChangeEvent, Never> = .init()
+    
+    public var items = CurrentValueSubject<[UUID], Never>([])
+    
+    public var changedItems = PassthroughSubject<[UUID], Never>()
     
     private var playingItems = [UUID: (observer: AnyCancellable, pronounceUseCase: PronounceTextUseCase)]()
-    private var items = [UUID: DictionaryListBrowserItemViewModel]()
+    private var itemsById = [UUID: DictionaryListBrowserItemViewModel]()
     
     // MARK: - Initializers
     
@@ -48,7 +51,7 @@ extension DictionaryListBrowserViewModelImpl {
 
         DispatchQueue.main.async {
         
-            guard var item = self.items[id] else {
+            guard var item = self.itemsById[id] else {
                 return
             }
             
@@ -56,16 +59,15 @@ extension DictionaryListBrowserViewModelImpl {
             item.setIsPlaying(isPlaying)
             
             
-            self.items[id] = item
-        
-            self.listChanged.send(.changed(itemId: id))
+            self.itemsById[id] = item
+            self.changedItems.send([id])
         }
     }
     
     public func playSound(for itemId: UUID) {
         
         guard
-            let item = items[itemId],
+            let item = itemsById[itemId],
             playingItems[itemId] == nil
         else {
             return
@@ -125,7 +127,7 @@ extension DictionaryListBrowserViewModelImpl {
         
         DispatchQueue.main.async {
             
-            self.items.removeAll()
+            self.itemsById.removeAll()
             
             var ids = [UUID]()
             
@@ -134,14 +136,14 @@ extension DictionaryListBrowserViewModelImpl {
                 let itemId = item.id
                 
                 ids.append(itemId)
-                self.items[itemId] = self.dictionaryListBrowserItemViewModelFactory.create(
+                self.itemsById[itemId] = self.dictionaryListBrowserItemViewModelFactory.create(
                     for: item,
                     isPlaying: self.playingItems[itemId] != nil,
                     onPlaySound: onPlaySound
                 )
             }
             
-            self.listChanged.send(.loaded(items: ids))
+            self.items.value = ids
             self.isLoading.value = false
         }
     }
@@ -163,6 +165,6 @@ extension DictionaryListBrowserViewModelImpl {
     
     public func getItem(with id: UUID) -> DictionaryListBrowserItemViewModel {
         
-        return items[id]!
+        return itemsById[id]!
     }
 }

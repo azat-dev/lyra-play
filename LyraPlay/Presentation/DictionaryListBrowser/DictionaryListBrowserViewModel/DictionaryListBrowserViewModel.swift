@@ -15,13 +15,6 @@ public protocol DictionaryListBrowserViewModelDelegate: AnyObject {
     func runDeleteDictionaryItemFlow(itemId: UUID)
 }
 
-public enum DictionaryListBrowserChangeEvent {
-    
-    case loaded(items: [UUID])
-    
-    case changed(itemId: UUID)
-}
-
 public protocol DictionaryListBrowserViewModelInput: AnyObject {
     
     func load() async
@@ -35,7 +28,9 @@ public protocol DictionaryListBrowserViewModelOutput: AnyObject {
     
     var isLoading: CurrentValueSubject<Bool, Never> { get }
     
-    var listChanged: PassthroughSubject<DictionaryListBrowserChangeEvent, Never> { get }
+    var items: CurrentValueSubject<[UUID], Never> { get }
+    
+    var changedItems: PassthroughSubject<[UUID], Never> { get }
     
     func getItem(with: UUID) -> DictionaryListBrowserItemViewModel
 }

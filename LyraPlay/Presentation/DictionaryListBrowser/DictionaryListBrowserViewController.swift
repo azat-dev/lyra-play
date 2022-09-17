@@ -68,10 +68,19 @@ extension DictionaryListBrowserViewController {
             
         }.store(in: &observers)
         
-        viewModel.listChanged.receive(on: RunLoop.main).sink { event in
-            
-            self.listChanged(event: event)
-        }.store(in: &observers)
+        viewModel.items
+            .receive(on: RunLoop.main)
+            .sink { [weak self] ids in
+                
+                self?.updateList(ids)
+            }.store(in: &observers)
+        
+        viewModel.changedItems
+            .receive(on: RunLoop.main)
+            .sink { [weak self] ids in
+                
+                self?.updateItems(with: ids)
+            }.store(in: &observers)
     }
 }
 
@@ -79,7 +88,7 @@ extension DictionaryListBrowserViewController {
 
 extension DictionaryListBrowserViewController {
     
-    private func listLoaded(items: [UUID]) {
+    private func updateList(_ items: [UUID]) {
         
         var snapshot = NSDiffableDataSourceSnapshot<Int, UUID>()
         
@@ -91,25 +100,13 @@ extension DictionaryListBrowserViewController {
         }
     }
     
-    private func updateItem(with id: UUID) {
+    private func updateItems(with ids: [UUID]) {
 
         var snapshot = tableDataSource.snapshot()
-        snapshot.reconfigureItems([id])
+        snapshot.reconfigureItems(ids)
         
         DispatchQueue.main.async {
             self.tableDataSource.apply(snapshot, animatingDifferences: true)
-        }
-    }
-    
-    private func listChanged(event: DictionaryListBrowserChangeEvent) {
-        
-        switch event {
-            
-        case .loaded(let items):
-            listLoaded(items: items)
-            
-        case .changed(let itemId):
-            updateItem(with: itemId)
         }
     }
 }
