@@ -17,6 +17,7 @@ public final class LibraryItemFlowPresenterImpl: LibraryItemFlowPresenter {
     private let libraryItemViewFactory: LibraryItemViewFactory
     private let attachSubtitlesFlowPresenterFactory: AttachSubtitlesFlowPresenterFactory
     
+    private weak var activeLibraryItemView: UIViewController?
     private var observers = Set<AnyCancellable>()
     private var attachSubtitlesPresenter: AttachSubtitlesFlowPresenter?
     
@@ -67,13 +68,19 @@ extension LibraryItemFlowPresenterImpl {
                 
             }.store(in: &observers)
         
+        
         let view = libraryItemViewFactory.create(viewModel: flow.viewModel)
-        container.push(view)
+        activeLibraryItemView = view
+        
+        container.pushViewController(view, animated: true)
     }
     
     public func dismiss() {
         
         attachSubtitlesPresenter?.dismiss()
         attachSubtitlesPresenter = nil
+        
+        activeLibraryItemView?.dismiss(animated: true)
+        activeLibraryItemView = nil
     }
 }

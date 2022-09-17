@@ -160,9 +160,14 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         // Given
         let sut = createSUT()
 
+        given(sut.playMediaUseCase.togglePlay())
+            .willReturn(.success(()))
+
         // When
-        let result = sut.viewModel.togglePlay()
+        sut.viewModel.togglePlay()
 
         // Then
+        verify(sut.playMediaUseCase.togglePlay())
+            .wasCalled(1)
     }
 }

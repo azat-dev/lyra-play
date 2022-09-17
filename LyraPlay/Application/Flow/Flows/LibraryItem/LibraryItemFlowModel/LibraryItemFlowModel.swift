@@ -27,6 +27,4 @@ public protocol LibraryItemFlowModelOutput: AnyObject {
     var delegate: LibraryItemFlowModelDelegate? { get set }
 }
 
-public protocol LibraryItemFlowModel: LibraryItemFlowModelOutput, LibraryItemFlowModelInput {
-
-}
+public protocol LibraryItemFlowModel: LibraryItemFlowModelOutput, LibraryItemFlowModelInput {}

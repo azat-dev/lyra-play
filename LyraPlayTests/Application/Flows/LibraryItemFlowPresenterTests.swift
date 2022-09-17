@@ -23,7 +23,7 @@ class LibraryItemFlowPresenterTests: XCTestCase {
     func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
         
         let viewModel = mock(LibraryItemViewModel.self)
-        let view = mock(LibraryItemViewController.self)
+        let view = LibraryItemViewController(viewModel: viewModel)
         
         let viewFactory = mock(LibraryItemViewFactory.self)
         
@@ -34,6 +34,11 @@ class LibraryItemFlowPresenterTests: XCTestCase {
         
         given(flow.viewModel)
             .willReturn(viewModel)
+        
+        let attachSubtitlesFlow = CurrentValueSubject<AttachSubtitlesFlowModel?, Never>(nil)
+        
+        given(flow.attachSubtitlesFlow)
+            .willReturn(attachSubtitlesFlow)
         
         let attachSubtitlesFlowPresenterFactory = mock(AttachSubtitlesFlowPresenterFactory.self)
 
@@ -61,14 +66,17 @@ class LibraryItemFlowPresenterTests: XCTestCase {
     
     func test_push() async throws {
         
-        // Given
-        let sut = createSUT()
-        let container = UINavigationController()
-        
-        // When
-        sut.presenter.present(at: container)
-        
-        // Then
-//        XCTAssertEqual(container.viewControllers.count, 1)
+        DispatchQueue.main.sync {
+            
+            // Given
+            let sut = createSUT()
+            let container = UINavigationController()
+            
+            // When
+            sut.presenter.present(at: container)
+            
+            // Then
+            XCTAssertEqual(container.viewControllers.count, 1)
+        }
     }
 }
