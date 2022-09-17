@@ -15,16 +15,16 @@ public enum MediaLibraryRepositoryError: Error {
 
 public protocol MediaLibraryRepositoryInput {
     
-    func putFile(info: AudioFileInfo) async -> Result<AudioFileInfo, MediaLibraryRepositoryError>
+    func putFile(info: MediaLibraryItem) async -> Result<MediaLibraryItem, MediaLibraryRepositoryError>
     
     func delete(fileId: UUID) async -> Result<Void, MediaLibraryRepositoryError>
 }
 
 public protocol MediaLibraryRepositoryOutput {
     
-    func listFiles() async -> Result<[AudioFileInfo], MediaLibraryRepositoryError>
+    func listFiles() async -> Result<[MediaLibraryItem], MediaLibraryRepositoryError>
     
-    func getInfo(fileId: UUID) async -> Result<AudioFileInfo, MediaLibraryRepositoryError>
+    func getInfo(fileId: UUID) async -> Result<MediaLibraryItem, MediaLibraryRepositoryError>
 }
 
 public protocol MediaLibraryRepository: MediaLibraryRepositoryOutput, MediaLibraryRepositoryInput {

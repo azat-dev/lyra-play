@@ -35,7 +35,7 @@ extension BrowseMediaLibraryUseCaseImpl {}
 
 extension BrowseMediaLibraryUseCaseImpl {
     
-    public func listFiles() async -> Result<[AudioFileInfo], BrowseMediaLibraryUseCaseError> {
+    public func listFiles() async -> Result<[MediaLibraryItem], BrowseMediaLibraryUseCaseError> {
         
         let result = await mediaLibraryRepository.listFiles()
         
@@ -48,7 +48,7 @@ extension BrowseMediaLibraryUseCaseImpl {
         }
     }
     
-    public func getFileInfo(fileId: UUID) async -> Result<AudioFileInfo, BrowseMediaLibraryUseCaseError> {
+    public func getFileInfo(fileId: UUID) async -> Result<MediaLibraryItem, BrowseMediaLibraryUseCaseError> {
         
         let result = await mediaLibraryRepository.getInfo(fileId: fileId)
         

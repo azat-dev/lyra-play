@@ -1,5 +1,5 @@
 //
-//  AudioFileInfo.swift
+//  MediaLibraryItem.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 24.06.22.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AudioFileInfo {
+public struct MediaLibraryItem {
     
     public var id: UUID?
     public var createdAt: Date?
@@ -43,11 +43,11 @@ public struct AudioFileInfo {
     }
 }
 
-public extension AudioFileInfo {
+public extension MediaLibraryItem {
     
-    static func create(name: String, duration: Double, audioFile: String) -> AudioFileInfo {
+    static func create(name: String, duration: Double, audioFile: String) -> MediaLibraryItem {
         
-        return AudioFileInfo(
+        return MediaLibraryItem(
             id: nil,
             createdAt: nil,
             updatedAt: nil,

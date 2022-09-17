@@ -49,9 +49,9 @@ class MediaLibraryBrowserViewModelTests: XCTestCase {
         )
     }
     
-    private func getTestFile(index: Int) -> (info: AudioFileInfo, data: Data) {
+    private func getTestFile(index: Int) -> (info: MediaLibraryItem, data: Data) {
         return (
-            info: AudioFileInfo.create(name: "Test \(index)", duration: 19, audioFile: "test.mp3"),
+            info: MediaLibraryItem.create(name: "Test \(index)", duration: 19, audioFile: "test.mp3"),
             data: "Test \(index)".data(using: .utf8)!
         )
     }
@@ -61,7 +61,7 @@ class MediaLibraryBrowserViewModelTests: XCTestCase {
         let sut = await createSUT()
         
         // Given
-        let testFiles: [AudioFileInfo] = (0...3).map { _ in .anyExistingItem() }
+        let testFiles: [MediaLibraryItem] = (0...3).map { _ in .anyExistingItem() }
 
         given(await sut.browseUseCase.listFiles())
             .willReturn(.success(testFiles))

@@ -32,7 +32,7 @@ class PronounceTextUseCaseTests: XCTestCase {
         )
 
         detectMemoryLeak(instance: useCase)
-
+        
         return (
             useCase: useCase,
             textToSpeechConverter: textToSpeechConverter,
@@ -44,10 +44,18 @@ class PronounceTextUseCaseTests: XCTestCase {
 
         // Given
         let sut = createSUT()
+        
+        let statePromise = watch(sut.useCase.state)
 
         // When
-        sut.useCase.pronounce(text: "Test", language: "en_US")
+        let _ = sut.useCase.pronounce(text: "Test", language: "en_US")
 
         // Then
+        
+        statePromise.expect([
+            .loading,
+            .loading,
+            .finished
+        ])
     }
 }
