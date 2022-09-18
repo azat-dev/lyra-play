@@ -26,7 +26,7 @@ public final class CoreDataMediaLibraryRepository: MediaLibraryRepository {
 
 extension CoreDataMediaLibraryRepository {
     
-    public func putFile(info file: MediaLibraryItem) async -> Result<MediaLibraryItem, MediaLibraryRepositoryError> {
+    public func putFile(info file: MediaLibraryAudioFile) async -> Result<MediaLibraryAudioFile, MediaLibraryRepositoryError> {
         
         var existingFile: ManagedAudioFile? = nil
         
@@ -63,7 +63,7 @@ extension CoreDataMediaLibraryRepository {
         do {
             
             let updatedFile = try coreDataStore.performSync(action)
-            let domainItem: MediaLibraryItem = updatedFile.toDomain()
+            let domainItem: MediaLibraryAudioFile = updatedFile.toDomain()
             return .success(domainItem)
             
         } catch {
@@ -98,7 +98,7 @@ extension CoreDataMediaLibraryRepository {
 
 extension CoreDataMediaLibraryRepository {
     
-    public func listFiles() async -> Result<[MediaLibraryItem], MediaLibraryRepositoryError> {
+    public func listFiles() async -> Result<[MediaLibraryAudioFile], MediaLibraryRepositoryError> {
         
         let request = ManagedAudioFile.fetchRequest()
         
@@ -136,7 +136,7 @@ extension CoreDataMediaLibraryRepository {
         return managedItems.first
     }
     
-    public func getInfo(fileId: UUID) async -> Result<MediaLibraryItem, MediaLibraryRepositoryError> {
+    public func getInfo(fileId: UUID) async -> Result<MediaLibraryAudioFile, MediaLibraryRepositoryError> {
         
         
         do {

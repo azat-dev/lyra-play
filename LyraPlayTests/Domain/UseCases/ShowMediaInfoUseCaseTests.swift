@@ -57,7 +57,7 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         let putImage = await imagesRepository.putFile(name: testImageName, data: testImageData)
         try AssertResultSucceded(putImage)
         
-        var testFileInfo = MediaLibraryItem.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
+        var testFileInfo = MediaLibraryAudioFile.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
         testFileInfo.coverImage = testImageName
         
         let putResult = await mediaLibraryRepository.putFile(info: testFileInfo)
@@ -85,7 +85,7 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
             defaultImage
         ) = createSUT()
         
-        let testFileInfo = MediaLibraryItem.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
+        let testFileInfo = MediaLibraryAudioFile.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
         
         let putResult = await mediaLibraryRepository.putFile(info: testFileInfo)
         let savedFileInfo = try AssertResultSucceded(putResult)
@@ -105,7 +105,7 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
             defaultImage
         ) = createSUT()
         
-        var testFileInfo = MediaLibraryItem.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
+        var testFileInfo = MediaLibraryAudioFile.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
         testFileInfo.coverImage = "someimage.png"
         
         let putResult = await mediaLibraryRepository.putFile(info: testFileInfo)

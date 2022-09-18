@@ -35,12 +35,12 @@
         </uniquenessConstraints>
     </entity>
     <entity name="ManagedLibraryItem" representedClassName="ManagedLibraryItem" syncable="YES">
-        <attribute name="coverImage" optional="YES" attributeType="String"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="file" optional="YES" attributeType="String"/>
         <attribute name="genre" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="image" optional="YES" attributeType="String"/>
         <attribute name="isFolder" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="lastPlayedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="metaInfo" optional="YES" attributeType="Binary"/>
@@ -74,7 +74,7 @@
     <elements>
         <element name="ManagedAudioFile" positionX="-63" positionY="-18" width="128" height="164"/>
         <element name="ManagedDictionaryItem" positionX="-63" positionY="54" width="128" height="134"/>
-        <element name="ManagedSubtitles" positionX="-63" positionY="54" width="128" height="74"/>
         <element name="ManagedLibraryItem" positionX="-63" positionY="72" width="128" height="254"/>
+        <element name="ManagedSubtitles" positionX="-63" positionY="54" width="128" height="74"/>
     </elements>
 </model>

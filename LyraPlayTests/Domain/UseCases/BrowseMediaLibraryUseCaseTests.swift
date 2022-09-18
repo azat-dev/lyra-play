@@ -35,9 +35,9 @@ class BrowseMediaLibraryUseCaseTests: XCTestCase {
         )
     }
     
-    private func getTestFile(index: Int) -> (info: MediaLibraryItem, data: Data) {
+    private func getTestFile(index: Int) -> (info: MediaLibraryAudioFile, data: Data) {
         return (
-            info: MediaLibraryItem.create(name: "Test \(index)", duration: 10, audioFile: "test.mp3"),
+            info: MediaLibraryAudioFile.create(name: "Test \(index)", duration: 10, audioFile: "test.mp3"),
             data: "Test \(index)".data(using: .utf8)!
         )
     }

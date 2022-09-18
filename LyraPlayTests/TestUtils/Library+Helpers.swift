@@ -8,11 +8,11 @@
 import Foundation
 import LyraPlay
 
-extension MediaLibraryItem {
+extension MediaLibraryAudioFile {
     
-    static func anyExistingItem() -> MediaLibraryItem {
+    static func anyExistingItem() -> MediaLibraryAudioFile {
         
-        return MediaLibraryItem(
+        return MediaLibraryAudioFile(
             id: UUID(),
             createdAt: .now,
             updatedAt: nil,

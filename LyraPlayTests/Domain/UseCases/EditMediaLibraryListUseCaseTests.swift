@@ -52,7 +52,7 @@ class EditMediaLibraryListUseCaseTests: XCTestCase {
         let sut = createSUT()
 
         // Given
-        let existingMedia: MediaLibraryItem = .anyExistingItem()
+        let existingMedia: MediaLibraryAudioFile = .anyExistingItem()
         let mediaId = existingMedia.id!
 
         given(await sut.mediaLibraryRepository.getInfo(fileId: mediaId))

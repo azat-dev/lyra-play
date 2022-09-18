@@ -51,7 +51,7 @@ extension ImportAudioFileUseCaseImpl {
         return "\(audioFileId).\(fileExtension)"
     }
     
-    public func importFile(originalFileName: String, fileData: Data) async -> Result<MediaLibraryItem, ImportAudioFileUseCaseError> {
+    public func importFile(originalFileName: String, fileData: Data) async -> Result<MediaLibraryAudioFile, ImportAudioFileUseCaseError> {
         
         let audioFileName = generateAudioFileName(originalName: originalFileName)
         
@@ -81,7 +81,7 @@ extension ImportAudioFileUseCaseImpl {
             }
         }
         
-        let audioFile = MediaLibraryItem(
+        let audioFile = MediaLibraryAudioFile(
             id: nil,
             createdAt: .now,
             updatedAt: nil,

@@ -10,9 +10,9 @@ import XCTest
 import CoreData
 
 
-extension MediaLibraryItem: Equatable {
+extension MediaLibraryAudioFile: Equatable {
     
-    public static func==(lhs: MediaLibraryItem, rhs: MediaLibraryItem) -> Bool {
+    public static func==(lhs: MediaLibraryAudioFile, rhs: MediaLibraryAudioFile) -> Bool {
         return lhs.id == rhs.id &&
             lhs.genre == rhs.genre &&
             lhs.artist == rhs.artist &&
@@ -22,9 +22,9 @@ extension MediaLibraryItem: Equatable {
     }
 }
 
-extension MediaLibraryItem: Comparable {
+extension MediaLibraryAudioFile: Comparable {
     
-    public static func < (lhs: MediaLibraryItem, rhs: MediaLibraryItem) -> Bool {
+    public static func < (lhs: MediaLibraryAudioFile, rhs: MediaLibraryAudioFile) -> Bool {
         
         if (lhs.id?.uuidString ?? "") < (rhs.id?.uuidString ?? "") ||
             lhs.name < rhs.name {
@@ -48,7 +48,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
     }
 
     @discardableResult
-    private func putAndCheckFile(library: MediaLibraryRepository, fileInfo: MediaLibraryItem, data fileData: Data) async throws -> MediaLibraryItem?  {
+    private func putAndCheckFile(library: MediaLibraryRepository, fileInfo: MediaLibraryAudioFile, data fileData: Data) async throws -> MediaLibraryAudioFile?  {
         
         let putResult = await library.putFile(info: fileInfo)
 
@@ -68,7 +68,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
         let library = createSUT()
         
-        let fileInfo = MediaLibraryItem(
+        let fileInfo = MediaLibraryAudioFile(
             id: nil,
             createdAt: nil,
             updatedAt: nil,
@@ -92,7 +92,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
 
         let library = createSUT()
         
-        let fileInfo1 = MediaLibraryItem(
+        let fileInfo1 = MediaLibraryAudioFile(
             id: nil,
             createdAt: nil,
             updatedAt: nil,
@@ -106,7 +106,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         let fileData1 = "data1".data(using: .utf8)!
         let savedFile1 = try await putAndCheckFile(library: library,  fileInfo: fileInfo1, data: fileData1)
         
-        let fileInfo2 = MediaLibraryItem(
+        let fileInfo2 = MediaLibraryAudioFile(
             id: nil,
             createdAt: .now,
             updatedAt: nil,
@@ -128,7 +128,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
         let library = createSUT()
         
-        let fileInfo1 = MediaLibraryItem(
+        let fileInfo1 = MediaLibraryAudioFile(
             id: nil,
             createdAt: nil,
             updatedAt: nil,
@@ -142,7 +142,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         let fileData1 = "data1".data(using: .utf8)!
         let savedFile1 = try await putAndCheckFile(library: library,  fileInfo: fileInfo1, data: fileData1)
         
-        var fileInfo2 = MediaLibraryItem(
+        var fileInfo2 = MediaLibraryAudioFile(
             id: savedFile1!.id,
             createdAt: savedFile1!.createdAt,
             updatedAt: savedFile1?.updatedAt,
@@ -168,7 +168,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
         let library = createSUT()
 
-        let fileInfo1 = MediaLibraryItem(
+        let fileInfo1 = MediaLibraryAudioFile(
             id: UUID(),
             createdAt: nil,
             updatedAt: nil,
@@ -192,7 +192,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
         let library = createSUT()
         
-        let fileInfo1 = MediaLibraryItem(
+        let fileInfo1 = MediaLibraryAudioFile(
             id: nil,
             createdAt: .now,
             updatedAt: nil,
@@ -206,7 +206,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         let fileData1 = "data1".data(using: .utf8)!
         try await putAndCheckFile(library: library, fileInfo: fileInfo1, data: fileData1)
         
-        let fileInfo2 = MediaLibraryItem(
+        let fileInfo2 = MediaLibraryAudioFile(
             id: UUID(),
             createdAt: .now,
             updatedAt: nil,
@@ -245,7 +245,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
         let library = createSUT()
         
-        let fileInfo1 = MediaLibraryItem(
+        let fileInfo1 = MediaLibraryAudioFile(
             id: nil,
             createdAt: .now,
             updatedAt: nil,
@@ -259,7 +259,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         let fileData1 = "data1".data(using: .utf8)!
         let savedFile1 = try await putAndCheckFile(library: library,  fileInfo: fileInfo1, data: fileData1)
         
-        let fileInfo2 = MediaLibraryItem(
+        let fileInfo2 = MediaLibraryAudioFile(
             id: nil,
             createdAt: .now,
             updatedAt: nil,
@@ -293,7 +293,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
         let library = createSUT()
         
-        var fileInfo1 = MediaLibraryItem(
+        var fileInfo1 = MediaLibraryAudioFile(
             id: nil,
             createdAt: .now,
             updatedAt: nil,
@@ -307,7 +307,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         let fileData1 = "data1".data(using: .utf8)!
         let savedFile1 = try await putAndCheckFile(library: library,  fileInfo: fileInfo1, data: fileData1)
         
-        var fileInfo2 = MediaLibraryItem(
+        var fileInfo2 = MediaLibraryAudioFile(
             id: nil,
             createdAt: .now,
             updatedAt: nil,
@@ -353,7 +353,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
         let library = createSUT()
         
-        let fileInfo1 = MediaLibraryItem(
+        let fileInfo1 = MediaLibraryAudioFile(
             id: nil,
             createdAt: .now,
             updatedAt: nil,

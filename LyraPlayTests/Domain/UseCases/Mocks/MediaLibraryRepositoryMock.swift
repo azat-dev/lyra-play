@@ -10,14 +10,14 @@ import LyraPlay
 
 class MediaLibraryRepositoryMockDeprecated: MediaLibraryRepository {
     
-    public var files = [MediaLibraryItem]()
+    public var files = [MediaLibraryAudioFile]()
     
-    func listFiles() async -> Result<[MediaLibraryItem], MediaLibraryRepositoryError> {
+    func listFiles() async -> Result<[MediaLibraryAudioFile], MediaLibraryRepositoryError> {
         
         return .success(files)
     }
     
-    func getInfo(fileId: UUID) async -> Result<MediaLibraryItem, MediaLibraryRepositoryError> {
+    func getInfo(fileId: UUID) async -> Result<MediaLibraryAudioFile, MediaLibraryRepositoryError> {
         
         guard let info = files.first(where: { $0.id == fileId }) else {
             return .failure(.fileNotFound)
@@ -26,7 +26,7 @@ class MediaLibraryRepositoryMockDeprecated: MediaLibraryRepository {
         return .success(info)
     }
     
-    func putNewFileWithId(info fileInfo: MediaLibraryItem) async -> Result<MediaLibraryItem, MediaLibraryRepositoryError> {
+    func putNewFileWithId(info fileInfo: MediaLibraryAudioFile) async -> Result<MediaLibraryAudioFile, MediaLibraryRepositoryError> {
         
         let fileId = fileInfo.id!
         
@@ -40,7 +40,7 @@ class MediaLibraryRepositoryMockDeprecated: MediaLibraryRepository {
         return .success(fileInfo)
     }
     
-    func putFile(info fileInfo: MediaLibraryItem) async -> Result<MediaLibraryItem, MediaLibraryRepositoryError> {
+    func putFile(info fileInfo: MediaLibraryAudioFile) async -> Result<MediaLibraryAudioFile, MediaLibraryRepositoryError> {
         
         guard let fileId = fileInfo.id else {
             

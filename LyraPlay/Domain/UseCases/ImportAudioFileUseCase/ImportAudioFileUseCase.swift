@@ -20,7 +20,7 @@ public protocol ImportAudioFileUseCaseOutput {
     func importFile(
         originalFileName: String,
         fileData: Data
-    ) async -> Result<MediaLibraryItem, ImportAudioFileUseCaseError>
+    ) async -> Result<MediaLibraryAudioFile, ImportAudioFileUseCaseError>
 }
 
 public protocol ImportAudioFileUseCase: ImportAudioFileUseCaseOutput, ImportAudioFileUseCaseInput {}

@@ -2,58 +2,79 @@
 //  MediaLibraryItem.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 24.06.22.
+//  Created by Azat Kaiumov on 18.09.22.
 //
 
 import Foundation
 
-public struct MediaLibraryItem {
+public enum MediaLibraryItem {
     
-    public var id: UUID?
-    public var createdAt: Date?
-    public var updatedAt: Date?
-    public var name: String
-    public var artist: String?
-    public var duration: Double
-    public var genre: String?
-    public var coverImage: String?
-    public var audioFile: String
+    case file(MediaLibraryFile)
+    case folder(MediaLibraryFolder)
+}
+
+public struct MediaLibraryFolder {
+    
+    public let id: UUID
+    public let createdAt: Date
+    public let updatedAt: Date?
+    public var title: String
+    public var image: String?
     
     public init(
-        id: UUID?,
-        createdAt: Date?,
+        id: UUID,
+        createdAt: Date,
         updatedAt: Date?,
-        name: String,
-        duration: Double,
-        audioFile: String,
-        artist: String? = nil,
-        genre: String? = nil,
-        coverImage: String? = nil
+        title: String,
+        image: String?
     ) {
         
         self.id = id
         self.createdAt = createdAt
         self.updatedAt = updatedAt
-        self.name = name
-        self.artist = artist
-        self.genre = genre
-        self.coverImage = coverImage
-        self.audioFile = audioFile
-        self.duration = duration
+        self.title = title
+        self.image = image
     }
 }
 
-public extension MediaLibraryItem {
+public struct MediaLibraryFile {
     
-    static func create(name: String, duration: Double, audioFile: String) -> MediaLibraryItem {
+    public let id: UUID
+    public let createdAt: Date
+    public let updatedAt: Date?
+    public var title: String
+    public var subtitle: String
+    public var file: String
+    public var image: String?
+    public var genre: String?
+    public var duration: Double
+    public var lastPlayedAt: Date?
+    public var playedTime: Double
+
+    public init(
+        id: UUID,
+        createdAt: Date,
+        updatedAt: Date?,
+        title: String,
+        subtitle: String,
+        file: String,
+        duration: Double,
+        image: String?,
+        genre: String?,
+        lastPlayedAt: Date? = nil,
+        playedTime: Double = 0
+    ) {
         
-        return MediaLibraryItem(
-            id: nil,
-            createdAt: nil,
-            updatedAt: nil,
-            name: name,
-            duration: duration,
-            audioFile: audioFile
-        )
+        self.id = id
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+        self.title = title
+        self.subtitle = subtitle
+        self.file = file
+        self.image = image
+        self.genre = genre
+        self.duration = duration
+        self.lastPlayedAt = lastPlayedAt
+        self.playedTime = playedTime
     }
 }
