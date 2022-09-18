@@ -12,6 +12,7 @@ public enum MediaLibraryRepositoryError: Error {
     case fileNotFound
     case nameMustBeUnique
     case parentNotFound
+    case parentIsNotFolder
     case internalError(Error?)
 }
 
@@ -45,6 +46,24 @@ public struct NewMediaLibraryFileData: Equatable {
     }
 }
 
+public struct NewMediaLibraryFolderData: Equatable {
+    
+    public var parentId: UUID?
+    public var title: String
+    public var image: String?
+
+    public init(
+        parentId: UUID?,
+        title: String,
+        image: String?
+    ) {
+        
+        self.parentId = parentId
+        self.title = title
+        self.image = image
+    }
+}
+
 
 public protocol MediaLibraryRepositoryInput {
     
@@ -53,6 +72,8 @@ public protocol MediaLibraryRepositoryInput {
     func delete(fileId: UUID) async -> Result<Void, MediaLibraryRepositoryError>
     
     func createFile(data: NewMediaLibraryFileData) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError>
+    
+    func createFolder(data: NewMediaLibraryFolderData) async -> Result<MediaLibraryFolder, MediaLibraryRepositoryError>
 }
 
 public protocol MediaLibraryRepositoryOutput {

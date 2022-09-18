@@ -70,11 +70,9 @@ fileprivate extension MediaLibraryRepositoryError {
     func map() -> ShowMediaInfoUseCaseError {
         
         switch self {
-        case .nameMustBeUnique:
-            fatalError()
             
-        case .parentNotFound:
-            fatalError()
+        case .parentNotFound, .nameMustBeUnique, .parentIsNotFolder:
+            return .internalError(nil)
             
         case .fileNotFound:
             return .trackNotFound

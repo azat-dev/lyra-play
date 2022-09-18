@@ -105,11 +105,8 @@ fileprivate extension MediaLibraryRepositoryError {
         
         switch self {
             
-        case .parentNotFound:
-            fatalError()
-            
-        case .nameMustBeUnique:
-            fatalError()
+        case .parentNotFound, .nameMustBeUnique, .parentIsNotFolder:
+            return .internalError(nil)
             
         case .fileNotFound:
             return .itemNotFound

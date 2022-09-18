@@ -9,32 +9,6 @@ import XCTest
 @testable import LyraPlay
 import CoreData
 
-
-extension MediaLibraryAudioFile: Equatable {
-    
-    public static func==(lhs: MediaLibraryAudioFile, rhs: MediaLibraryAudioFile) -> Bool {
-        return lhs.id == rhs.id &&
-            lhs.genre == rhs.genre &&
-            lhs.artist == rhs.artist &&
-            lhs.name == rhs.name &&
-            lhs.updatedAt == rhs.updatedAt &&
-            lhs.createdAt == rhs.createdAt
-    }
-}
-
-extension MediaLibraryAudioFile: Comparable {
-    
-    public static func < (lhs: MediaLibraryAudioFile, rhs: MediaLibraryAudioFile) -> Bool {
-        
-        if (lhs.id?.uuidString ?? "") < (rhs.id?.uuidString ?? "") ||
-            lhs.name < rhs.name {
-            return true
-        }
-        
-        return false
-    }
-}
-
 class CoreDataMediaLibraryRepositoryTests: XCTestCase {
     
     func createSUT(file: StaticString = #filePath, line: UInt = #line) -> MediaLibraryRepository{
@@ -90,7 +64,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
     
     private func anyNewFile(parentId: UUID? = nil) -> NewMediaLibraryFileData {
         
-        return NewMediaLibraryFileData(
+        return .init(
             parentId: parentId,
             title: "Title",
             subtitle: "Subtitle",
@@ -98,6 +72,15 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
             duration: 111,
             image: "test.png",
             genre: "genre"
+        )
+    }
+    
+    private func anyNewFolder(parentId: UUID? = nil) -> NewMediaLibraryFolderData {
+        
+        return .init(
+            parentId: parentId,
+            title: "Title",
+            image: "test.png"
         )
     }
     
@@ -164,6 +147,75 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
         // When
         let result = await sut.createFile(data: newFile)
+        
+        // Then
+        let error = try AssertResultFailed(result)
+        
+        guard case .parentNotFound = error else {
+            
+            XCTFail("Wrong error type \(error)")
+            return
+        }
+    }
+    
+    func test_create_folder__empty_list() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        
+        let newFolder = anyNewFolder()
+        
+        // When
+        let result = await sut.createFolder(data: newFolder)
+        
+        // Then
+        let savedFolder = try AssertResultSucceded(result)
+        
+        // Then
+        let fetchResult = await sut.getItem(id: savedFolder.id)
+        let receivedItem = try AssertResultSucceded(fetchResult)
+        
+        AssertEqualReadable(.folder(savedFolder), receivedItem)
+        
+        guard case .folder(let fetchedFolder) = receivedItem else {
+            XCTFail("Wrong library item type \(receivedItem)")
+            return
+        }
+        
+        XCTAssertEqual(fetchedFolder.title, newFolder.title)
+    }
+    
+    func test_create_folder__with_existing_title() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        let newFolder = anyNewFolder()
+        
+        // When
+        let _ = await sut.createFolder(data: newFolder)
+        let result = await sut.createFolder(data: newFolder)
+        
+        // Then
+        let error = try AssertResultFailed(result)
+        
+        guard case .nameMustBeUnique = error else {
+            
+            XCTFail("Wrong error type \(error)")
+            return
+        }
+    }
+    
+    func test_create_folder__with_not_existing_parent() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        let newFolder = anyNewFolder(parentId: UUID())
+        
+        // When
+        let result = await sut.createFolder(data: newFolder)
         
         // Then
         let error = try AssertResultFailed(result)
@@ -476,4 +528,32 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         let result = await sut.delete(fileId: savedFile1!.id!)
         try AssertResultSucceded(result)
     }    
+}
+
+// MARK: - Helpers
+
+
+extension MediaLibraryAudioFile: Equatable {
+    
+    public static func==(lhs: MediaLibraryAudioFile, rhs: MediaLibraryAudioFile) -> Bool {
+        return lhs.id == rhs.id &&
+            lhs.genre == rhs.genre &&
+            lhs.artist == rhs.artist &&
+            lhs.name == rhs.name &&
+            lhs.updatedAt == rhs.updatedAt &&
+            lhs.createdAt == rhs.createdAt
+    }
+}
+
+extension MediaLibraryAudioFile: Comparable {
+    
+    public static func < (lhs: MediaLibraryAudioFile, rhs: MediaLibraryAudioFile) -> Bool {
+        
+        if (lhs.id?.uuidString ?? "") < (rhs.id?.uuidString ?? "") ||
+            lhs.name < rhs.name {
+            return true
+        }
+        
+        return false
+    }
 }

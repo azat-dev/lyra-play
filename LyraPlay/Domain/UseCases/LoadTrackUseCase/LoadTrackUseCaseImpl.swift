@@ -56,14 +56,11 @@ fileprivate extension MediaLibraryRepositoryError {
         
         switch self {
         
-        case .parentNotFound:
-            fatalError()
-        
-        case .nameMustBeUnique:
-            fatalError()
-            
         case .fileNotFound:
             return .trackNotFound
+            
+        case .parentIsNotFolder, .nameMustBeUnique, .parentNotFound:
+            return .internalError(nil)
             
         case .internalError(let err):
             return.internalError(err)

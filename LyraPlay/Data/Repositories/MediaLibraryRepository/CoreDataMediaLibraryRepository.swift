@@ -71,14 +71,22 @@ extension CoreDataMediaLibraryRepository {
         }
     }
     
-    public func createFile(data: NewMediaLibraryFileData) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError> {
+    private func createItem<DomainType>(
+        parentId: UUID?,
+        fillDTO: (inout ManagedLibraryItem) -> Void,
+        mapToDomainType: (ManagedLibraryItem) -> DomainType
+    ) async -> Result<DomainType, MediaLibraryRepositoryError> {
         
-        if let parentId = data.parentId {
+        if let parentId = parentId {
             
             do {
                 
-                guard let _ = try await getManagedItem(id: parentId) else {
+                guard let parentItem = try await getManagedItem(id: parentId) else {
                     return .failure(.parentNotFound)
+                }
+                
+                guard parentItem.isFolder else {
+                    return .failure(.parentIsNotFolder)
                 }
                 
             } catch {
@@ -88,28 +96,22 @@ extension CoreDataMediaLibraryRepository {
         
         let action = { (context: NSManagedObjectContext) throws -> ManagedLibraryItem in
             
-            let newItem = ManagedLibraryItem(context: context)
+            var newItem = ManagedLibraryItem(context: context)
 
-            newItem.id = UUID()
-            newItem.parentId = data.parentId ?? ManagedLibraryItem.emptyId
-            newItem.isFolder = false
-            newItem.createdAt = .now
-            newItem.title = data.title
-            newItem.subtitle = data.subtitle
-            newItem.file = data.file
-            newItem.playedTime = 0
-            newItem.duration = data.duration
-            newItem.genre = data.genre
-            newItem.image = data.image
+            fillDTO(&newItem)
             
+            newItem.id = UUID()
+            newItem.createdAt = .now
+            newItem.parentId = newItem.parentId ?? ManagedLibraryItem.emptyId
+
             try context.save()
             return newItem
         }
         
         do {
             
-            let newFile = try coreDataStore.performSync(action)
-            return .success(newFile.toDomainFile())
+            let newItem = try coreDataStore.performSync(action)
+            return .success(mapToDomainType(newItem))
             
         } catch {
             
@@ -130,6 +132,45 @@ extension CoreDataMediaLibraryRepository {
             
             return .failure(.internalError(error))
         }
+    }
+    
+    public func createFile(data: NewMediaLibraryFileData) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError> {
+        
+        return await createItem(
+            parentId: data.parentId,
+            fillDTO: { newItem in
+
+                newItem.isFolder = false
+                newItem.title = data.title
+                newItem.subtitle = data.subtitle
+                newItem.file = data.file
+                newItem.playedTime = 0
+                newItem.duration = data.duration
+                newItem.genre = data.genre
+                newItem.image = data.image
+
+            },
+            mapToDomainType: { item in
+              return item.toDomainFile()
+            }
+        )
+    }
+    
+    public func createFolder(data: NewMediaLibraryFolderData) async -> Result<MediaLibraryFolder, MediaLibraryRepositoryError> {
+        
+        return await createItem(
+            parentId: data.parentId,
+            fillDTO: { newItem in
+
+                newItem.isFolder = true
+                newItem.title = data.title
+                newItem.image = data.image
+
+            },
+            mapToDomainType: { item in
+              return item.toDomainFolder()
+            }
+        )
     }
     
     public func delete(fileId: UUID) async -> Result<Void, MediaLibraryRepositoryError> {
