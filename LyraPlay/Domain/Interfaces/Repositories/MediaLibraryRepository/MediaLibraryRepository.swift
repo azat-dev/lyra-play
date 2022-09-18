@@ -10,11 +10,14 @@ import Foundation
 public enum MediaLibraryRepositoryError: Error {
     
     case fileNotFound
+    case nameMustBeUnique
+    case parentNotFound
     case internalError(Error?)
 }
 
 public struct NewMediaLibraryFileData: Equatable {
     
+    public var parentId: UUID?
     public var title: String
     public var subtitle: String
     public var file: String
@@ -23,6 +26,7 @@ public struct NewMediaLibraryFileData: Equatable {
     public var duration: Double
 
     public init(
+        parentId: UUID?,
         title: String,
         subtitle: String,
         file: String,
@@ -31,6 +35,7 @@ public struct NewMediaLibraryFileData: Equatable {
         genre: String?
     ) {
         
+        self.parentId = parentId
         self.title = title
         self.subtitle = subtitle
         self.file = file
@@ -59,6 +64,4 @@ public protocol MediaLibraryRepositoryOutput {
     func getItem(id: UUID) async -> Result<MediaLibraryItem, MediaLibraryRepositoryError>
 }
 
-public protocol MediaLibraryRepository: MediaLibraryRepositoryOutput, MediaLibraryRepositoryInput {
-    
-}
+public protocol MediaLibraryRepository: MediaLibraryRepositoryOutput, MediaLibraryRepositoryInput {}

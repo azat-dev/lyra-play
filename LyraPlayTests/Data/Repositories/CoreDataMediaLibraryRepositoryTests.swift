@@ -88,13 +88,10 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
     }
     
-    func test_create_file__empty_list() async throws {
+    private func anyNewFile(parentId: UUID? = nil) -> NewMediaLibraryFileData {
         
-        let sut = createSUT()
-        
-        // Given
-        
-        let newFile = NewMediaLibraryFileData(
+        return NewMediaLibraryFileData(
+            parentId: parentId,
             title: "Title",
             subtitle: "Subtitle",
             file: "test.mp3",
@@ -102,6 +99,15 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
             image: "test.png",
             genre: "genre"
         )
+    }
+    
+    func test_create_file__empty_list() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        
+        let newFile = anyNewFile()
         
         // When
         let result = await sut.createFile(data: newFile)
@@ -126,6 +132,47 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         XCTAssertEqual(fetchedFile.duration, newFile.duration)
         XCTAssertEqual(fetchedFile.image, newFile.image)
         XCTAssertEqual(fetchedFile.duration, newFile.duration)
+    }
+    
+    func test_create_file__with_existing_title() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        let newFile = anyNewFile()
+        
+        // When
+        let _ = await sut.createFile(data: newFile)
+        let result = await sut.createFile(data: newFile)
+        
+        // Then
+        let error = try AssertResultFailed(result)
+        
+        guard case .nameMustBeUnique = error else {
+            
+            XCTFail("Wrong error type \(error)")
+            return
+        }
+    }
+    
+    func test_create_file__with_not_existing_parent() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        let newFile = anyNewFile(parentId: UUID())
+        
+        // When
+        let result = await sut.createFile(data: newFile)
+        
+        // Then
+        let error = try AssertResultFailed(result)
+        
+        guard case .parentNotFound = error else {
+            
+            XCTFail("Wrong error type \(error)")
+            return
+        }
     }
     
     func testCreateNewRecordNotEmptyList() async throws {

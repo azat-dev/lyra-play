@@ -73,11 +73,25 @@ extension CoreDataMediaLibraryRepository {
     
     public func createFile(data: NewMediaLibraryFileData) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError> {
         
+        if let parentId = data.parentId {
+            
+            do {
+                
+                guard let _ = try await getManagedItem(id: parentId) else {
+                    return .failure(.parentNotFound)
+                }
+                
+            } catch {
+                return .failure(.internalError(error))
+            }
+        }
+        
         let action = { (context: NSManagedObjectContext) throws -> ManagedLibraryItem in
             
             let newItem = ManagedLibraryItem(context: context)
 
             newItem.id = UUID()
+            newItem.parentId = data.parentId ?? ManagedLibraryItem.emptyId
             newItem.isFolder = false
             newItem.createdAt = .now
             newItem.title = data.title
@@ -98,6 +112,22 @@ extension CoreDataMediaLibraryRepository {
             return .success(newFile.toDomainFile())
             
         } catch {
+            
+            guard
+                let conflictList = (error as NSError).userInfo["conflictList"] as? [NSConstraintConflict]
+            else {
+                return .failure(.internalError(error))
+            }
+            
+            let isConflict = conflictList.contains { item in
+                item.constraint.contains(#keyPath(ManagedLibraryItem.parentId)) &&
+                item.constraint.contains(#keyPath(ManagedLibraryItem.title))
+            }
+            
+            if isConflict {
+                return .failure(.nameMustBeUnique)
+            }
+            
             return .failure(.internalError(error))
         }
     }

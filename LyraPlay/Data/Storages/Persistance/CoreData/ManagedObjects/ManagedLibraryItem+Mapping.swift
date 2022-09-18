@@ -10,6 +10,8 @@ import CoreData
 
 extension ManagedLibraryItem {
     
+    public static let emptyId = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
+    
     func toDomainFile() -> MediaLibraryFile {
         
         guard !isFolder else {
@@ -18,6 +20,7 @@ extension ManagedLibraryItem {
         
         return .init(
             id: id!,
+            parentId: parentId == Self.emptyId ? nil : parentId,
             createdAt: createdAt!,
             updatedAt: updatedAt,
             title: title!,
@@ -39,6 +42,7 @@ extension ManagedLibraryItem {
         
         return .init(
             id: id!,
+            parentId: parentId == Self.emptyId ? nil : parentId,
             createdAt: createdAt!,
             updatedAt: updatedAt,
             title: title!,

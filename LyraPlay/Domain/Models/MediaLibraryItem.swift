@@ -16,6 +16,7 @@ public enum MediaLibraryItem: Equatable {
 public struct MediaLibraryFolder: Equatable {
     
     public let id: UUID
+    public var parentId: UUID?
     public let createdAt: Date
     public let updatedAt: Date?
     public var title: String
@@ -23,6 +24,7 @@ public struct MediaLibraryFolder: Equatable {
     
     public init(
         id: UUID,
+        parentId: UUID?,
         createdAt: Date,
         updatedAt: Date?,
         title: String,
@@ -30,6 +32,7 @@ public struct MediaLibraryFolder: Equatable {
     ) {
         
         self.id = id
+        self.parentId = parentId
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.title = title
@@ -40,6 +43,7 @@ public struct MediaLibraryFolder: Equatable {
 public struct MediaLibraryFile: Equatable {
     
     public let id: UUID
+    public var parentId: UUID?
     public let createdAt: Date
     public let updatedAt: Date?
     public var title: String
@@ -53,6 +57,7 @@ public struct MediaLibraryFile: Equatable {
 
     public init(
         id: UUID,
+        parentId: UUID?,
         createdAt: Date,
         updatedAt: Date?,
         title: String,
@@ -66,6 +71,7 @@ public struct MediaLibraryFile: Equatable {
     ) {
         
         self.id = id
+        self.parentId = parentId
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.title = title
