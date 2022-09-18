@@ -31,7 +31,7 @@ extension CoreDataMediaLibraryRepository {
         var existingFile: ManagedAudioFile? = nil
         
         if let fileId = file.id {
-            existingFile = try? await getManagedItem(id: fileId)
+            existingFile = try? await getManagedItemDeprecated(id: fileId)
             
             if existingFile == nil {
                 return .failure(.fileNotFound)
@@ -73,7 +73,7 @@ extension CoreDataMediaLibraryRepository {
     
     public func delete(fileId: UUID) async -> Result<Void, MediaLibraryRepositoryError> {
         
-        guard let managedFile = try? await getManagedItem(id: fileId) else {
+        guard let managedFile = try? await getManagedItemDeprecated(id: fileId) else {
             return .failure(.fileNotFound)
         }
         
@@ -117,7 +117,7 @@ extension CoreDataMediaLibraryRepository {
         }
     }
     
-    private func getManagedItem(id: UUID) async throws -> ManagedAudioFile?  {
+    private func getManagedItemDeprecated(id: UUID) async throws -> ManagedAudioFile?  {
         
         let request = ManagedAudioFile.fetchRequest()
         request.fetchLimit = 1
@@ -140,7 +140,43 @@ extension CoreDataMediaLibraryRepository {
         
         
         do {
-            let managedItem = try await getManagedItem(id: fileId)
+            let managedItem = try await getManagedItemDeprecated(id: fileId)
+            
+            guard let item = managedItem?.toDomain() else {
+                return .failure(.fileNotFound)
+            }
+            
+            return .success(item)
+            
+        } catch {
+            
+            return .failure(.internalError(error))
+        }
+    }
+    
+    private func getManagedItem(id: UUID) async throws -> ManagedLibraryItem?  {
+        
+        let request = ManagedLibraryItem.fetchRequest()
+        request.fetchLimit = 1
+        request.resultType = .managedObjectResultType
+        request.predicate = NSPredicate(
+            format: "%K = %@",
+            (\ManagedAudioFile.id)._kvcKeyPathString!,
+            id.uuidString
+        )
+        
+        let managedItems = try coreDataStore.performSync { context -> [ManagedLibraryItem] in
+            
+            return try context.fetch(request)
+        }
+        
+        return managedItems.first
+    }
+    
+    public func getItem(id: UUID) async -> Result<MediaLibraryItem, MediaLibraryRepositoryError> {
+        
+        do {
+            let managedItem = try await getManagedItem(id: id)
             
             guard let item = managedItem?.toDomain() else {
                 return .failure(.fileNotFound)

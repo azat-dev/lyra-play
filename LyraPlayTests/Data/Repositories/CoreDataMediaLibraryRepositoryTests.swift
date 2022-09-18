@@ -241,6 +241,25 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         }
     }
     
+    func test_get_item__empty_list() async throws {
+        
+        let library = createSUT()
+        
+        // Given
+        let itemId = UUID()
+        
+        // When
+        let result = await library.getItem(id: itemId)
+        
+        // Then
+        let error = try AssertResultFailed(result)
+        
+        guard case .fileNotFound = error else {
+            XCTFail("Wrong error")
+            return
+        }
+    }
+    
     func testGetRecordNotEmptyList() async throws {
         
         let library = createSUT()

@@ -26,6 +26,11 @@ class MediaLibraryRepositoryMockDeprecated: MediaLibraryRepository {
         return .success(info)
     }
     
+    func getItem(id: UUID) async -> Result<MediaLibraryItem, MediaLibraryRepositoryError> {
+        
+        fatalError()
+    }
+    
     func putNewFileWithId(info fileInfo: MediaLibraryAudioFile) async -> Result<MediaLibraryAudioFile, MediaLibraryRepositoryError> {
         
         let fileId = fileInfo.id!

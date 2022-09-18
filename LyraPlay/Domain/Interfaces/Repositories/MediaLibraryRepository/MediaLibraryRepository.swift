@@ -25,6 +25,8 @@ public protocol MediaLibraryRepositoryOutput {
     func listFiles() async -> Result<[MediaLibraryAudioFile], MediaLibraryRepositoryError>
     
     func getInfo(fileId: UUID) async -> Result<MediaLibraryAudioFile, MediaLibraryRepositoryError>
+    
+    func getItem(id: UUID) async -> Result<MediaLibraryItem, MediaLibraryRepositoryError>
 }
 
 public protocol MediaLibraryRepository: MediaLibraryRepositoryOutput, MediaLibraryRepositoryInput {

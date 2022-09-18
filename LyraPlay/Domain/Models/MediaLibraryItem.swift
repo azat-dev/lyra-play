@@ -7,13 +7,13 @@
 
 import Foundation
 
-public enum MediaLibraryItem {
+public enum MediaLibraryItem: Equatable {
     
     case file(MediaLibraryFile)
     case folder(MediaLibraryFolder)
 }
 
-public struct MediaLibraryFolder {
+public struct MediaLibraryFolder: Equatable {
     
     public let id: UUID
     public let createdAt: Date
@@ -37,7 +37,7 @@ public struct MediaLibraryFolder {
     }
 }
 
-public struct MediaLibraryFile {
+public struct MediaLibraryFile: Equatable {
     
     public let id: UUID
     public let createdAt: Date
