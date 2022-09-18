@@ -291,4 +291,8 @@ extension CoreDataMediaLibraryRepository {
             return .failure(.internalError(error))
         }
     }
+    
+    public func listItems(folderId: UUID?) async -> Result<[MediaLibraryItem], MediaLibraryRepositoryError> {
+        return .success([])
+    }
 }

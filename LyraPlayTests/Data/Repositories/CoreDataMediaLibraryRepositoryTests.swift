@@ -11,7 +11,9 @@ import CoreData
 
 class CoreDataMediaLibraryRepositoryTests: XCTestCase {
     
-    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> MediaLibraryRepository{
+    typealias SUT = MediaLibraryRepository
+    
+    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
 
         let storeURL = URL(fileURLWithPath: "/dev/null")
         let coreDataStore = try! CoreDataStore(storeURL: storeURL)
@@ -62,11 +64,11 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
     }
     
-    private func anyNewFile(parentId: UUID? = nil) -> NewMediaLibraryFileData {
+    private func anyNewFile(parentId: UUID? = nil, title: String = "Title") -> NewMediaLibraryFileData {
         
         return .init(
             parentId: parentId,
-            title: "Title",
+            title: title,
             subtitle: "Subtitle",
             file: "test.mp3",
             duration: 111,
@@ -75,11 +77,11 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         )
     }
     
-    private func anyNewFolder(parentId: UUID? = nil) -> NewMediaLibraryFolderData {
+    private func anyNewFolder(parentId: UUID? = nil, title: String = "Title") -> NewMediaLibraryFolderData {
         
         return .init(
             parentId: parentId,
-            title: "Title",
+            title: title,
             image: "test.png"
         )
     }
@@ -445,6 +447,80 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         let files = try AssertResultSucceded(result)
         
         XCTAssertTrue(files.isEmpty)
+    }
+    
+    private func given(sut: SUT, withFolderTitles titles: [String], parentId: UUID? = nil) async throws -> [MediaLibraryFolder] {
+        
+        var items = [MediaLibraryFolder]()
+        
+        for title in titles {
+            
+            let folder = anyNewFolder(parentId: parentId, title: title)
+            let resultFolder = await sut.createFolder(data: folder)
+            let savedFolder = try AssertResultSucceded(resultFolder)
+            
+            items.append(savedFolder)
+        }
+        
+        return items
+    }
+    
+    private func given(sut: SUT, folderId: UUID?, withFiles titles: [String]) async throws -> [MediaLibraryFile] {
+        
+        var items = [MediaLibraryFile]()
+        
+        for title in titles {
+            
+            let folder = anyNewFile(parentId: folderId, title: title)
+            let resultFile = await sut.createFile(data: folder)
+            let savedFile = try AssertResultSucceded(resultFile)
+            
+            items.append(savedFile)
+        }
+        
+        return items
+    }
+    
+    func test_listItems__empty_list() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        // Empty list
+        
+        // When
+        let result = await sut.listItems(folderId: nil)
+        
+        // Then
+        let files = try AssertResultSucceded(result)
+        XCTAssertTrue(files.isEmpty)
+    }
+    
+    func test_listItems__not_empty_list() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        let folders = try await given(sut: sut, withFolderTitles: ["folder1", "folder2"])
+        
+        let folderId1 = folders[0].id
+        let folderId2 = folders[1].id
+        
+        let files1 = try await given(sut: sut, folderId: folderId1, withFiles: ["file1", "file2"])
+        
+        // When
+        let resultFolder1 = await sut.listItems(folderId: folderId1)
+        
+        // Then
+        let listedFilesInFolder1 = try AssertResultSucceded(resultFolder1)
+        AssertEqualReadable(listedFilesInFolder1, files1.map { .file($0) })
+        
+        // When
+        let resultFolder2 = await sut.listItems(folderId: folderId2)
+        
+        // Then
+        let listedFilesInFolder2 = try AssertResultSucceded(resultFolder2)
+        XCTAssertTrue(listedFilesInFolder2.isEmpty)
     }
     
     func test_list_files_not_empty_list() async throws {

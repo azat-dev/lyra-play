@@ -80,6 +80,8 @@ public protocol MediaLibraryRepositoryOutput {
     
     func listFiles() async -> Result<[MediaLibraryAudioFile], MediaLibraryRepositoryError>
     
+    func listItems(folderId: UUID?) async -> Result<[MediaLibraryItem], MediaLibraryRepositoryError>
+    
     func getInfo(fileId: UUID) async -> Result<MediaLibraryAudioFile, MediaLibraryRepositoryError>
     
     func getItem(id: UUID) async -> Result<MediaLibraryItem, MediaLibraryRepositoryError>
