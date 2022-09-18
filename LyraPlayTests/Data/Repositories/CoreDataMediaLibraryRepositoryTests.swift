@@ -66,7 +66,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
     
     func testCreateNewRecordEmptyList() async throws {
         
-        let library = createSUT()
+        let sut = createSUT()
         
         let fileInfo = MediaLibraryAudioFile(
             id: nil,
@@ -80,7 +80,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         )
         let fileData = "data".data(using: .utf8)!
         
-        let savedFile = try await putAndCheckFile(library: library, fileInfo: fileInfo, data: fileData)
+        let savedFile = try await putAndCheckFile(library: sut, fileInfo: fileInfo, data: fileData)
         
         XCTAssertNotNil(savedFile)
         XCTAssertNotNil(savedFile?.createdAt)
@@ -88,9 +88,49 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
     }
     
+    func test_create_file__empty_list() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        
+        let newFile = NewMediaLibraryFileData(
+            title: "Title",
+            subtitle: "Subtitle",
+            file: "test.mp3",
+            duration: 111,
+            image: "test.png",
+            genre: "genre"
+        )
+        
+        // When
+        let result = await sut.createFile(data: newFile)
+        
+        // Then
+        let savedFile = try AssertResultSucceded(result)
+        
+        // Then
+        let fetchResult = await sut.getItem(id: savedFile.id)
+        let receivedItem = try AssertResultSucceded(fetchResult)
+        
+        AssertEqualReadable(.file(savedFile), receivedItem)
+        
+        guard case .file(let fetchedFile) = receivedItem else {
+            XCTFail("Wrong library item type \(receivedItem)")
+            return
+        }
+        
+        XCTAssertEqual(fetchedFile.title, newFile.title)
+        XCTAssertEqual(fetchedFile.subtitle, newFile.subtitle)
+        XCTAssertEqual(fetchedFile.file, newFile.file)
+        XCTAssertEqual(fetchedFile.duration, newFile.duration)
+        XCTAssertEqual(fetchedFile.image, newFile.image)
+        XCTAssertEqual(fetchedFile.duration, newFile.duration)
+    }
+    
     func testCreateNewRecordNotEmptyList() async throws {
 
-        let library = createSUT()
+        let sut = createSUT()
         
         let fileInfo1 = MediaLibraryAudioFile(
             id: nil,
@@ -104,7 +144,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData1 = "data1".data(using: .utf8)!
-        let savedFile1 = try await putAndCheckFile(library: library,  fileInfo: fileInfo1, data: fileData1)
+        let savedFile1 = try await putAndCheckFile(library: sut,  fileInfo: fileInfo1, data: fileData1)
         
         let fileInfo2 = MediaLibraryAudioFile(
             id: nil,
@@ -118,7 +158,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData2 = "data2".data(using: .utf8)!
-        let savedFile2 = try await putAndCheckFile(library: library,  fileInfo: fileInfo2, data: fileData2)
+        let savedFile2 = try await putAndCheckFile(library: sut,  fileInfo: fileInfo2, data: fileData2)
 
         XCTAssertNotEqual(savedFile1?.id, savedFile2?.id)
         XCTAssertNotEqual(savedFile1, savedFile2)
@@ -126,7 +166,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
     
     func testUpdateExistingRecord() async throws {
         
-        let library = createSUT()
+        let sut = createSUT()
         
         let fileInfo1 = MediaLibraryAudioFile(
             id: nil,
@@ -140,7 +180,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData1 = "data1".data(using: .utf8)!
-        let savedFile1 = try await putAndCheckFile(library: library,  fileInfo: fileInfo1, data: fileData1)
+        let savedFile1 = try await putAndCheckFile(library: sut,  fileInfo: fileInfo1, data: fileData1)
         
         var fileInfo2 = MediaLibraryAudioFile(
             id: savedFile1!.id,
@@ -154,7 +194,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData2 = "data2".data(using: .utf8)!
-        let savedFile2 = try await putAndCheckFile(library: library,  fileInfo: fileInfo2, data: fileData2)
+        let savedFile2 = try await putAndCheckFile(library: sut,  fileInfo: fileInfo2, data: fileData2)
 
         XCTAssertEqual(savedFile1?.id, savedFile2?.id)
         XCTAssertEqual(savedFile1?.createdAt, savedFile2?.createdAt)
@@ -166,7 +206,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
     
     func testUpdateNotExistingRecordEmptyList() async throws {
         
-        let library = createSUT()
+        let sut = createSUT()
 
         let fileInfo1 = MediaLibraryAudioFile(
             id: UUID(),
@@ -179,7 +219,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
             genre: "Genre1"
         )
         
-        let result = await library.putFile(info: fileInfo1)
+        let result = await sut.putFile(info: fileInfo1)
         let error = try AssertResultFailed(result)
         
         guard case .fileNotFound = error else {
@@ -190,7 +230,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
 
     func testUpdateNotExistingRecordNotEmptyList() async throws {
         
-        let library = createSUT()
+        let sut = createSUT()
         
         let fileInfo1 = MediaLibraryAudioFile(
             id: nil,
@@ -204,7 +244,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData1 = "data1".data(using: .utf8)!
-        try await putAndCheckFile(library: library, fileInfo: fileInfo1, data: fileData1)
+        try await putAndCheckFile(library: sut, fileInfo: fileInfo1, data: fileData1)
         
         let fileInfo2 = MediaLibraryAudioFile(
             id: UUID(),
@@ -218,7 +258,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         )
         
         
-        let putResult = await library.putFile(info: fileInfo2)
+        let putResult = await sut.putFile(info: fileInfo2)
         let putError = try AssertResultFailed(putResult)
     
         guard case .fileNotFound = putError else {
@@ -229,10 +269,10 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
     
     func testGetRecordEmptyList() async throws {
         
-        let library = createSUT()
+        let sut = createSUT()
         
         let fileId = UUID()
-        let result = await library.getInfo(fileId: fileId)
+        let result = await sut.getInfo(fileId: fileId)
         let error = try AssertResultFailed(result)
         
         guard case .fileNotFound = error else {
@@ -243,13 +283,13 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
     
     func test_get_item__empty_list() async throws {
         
-        let library = createSUT()
+        let sut = createSUT()
         
         // Given
         let itemId = UUID()
         
         // When
-        let result = await library.getItem(id: itemId)
+        let result = await sut.getItem(id: itemId)
         
         // Then
         let error = try AssertResultFailed(result)
@@ -262,7 +302,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
     
     func testGetRecordNotEmptyList() async throws {
         
-        let library = createSUT()
+        let sut = createSUT()
         
         let fileInfo1 = MediaLibraryAudioFile(
             id: nil,
@@ -276,7 +316,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData1 = "data1".data(using: .utf8)!
-        let savedFile1 = try await putAndCheckFile(library: library,  fileInfo: fileInfo1, data: fileData1)
+        let savedFile1 = try await putAndCheckFile(library: sut, fileInfo: fileInfo1, data: fileData1)
         
         let fileInfo2 = MediaLibraryAudioFile(
             id: nil,
@@ -290,10 +330,10 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData2 = "data1".data(using: .utf8)!
-        try await putAndCheckFile(library: library,  fileInfo: fileInfo2, data: fileData2)
+        try await putAndCheckFile(library: sut, fileInfo: fileInfo2, data: fileData2)
         
         let fileId = savedFile1!.id!
-        let result = await library.getInfo(fileId: fileId)
+        let result = await sut.getInfo(fileId: fileId)
         
         let receivedFileInfo1 = try AssertResultSucceded(result, "File does' not exists")
         XCTAssertEqual(savedFile1, receivedFileInfo1)
@@ -301,8 +341,8 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
     
     func testListFilesEmptyList() async throws {
         
-        let library = createSUT()
-        let result = await library.listFiles()
+        let sut = createSUT()
+        let result = await sut.listFiles()
         let files = try AssertResultSucceded(result)
         
         XCTAssertTrue(files.isEmpty)
@@ -310,7 +350,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
     
     func test_list_files_not_empty_list() async throws {
         
-        let library = createSUT()
+        let sut = createSUT()
         
         var fileInfo1 = MediaLibraryAudioFile(
             id: nil,
@@ -324,7 +364,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData1 = "data1".data(using: .utf8)!
-        let savedFile1 = try await putAndCheckFile(library: library,  fileInfo: fileInfo1, data: fileData1)
+        let savedFile1 = try await putAndCheckFile(library: sut, fileInfo: fileInfo1, data: fileData1)
         
         var fileInfo2 = MediaLibraryAudioFile(
             id: nil,
@@ -338,9 +378,9 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData2 = "data2".data(using: .utf8)!
-        let savedFile2 = try await putAndCheckFile(library: library,  fileInfo: fileInfo2, data: fileData2)
+        let savedFile2 = try await putAndCheckFile(library: sut, fileInfo: fileInfo2, data: fileData2)
         
-        let result = await library.listFiles()
+        let result = await sut.listFiles()
         let files = try AssertResultSucceded(result)
         
         fileInfo1.id = savedFile1?.id
@@ -356,10 +396,10 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
     
     func test_delete_record_empty_list() async throws {
         
-        let library = createSUT()
+        let sut = createSUT()
         
         let fileId = UUID()
-        let result = await library.delete(fileId: fileId)
+        let result = await sut.delete(fileId: fileId)
         
         let error = try AssertResultFailed(result)
         guard case .fileNotFound = error else {
@@ -370,7 +410,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
     
     func test_delete_record_not_empty_list() async throws {
         
-        let library = createSUT()
+        let sut = createSUT()
         
         let fileInfo1 = MediaLibraryAudioFile(
             id: nil,
@@ -384,9 +424,9 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         )
         
         let fileData1 = "data1".data(using: .utf8)!
-        let savedFile1 = try await putAndCheckFile(library: library,  fileInfo: fileInfo1, data: fileData1)
+        let savedFile1 = try await putAndCheckFile(library: sut, fileInfo: fileInfo1, data: fileData1)
         
-        let result = await library.delete(fileId: savedFile1!.id!)
+        let result = await sut.delete(fileId: savedFile1!.id!)
         try AssertResultSucceded(result)
     }    
 }

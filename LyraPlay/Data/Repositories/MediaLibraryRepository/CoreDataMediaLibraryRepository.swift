@@ -71,6 +71,37 @@ extension CoreDataMediaLibraryRepository {
         }
     }
     
+    public func createFile(data: NewMediaLibraryFileData) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError> {
+        
+        let action = { (context: NSManagedObjectContext) throws -> ManagedLibraryItem in
+            
+            let newItem = ManagedLibraryItem(context: context)
+
+            newItem.id = UUID()
+            newItem.isFolder = false
+            newItem.createdAt = .now
+            newItem.title = data.title
+            newItem.subtitle = data.subtitle
+            newItem.file = data.file
+            newItem.playedTime = 0
+            newItem.duration = data.duration
+            newItem.genre = data.genre
+            newItem.image = data.image
+            
+            try context.save()
+            return newItem
+        }
+        
+        do {
+            
+            let newFile = try coreDataStore.performSync(action)
+            return .success(newFile.toDomainFile())
+            
+        } catch {
+            return .failure(.internalError(error))
+        }
+    }
+    
     public func delete(fileId: UUID) async -> Result<Void, MediaLibraryRepositoryError> {
         
         guard let managedFile = try? await getManagedItemDeprecated(id: fileId) else {

@@ -13,11 +13,41 @@ public enum MediaLibraryRepositoryError: Error {
     case internalError(Error?)
 }
 
+public struct NewMediaLibraryFileData: Equatable {
+    
+    public var title: String
+    public var subtitle: String
+    public var file: String
+    public var image: String?
+    public var genre: String?
+    public var duration: Double
+
+    public init(
+        title: String,
+        subtitle: String,
+        file: String,
+        duration: Double,
+        image: String?,
+        genre: String?
+    ) {
+        
+        self.title = title
+        self.subtitle = subtitle
+        self.file = file
+        self.image = image
+        self.genre = genre
+        self.duration = duration
+    }
+}
+
+
 public protocol MediaLibraryRepositoryInput {
     
     func putFile(info: MediaLibraryAudioFile) async -> Result<MediaLibraryAudioFile, MediaLibraryRepositoryError>
     
     func delete(fileId: UUID) async -> Result<Void, MediaLibraryRepositoryError>
+    
+    func createFile(data: NewMediaLibraryFileData) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError>
 }
 
 public protocol MediaLibraryRepositoryOutput {

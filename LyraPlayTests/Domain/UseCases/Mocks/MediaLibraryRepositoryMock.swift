@@ -10,6 +10,11 @@ import LyraPlay
 
 class MediaLibraryRepositoryMockDeprecated: MediaLibraryRepository {
     
+    func createFile(data: NewMediaLibraryFileData) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError> {
+        fatalError()
+    }
+    
+    
     public var files = [MediaLibraryAudioFile]()
     
     func listFiles() async -> Result<[MediaLibraryAudioFile], MediaLibraryRepositoryError> {

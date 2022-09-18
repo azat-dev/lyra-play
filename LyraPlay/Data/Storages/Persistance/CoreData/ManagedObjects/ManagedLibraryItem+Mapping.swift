@@ -10,35 +10,48 @@ import CoreData
 
 extension ManagedLibraryItem {
     
+    func toDomainFile() -> MediaLibraryFile {
+        
+        guard !isFolder else {
+            fatalError("ManagedLibraryItem is not a file")
+        }
+        
+        return .init(
+            id: id!,
+            createdAt: createdAt!,
+            updatedAt: updatedAt,
+            title: title!,
+            subtitle: subtitle!,
+            file: file!,
+            duration: duration,
+            image: image,
+            genre: genre,
+            lastPlayedAt: lastPlayedAt,
+            playedTime: playedTime
+        )
+    }
+    
+    func toDomainFolder() -> MediaLibraryFolder {
+        
+        guard isFolder else {
+            fatalError("ManagedLibraryItem is not a folder")
+        }
+        
+        return .init(
+            id: id!,
+            createdAt: createdAt!,
+            updatedAt: updatedAt,
+            title: title!,
+            image: image
+        )
+    }
+    
     func toDomain() -> MediaLibraryItem {
         
         if isFolder {
-            
-            return .folder(
-                .init(
-                    id: id!,
-                    createdAt: createdAt!,
-                    updatedAt: updatedAt,
-                    title: title!,
-                    image: image
-                )
-            )
+            return .folder(toDomainFolder())
         }
         
-        return .file(
-            .init(
-                id: id!,
-                createdAt: createdAt!,
-                updatedAt: updatedAt,
-                title: title!,
-                subtitle: subtitle!,
-                file: file!,
-                duration: duration,
-                image: image,
-                genre: genre,
-                lastPlayedAt: lastPlayedAt,
-                playedTime: playedTime
-            )
-        )
+        return .file(toDomainFile())
     }
 }
