@@ -77,32 +77,37 @@ extension CoreDataMediaLibraryRepository {
         mapToDomainType: (ManagedLibraryItem) -> DomainType
     ) async -> Result<DomainType, MediaLibraryRepositoryError> {
         
-        if let parentId = parentId {
-            
-            do {
-                
-                guard let parentItem = try await getManagedItem(id: parentId) else {
-                    return .failure(.parentNotFound)
-                }
-                
-                guard parentItem.isFolder else {
-                    return .failure(.parentIsNotFolder)
-                }
-                
-            } catch {
-                return .failure(.internalError(error))
-            }
-        }
         
         let action = { (context: NSManagedObjectContext) throws -> ManagedLibraryItem in
             
+            var parentItem: ManagedLibraryItem!
+
+            if let parentId = parentId {
+                
+                guard let parent = try self.getManagedItem(id: parentId) else {
+                    throw MediaLibraryRepositoryError.parentNotFound
+                }
+                    
+                guard parent.isFolder else {
+                    throw MediaLibraryRepositoryError.parentIsNotFolder
+                }
+                
+                parentItem = parent
+                
+            } else {
+                
+                parentItem = try self.getRootFolderItemOrCreate(context: context)
+            }
+
             var newItem = ManagedLibraryItem(context: context)
 
             fillDTO(&newItem)
             
             newItem.id = UUID()
             newItem.createdAt = .now
-            newItem.parentId = newItem.parentId ?? ManagedLibraryItem.emptyId
+            newItem.parentId = parentId ?? ManagedLibraryItem.emptyId
+
+            parentItem?.addToChildren(newItem)
 
             try context.save()
             return newItem
@@ -114,6 +119,10 @@ extension CoreDataMediaLibraryRepository {
             return .success(mapToDomainType(newItem))
             
         } catch {
+            
+            if let error = error as? MediaLibraryRepositoryError {
+                return .failure(error)
+            }
             
             guard
                 let conflictList = (error as NSError).userInfo["conflictList"] as? [NSConstraintConflict]
@@ -256,7 +265,7 @@ extension CoreDataMediaLibraryRepository {
         }
     }
     
-    private func getManagedItem(id: UUID) async throws -> ManagedLibraryItem?  {
+    private func getManagedItem(id: UUID, context: NSManagedObjectContext) throws -> ManagedLibraryItem?  {
         
         let request = ManagedLibraryItem.fetchRequest()
         request.fetchLimit = 1
@@ -267,18 +276,21 @@ extension CoreDataMediaLibraryRepository {
             id.uuidString
         )
         
-        let managedItems = try coreDataStore.performSync { context -> [ManagedLibraryItem] in
-            
-            return try context.fetch(request)
-        }
+        return try context.fetch(request).first
+    }
+    
+    private func getManagedItem(id: UUID) throws -> ManagedLibraryItem?  {
         
-        return managedItems.first
+        return try coreDataStore.performSync { context throws -> ManagedLibraryItem? in
+ 
+            return try getManagedItem(id: id, context: context)
+        }
     }
     
     public func getItem(id: UUID) async -> Result<MediaLibraryItem, MediaLibraryRepositoryError> {
         
         do {
-            let managedItem = try await getManagedItem(id: id)
+            let managedItem = try getManagedItem(id: id)
             
             guard let item = managedItem?.toDomain() else {
                 return .failure(.fileNotFound)
@@ -292,7 +304,76 @@ extension CoreDataMediaLibraryRepository {
         }
     }
     
+    public func getRootFolderItem(context: NSManagedObjectContext) throws -> ManagedLibraryItem? {
+        
+        return try getManagedItem(id: ManagedLibraryItem.emptyId, context: context)
+    }
+    
+    public func getRootFolderItemOrCreate(context: NSManagedObjectContext) throws -> ManagedLibraryItem? {
+        
+        if let rootFolder = try getManagedItem(id: ManagedLibraryItem.emptyId, context: context) {
+            return rootFolder
+        }
+
+        let rootFolder = ManagedLibraryItem(context: context)
+        
+        rootFolder.id = ManagedLibraryItem.emptyId
+        rootFolder.createdAt = .now
+        rootFolder.title = ManagedLibraryItem.emptyId.uuidString
+        rootFolder.isFolder = true
+        
+        rootFolder.children = NSMutableOrderedSet()
+        return rootFolder
+    }
+
     public func listItems(folderId: UUID?) async -> Result<[MediaLibraryItem], MediaLibraryRepositoryError> {
-        return .success([])
+
+        let action = { (context: NSManagedObjectContext) throws -> [MediaLibraryItem] in
+            
+            
+            let parentItem: ManagedLibraryItem?
+            
+            if let folderId = folderId {
+                
+                parentItem = try? self.getManagedItem(id: folderId)
+
+            } else {
+                
+                guard
+                    let rootItem = try? self.getRootFolderItem(context: context)
+                else {
+                    return []
+                }
+                
+                parentItem = rootItem
+            }
+            
+            guard
+                let parentItem = parentItem,
+                let children = parentItem.children
+            else {
+                return []
+            }
+            
+            var result = [MediaLibraryItem]()
+            
+            for item in children {
+
+                let managedItem = item as! ManagedLibraryItem
+                result.append(managedItem.toDomain())
+            }
+            
+            return result
+        }
+     
+        do {
+            
+            let items = try coreDataStore.performSync(action)
+            return .success(items)
+            
+        } catch {
+            
+            return .failure(.internalError(error))
+        }
     }
 }
