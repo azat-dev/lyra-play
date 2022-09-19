@@ -36,27 +36,31 @@ extension ShowMediaInfoUseCaseImpl {
     
     public func fetchInfo(trackId: UUID) async -> Result<MediaInfo, ShowMediaInfoUseCaseError> {
         
-        let fileInfoResult = await mediaLibraryRepository.getInfo(fileId: trackId)
+        let fetchItemResult = await mediaLibraryRepository.getItem(id: trackId)
         
-        guard case .success(let fileInfo) = fileInfoResult else {
+        guard case .success(let libraryItem) = fetchItemResult else {
             
-            return .failure(fileInfoResult.error!.map())
+            return .failure(fetchItemResult.error!.map())
+        }
+
+        guard case .file(let libraryItemData) = libraryItem else {
+            return .failure(.trackNotFound)
         }
         
         var coverImage = defaultImage
         
-        if let coverImageName = fileInfo.coverImage {
+        if let coverImageName = libraryItemData.image {
             
             let imageData = try? await imagesRepository.getFile(name: coverImageName).get()
             coverImage = imageData ?? coverImage
         }
         
         let mediaInfo = MediaInfo(
-            id: fileInfo.id!.uuidString,
+            id: libraryItemData.id.uuidString,
             coverImage: coverImage,
-            title: fileInfo.name,
-            artist: fileInfo.artist ?? "",
-            duration: fileInfo.duration
+            title: libraryItemData.title,
+            artist: libraryItemData.subtitle ?? "Unknown",
+            duration: libraryItemData.duration
         )
         
         return .success(mediaInfo)
