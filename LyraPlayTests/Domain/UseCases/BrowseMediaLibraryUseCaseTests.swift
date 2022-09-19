@@ -66,23 +66,31 @@ class BrowseMediaLibraryUseCaseTests: XCTestCase {
 //        XCTAssertEqual(receivedFiles.map { $0.name }, expectedFileNames)
 //    }
 //
-//    func testGetFileInfo() async {
-//
-//        let (useCase, mediaLibraryRepository, _) = createSUT()
-//
-//        let numberOfTestFiles = 5
-//        let testFiles = (0..<numberOfTestFiles).map { self.getTestFile(index: $0) }
-//
-//        for file in testFiles {
-//            let result = await mediaLibraryRepository.putFile(info: file.info)
-//            let savedFile = try! result.get()
-//
-//            let infoResult = await useCase.getFileInfo(fileId: savedFile.id!)
-//            let receivedFile = try! infoResult.get()
-//
-//            XCTAssertEqual(receivedFile, savedFile)
-//        }
-//    }
+    func test_getItem__existing() async throws {
+
+        let sut = createSUT()
+
+        // Given
+
+        let existingFolder = MediaLibraryFolder(
+            id: UUID(),
+            parentId: nil,
+            createdAt: .now,
+            updatedAt: nil,
+            title: "test",
+            image: nil
+        )
+        
+        given(await sut.mediaLibraryRepository.getItem(id: existingFolder.id))
+            .willReturn(.success(.folder(existingFolder)))
+        
+        // When
+        let result = await sut.useCase.getItem(id: existingFolder.id)
+        
+        // Then
+        let receivedItem = try AssertResultSucceded(result)
+        AssertEqualReadable(receivedItem, .folder(existingFolder))
+    }
     
     func test_getItem__not_existing() async throws {
         
