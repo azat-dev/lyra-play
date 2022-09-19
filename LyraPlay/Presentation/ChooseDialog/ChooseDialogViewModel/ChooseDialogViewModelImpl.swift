@@ -11,6 +11,7 @@ public final class ChooseDialogViewModelImpl: ChooseDialogViewModel {
 
     // MARK: - Properties
 
+    public let title: String
     public let items: [ChooseDialogViewModelItem]
     
     private weak var delegate: ChooseDialogViewModelDelegate?
@@ -18,10 +19,12 @@ public final class ChooseDialogViewModelImpl: ChooseDialogViewModel {
     // MARK: - Initializers
 
     public init(
+        title: String,
         items: [ChooseDialogViewModelItem],
         delegate: ChooseDialogViewModelDelegate
     ) {
 
+        self.title = title
         self.items = items
         self.delegate = delegate
     }

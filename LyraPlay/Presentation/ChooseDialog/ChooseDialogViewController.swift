@@ -26,7 +26,7 @@ public final class ChooseDialogViewController: UIAlertController, ChooseDialogVi
         
         let alert = ChooseDialogViewController(
             title: nil,
-            message: "",
+            message: viewModel.title,
             preferredStyle: .actionSheet
         )
         
@@ -43,7 +43,14 @@ public final class ChooseDialogViewController: UIAlertController, ChooseDialogVi
             alert.addAction(action)
         }
         
+        let action = UIAlertAction(
+            title: "Cancel",
+            style: .cancel,
+            handler: { [weak viewModel] _ in viewModel?.cancel() }
+        )
+        
+        alert.addAction(action)
+        
         return alert
     }
 }
-

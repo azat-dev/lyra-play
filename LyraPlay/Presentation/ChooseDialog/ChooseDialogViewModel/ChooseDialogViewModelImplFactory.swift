@@ -16,11 +16,13 @@ public final class ChooseDialogViewModelImplFactory: ChooseDialogViewModelFactor
     // MARK: - Methods
 
     public func create(
+        title: String,
         items: [ChooseDialogViewModelItem],
         delegate: ChooseDialogViewModelDelegate
     ) -> ChooseDialogViewModel {
 
         return ChooseDialogViewModelImpl(
+            title: title,
             items: items,
             delegate: delegate
         )

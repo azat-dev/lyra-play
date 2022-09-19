@@ -59,7 +59,6 @@ extension ImportMediaFilesFlowModelImpl: FilesPickerViewModelDelegate {
     public func filesPickerDidDispose() {
         
         filesPickerViewModel.value = nil
-        delegate?.importMediaFilesFlowDidDispose()
     }
     
     public func filesPickerDidChoose(urls: [URL]) {

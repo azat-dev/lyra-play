@@ -47,6 +47,7 @@ public final class AddMediaLibraryItemFlowModelImpl: AddMediaLibraryItemFlowMode
     private func showChooseTypeDialog() {
         
         let viewModel = chooseDialogViewModelFactory.create(
+            title: "Add library item",
             items: [
                 .init(id: Variants.importMediaFiles.rawValue, title: "Import Files"),
                 .init(id: Variants.createFolder.rawValue, title: "Create Folder"),
@@ -65,7 +66,6 @@ extension AddMediaLibraryItemFlowModelImpl: ChooseDialogViewModelDelegate {
     public func chooseDialogViewModelDidDispose() {
 
         chooseItemTypeViewModel.value = nil
-        delegate?.addMediaLibraryItemFlowModelDidDispose()
     }
     
     public func chooseDialogViewModelDidCancel() {
@@ -104,7 +104,6 @@ extension AddMediaLibraryItemFlowModelImpl: ChooseDialogViewModelDelegate {
         default:
             fatalError("Not implemented")
         }
-        
     }
 }
 
@@ -124,6 +123,5 @@ extension AddMediaLibraryItemFlowModelImpl: ImportMediaFilesFlowModelDelegate {
     public func importMediaFilesFlowDidDispose() {
         
         importMediaFilesFlow.value = nil
-        delegate?.addMediaLibraryItemFlowModelDidDispose()
     }
 }

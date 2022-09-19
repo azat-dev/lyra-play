@@ -20,8 +20,8 @@ public final class AddMediaLibraryItemFlowPresenterImpl: AddMediaLibraryItemFlow
     
     private var observers = Set<AnyCancellable>()
     
-    private weak var activeChooseItemTypeView: UIViewController?
-    private weak var importMediaFilesPresenter: ImportMediaFilesFlowPresenter?
+    private var activeChooseItemTypeView: UIViewController?
+    private var importMediaFilesPresenter: ImportMediaFilesFlowPresenter?
 
     // MARK: - Initializers
 

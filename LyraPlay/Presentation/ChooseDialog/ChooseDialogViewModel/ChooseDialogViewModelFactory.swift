@@ -8,6 +8,7 @@
 public protocol ChooseDialogViewModelFactory {
 
     func create(
+        title: String,
         items: [ChooseDialogViewModelItem],
         delegate: ChooseDialogViewModelDelegate
     ) -> ChooseDialogViewModel

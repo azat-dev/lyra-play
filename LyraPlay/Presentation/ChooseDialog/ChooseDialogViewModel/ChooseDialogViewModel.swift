@@ -27,6 +27,8 @@ public protocol ChooseDialogViewModelInput: AnyObject {
 
 public protocol ChooseDialogViewModelOutput: AnyObject {
 
+    var title: String { get }
+    
     var items: [ChooseDialogViewModelItem] { get }
 }
 

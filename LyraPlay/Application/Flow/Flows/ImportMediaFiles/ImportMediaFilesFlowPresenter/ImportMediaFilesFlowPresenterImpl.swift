@@ -62,11 +62,6 @@ extension ImportMediaFilesFlowPresenterImpl {
             }.store(in: &observers)
     }
     
-    public func finish() {
-        
-        observers.removeAll()
-    }
-    
     public func dismiss() {
         
         activePickerView?.dismiss(animated: true)
