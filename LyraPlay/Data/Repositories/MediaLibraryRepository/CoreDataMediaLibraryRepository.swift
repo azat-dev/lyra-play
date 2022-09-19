@@ -205,7 +205,25 @@ extension CoreDataMediaLibraryRepository {
     }
     
     public func deleteFile(id: UUID) async -> Result<Void, MediaLibraryRepositoryError> {
-        fatalError()
+        
+        guard let managedFile = try? getManagedItem(id: id) else {
+            return .failure(.fileNotFound)
+        }
+        
+        let action = { (context: NSManagedObjectContext) throws -> Void in
+            
+            context.delete(managedFile)
+            try context.save()
+        }
+        
+        do {
+            
+            try coreDataStore.performSync(action)
+        } catch {
+            return .failure(.internalError(error))
+        }
+        
+        return .success(())
     }
 }
 
