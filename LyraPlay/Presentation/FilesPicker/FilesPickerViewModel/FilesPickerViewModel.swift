@@ -13,7 +13,7 @@ public protocol FilesPickerViewModelDelegate: AnyObject {
     
     func filesPickerDidCancel()
     
-    func filesPickerDidFinish()
+    func filesPickerDidDispose()
 }
 
 public protocol FilesPickerViewModelInput: AnyObject {
@@ -22,7 +22,7 @@ public protocol FilesPickerViewModelInput: AnyObject {
 
     func cancel()
     
-    func finish()
+    func dispose()
 }
 
 public protocol FilesPickerViewModelOutput: AnyObject {

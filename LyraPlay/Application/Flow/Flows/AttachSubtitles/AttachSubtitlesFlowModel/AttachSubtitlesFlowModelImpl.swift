@@ -116,7 +116,7 @@ extension AttachSubtitlesFlowModelImpl: FilesPickerViewModelDelegate {
         }
     }
     
-    public func filesPickerDidFinish() {
+    public func filesPickerDidDispose() {
         
         delegate?.attachSubtitlesFlowDidFinish()
     }

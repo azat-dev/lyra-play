@@ -56,10 +56,17 @@ extension ImportMediaFilesFlowModelImpl: FilesPickerViewModelDelegate {
         delegate?.importMediaFilesFlowDidFinish()
     }
 
-    public func filesPickerDidFinish() {
+    public func filesPickerDidDispose() {
         
         filesPickerViewModel.value = nil
         delegate?.importMediaFilesFlowDidFinish()
+    }
+    
+    public func filesPickerDidChoose(urls: [URL]) {
+        
+        Task {
+            await self.importAudioFiles(urls: urls)
+        }
     }
 }
 
@@ -93,12 +100,5 @@ extension ImportMediaFilesFlowModelImpl {
         
         filesPickerViewModel.value = nil
         delegate?.importMediaFilesFlowDidFinish()
-    }
-    
-    public func filesPickerDidChoose(urls: [URL]) {
-        
-        Task {
-            await self.importAudioFiles(urls: urls)
-        }
     }
 }

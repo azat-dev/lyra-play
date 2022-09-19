@@ -39,7 +39,7 @@ public final class FilesPickerViewController: UIDocumentPickerViewController {
     public override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
-        viewModel.finish()
+        viewModel.dispose()
     }
 }
 

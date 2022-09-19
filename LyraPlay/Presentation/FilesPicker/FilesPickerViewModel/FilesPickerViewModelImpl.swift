@@ -40,8 +40,8 @@ extension FilesPickerViewModelImpl {
         delegate?.filesPickerDidCancel()
     }
     
-    public func finish() {
+    public func dispose() {
         
-        delegate?.filesPickerDidFinish()
+        delegate?.filesPickerDidDispose()
     }
 }
