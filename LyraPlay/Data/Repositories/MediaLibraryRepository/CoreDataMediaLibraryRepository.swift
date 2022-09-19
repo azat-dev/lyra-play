@@ -224,6 +224,14 @@ extension CoreDataMediaLibraryRepository {
         
         return .success(())
     }
+    
+    public func updateFile(data: MediaLibraryFile) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError> {
+        fatalError()
+    }
+    
+    public func updateFolder(data: MediaLibraryFolder) async -> Result<MediaLibraryFolder, MediaLibraryRepositoryError> {
+        fatalError()
+    }
 }
 
 // MARK: - Output Methods

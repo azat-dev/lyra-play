@@ -76,6 +76,10 @@ public protocol MediaLibraryRepositoryInput {
     func createFile(data: NewMediaLibraryFileData) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError>
     
     func createFolder(data: NewMediaLibraryFolderData) async -> Result<MediaLibraryFolder, MediaLibraryRepositoryError>
+    
+    func updateFile(data: MediaLibraryFile) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError>
+    
+    func updateFolder(data: MediaLibraryFolder) async -> Result<MediaLibraryFolder, MediaLibraryRepositoryError>
 }
 
 public protocol MediaLibraryRepositoryOutput {

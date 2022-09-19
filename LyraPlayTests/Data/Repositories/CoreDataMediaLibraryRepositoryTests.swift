@@ -650,8 +650,8 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
         // Given
         let existingFolders = try await given(sut: sut, withFolderTitles: ["folder0", "folder1"])
-        let existingFoldersInFolder0 = await try given(sut: sut, withFolderTitles: ["folder11"], parentId: existingFolders[0].id)
-        let existingFilesInFolder0 = await try given(sut: sut, folderId: existingFolders[0].id, withFiles: ["file0"])
+        let existingFoldersInFolder0 = try await given(sut: sut, withFolderTitles: ["folder11"], parentId: existingFolders[0].id)
+        let existingFilesInFolder0 = try await given(sut: sut, folderId: existingFolders[0].id, withFiles: ["file0"])
         
         // When
         let result = await sut.deleteItem(id: existingFolders[0].id)
@@ -673,7 +673,120 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
             return
         }
     }
+    
+    func test_updateFile__not_existing() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        
+        let existingFiles = try await given(sut: sut, folderId: nil, withFiles: ["file1", "file2"])
 
+        var updateData = existingFiles[0]
+        updateData.file = "File2.mp3"
+        
+        // When
+        let result = await sut.updateFile(data: updateData)
+
+        // Then
+        let error = try AssertResultFailed(result)
+        
+        guard case .fileNotFound = error else {
+            
+            XCTFail("Wrong error type \(error)")
+            return
+        }
+    }
+
+    func test_updateFile__existing() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        
+        let existingFiles = try await given(sut: sut, folderId: nil, withFiles: ["file1", "file2"])
+
+        var updateData = existingFiles[0]
+        updateData.file = "File2.mp3"
+        updateData.title = "UpdatedTitle"
+        updateData.genre = "UpdatedGenre"
+        updateData.duration = 222
+        updateData.image = "UpdatedImage.png"
+        updateData.lastPlayedAt = .now
+        updateData.subtitle = "UpdatedSubtitle"
+        updateData.playedTime = 333
+        
+        // When
+        let result = await sut.updateFile(data: updateData)
+
+        // Then
+        try AssertResultSucceded(result)
+        
+        let fechResult = await sut.getItem(id: updateData.id)
+        let fetchedFile = try AssertResultSucceded(fechResult)
+        
+        AssertEqualReadable(fetchedFile, .file(updateData))
+        
+        // Then
+        let fechResultFile2 = await sut.getItem(id: existingFiles[1].id)
+        let fetchedFile2 = try AssertResultSucceded(fechResultFile2)
+        
+        AssertEqualReadable(fetchedFile2, .file(existingFiles[1]))
+    }
+    
+    func test_updateFolder__not_existing() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        
+        let existingFolders = try await given(sut: sut, withFolderTitles: ["folder1", "folder2"])
+
+        var updateData = existingFolders[0]
+        updateData.title = "UpdatedTitle"
+        
+        // When
+        let result = await sut.updateFolder(data: updateData)
+
+        // Then
+        let error = try AssertResultFailed(result)
+        
+        guard case .fileNotFound = error else {
+            
+            XCTFail("Wrong error type \(error)")
+            return
+        }
+    }
+
+    func test_updateFolder__existing() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        
+        let existingFolders = try await given(sut: sut, withFolderTitles: ["folder1", "folder2"])
+
+        var updateData = existingFolders[0]
+        updateData.title = "UpdatedTitle"
+        updateData.image = "UpdatedImage.png"
+        
+        // When
+        let result = await sut.updateFolder(data: updateData)
+
+        // Then
+        try AssertResultSucceded(result)
+        
+        let fechResult = await sut.getItem(id: updateData.id)
+        let fetchedFolder = try AssertResultSucceded(fechResult)
+        
+        AssertEqualReadable(fetchedFolder, .folder(updateData))
+        
+        // Then
+        let fechResultFolder2 = await sut.getItem(id: existingFolders[1].id)
+        let fetchedFolder2 = try AssertResultSucceded(fechResultFolder2)
+        
+        AssertEqualReadable(fetchedFolder2, .folder(existingFolders[0]))
+    }
 }
 
 // MARK: - Helpers

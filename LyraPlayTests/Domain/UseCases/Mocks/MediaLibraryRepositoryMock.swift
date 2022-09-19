@@ -28,6 +28,14 @@ class MediaLibraryRepositoryMockDeprecated: MediaLibraryRepository {
         fatalError()
     }
     
+    func updateFile(data: MediaLibraryFile) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError> {
+        fatalError()
+    }
+    
+    func updateFolder(data: MediaLibraryFolder) async -> Result<MediaLibraryFolder, MediaLibraryRepositoryError> {
+        fatalError()
+    }
+    
     
     public var files = [MediaLibraryAudioFile]()
     
