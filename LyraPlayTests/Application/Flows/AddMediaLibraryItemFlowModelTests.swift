@@ -28,7 +28,7 @@ class AddMediaLibraryItemFlowModelTests: XCTestCase {
         let chooseDialogViewModel = mock(ChooseDialogViewModel.self)
         let chooseDialogViewModelFactory = mock(ChooseDialogViewModelFactory.self)
         
-        given(chooseDialogViewModelFactory.create(items: any(), delegate: any()))
+        given(chooseDialogViewModelFactory.create(title: any(), items: any(), delegate: any()))
             .willReturn(chooseDialogViewModel)
 
         let importMediaFilesFlowModel = mock(ImportMediaFilesFlowModel.self)

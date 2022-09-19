@@ -30,7 +30,7 @@ class LibraryFlowModelTests: XCTestCase {
         let libraryItemFlow = mock(LibraryItemFlowModel.self)
         let libraryItemFlowModelFactory = mock(LibraryItemFlowModelFactory.self)
         
-        let importMediaFilesFlowModelFactory = mock(ImportMediaFilesFlowModelFactory.self)
+        let addMediaLibraryItemFlowModelFactory = mock(AddMediaLibraryItemFlowModelFactory.self)
         
         let delegate = mock(LibraryItemFlowModelDelegate.self)
         
@@ -43,7 +43,7 @@ class LibraryFlowModelTests: XCTestCase {
             folderId: folderId,
             viewModelFactory: viewModelFactory,
             libraryItemFlowModelFactory: libraryItemFlowModelFactory,
-            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory,
+            addMediaLibraryItemFlowModelFactory: addMediaLibraryItemFlowModelFactory,
             deleteMediaLibraryItemFlowModelFactory: deleteMediaLibraryItemFlowModelFactory
         )
         
@@ -55,7 +55,7 @@ class LibraryFlowModelTests: XCTestCase {
             libraryItemFlow,
             libraryItemFlowModelFactory,
             delegate,
-            importMediaFilesFlowModelFactory,
+            addMediaLibraryItemFlowModelFactory,
             deleteMediaLibraryItemFlowModelFactory
         )
         

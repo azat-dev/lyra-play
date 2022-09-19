@@ -24,6 +24,7 @@ class ChooseDialogViewModelTests: XCTestCase {
         let delegate = mock(ChooseDialogViewModelDelegate.self)
 
         let viewModel = ChooseDialogViewModelImpl(
+            title: "",
             items: items,
             delegate: delegate
         )
