@@ -14,7 +14,6 @@ class AddMediaLibraryFolderFlowModelTests: XCTestCase {
 
     typealias SUT = (
         flowModel: AddMediaLibraryFolderFlowModel,
-        targetFolderId: UUID?Mock,
         delegate: AddMediaLibraryFolderFlowModelDelegateMock,
         browseMediaLibraryUseCaseFactory: BrowseMediaLibraryUseCaseFactoryMock,
         PromptDialogViewModelFactory: PromptDialogViewModelFactoryMock
@@ -22,9 +21,7 @@ class AddMediaLibraryFolderFlowModelTests: XCTestCase {
 
     // MARK: - Methods
 
-    func createSUT() -> SUT {
-
-        let targetFolderId = mock(UUID?.self)
+    func createSUT(targetFolderId: UUID?) -> SUT {
 
         let delegate = mock(AddMediaLibraryFolderFlowModelDelegate.self)
 
@@ -36,14 +33,13 @@ class AddMediaLibraryFolderFlowModelTests: XCTestCase {
             targetFolderId: targetFolderId,
             delegate: delegate,
             browseMediaLibraryUseCaseFactory: browseMediaLibraryUseCaseFactory,
-            PromptDialogViewModelFactory: PromptDialogViewModelFactory
+            promptDialogViewModelFactory: PromptDialogViewModelFactory
         )
 
         detectMemoryLeak(instance: flowModel)
 
         return (
             flowModel: flowModel,
-            targetFolderId: targetFolderId,
             delegate: delegate,
             browseMediaLibraryUseCaseFactory: browseMediaLibraryUseCaseFactory,
             PromptDialogViewModelFactory: PromptDialogViewModelFactory

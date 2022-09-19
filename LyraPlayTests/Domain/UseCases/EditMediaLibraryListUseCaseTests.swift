@@ -85,6 +85,62 @@ class EditMediaLibraryListUseCaseTests: XCTestCase {
         verify(await sut.manageSubtitlesUseCase.deleteAllFor(mediaId: mediaId))
             .wasCalled(1)
     }
+    
+    func test_addFolder() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        let newFolderData = NewMediaLibraryFolderData(
+            parentId: UUID(),
+            title: "test",
+            image: nil
+        )
+        
+        let savedFolderData = MediaLibraryFolder(
+            id: UUID(),
+            parentId: newFolderData.parentId,
+            createdAt: .now,
+            updatedAt: nil,
+            title: newFolderData.title,
+            image: newFolderData.image
+        )
+        
+        given(await sut.mediaLibraryRepository.createFolder(data: newFolderData))
+            .willReturn(.success(savedFolderData))
+        
+        // When
+        let result = await sut.useCase.addFolder(data: newFolderData)
+        try AssertResultSucceded(result)
+        
+        // Then
+        verify(await sut.mediaLibraryRepository.createFolder(data: newFolderData))
+            .wasCalled(1)
+    }
+    
+    func test_addFolder__existing_name() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        let newFolderData = NewMediaLibraryFolderData(
+            parentId: UUID(),
+            title: "test",
+            image: nil
+        )
+        
+        given(await sut.mediaLibraryRepository.createFolder(data: newFolderData))
+            .willReturn(.failure(.nameMustBeUnique))
+        
+        // When
+        let result = await sut.useCase.addFolder(data: newFolderData)
+        let error = try AssertResultFailed(result)
+        
+        guard case .nameMustBeUnique = error else {
+            XCTFail("Wrong error type \(error)")
+            return
+        }
+    }
 }
 
 // MARK: - Helpers

@@ -81,6 +81,17 @@ extension EditMediaLibraryListUseCaseImpl {
             return await deleteFolder(data: data)
         }
     }
+    
+    public func addFolder(data: NewMediaLibraryFolderData) async -> Result<MediaLibraryFolder, EditMediaLibraryListUseCaseError> {
+        
+        let result = await mediaLibraryRepository.createFolder(data: data)
+        
+        guard case .success(let folder) = result else {
+            return .failure(result.error!.map())
+        }
+        
+        return .success(folder)
+    }
 }
 
 // MARK: - Error Mappings
@@ -121,7 +132,10 @@ fileprivate extension MediaLibraryRepositoryError {
         
         switch self {
             
-        case .parentNotFound, .nameMustBeUnique, .parentIsNotFolder:
+        case .nameMustBeUnique:
+            return .nameMustBeUnique
+            
+        case .parentNotFound, .parentIsNotFolder:
             return .internalError(nil)
             
         case .fileNotFound:
