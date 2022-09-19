@@ -11,17 +11,17 @@ public final class AddMediaLibraryFolderFlowModelImplFactory: AddMediaLibraryFol
 
     // MARK: - Properties
 
-    private let browseMediaLibraryUseCaseFactory: BrowseMediaLibraryUseCaseFactory
+    private let editMediaLibraryListUseCaseFactory: EditMediaLibraryListUseCaseFactory
     private let promptDialogViewModelFactory: PromptDialogViewModelFactory
 
     // MARK: - Initializers
 
     public init(
-        browseMediaLibraryUseCaseFactory: BrowseMediaLibraryUseCaseFactory,
+        editMediaLibraryListUseCaseFactory: EditMediaLibraryListUseCaseFactory,
         promptDialogViewModelFactory: PromptDialogViewModelFactory
     ) {
 
-        self.browseMediaLibraryUseCaseFactory = browseMediaLibraryUseCaseFactory
+        self.editMediaLibraryListUseCaseFactory = editMediaLibraryListUseCaseFactory
         self.promptDialogViewModelFactory = promptDialogViewModelFactory
     }
 
@@ -35,7 +35,7 @@ public final class AddMediaLibraryFolderFlowModelImplFactory: AddMediaLibraryFol
         return AddMediaLibraryFolderFlowModelImpl(
             targetFolderId: targetFolderId,
             delegate: delegate,
-            browseMediaLibraryUseCaseFactory: browseMediaLibraryUseCaseFactory,
+            editMediaLibraryListUseCaseFactory: editMediaLibraryListUseCaseFactory,
             promptDialogViewModelFactory: promptDialogViewModelFactory
         )
     }

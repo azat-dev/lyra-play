@@ -1554,6 +1554,7 @@
 			isa = PBXGroup;
 			children = (
 				B7A56FCE0048E85A07ACFC96 /* AddDictionaryItemFlowModelTests.swift */,
+				5BEB897AE418A3C09997D809 /* AddMediaLibraryFolderFlowModelTests.swift */,
 				B230B2FF7434E8A55B7058C7 /* AddMediaLibraryItemFlowModelTests.swift */,
 				994E7B12C9C0BBC6F4EFC014 /* DeleteMediaLibraryItemFlowModelTests.swift */,
 				AA5B6CFE28C8BC480025E00F /* DictionaryFlowModelTests.swift */,
@@ -1629,14 +1630,6 @@
 				3BCABEA379CAFAE6C02F0E16 /* AddMediaLibraryItemFlowPresenter */,
 			);
 			path = AddMediaLibraryItem;
-			sourceTree = "<group>";
-		};
-		97B29A10ABC263B23ED34942 /* Flow */ = {
-			isa = PBXGroup;
-			children = (
-				5BEB897AE418A3C09997D809 /* AddMediaLibraryFolderFlowModelTests.swift */,
-			);
-			path = Flow;
 			sourceTree = "<group>";
 		};
 		98957E07143F5C2F32CD4EA0 /* AttachSubtitles */ = {
@@ -2086,7 +2079,6 @@
 		AA5DD6FF28B9641400929906 /* Application */ = {
 			isa = PBXGroup;
 			children = (
-				97B29A10ABC263B23ED34942 /* Flow */,
 				8BAE57D137EADD748E3C7E07 /* Flows */,
 			);
 			path = Application;

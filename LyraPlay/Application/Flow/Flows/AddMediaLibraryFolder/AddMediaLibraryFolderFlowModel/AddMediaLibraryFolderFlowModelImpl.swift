@@ -15,7 +15,7 @@ public final class AddMediaLibraryFolderFlowModelImpl: AddMediaLibraryFolderFlow
     private let targetFolderId: UUID?
     private weak var delegate: AddMediaLibraryFolderFlowModelDelegate? 
 
-    private let browseMediaLibraryUseCaseFactory: BrowseMediaLibraryUseCaseFactory
+    private let editMediaLibraryListUseCaseFactory: EditMediaLibraryListUseCaseFactory
     private let promptDialogViewModelFactory: PromptDialogViewModelFactory
 
     public let promptFolderNameViewModel = CurrentValueSubject<PromptDialogViewModel?, Never>(nil)
@@ -25,14 +25,16 @@ public final class AddMediaLibraryFolderFlowModelImpl: AddMediaLibraryFolderFlow
     public init(
         targetFolderId: UUID?,
         delegate: AddMediaLibraryFolderFlowModelDelegate,
-        browseMediaLibraryUseCaseFactory: BrowseMediaLibraryUseCaseFactory,
+        editMediaLibraryListUseCaseFactory: EditMediaLibraryListUseCaseFactory,
         promptDialogViewModelFactory: PromptDialogViewModelFactory
     ) {
 
         self.targetFolderId = targetFolderId
         self.delegate = delegate
-        self.browseMediaLibraryUseCaseFactory = browseMediaLibraryUseCaseFactory
+        self.editMediaLibraryListUseCaseFactory = editMediaLibraryListUseCaseFactory
         self.promptDialogViewModelFactory = promptDialogViewModelFactory
+        
+        showPromptDialog()
     }
     
     private func showPromptDialog() {
@@ -58,9 +60,37 @@ extension AddMediaLibraryFolderFlowModelImpl: PromptDialogViewModelDelegate {
         delegate?.addMediaLibraryFolderFlowModelCancel()
     }
     
+    private func createFolder(name: String) async {
+        
+        let editMediaLibraryListUseCase = editMediaLibraryListUseCaseFactory.create()
+        
+        let folderData = NewMediaLibraryFolderData(
+            parentId: targetFolderId,
+            title: name,
+            image: nil
+        )
+        
+        let result = await editMediaLibraryListUseCase.addFolder(data: folderData)
+        
+        switch result {
+            
+        case .success:
+            delegate?.addMediaLibraryFolderFlowModelDidCreate()
+
+        case .failure(.nameMustBeUnique):
+            promptFolderNameViewModel.value?.setErrorText("The name of a folder must be unique")
+            
+        case .failure:
+            // TODO: Handle errors
+            break
+        }
+    }
+    
     public func promptDialogViewModelDidSubmit(value: String) {
         
-        delegate?.addMediaLibraryFolderFlowModelDidCreate()
+        Task {
+            await self.createFolder(name: value)
+        }
     }
     
     public func promptDialogViewModelDidDispose() {
