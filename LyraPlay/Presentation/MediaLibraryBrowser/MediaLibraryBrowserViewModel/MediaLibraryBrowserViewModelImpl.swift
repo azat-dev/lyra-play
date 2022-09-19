@@ -96,6 +96,7 @@ extension MediaLibraryBrowserViewModelImpl {
             
             let item = MediaLibraryBrowserCellViewModel(
                 id: file.id!,
+                isFolder: false,
                 title: file.name,
                 description: file.artist ?? "Unknown",
                 image: images[file.coverImage ?? ""] ?? stubItemImage,

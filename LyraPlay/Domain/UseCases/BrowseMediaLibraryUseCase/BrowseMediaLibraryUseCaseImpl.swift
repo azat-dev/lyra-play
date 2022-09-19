@@ -78,6 +78,21 @@ extension BrowseMediaLibraryUseCaseImpl {
             return .success(imageData)
         }
     }
+    
+    public func getItem(id: UUID) async -> Result<MediaLibraryItem, BrowseMediaLibraryUseCaseError> {
+        
+        let result = await mediaLibraryRepository.getItem(id: id)
+        
+        guard case .success(let item) = result else {
+            return .failure(result.error!.map())
+        }
+        
+        return .success(item)
+    }
+    
+    public func listItems(folderId: UUID?) async -> Result<[MediaLibraryItem], BrowseMediaLibraryUseCaseError> {
+        fatalError()
+    }
 }
 // MARK: - Error Mappings
 

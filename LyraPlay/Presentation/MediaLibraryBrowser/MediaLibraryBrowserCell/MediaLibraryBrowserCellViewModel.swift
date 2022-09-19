@@ -17,6 +17,7 @@ public protocol MediaLibraryBrowserCellViewModelDelegate: AnyObject {
 
 public struct MediaLibraryBrowserCellViewModel {
     
+    public var isFolder: Bool
     public var id: UUID
     public var title: String
     public var description: String
@@ -26,6 +27,7 @@ public struct MediaLibraryBrowserCellViewModel {
     
     public init(
         id: UUID,
+        isFolder: Bool,
         title: String,
         description: String,
         image: UIImage,
@@ -33,6 +35,7 @@ public struct MediaLibraryBrowserCellViewModel {
     ) {
         
         self.id = id
+        self.isFolder = isFolder
         self.title = title
         self.description = description
         self.image = image
@@ -42,21 +45,5 @@ public struct MediaLibraryBrowserCellViewModel {
     public func open() {
         
         self.delegate?.mediaLibraryBrowserCellViewModelDidOpen(itemId: id)
-    }
-}
-
-// MARK: - Hashable
-
-extension MediaLibraryBrowserCellViewModel: Hashable {
-    
-    public static func == (lhs: MediaLibraryBrowserCellViewModel, rhs: MediaLibraryBrowserCellViewModel) -> Bool {
-        return lhs.id == rhs.id
-    }
-    
-    public func hash(into hasher: inout Hasher) {
-     
-        hasher.combine(id)
-        hasher.combine(title)
-        hasher.combine(description)
     }
 }
