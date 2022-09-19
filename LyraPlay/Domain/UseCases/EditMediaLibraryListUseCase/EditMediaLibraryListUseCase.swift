@@ -15,13 +15,9 @@ public enum EditMediaLibraryListUseCaseError: Error {
 
 public protocol EditMediaLibraryListUseCaseInput: AnyObject {
 
-    func deleteItem(itemId: UUID) async -> Result<Void, EditMediaLibraryListUseCaseError>
+    func deleteItem(id: UUID) async -> Result<Void, EditMediaLibraryListUseCaseError>
 }
 
-public protocol EditMediaLibraryListUseCaseOutput: AnyObject {
+public protocol EditMediaLibraryListUseCaseOutput: AnyObject {}
 
-}
-
-public protocol EditMediaLibraryListUseCase: EditMediaLibraryListUseCaseOutput, EditMediaLibraryListUseCaseInput {
-
-}
+public protocol EditMediaLibraryListUseCase: EditMediaLibraryListUseCaseOutput, EditMediaLibraryListUseCaseInput {}

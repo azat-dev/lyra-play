@@ -48,7 +48,7 @@ extension DeleteMediaLibraryItemFlowModelImpl: ConfirmDialogViewModelDelegate {
     private func delete() async {
         
         let editMediaLibraryListUseCase = editMediaLibraryListUseCaseFactory.create()
-        let result = await editMediaLibraryListUseCase.deleteItem(itemId: itemId)
+        let result = await editMediaLibraryListUseCase.deleteItem(id: itemId)
         
         guard case .success = result else {
             // TODO: Handle error

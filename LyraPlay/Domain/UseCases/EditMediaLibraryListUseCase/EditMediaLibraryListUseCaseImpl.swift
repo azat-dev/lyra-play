@@ -36,38 +36,54 @@ public final class EditMediaLibraryListUseCaseImpl: EditMediaLibraryListUseCase 
 
 extension EditMediaLibraryListUseCaseImpl {
     
-    public func deleteItem(itemId: UUID) async -> Result<Void, EditMediaLibraryListUseCaseError> {
+    private func deleteFile(data: MediaLibraryFile) async -> Result<Void, EditMediaLibraryListUseCaseError> {
         
-        let resultGetItem = await mediaLibraryRepository.getInfo(fileId: itemId)
+        let _ = await mediaFilesRepository.deleteFile(name: data.file)
+        
+        if let coverImage = data.image {
+            let _ = await imagesRepository.deleteFile(name: coverImage)
+        }
+        
+        let _ = await manageSubtitlesUseCase.deleteAllFor(mediaId: data.id)
+        
+        return .success(())
+    }
+    
+    private func deleteFolder(data: MediaLibraryFolder) async -> Result<Void, EditMediaLibraryListUseCaseError> {
+        
+        if let coverImage = data.image {
+            let _ = await imagesRepository.deleteFile(name: coverImage)
+        }
+        
+        return .success(())
+    }
+    
+    public func deleteItem(id itemId: UUID) async -> Result<Void, EditMediaLibraryListUseCaseError> {
+        
+        let resultGetItem = await mediaLibraryRepository.getItem(id: itemId)
         
         guard case .success(let mediaItem) = resultGetItem else {
             return .failure(resultGetItem.error!.map())
         }
         
-        let resultDeleteMedia = await mediaLibraryRepository.delete(fileId: itemId)
+        let resultDeleteMedia = await mediaLibraryRepository.deleteItem(id: itemId)
         
         guard case .success = resultDeleteMedia else {
             return .failure(resultDeleteMedia.error!.map())
         }
         
-        let _ = await mediaFilesRepository.deleteFile(name: mediaItem.audioFile)
-        
-        if let coverImage = mediaItem.coverImage {
-            let _ = await imagesRepository.deleteFile(name: coverImage)
+        switch mediaItem {
+            
+        case .file(let fileData):
+            return await deleteFile(data: fileData)
+            
+        case .folder(let data):
+            return await deleteFolder(data: data)
         }
-        
-        let _ = await manageSubtitlesUseCase.deleteAllFor(mediaId: itemId)
-        return .success(())
     }
 }
 
-// MARK: - Output Methods
-
-extension EditMediaLibraryListUseCaseImpl {
-    
-}
-
-// MARK: Error Mappings
+// MARK: - Error Mappings
 
 fileprivate extension FilesRepositoryError {
     

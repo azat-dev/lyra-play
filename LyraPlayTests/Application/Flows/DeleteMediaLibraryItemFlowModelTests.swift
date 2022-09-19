@@ -65,7 +65,7 @@ class DeleteMediaLibraryItemFlowModelTests: XCTestCase {
         confirmViewModel.cancel()
         
         // Then
-        verify(await sut.editMediaLibraryListUseCase.deleteItem(itemId: mediaId))
+        verify(await sut.editMediaLibraryListUseCase.deleteItem(id: mediaId))
             .wasNeverCalled()
     }
     
@@ -76,14 +76,14 @@ class DeleteMediaLibraryItemFlowModelTests: XCTestCase {
         let sut = createSUT(itemId: mediaId)
         
         let confirmViewModel = try XCTUnwrap(sut.flowModel.confirmDialogViewModel.value)
-        given(await sut.editMediaLibraryListUseCase.deleteItem(itemId: mediaId))
+        given(await sut.editMediaLibraryListUseCase.deleteItem(id: mediaId))
             .willReturn(.success(()))
         
         // When
         confirmViewModel.confirm()
         
         // Then
-        verify(await sut.editMediaLibraryListUseCase.deleteItem(itemId: mediaId))
+        verify(await sut.editMediaLibraryListUseCase.deleteItem(id: mediaId))
             .wasCalled(1)
     }
     
@@ -99,7 +99,7 @@ class DeleteMediaLibraryItemFlowModelTests: XCTestCase {
         confirmViewModel.dispose()
         
         // Then
-        verify(await sut.editMediaLibraryListUseCase.deleteItem(itemId: mediaId))
+        verify(await sut.editMediaLibraryListUseCase.deleteItem(id: mediaId))
             .wasNeverCalled()
     }
 }

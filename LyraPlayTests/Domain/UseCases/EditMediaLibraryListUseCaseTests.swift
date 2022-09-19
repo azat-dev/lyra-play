@@ -11,7 +11,7 @@ import Mockingbird
 import LyraPlay
 
 class EditMediaLibraryListUseCaseTests: XCTestCase {
-
+    
     typealias SUT = (
         useCase: EditMediaLibraryListUseCase,
         mediaLibraryRepository: MediaLibraryRepositoryMock,
@@ -19,25 +19,25 @@ class EditMediaLibraryListUseCaseTests: XCTestCase {
         manageSubtitlesUseCase: ManageSubtitlesUseCaseMock,
         imagesRepository: FilesRepositoryMock
     )
-
+    
     // MARK: - Methods
-
+    
     func createSUT() -> SUT {
-
+        
         let mediaLibraryRepository = mock(MediaLibraryRepository.self)
         let mediaFilesRepository = mock(FilesRepository.self)
         let manageSubtitlesUseCase = mock(ManageSubtitlesUseCase.self)
         let imagesRepository = mock(FilesRepository.self)
-
+        
         let useCase = EditMediaLibraryListUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,
             mediaFilesRepository: mediaFilesRepository,
             manageSubtitlesUseCase: manageSubtitlesUseCase,
             imagesRepository: imagesRepository
         )
-
+        
         detectMemoryLeak(instance: useCase)
-
+        
         return (
             useCase: useCase,
             mediaLibraryRepository: mediaLibraryRepository,
@@ -47,40 +47,63 @@ class EditMediaLibraryListUseCaseTests: XCTestCase {
         )
     }
     
-    func test_deleteItem() async throws {
-
+    func test_deleteItem__file() async throws {
+        
         let sut = createSUT()
-
+        
         // Given
-        let existingMedia: MediaLibraryAudioFile = .anyExistingItem()
-        let mediaId = existingMedia.id!
-
-        given(await sut.mediaLibraryRepository.getInfo(fileId: mediaId))
-            .willReturn(.success(existingMedia))
-
-        given(await sut.mediaLibraryRepository.delete(fileId: mediaId))
+        let existingMedia = anyFile()
+        let mediaId = existingMedia.id
+        
+        given(await sut.mediaLibraryRepository.getItem(id: mediaId))
+            .willReturn(.success(.file(existingMedia)))
+        
+        given(await sut.mediaLibraryRepository.deleteItem(id: mediaId))
             .willReturn(.success(()))
-        given(await sut.mediaFilesRepository.deleteFile(name: existingMedia.audioFile))
+        given(await sut.mediaFilesRepository.deleteFile(name: existingMedia.file))
             .willReturn(.success(()))
-        given(await sut.imagesRepository.deleteFile(name: existingMedia.coverImage!))
+        given(await sut.imagesRepository.deleteFile(name: existingMedia.image!))
             .willReturn(.success(()))
-
+        
         given(await sut.manageSubtitlesUseCase.deleteAllFor(mediaId: mediaId))
             .willReturn(.success(()))
-
+        
+        given(await sut.mediaLibraryRepository.getItem(id: mediaId))
+            .willReturn(.success(.file(existingMedia)))
+        
         // When
-        let result = await sut.useCase.deleteItem(itemId: mediaId)
+        let result = await sut.useCase.deleteItem(id: mediaId)
         try AssertResultSucceded(result)
-
+        
         // Then
-        verify(await sut.mediaLibraryRepository.delete(fileId: mediaId))
+        verify(await sut.mediaLibraryRepository.deleteItem(id: mediaId))
             .wasCalled(1)
-        verify(await sut.imagesRepository.deleteFile(name: existingMedia.coverImage!))
+        verify(await sut.imagesRepository.deleteFile(name: existingMedia.image!))
             .wasCalled(1)
-        verify(await sut.mediaFilesRepository.deleteFile(name: existingMedia.audioFile))
+        verify(await sut.mediaFilesRepository.deleteFile(name: existingMedia.file))
             .wasCalled(1)
         verify(await sut.manageSubtitlesUseCase.deleteAllFor(mediaId: mediaId))
             .wasCalled(1)
+    }
+}
 
+// MARK: - Helpers
+
+fileprivate extension EditMediaLibraryListUseCaseTests {
+    
+    private func anyFile() -> MediaLibraryFile {
+        
+        return .init(
+            id: UUID(),
+            parentId: nil,
+            createdAt: .now,
+            updatedAt: nil,
+            title: "test",
+            subtitle: "subtitle",
+            file: "test.mp3",
+            duration: 100,
+            image: "test.png",
+            genre: "rock"
+        )
     }
 }
