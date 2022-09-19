@@ -15,6 +15,4 @@ public protocol AddDictionaryItemFlowPresenterInput: AnyObject {
     func dismiss()
 }
 
-public protocol AddDictionaryItemFlowPresenter: AddDictionaryItemFlowPresenterInput {
-
-}
+public protocol AddDictionaryItemFlowPresenter: AddDictionaryItemFlowPresenterInput {}

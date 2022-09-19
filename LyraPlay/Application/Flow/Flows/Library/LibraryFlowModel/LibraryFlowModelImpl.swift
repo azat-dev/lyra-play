@@ -16,7 +16,7 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
     
     private let viewModelFactory: MediaLibraryBrowserViewModelFactory
     private let libraryItemFlowModelFactory: LibraryItemFlowModelFactory
-    private let importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory
+    private let addMediaLibraryItemFlowModelFactory: AddMediaLibraryItemFlowModelFactory
     private let deleteMediaLibraryItemFlowModelFactory: DeleteMediaLibraryItemFlowModelFactory
     
     public lazy var listViewModel: MediaLibraryBrowserViewModel = {
@@ -25,7 +25,7 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
     } ()
     
     public var libraryItemFlow = CurrentValueSubject<LibraryItemFlowModel?, Never>(nil)
-    public var importMediaFilesFlow = CurrentValueSubject<ImportMediaFilesFlowModel?, Never>(nil)
+    public var addMediaLibraryItemFlow = CurrentValueSubject<AddMediaLibraryItemFlowModel?, Never>(nil)
     public var deleteMediaLibraryItemFlow = CurrentValueSubject<DeleteMediaLibraryItemFlowModel?, Never>(nil)
     
     // MARK: - Initializers
@@ -34,14 +34,14 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
         folderId: UUID?,
         viewModelFactory: MediaLibraryBrowserViewModelFactory,
         libraryItemFlowModelFactory: LibraryItemFlowModelFactory,
-        importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory,
+        addMediaLibraryItemFlowModelFactory: AddMediaLibraryItemFlowModelFactory,
         deleteMediaLibraryItemFlowModelFactory: DeleteMediaLibraryItemFlowModelFactory
     ) {
         
         self.folderId = folderId
         self.viewModelFactory = viewModelFactory
         self.libraryItemFlowModelFactory = libraryItemFlowModelFactory
-        self.importMediaFilesFlowModelFactory = importMediaFilesFlowModelFactory
+        self.addMediaLibraryItemFlowModelFactory = addMediaLibraryItemFlowModelFactory
         self.deleteMediaLibraryItemFlowModelFactory = deleteMediaLibraryItemFlowModelFactory
     }
 }
@@ -84,13 +84,13 @@ extension LibraryFlowModelImpl: DeleteMediaLibraryItemFlowDelegate {
 
 extension LibraryFlowModelImpl: MediaLibraryBrowserViewModelDelegate {
     
-    public func runImportMediaFilesFlow(folderId: UUID?) {
+    public func runAddMediaLibratyItemFlow(folderId: UUID?) {
         
-        let importFlow = importMediaFilesFlowModelFactory.create(
+        let addMediaLibraryItemFlow = addMediaLibraryItemFlowModelFactory.create(
             targetFolderId: folderId,
             delegate: self
         )
-        self.importMediaFilesFlow.value = importFlow
+        self.addMediaLibraryItemFlow.value = addMediaLibraryItemFlow
     }
     
     public func runOpenLibraryItemFlow(mediaId: UUID) {
@@ -128,28 +128,22 @@ extension LibraryFlowModelImpl: LibraryItemFlowModelDelegate {
 
 // MARK: - ImportMediaFilesFlowModelDelegate
 
-extension LibraryFlowModelImpl: ImportMediaFilesFlowModelDelegate {
+extension LibraryFlowModelImpl: AddMediaLibraryItemFlowModelDelegate {
     
-    public func importMediaFilesFlowDidDispose() {
+    public func addMediaLibraryItemFlowModelDidFinish() {
         
-        importMediaFilesFlow.value = nil
+        reloadList()
+        addMediaLibraryItemFlow.value = nil
     }
     
-    public func importMediaFilesFlowDidFinish() {
+    public func addMediaLibraryItemFlowModelDidDispose() {
         
-        importMediaFilesFlow.value = nil
-        
-        Task {
-            await self.listViewModel.load()
-        }
+        addMediaLibraryItemFlow.value = nil
     }
     
-    public func importMediaFilesFlowProgress(totalFilesCount: Int, importedFilesCount: Int) {
-        
-        importMediaFilesFlow.value = nil
-        
-        Task {
-            await self.listViewModel.load()
-        }
+    public func addMediaLibraryItemFlowModelDidCancel() {
+
+        reloadList()
+        addMediaLibraryItemFlow.value = nil
     }
 }

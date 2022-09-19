@@ -17,11 +17,11 @@ public final class LibraryFlowPresenterImpl: LibraryFlowPresenter {
     
     private let listViewFactory: MediaLibraryBrowserViewFactory
     private let libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory
-    private let importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory
+    private let addMediaLibraryItemFlowPresenterFactory: AddMediaLibraryItemFlowPresenterFactory
     private let deleteMediaLibraryItemFlowPresenterFactory: DeleteMediaLibraryItemFlowPresenterFactory
     
     private var itemFlowPresenter: LibraryItemFlowPresenter?
-    private var importFlowPresenter: ImportMediaFilesFlowPresenter?
+    private var addMediaLibraryItemFlowPresenter: AddMediaLibraryItemFlowPresenter?
     private var deleteMediaLibraryItemFlowPresenter: DeleteMediaLibraryItemFlowPresenter?
     
     private var observers = Set<AnyCancellable>()
@@ -32,21 +32,21 @@ public final class LibraryFlowPresenterImpl: LibraryFlowPresenter {
         flowModel: LibraryFlowModel,
         listViewFactory: MediaLibraryBrowserViewFactory,
         libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory,
-        importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory,
+        addMediaLibraryItemFlowPresenterFactory: AddMediaLibraryItemFlowPresenterFactory,
         deleteMediaLibraryItemFlowPresenterFactory: DeleteMediaLibraryItemFlowPresenterFactory
     ) {
         
         self.flowModel = flowModel
         self.listViewFactory = listViewFactory
         self.libraryItemFlowPresenterFactory = libraryItemFlowPresenterFactory
-        self.importMediaFilesFlowPresenterFactory = importMediaFilesFlowPresenterFactory
+        self.addMediaLibraryItemFlowPresenterFactory = addMediaLibraryItemFlowPresenterFactory
         self.deleteMediaLibraryItemFlowPresenterFactory = deleteMediaLibraryItemFlowPresenterFactory
     }
     
     deinit {
         
         self.itemFlowPresenter = nil
-        self.importFlowPresenter = nil
+        self.addMediaLibraryItemFlowPresenter = nil
         
         observers.removeAll()
     }
@@ -79,26 +79,27 @@ extension LibraryFlowPresenterImpl {
                 self.itemFlowPresenter = presenter
             }.store(in: &observers)
         
-        flowModel.importMediaFilesFlow
+        flowModel.addMediaLibraryItemFlow
             .receive(on: RunLoop.main)
-            .sink { [weak self] importFlowModel in
+            .sink { [weak self] addMediaLibraryItemFlow in
                 
                 guard let self = self else {
                     return
                 }
                 
-                guard let importFlowModel = importFlowModel else {
+                guard let flow = addMediaLibraryItemFlow else {
                     
-                    self.self.importFlowPresenter?.dismiss()
-                    self.importFlowPresenter = nil
+                    self.addMediaLibraryItemFlowPresenter?.dismiss()
+                    self.addMediaLibraryItemFlowPresenter = nil
                     return
                 }
                 
-                let presenter = self.importMediaFilesFlowPresenterFactory.create(for: importFlowModel)
-                presenter.present(at: container)
+                let presenter = self.addMediaLibraryItemFlowPresenterFactory.create(for: flow)
                 
-                self.importFlowPresenter = presenter
-            }.store(in: &observers)
+                self.addMediaLibraryItemFlowPresenter = presenter
+                presenter.present(at: container)
+            }
+            .store(in: &observers)
         
         flowModel.deleteMediaLibraryItemFlow
             .receive(on: RunLoop.main)

@@ -11,19 +11,19 @@ public final class LibraryFlowPresenterImplFactory: LibraryFlowPresenterFactory 
     
     private let listViewFactory: MediaLibraryBrowserViewFactory
     private let libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory
-    private let importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory
+    private let addMediaLibraryItemFlowPresenterFactory: AddMediaLibraryItemFlowPresenterFactory
     private let deleteMediaLibraryItemFlowPresenterFactory: DeleteMediaLibraryItemFlowPresenterFactory
     
     public init(
         listViewFactory: MediaLibraryBrowserViewFactory,
         libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory,
-        importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory,
+        addMediaLibraryItemFlowPresenterFactory: AddMediaLibraryItemFlowPresenterFactory,
         deleteMediaLibraryItemFlowPresenterFactory: DeleteMediaLibraryItemFlowPresenterFactory
     ) {
         
         self.listViewFactory = listViewFactory
         self.libraryItemFlowPresenterFactory = libraryItemFlowPresenterFactory
-        self.importMediaFilesFlowPresenterFactory = importMediaFilesFlowPresenterFactory
+        self.addMediaLibraryItemFlowPresenterFactory = addMediaLibraryItemFlowPresenterFactory
         self.deleteMediaLibraryItemFlowPresenterFactory = deleteMediaLibraryItemFlowPresenterFactory
     }
     
@@ -33,7 +33,7 @@ public final class LibraryFlowPresenterImplFactory: LibraryFlowPresenterFactory 
             flowModel: flowModel,
             listViewFactory: listViewFactory,
             libraryItemFlowPresenterFactory: libraryItemFlowPresenterFactory,
-            importMediaFilesFlowPresenterFactory: importMediaFilesFlowPresenterFactory,
+            addMediaLibraryItemFlowPresenterFactory: addMediaLibraryItemFlowPresenterFactory,
             deleteMediaLibraryItemFlowPresenterFactory: deleteMediaLibraryItemFlowPresenterFactory
         )
     }

@@ -321,10 +321,17 @@ public class Application {
             confirmDialogViewModelFactory: confirmDialogViewModelFactory
         )
         
+        let chooseDialogViewModelFactory = ChooseDialogViewModelImplFactory()
+        
+        let addMediaLibraryItemFlowModelFactory = AddMediaLibraryItemFlowModelImplFactory(
+            chooseDialogViewModelFactory: chooseDialogViewModelFactory,
+            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory
+        )
+        
         let libraryFlowModelFactory = LibraryFlowModelImplFactory(
             viewModelFactory: libraryViewModelFactory,
             libraryItemFlowModelFactory: libraryItemFlowModelFactory,
-            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory,
+            addMediaLibraryItemFlowModelFactory: addMediaLibraryItemFlowModelFactory,
             deleteMediaLibraryItemFlowModelFactory: deleteMediaLibraryItemFlowModelFactory
         )
         
@@ -383,14 +390,21 @@ public class Application {
         
         let confirmDialogViewFactory = ConfirmDialogViewControllerFactory()
         
+        let chooseDialogViewControllerFactory = ChooseDialogViewControllerFactory()
+        
         let deleteMediaLibraryItemFlowPresenterFactory = DeleteMediaLibraryItemFlowPresenterImplFactory(
             confirmDialogViewFactory: confirmDialogViewFactory
+        )
+        
+        let addMediaLibraryItemFlowPresenterFactory = AddMediaLibraryItemFlowPresenterImplFactory(
+            chooseDialogViewFactory: chooseDialogViewControllerFactory,
+            importMediaFilesFlowPresenterFactory: importMediaFilesFlowPresenterFactory
         )
         
         let libraryFlowPresenterFactory = LibraryFlowPresenterImplFactory(
             listViewFactory: MediaLibraryBrowserViewControllerFactory(),
             libraryItemFlowPresenterFactory: libraryItemFlowPresenterFactory,
-            importMediaFilesFlowPresenterFactory: importMediaFilesFlowPresenterFactory,
+            addMediaLibraryItemFlowPresenterFactory: addMediaLibraryItemFlowPresenterFactory,
             deleteMediaLibraryItemFlowPresenterFactory: deleteMediaLibraryItemFlowPresenterFactory
         )
         
