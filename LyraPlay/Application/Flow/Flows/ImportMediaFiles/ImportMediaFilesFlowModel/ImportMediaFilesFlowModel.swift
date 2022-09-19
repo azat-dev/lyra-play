@@ -10,6 +10,8 @@ import Combine
 
 public protocol ImportMediaFilesFlowModelDelegate: AnyObject {
     
+    func importMediaFilesFlowDidDispose()
+    
     func importMediaFilesFlowDidFinish()
     
     func importMediaFilesFlowProgress(totalFilesCount: Int, importedFilesCount: Int)

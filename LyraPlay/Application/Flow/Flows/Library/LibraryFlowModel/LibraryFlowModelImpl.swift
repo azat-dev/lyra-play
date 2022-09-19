@@ -130,6 +130,11 @@ extension LibraryFlowModelImpl: LibraryItemFlowModelDelegate {
 
 extension LibraryFlowModelImpl: ImportMediaFilesFlowModelDelegate {
     
+    public func importMediaFilesFlowDidDispose() {
+        
+        importMediaFilesFlow.value = nil
+    }
+    
     public func importMediaFilesFlowDidFinish() {
         
         importMediaFilesFlow.value = nil
