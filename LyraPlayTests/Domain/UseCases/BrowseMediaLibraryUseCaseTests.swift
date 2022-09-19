@@ -112,30 +112,22 @@ class BrowseMediaLibraryUseCaseTests: XCTestCase {
         XCTAssertEqual(infoResult, .failure(.fileNotFound))
     }
     
-//    func testFetchImage() async throws {
-//
-//        let (useCase, _, imagesRepository) = createSUT()
-//
-//        let testImageName1 = "image1.png"
-//        let testImageName2 = "image2.jpeg"
-//
-//        let testImage1 = "image1".data(using: .utf8)!
-//        let testImage2 = "image2".data(using: .utf8)!
-//
-//        let put1 = await imagesRepository.putFile(name: testImageName1, data: testImage1)
-//        try AssertResultSucceded(put1)
-//
-//        let put2 = await imagesRepository.putFile(name: testImageName2, data: testImage2)
-//        try AssertResultSucceded(put2)
-//
-//        let resultImage1 = await useCase.fetchImage(name: testImageName1)
-//        let imageData1 = try AssertResultSucceded(resultImage1)
-//
-//        XCTAssertEqual(imageData1, testImage1)
-//
-//        let resultImage2 = await useCase.fetchImage(name: testImageName2)
-//        let imageData2 = try AssertResultSucceded(resultImage2)
-//
-//        XCTAssertEqual(imageData2, testImage2)
-//    }
+    func testFetchImage() async throws {
+
+        let sut = createSUT()
+
+        // Given
+        let testImageName1 = "image1.png"
+        let testImage1 = "image1".data(using: .utf8)!
+
+        given(await sut.imagesRepository.getFile(name: testImageName1))
+            .willReturn(.success(testImage1))
+
+        // When
+        let resultImage1 = await sut.useCase.fetchImage(name: testImageName1)
+        let imageData1 = try AssertResultSucceded(resultImage1)
+
+        // Then
+        XCTAssertEqual(imageData1, testImage1)
+    }
 }
