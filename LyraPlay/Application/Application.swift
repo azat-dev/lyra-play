@@ -241,7 +241,8 @@ public class Application {
             mediaLibraryRepository: mediaLibraryRepository,
             audioFilesRepository: audioFilesRepository,
             imagesRepository: imagesRepository,
-            tagsParser: tagsParser
+            tagsParser: tagsParser,
+            fileNameGenerator: ImportAudioFileUseCaseFileNameGeneratorImpl()
         )
         
         let importSubtitlesUseCaseFactory = ImportSubtitlesUseCaseImplFactory(

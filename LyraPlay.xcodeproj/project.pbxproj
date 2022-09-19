@@ -278,6 +278,7 @@
 		AA5DD71528B974A900929906 /* TagsParserFactoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD71428B974A900929906 /* TagsParserFactoryImpl.swift */; };
 		AA5F28D028D849ED0065661C /* ManagedLibraryItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5F28CE28D849ED0065661C /* ManagedLibraryItem+CoreDataClass.swift */; };
 		AA5F28D128D849ED0065661C /* ManagedLibraryItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5F28CF28D849ED0065661C /* ManagedLibraryItem+CoreDataProperties.swift */; };
+		AA5F28D328D86FEE0065661C /* ImportAudioFileUseCaseFileNameGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5F28D228D86FEE0065661C /* ImportAudioFileUseCaseFileNameGenerator.swift */; };
 		AA641DF428C3484700641B0C /* PresentableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA641DF328C3484700641B0C /* PresentableView.swift */; };
 		AA641DF628C3489D00641B0C /* UIViewController+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA641DF528C3489D00641B0C /* UIViewController+Utils.swift */; };
 		AA641DFA28C3516800641B0C /* PresentableViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA641DF928C3516800641B0C /* PresentableViewFactory.swift */; };
@@ -785,6 +786,7 @@
 		AA5DD71428B974A900929906 /* TagsParserFactoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsParserFactoryImpl.swift; sourceTree = "<group>"; };
 		AA5F28CE28D849ED0065661C /* ManagedLibraryItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedLibraryItem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		AA5F28CF28D849ED0065661C /* ManagedLibraryItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManagedLibraryItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		AA5F28D228D86FEE0065661C /* ImportAudioFileUseCaseFileNameGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportAudioFileUseCaseFileNameGenerator.swift; sourceTree = "<group>"; };
 		AA641DF328C3484700641B0C /* PresentableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentableView.swift; sourceTree = "<group>"; };
 		AA641DF528C3489D00641B0C /* UIViewController+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Utils.swift"; sourceTree = "<group>"; };
 		AA641DF928C3516800641B0C /* PresentableViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentableViewFactory.swift; sourceTree = "<group>"; };
@@ -1798,6 +1800,7 @@
 			children = (
 				AA3C533328BE5C5D00CBE3C6 /* ImportAudioFileUseCase.swift */,
 				AA3C533528BE5C6500CBE3C6 /* ImportAudioFileUseCaseFactory.swift */,
+				AA5F28D228D86FEE0065661C /* ImportAudioFileUseCaseFileNameGenerator.swift */,
 				AA3C533728BE5C6F00CBE3C6 /* ImportAudioFileUseCaseImpl.swift */,
 				AA3C533928BE5C7600CBE3C6 /* ImportAudioFileUseCaseImplFactory.swift */,
 			);
@@ -3102,6 +3105,7 @@
 				AA751E9EAE9EA284D3E3DCB2 /* TextToSpeechConverterFactory.swift in Sources */,
 				F9CD716A774CFA1BA69FEB80 /* TextToSpeechConverterImpl.swift in Sources */,
 				4C1FFFB4F3279D5BDA53FA2A /* TextToSpeechConverterImplFactory.swift in Sources */,
+				AA5F28D328D86FEE0065661C /* ImportAudioFileUseCaseFileNameGenerator.swift in Sources */,
 				CE53A6C10538835FDBB5BAD5 /* MediaLibraryBrowserView.swift in Sources */,
 				B66A2D422BF62A9311EB52D9 /* MediaLibraryBrowserViewFactory.swift in Sources */,
 				D748072B70C4011A60EF1C2E /* MediaLibraryBrowserViewControllerFactory.swift in Sources */,

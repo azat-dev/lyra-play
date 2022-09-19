@@ -21,6 +21,12 @@ public protocol ImportAudioFileUseCaseOutput {
         originalFileName: String,
         fileData: Data
     ) async -> Result<MediaLibraryAudioFile, ImportAudioFileUseCaseError>
+    
+    func importFile(
+        targetFolderId: UUID?,
+        originalFileName: String,
+        fileData: Data
+    ) async -> Result<MediaLibraryFile, ImportAudioFileUseCaseError>
 }
 
 public protocol ImportAudioFileUseCase: ImportAudioFileUseCaseOutput, ImportAudioFileUseCaseInput {}

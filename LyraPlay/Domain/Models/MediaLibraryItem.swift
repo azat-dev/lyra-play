@@ -47,7 +47,7 @@ public struct MediaLibraryFile: Equatable {
     public let createdAt: Date
     public var updatedAt: Date?
     public var title: String
-    public var subtitle: String
+    public var subtitle: String?
     public var file: String
     public var image: String?
     public var genre: String?
@@ -61,7 +61,7 @@ public struct MediaLibraryFile: Equatable {
         createdAt: Date,
         updatedAt: Date?,
         title: String,
-        subtitle: String,
+        subtitle: String?,
         file: String,
         duration: Double,
         image: String?,

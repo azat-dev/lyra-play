@@ -20,7 +20,7 @@ public struct NewMediaLibraryFileData: Equatable {
     
     public var parentId: UUID?
     public var title: String
-    public var subtitle: String
+    public var subtitle: String?
     public var file: String
     public var image: String?
     public var genre: String?
@@ -29,7 +29,7 @@ public struct NewMediaLibraryFileData: Equatable {
     public init(
         parentId: UUID?,
         title: String,
-        subtitle: String,
+        subtitle: String?,
         file: String,
         duration: Double,
         image: String?,
