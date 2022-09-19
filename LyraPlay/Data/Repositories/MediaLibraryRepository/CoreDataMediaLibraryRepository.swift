@@ -379,7 +379,7 @@ extension CoreDataMediaLibraryRepository {
             
             var result = [MediaLibraryItem]()
             
-            for item in children {
+            for item in children{
 
                 let managedItem = item as! ManagedLibraryItem
                 result.append(managedItem.toDomain())
