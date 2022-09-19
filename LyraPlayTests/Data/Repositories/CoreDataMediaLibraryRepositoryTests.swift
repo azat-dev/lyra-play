@@ -680,8 +680,9 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
         // Given
         
-        let existingFiles = try await given(sut: sut, folderId: nil, withFiles: ["file1", "file2"])
-
+        let existingFiles = try await given(sut: sut, folderId: nil, withFiles: ["file1"])
+        let _ = await sut.deleteItem(id: existingFiles[0].id)
+        
         var updateData = existingFiles[0]
         updateData.file = "File2.mp3"
         
@@ -725,7 +726,13 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         let fechResult = await sut.getItem(id: updateData.id)
         let fetchedFile = try AssertResultSucceded(fechResult)
         
-        AssertEqualReadable(fetchedFile, .file(updateData))
+        guard case .file(let fetchedFile) = fetchedFile else {
+            XCTFail("Wrong type")
+            return
+        }
+        
+        updateData.updatedAt = fetchedFile.updatedAt
+        AssertEqualReadable(fetchedFile, updateData)
         
         // Then
         let fechResultFile2 = await sut.getItem(id: existingFiles[1].id)
@@ -740,7 +747,8 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
         // Given
         
-        let existingFolders = try await given(sut: sut, withFolderTitles: ["folder1", "folder2"])
+        let existingFolders = try await given(sut: sut, withFolderTitles: ["folder1"])
+        let _ = await sut.deleteItem(id: existingFolders[0].id)
 
         var updateData = existingFolders[0]
         updateData.title = "UpdatedTitle"
@@ -778,14 +786,20 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
         let fechResult = await sut.getItem(id: updateData.id)
         let fetchedFolder = try AssertResultSucceded(fechResult)
+
+        guard case .folder(let fetchedFolder) = fetchedFolder else {
+            XCTFail("Wrong type")
+            return
+        }
         
-        AssertEqualReadable(fetchedFolder, .folder(updateData))
+        updateData.updatedAt = fetchedFolder.updatedAt
+        AssertEqualReadable(fetchedFolder, updateData)
         
         // Then
         let fechResultFolder2 = await sut.getItem(id: existingFolders[1].id)
         let fetchedFolder2 = try AssertResultSucceded(fechResultFolder2)
         
-        AssertEqualReadable(fetchedFolder2, .folder(existingFolders[0]))
+        AssertEqualReadable(fetchedFolder2, .folder(existingFolders[1]))
     }
 }
 

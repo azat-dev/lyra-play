@@ -18,7 +18,7 @@ public struct MediaLibraryFolder: Equatable {
     public let id: UUID
     public var parentId: UUID?
     public let createdAt: Date
-    public let updatedAt: Date?
+    public var updatedAt: Date?
     public var title: String
     public var image: String?
     
@@ -45,7 +45,7 @@ public struct MediaLibraryFile: Equatable {
     public let id: UUID
     public var parentId: UUID?
     public let createdAt: Date
-    public let updatedAt: Date?
+    public var updatedAt: Date?
     public var title: String
     public var subtitle: String
     public var file: String

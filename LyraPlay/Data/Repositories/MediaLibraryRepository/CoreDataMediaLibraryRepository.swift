@@ -156,7 +156,7 @@ extension CoreDataMediaLibraryRepository {
                 newItem.duration = data.duration
                 newItem.genre = data.genre
                 newItem.image = data.image
-
+                newItem.lastPlayedAt = nil
             },
             mapToDomainType: { item in
               return item.toDomainFile()
@@ -226,11 +226,85 @@ extension CoreDataMediaLibraryRepository {
     }
     
     public func updateFile(data: MediaLibraryFile) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError> {
-        fatalError()
+        
+        var updatedData = data
+        updatedData.updatedAt = .now
+        
+        let action = { (context: NSManagedObjectContext) throws -> Void in
+            
+            guard let managedFile = try self.getManagedItem(id: updatedData.id, context: context) else {
+                
+                throw MediaLibraryRepositoryError.fileNotFound
+            }
+            
+            guard !managedFile.isFolder else {
+                throw MediaLibraryRepositoryError.internalError(nil)
+            }
+            
+            managedFile.updatedAt = updatedData.updatedAt
+            managedFile.title = updatedData.title
+            managedFile.subtitle = updatedData.subtitle
+            managedFile.file = updatedData.file
+            managedFile.playedTime = updatedData.playedTime
+            managedFile.lastPlayedAt = updatedData.lastPlayedAt
+            managedFile.duration = updatedData.duration
+            managedFile.genre = updatedData.genre
+            managedFile.image = updatedData.image
+            
+            try context.save()
+        }
+        
+        do {
+            
+            try coreDataStore.performSync(action)
+        } catch {
+            
+            if let error = error as? MediaLibraryRepositoryError {
+                return .failure(error)
+            }
+            
+            return .failure(.internalError(error))
+        }
+        
+        return .success(updatedData)
     }
     
     public func updateFolder(data: MediaLibraryFolder) async -> Result<MediaLibraryFolder, MediaLibraryRepositoryError> {
-        fatalError()
+        
+        var updatedData = data
+        updatedData.updatedAt = .now
+        
+        let action = { (context: NSManagedObjectContext) throws -> Void in
+            
+            guard let managedFolder = try self.getManagedItem(id: updatedData.id, context: context) else {
+                
+                throw MediaLibraryRepositoryError.fileNotFound
+            }
+            
+            guard managedFolder.isFolder else {
+                throw MediaLibraryRepositoryError.internalError(nil)
+            }
+            
+            managedFolder.updatedAt = updatedData.updatedAt
+            managedFolder.title = updatedData.title
+            managedFolder.image = updatedData.image
+            
+            try context.save()
+        }
+        
+        do {
+            
+            try coreDataStore.performSync(action)
+        } catch {
+            
+            if let error = error as? MediaLibraryRepositoryError {
+                return .failure(error)
+            }
+            
+            return .failure(.internalError(error))
+        }
+        
+        return .success(updatedData)
     }
 }
 
