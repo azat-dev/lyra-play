@@ -91,7 +91,14 @@ extension BrowseMediaLibraryUseCaseImpl {
     }
     
     public func listItems(folderId: UUID?) async -> Result<[MediaLibraryItem], BrowseMediaLibraryUseCaseError> {
-        fatalError()
+        
+        let result = await mediaLibraryRepository.listItems(folderId: folderId)
+        
+        guard case .success(let item) = result else {
+            return .failure(result.error!.map())
+        }
+        
+        return .success(item)
     }
 }
 // MARK: - Error Mappings
