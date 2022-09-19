@@ -25,6 +25,8 @@ public protocol AddMediaLibraryItemFlowModelOutput: AnyObject {
     var chooseItemTypeViewModel: CurrentValueSubject<ChooseDialogViewModel?, Never> { get }
     
     var importMediaFilesFlow: CurrentValueSubject<ImportMediaFilesFlowModel?, Never> { get }
+    
+    var addMediaLibraryFolderFlow: CurrentValueSubject<AddMediaLibraryFolderFlowModel?, Never> { get }
 }
 
 public protocol AddMediaLibraryItemFlowModel: AddMediaLibraryItemFlowModelOutput, AddMediaLibraryItemFlowModelInput {}

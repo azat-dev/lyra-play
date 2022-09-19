@@ -13,16 +13,19 @@ public final class AddMediaLibraryItemFlowPresenterImplFactory: AddMediaLibraryI
 
     private let chooseDialogViewFactory: ChooseDialogViewFactory
     private let importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory
+    private let addMediaLibraryFolderFlowPresenterFactory: AddMediaLibraryFolderFlowPresenterFactory
 
     // MARK: - Initializers
 
     public init(
         chooseDialogViewFactory: ChooseDialogViewFactory,
-        importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory
+        importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory,
+        addMediaLibraryFolderFlowPresenterFactory: AddMediaLibraryFolderFlowPresenterFactory
     ) {
 
         self.chooseDialogViewFactory = chooseDialogViewFactory
         self.importMediaFilesFlowPresenterFactory = importMediaFilesFlowPresenterFactory
+        self.addMediaLibraryFolderFlowPresenterFactory = addMediaLibraryFolderFlowPresenterFactory
     }
 
     // MARK: - Methods
@@ -32,7 +35,8 @@ public final class AddMediaLibraryItemFlowPresenterImplFactory: AddMediaLibraryI
         return AddMediaLibraryItemFlowPresenterImpl(
             flowModel: flowModel,
             chooseDialogViewFactory: chooseDialogViewFactory,
-            importMediaFilesFlowPresenterFactory: importMediaFilesFlowPresenterFactory
+            importMediaFilesFlowPresenterFactory: importMediaFilesFlowPresenterFactory,
+            addMediaLibraryFolderFlowPresenterFactory: addMediaLibraryFolderFlowPresenterFactory
         )
     }
 }

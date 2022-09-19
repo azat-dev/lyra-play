@@ -322,10 +322,17 @@ public class Application {
         )
         
         let chooseDialogViewModelFactory = ChooseDialogViewModelImplFactory()
+        let promptDialogViewModelFactory = PromptDialogViewModelImplFactory()
+        
+        let addMediaLibraryFolderFlowModelImplFactory = AddMediaLibraryFolderFlowModelImplFactory(
+            editMediaLibraryListUseCaseFactory: editMediaLibraryListUseCaseFactory,
+            promptDialogViewModelFactory: promptDialogViewModelFactory
+        )
         
         let addMediaLibraryItemFlowModelFactory = AddMediaLibraryItemFlowModelImplFactory(
             chooseDialogViewModelFactory: chooseDialogViewModelFactory,
-            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory
+            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory,
+            addMediaLibraryFolderFlowModelFactory: addMediaLibraryFolderFlowModelImplFactory
         )
         
         let libraryFlowModelFactory = LibraryFlowModelImplFactory(
@@ -396,9 +403,16 @@ public class Application {
             confirmDialogViewFactory: confirmDialogViewFactory
         )
         
+        let promptDialogViewFactory = PromptDialogViewControllerFactory()
+        
+        let addMediaLibraryFolderFlowPresenterFactory = AddMediaLibraryFolderFlowPresenterImplFactory(
+            promptFolderNameViewFactory: promptDialogViewFactory
+        )
+        
         let addMediaLibraryItemFlowPresenterFactory = AddMediaLibraryItemFlowPresenterImplFactory(
             chooseDialogViewFactory: chooseDialogViewControllerFactory,
-            importMediaFilesFlowPresenterFactory: importMediaFilesFlowPresenterFactory
+            importMediaFilesFlowPresenterFactory: importMediaFilesFlowPresenterFactory,
+            addMediaLibraryFolderFlowPresenterFactory: addMediaLibraryFolderFlowPresenterFactory
         )
         
         let libraryFlowPresenterFactory = LibraryFlowPresenterImplFactory(

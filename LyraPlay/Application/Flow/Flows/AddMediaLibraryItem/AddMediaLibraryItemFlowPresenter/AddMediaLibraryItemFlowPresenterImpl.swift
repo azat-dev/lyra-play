@@ -17,23 +17,28 @@ public final class AddMediaLibraryItemFlowPresenterImpl: AddMediaLibraryItemFlow
 
     private let chooseDialogViewFactory: ChooseDialogViewFactory
     private let importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory
+    private let addMediaLibraryFolderFlowPresenterFactory: AddMediaLibraryFolderFlowPresenterFactory
     
     private var observers = Set<AnyCancellable>()
     
     private var activeChooseItemTypeView: UIViewController?
     private var importMediaFilesPresenter: ImportMediaFilesFlowPresenter?
+    
+    private var addMediaLibraryFolderPresenter: AddMediaLibraryFolderFlowPresenter?
 
     // MARK: - Initializers
 
     public init(
         flowModel: AddMediaLibraryItemFlowModel,
         chooseDialogViewFactory: ChooseDialogViewFactory,
-        importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory
+        importMediaFilesFlowPresenterFactory: ImportMediaFilesFlowPresenterFactory,
+        addMediaLibraryFolderFlowPresenterFactory: AddMediaLibraryFolderFlowPresenterFactory
     ) {
 
         self.flowModel = flowModel
         self.chooseDialogViewFactory = chooseDialogViewFactory
         self.importMediaFilesFlowPresenterFactory = importMediaFilesFlowPresenterFactory
+        self.addMediaLibraryFolderFlowPresenterFactory = addMediaLibraryFolderFlowPresenterFactory
     }
     
     deinit {
@@ -90,11 +95,39 @@ extension AddMediaLibraryItemFlowPresenterImpl {
                 presenter.present(at: container)
             }
             .store(in: &observers)
+
+        flowModel.addMediaLibraryFolderFlow
+            .receive(on: RunLoop.main)
+            .sink { [weak self] addMediaLibraryFolderFlow in
+                
+                guard let self = self else {
+                    return
+                }
+                
+                guard let flow = addMediaLibraryFolderFlow else {
+                    
+                    self.addMediaLibraryFolderPresenter?.dismiss()
+                    self.addMediaLibraryFolderPresenter = nil
+                    return
+                }
+                
+                let presenter = self.addMediaLibraryFolderFlowPresenterFactory.create(for: flow)
+                
+                self.addMediaLibraryFolderPresenter = presenter
+                presenter.present(at: container)
+            }
+            .store(in: &observers)
     }
     
     public func dismiss() {
         
         activeChooseItemTypeView?.dismiss(animated: true)
         activeChooseItemTypeView = nil
+        
+        importMediaFilesPresenter?.dismiss()
+        importMediaFilesPresenter = nil
+        
+        addMediaLibraryFolderPresenter?.dismiss()
+        addMediaLibraryFolderPresenter = nil
     }
 }

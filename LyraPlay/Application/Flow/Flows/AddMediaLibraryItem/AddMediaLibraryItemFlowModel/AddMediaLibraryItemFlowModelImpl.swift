@@ -23,9 +23,11 @@ public final class AddMediaLibraryItemFlowModelImpl: AddMediaLibraryItemFlowMode
 
     private let chooseDialogViewModelFactory: ChooseDialogViewModelFactory
     private let importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory
+    private let addMediaLibraryFolderFlowModelFactory: AddMediaLibraryFolderFlowModelFactory
 
     public let chooseItemTypeViewModel = CurrentValueSubject<ChooseDialogViewModel?, Never>(nil)
     public let importMediaFilesFlow = CurrentValueSubject<ImportMediaFilesFlowModel?, Never>(nil)
+    public let addMediaLibraryFolderFlow = CurrentValueSubject<AddMediaLibraryFolderFlowModel?, Never>(nil)
     
     // MARK: - Initializers
 
@@ -33,13 +35,15 @@ public final class AddMediaLibraryItemFlowModelImpl: AddMediaLibraryItemFlowMode
         targetFolderId: UUID?,
         delegate: AddMediaLibraryItemFlowModelDelegate,
         chooseDialogViewModelFactory: ChooseDialogViewModelFactory,
-        importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory
+        importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory,
+        addMediaLibraryFolderFlowModelFactory: AddMediaLibraryFolderFlowModelFactory
     ) {
 
         self.targetFolderId = targetFolderId
         self.delegate = delegate
         self.chooseDialogViewModelFactory = chooseDialogViewModelFactory
         self.importMediaFilesFlowModelFactory = importMediaFilesFlowModelFactory
+        self.addMediaLibraryFolderFlowModelFactory = addMediaLibraryFolderFlowModelFactory
         
         showChooseTypeDialog()
     }
@@ -59,6 +63,28 @@ public final class AddMediaLibraryItemFlowModelImpl: AddMediaLibraryItemFlowMode
     }
 }
 
+// MARK: - AddMediaLibraryFolderFlowModelDelegate
+
+extension AddMediaLibraryItemFlowModelImpl: AddMediaLibraryFolderFlowModelDelegate {
+    
+    public func addMediaLibraryFolderFlowModelDidDispose() {
+        
+        addMediaLibraryFolderFlow.value = nil
+    }
+    
+    public func addMediaLibraryFolderFlowModelCancel() {
+        
+        addMediaLibraryFolderFlow.value = nil
+        delegate?.addMediaLibraryItemFlowModelDidCancel()
+    }
+    
+    public func addMediaLibraryFolderFlowModelDidCreate() {
+        
+        addMediaLibraryFolderFlow.value = nil
+        delegate?.addMediaLibraryItemFlowModelDidFinish()
+    }
+}
+
 // MARK: - ChooseDialogViewModelDelegate
 
 extension AddMediaLibraryItemFlowModelImpl: ChooseDialogViewModelDelegate {
@@ -74,12 +100,25 @@ extension AddMediaLibraryItemFlowModelImpl: ChooseDialogViewModelDelegate {
         delegate?.addMediaLibraryItemFlowModelDidCancel()
     }
     
-    private func createFolder() {
+    private func runAddMediaLibraryFolderFlow() {
         
-        delegate?.addMediaLibraryItemFlowModelDidFinish()
+        guard self.addMediaLibraryFolderFlow.value == nil else {
+            return
+        }
+        
+        let addMediaLibraryFolderFlow = addMediaLibraryFolderFlowModelFactory.create(
+            targetFolderId: targetFolderId,
+            delegate: self
+        )
+        
+        self.addMediaLibraryFolderFlow.value = addMediaLibraryFolderFlow
     }
     
     private func runImportMediaFilesFlow() {
+    
+        guard self.importMediaFilesFlow.value == nil else {
+            return
+        }
         
         let importMediaFilesFlow = importMediaFilesFlowModelFactory.create(
             targetFolderId: targetFolderId,
@@ -96,7 +135,7 @@ extension AddMediaLibraryItemFlowModelImpl: ChooseDialogViewModelDelegate {
         switch Variants(rawValue: itemId) {
         
         case .createFolder:
-            createFolder()
+            runAddMediaLibraryFolderFlow()
             
         case .importMediaFiles:
             runImportMediaFilesFlow()

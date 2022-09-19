@@ -62,6 +62,13 @@ extension AddMediaLibraryFolderFlowModelImpl: PromptDialogViewModelDelegate {
     
     private func createFolder(name: String) async {
         
+        let nameCleaned = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if nameCleaned.isEmpty {
+            promptFolderNameViewModel.value?.setErrorText("The name can't be empty")
+            return
+        }
+        
         let editMediaLibraryListUseCase = editMediaLibraryListUseCaseFactory.create()
         
         let folderData = NewMediaLibraryFolderData(
