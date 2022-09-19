@@ -71,6 +71,8 @@ public protocol MediaLibraryRepositoryInput {
     
     func delete(fileId: UUID) async -> Result<Void, MediaLibraryRepositoryError>
     
+    func deleteFile(id: UUID) async -> Result<Void, MediaLibraryRepositoryError>
+    
     func createFile(data: NewMediaLibraryFileData) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError>
     
     func createFolder(data: NewMediaLibraryFolderData) async -> Result<MediaLibraryFolder, MediaLibraryRepositoryError>

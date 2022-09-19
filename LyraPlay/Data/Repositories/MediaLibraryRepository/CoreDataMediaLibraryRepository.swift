@@ -203,6 +203,10 @@ extension CoreDataMediaLibraryRepository {
         
         return .success(())
     }
+    
+    public func deleteFile(id: UUID) async -> Result<Void, MediaLibraryRepositoryError> {
+        fatalError()
+    }
 }
 
 // MARK: - Output Methods

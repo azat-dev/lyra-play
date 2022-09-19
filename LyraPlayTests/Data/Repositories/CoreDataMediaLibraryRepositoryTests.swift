@@ -603,7 +603,45 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
         let result = await sut.delete(fileId: savedFile1!.id!)
         try AssertResultSucceded(result)
-    }    
+    }
+    
+    func test_deleteFile___empty_list() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        let fileId = UUID()
+        
+        // When
+        let result = await sut.deleteFile(id: fileId)
+        
+        // Then
+        let error = try AssertResultFailed(result)
+        
+        guard case .fileNotFound = error else {
+            XCTFail("Wrong error")
+            return
+        }
+    }
+    
+    func test_deleteFile__not_empty_list() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        let existingFiles = try await given(sut: sut, folderId: nil, withFiles: ["file1", "file2"])
+
+        // When
+        let result = await sut.deleteFile(id: existingFiles[0].id)
+        
+        // Then
+        try AssertResultSucceded(result)
+        
+        let listFilesResult = await sut.listItems(folderId: nil)
+        let listedFiles = try AssertResultSucceded(listFilesResult)
+        
+        AssertEqualReadable(listedFiles.map { $0 }, [.file(existingFiles[1])])
+    }
 }
 
 // MARK: - Helpers
