@@ -43,36 +43,9 @@ class BrowseMediaLibraryUseCaseTests: XCTestCase {
         )
     }
     
-//    func test_list__items() async throws {
-//
-//        let sut = createSUT()
-//
-//        // Given
-//        let folderId = UUID()
-//        let numberOfTestFiles = 5
-//        let testFiles = (0..<numberOfTestFiles).map { self.getTestFile(index: $0) }
-//
-//        for file in testFiles {
-//            let _ = await mediaLibraryRepository.putFile(info: file.info)
-//        }
-//
-//        // When
-//        let result = await useCase.listFiles(folderId: folderId)
-//
-//        // Then
-//        let receivedFiles = try! result.get()
-//
-//        let expectedFileNames = testFiles.map { $0.info.name }
-//        XCTAssertEqual(receivedFiles.map { $0.name }, expectedFileNames)
-//    }
-//
-    func test_getItem__existing() async throws {
-
-        let sut = createSUT()
-
-        // Given
-
-        let existingFolder = MediaLibraryFolder(
+    private func anyFolder() -> MediaLibraryFolder {
+        
+        return .init(
             id: UUID(),
             parentId: nil,
             createdAt: .now,
@@ -80,6 +53,38 @@ class BrowseMediaLibraryUseCaseTests: XCTestCase {
             title: "test",
             image: nil
         )
+    }
+    
+    func test_list__items() async throws {
+
+        let sut = createSUT()
+
+        // Given
+        let folderId = UUID()
+        
+        let exisingItems: [MediaLibraryItem] = [
+            .folder(anyFolder()),
+            .folder(anyFolder())
+        ]
+
+        given(await sut.mediaLibraryRepository.listItems(folderId: folderId))
+            .willReturn(.success(exisingItems))
+        
+        // When
+        let result = await sut.useCase.listItems(folderId: folderId)
+        
+        // Then
+        let receivedItems = try AssertResultSucceded(result)
+        
+        AssertEqualReadable(receivedItems, exisingItems)
+    }
+
+    func test_getItem__existing() async throws {
+
+        let sut = createSUT()
+
+        // Given
+        let existingFolder = anyFolder()
         
         given(await sut.mediaLibraryRepository.getItem(id: existingFolder.id))
             .willReturn(.success(.folder(existingFolder)))
