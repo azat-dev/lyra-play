@@ -19,12 +19,12 @@ class LibraryFlowModelTests: XCTestCase {
         libraryItemFlow: LibraryItemFlowModelMock
     )
     
-    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
+    func createSUT(folderId: UUID?, file: StaticString = #filePath, line: UInt = #line) -> SUT {
         
         let viewModel = mock(MediaLibraryBrowserViewModel.self)
         let viewModelFactory = mock(MediaLibraryBrowserViewModelFactory.self)
         
-        given(viewModelFactory.create(delegate: any()))
+        given(viewModelFactory.create(folderId: folderId, delegate: any()))
             .willReturn(viewModel)
         
         let libraryItemFlow = mock(LibraryItemFlowModel.self)
@@ -40,6 +40,7 @@ class LibraryFlowModelTests: XCTestCase {
         let deleteMediaLibraryItemFlowModelFactory = mock(DeleteMediaLibraryItemFlowModelFactory.self)
         
         let flow = LibraryFlowModelImpl(
+            folderId: folderId,
             viewModelFactory: viewModelFactory,
             libraryItemFlowModelFactory: libraryItemFlowModelFactory,
             importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory,
@@ -67,7 +68,7 @@ class LibraryFlowModelTests: XCTestCase {
     
     func test_runOpenLibraryItemFlow() {
         
-        let sut = createSUT()
+        let sut = createSUT(folderId: nil)
         let libraryItemFlowSequence = expectSequence([false, true])
         
         // Given

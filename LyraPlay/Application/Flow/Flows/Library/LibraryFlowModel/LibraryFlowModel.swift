@@ -12,6 +12,8 @@ public protocol LibraryFlowModelInput: AnyObject {}
 
 public protocol LibraryFlowModelOutput: AnyObject {
 
+    var folderId: UUID? { get }
+    
     var listViewModel: MediaLibraryBrowserViewModel { get }
     
     var libraryItemFlow: CurrentValueSubject<LibraryItemFlowModel?, Never> { get }

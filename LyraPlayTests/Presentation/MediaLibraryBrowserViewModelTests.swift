@@ -19,7 +19,7 @@ class MediaLibraryBrowserViewModelTests: XCTestCase {
         browseUseCase: BrowseMediaLibraryUseCaseMock
     )
     
-    func createSUT(file: StaticString = #filePath, line: UInt = #line) async -> SUT {
+    func createSUT(folderId: UUID?, file: StaticString = #filePath, line: UInt = #line) async -> SUT {
         
         let browseUseCase = mock(BrowseMediaLibraryUseCase.self)
         
@@ -30,6 +30,7 @@ class MediaLibraryBrowserViewModelTests: XCTestCase {
         let delegate = mock(MediaLibraryBrowserViewModelDelegate.self)
         
         let viewModel = MediaLibraryBrowserViewModelImpl(
+            folderId: folderId,
             delegate: delegate,
             browseUseCase: browseUseCase,
             importFileUseCase: importFileUseCase
@@ -58,7 +59,7 @@ class MediaLibraryBrowserViewModelTests: XCTestCase {
     
     func test_load() async throws {
         
-        let sut = await createSUT()
+        let sut = await createSUT(folderId: nil)
         
         // Given
         let testFiles: [MediaLibraryAudioFile] = (0...3).map { _ in .anyExistingItem() }

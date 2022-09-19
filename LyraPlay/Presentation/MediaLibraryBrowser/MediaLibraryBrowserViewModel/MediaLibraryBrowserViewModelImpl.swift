@@ -10,10 +10,12 @@ import Combine
 import UIKit
 
 public final class MediaLibraryBrowserViewModelImpl: MediaLibraryBrowserViewModel {
-
+    
     // MARK: - Properties
-
+    
+    private let folderId: UUID?
     private weak var delegate: MediaLibraryBrowserViewModelDelegate?
+    
     private let browseUseCase: BrowseMediaLibraryUseCase
     private let importFileUseCase: ImportAudioFileUseCase
     
@@ -27,20 +29,22 @@ public final class MediaLibraryBrowserViewModelImpl: MediaLibraryBrowserViewMode
     
     public var changedItems = PassthroughSubject<[UUID], Never>()
     
-
+    
     // MARK: - Initializers
-
+    
     public init(
+        folderId: UUID?,
         delegate: MediaLibraryBrowserViewModelDelegate,
         browseUseCase: BrowseMediaLibraryUseCase,
         importFileUseCase: ImportAudioFileUseCase
     ) {
-
+        
         self.delegate = delegate
         self.browseUseCase = browseUseCase
         self.importFileUseCase = importFileUseCase
         
         self.isLoading = Observable(true)
+        self.folderId = folderId
     }
 }
 
@@ -55,7 +59,7 @@ extension MediaLibraryBrowserViewModelImpl: MediaLibraryBrowserCellViewModelDele
 }
 
 extension MediaLibraryBrowserViewModelImpl {
-
+    
     private func loadImages(names: [String]) async -> [String: UIImage] {
         
         var images = [String: UIImage]()
@@ -72,9 +76,9 @@ extension MediaLibraryBrowserViewModelImpl {
         
         return images
     }
-
+    
     public func load() async -> Void {
-
+        
         isLoading.value = true
         
         let result = await browseUseCase.listFiles()
@@ -89,7 +93,7 @@ extension MediaLibraryBrowserViewModelImpl {
         var ids = [UUID]()
         
         loadedFiles.forEach { file in
-
+            
             let item = MediaLibraryBrowserCellViewModel(
                 id: file.id!,
                 title: file.name,
@@ -97,17 +101,17 @@ extension MediaLibraryBrowserViewModelImpl {
                 image: images[file.coverImage ?? ""] ?? stubItemImage,
                 delegate: self
             )
-
+            
             newItems[item.id] = item
             ids.append(item.id)
         }
-
+        
         DispatchQueue.main.async { [weak self, newItems, ids] in
             
             guard let self = self else {
                 return
             }
-
+            
             self.itemsById = newItems
             self.items.value = ids
             self.isLoading.value = false
@@ -116,7 +120,7 @@ extension MediaLibraryBrowserViewModelImpl {
     
     public func addNewItem() -> Void {
         
-        delegate?.runImportMediaFilesFlow()
+        delegate?.runImportMediaFilesFlow(folderId: folderId)
     }
     
     public func deleteItem(_ id: UUID) {
@@ -128,7 +132,7 @@ extension MediaLibraryBrowserViewModelImpl {
 // MARK: - Output Methods
 
 extension MediaLibraryBrowserViewModelImpl {
-
+    
     public func getItem(id: UUID) -> MediaLibraryBrowserCellViewModel {
         
         return itemsById[id]!

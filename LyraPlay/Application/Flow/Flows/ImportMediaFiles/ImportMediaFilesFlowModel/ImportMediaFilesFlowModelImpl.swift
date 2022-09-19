@@ -12,6 +12,7 @@ public final class ImportMediaFilesFlowModelImpl: ImportMediaFilesFlowModel {
 
     // MARK: - Properties
 
+    private let targetFolderId: UUID?
     private let allowedDocumentTypes: [String]
     private weak var delegate: ImportMediaFilesFlowModelDelegate?
     
@@ -23,12 +24,14 @@ public final class ImportMediaFilesFlowModelImpl: ImportMediaFilesFlowModel {
     // MARK: - Initializers
 
     public init(
+        targetFolderId: UUID?,
         allowedDocumentTypes: [String],
         delegate: ImportMediaFilesFlowModelDelegate,
         filesPickerViewModelFactory: FilesPickerViewModelFactory,
         importAudioFileUseCaseFactory: ImportAudioFileUseCaseFactory
     ) {
 
+        self.targetFolderId = targetFolderId
         self.allowedDocumentTypes = allowedDocumentTypes
         self.delegate = delegate
         self.filesPickerViewModelFactory = filesPickerViewModelFactory
@@ -42,11 +45,6 @@ public final class ImportMediaFilesFlowModelImpl: ImportMediaFilesFlowModel {
     }
 }
 
-// MARK: - Input Methods
-
-extension ImportMediaFilesFlowModelImpl {
-
-}
 
 // MARK: - FilesPickerViewModelDelegate
 
@@ -63,6 +61,11 @@ extension ImportMediaFilesFlowModelImpl: FilesPickerViewModelDelegate {
         filesPickerViewModel.value = nil
         delegate?.importMediaFilesFlowDidFinish()
     }
+}
+
+// MARK: - Input Methods
+
+extension ImportMediaFilesFlowModelImpl {
     
     private func importAudioFiles(urls: [URL]) async {
         
@@ -80,6 +83,7 @@ extension ImportMediaFilesFlowModelImpl: FilesPickerViewModelDelegate {
             }
             
             let _ = await importFileUseCase.importFile(
+                targetFolderId: targetFolderId,
                 originalFileName: url.lastPathComponent,
                 fileData: data
             )

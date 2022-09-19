@@ -18,12 +18,12 @@ class MainFlowModelTests: XCTestCase {
         mainTabBarViewModel: MainTabBarViewModelMock
     )
     
-    func createSUT(file: StaticString = #filePath, line: UInt = #line) -> SUT {
+    func createSUT(folderId: UUID?, file: StaticString = #filePath, line: UInt = #line) -> SUT {
         
         let libraryFlowModel = mock(LibraryFlowModel.self)
         let libraryFlowModelFactory = mock(LibraryFlowModelFactory.self)
         
-        given(libraryFlowModelFactory.create())
+        given(libraryFlowModelFactory.create(folderId: folderId))
             .willReturn(libraryFlowModel)
         
         let dictionaryFlowModel = mock(DictionaryFlowModel.self)
@@ -64,7 +64,7 @@ class MainFlowModelTests: XCTestCase {
     func test_runLibraryFlow() async throws {
         
         // Given
-        let sut = createSUT()
+        let sut = createSUT(folderId: nil)
         
         let sequence = expectSequence([true, false])
         let disposible = sut.flow.libraryFlow.sink { sequence.fulfill(with: $0 == nil) }
@@ -82,7 +82,7 @@ class MainFlowModelTests: XCTestCase {
     func test_runDictionaryFlow() async throws {
         
         // Given
-        let sut = createSUT()
+        let sut = createSUT(folderId: nil)
         
         let dictionaryFlowSequence = watch(sut.flow.dictionaryFlow, mapper: { $0 == nil })
         

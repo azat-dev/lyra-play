@@ -60,7 +60,7 @@ extension MainFlowModelImpl: MainTabBarViewModelDelegate {
             return
         }
         
-        libraryFlow.value = libraryFlowModelFactory.create()
+        libraryFlow.value = libraryFlowModelFactory.create(folderId: nil)
     }
     
     public func runDictionaryFlow() {

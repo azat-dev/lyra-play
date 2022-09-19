@@ -5,7 +5,9 @@
 //  Created by Azat Kaiumov on 07.09.2022.
 //
 
+import Foundation
+
 public protocol LibraryFlowModelFactory {
     
-    func create() -> LibraryFlowModel
+    func create(folderId: UUID?) -> LibraryFlowModel
 }

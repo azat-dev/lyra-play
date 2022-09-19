@@ -12,6 +12,8 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
     
     // MARK: - Properties
     
+    public let folderId: UUID?
+    
     private let viewModelFactory: MediaLibraryBrowserViewModelFactory
     private let libraryItemFlowModelFactory: LibraryItemFlowModelFactory
     private let importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory
@@ -19,7 +21,7 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
     
     public lazy var listViewModel: MediaLibraryBrowserViewModel = {
         
-        return viewModelFactory.create(delegate: self)
+        return viewModelFactory.create(folderId: folderId, delegate: self)
     } ()
     
     public var libraryItemFlow = CurrentValueSubject<LibraryItemFlowModel?, Never>(nil)
@@ -29,12 +31,14 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
     // MARK: - Initializers
     
     public init(
+        folderId: UUID?,
         viewModelFactory: MediaLibraryBrowserViewModelFactory,
         libraryItemFlowModelFactory: LibraryItemFlowModelFactory,
         importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory,
         deleteMediaLibraryItemFlowModelFactory: DeleteMediaLibraryItemFlowModelFactory
     ) {
         
+        self.folderId = folderId
         self.viewModelFactory = viewModelFactory
         self.libraryItemFlowModelFactory = libraryItemFlowModelFactory
         self.importMediaFilesFlowModelFactory = importMediaFilesFlowModelFactory
@@ -80,9 +84,12 @@ extension LibraryFlowModelImpl: DeleteMediaLibraryItemFlowDelegate {
 
 extension LibraryFlowModelImpl: MediaLibraryBrowserViewModelDelegate {
     
-    public func runImportMediaFilesFlow() {
+    public func runImportMediaFilesFlow(folderId: UUID?) {
         
-        let importFlow = importMediaFilesFlowModelFactory.create(delegate: self)
+        let importFlow = importMediaFilesFlowModelFactory.create(
+            targetFolderId: folderId,
+            delegate: self
+        )
         self.importMediaFilesFlow.value = importFlow
     }
     

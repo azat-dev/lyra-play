@@ -10,7 +10,7 @@ import Combine
 
 public protocol MediaLibraryBrowserViewModelDelegate: AnyObject {
     
-    func runImportMediaFilesFlow()
+    func runImportMediaFilesFlow(folderId: UUID?)
     
     func runOpenLibraryItemFlow(mediaId: UUID)
     

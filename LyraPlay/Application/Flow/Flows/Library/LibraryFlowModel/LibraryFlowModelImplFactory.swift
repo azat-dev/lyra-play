@@ -33,9 +33,10 @@ public final class LibraryFlowModelImplFactory: LibraryFlowModelFactory {
 
     // MARK: - Methods
 
-    public func create() -> LibraryFlowModel {
+    public func create(folderId: UUID?) -> LibraryFlowModel {
 
         return LibraryFlowModelImpl(
+            folderId: folderId,
             viewModelFactory: viewModelFactory,
             libraryItemFlowModelFactory: libraryItemFlowModelFactory,
             importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory,

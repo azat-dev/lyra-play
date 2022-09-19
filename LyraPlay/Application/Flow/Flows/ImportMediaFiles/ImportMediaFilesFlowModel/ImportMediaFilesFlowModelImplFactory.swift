@@ -31,10 +31,12 @@ public final class ImportMediaFilesFlowModelImplFactory: ImportMediaFilesFlowMod
     // MARK: - Methods
 
     public func create(
+        targetFolderId: UUID?,
         delegate: ImportMediaFilesFlowModelDelegate
     ) -> ImportMediaFilesFlowModel {
 
         return ImportMediaFilesFlowModelImpl(
+            targetFolderId: targetFolderId,
             allowedDocumentTypes: allowedDocumentTypes,
             delegate: delegate,
             filesPickerViewModelFactory: filesPickerViewModelFactory,

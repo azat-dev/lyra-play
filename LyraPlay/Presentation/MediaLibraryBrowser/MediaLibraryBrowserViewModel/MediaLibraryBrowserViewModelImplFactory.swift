@@ -27,12 +27,13 @@ public final class MediaLibraryBrowserViewModelImplFactory: MediaLibraryBrowserV
 
     // MARK: - Methods
 
-    public func create(delegate: MediaLibraryBrowserViewModelDelegate) -> MediaLibraryBrowserViewModel {
+    public func create(folderId: UUID?, delegate: MediaLibraryBrowserViewModelDelegate) -> MediaLibraryBrowserViewModel {
 
         let browseUseCase = browseMediaLibraryUseCaseFactory.create()
         let importFileUseCase = importAudioFileUseCaseFactory.create()
 
         return MediaLibraryBrowserViewModelImpl(
+            folderId: folderId,
             delegate: delegate,
             browseUseCase: browseUseCase,
             importFileUseCase: importFileUseCase
