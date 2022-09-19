@@ -105,7 +105,6 @@ extension CoreDataMediaLibraryRepository {
             
             newItem.id = UUID()
             newItem.createdAt = .now
-            newItem.parentId = parentId ?? ManagedLibraryItem.emptyId
 
             parentItem?.addToChildren(newItem)
 
@@ -131,7 +130,7 @@ extension CoreDataMediaLibraryRepository {
             }
             
             let isConflict = conflictList.contains { item in
-                item.constraint.contains(#keyPath(ManagedLibraryItem.parentId)) &&
+                item.constraint.contains(#keyPath(ManagedLibraryItem.parent)) &&
                 item.constraint.contains(#keyPath(ManagedLibraryItem.title))
             }
             

@@ -1,8 +1,8 @@
 //
 //  ManagedLibraryItem+CoreDataProperties.swift
-//  LyraPlayTests
+//  LyraPlay
 //
-//  Created by Azat Kaiumov on 17.09.22.
+//  Created by Azat Kaiumov on 19.09.22.
 //
 //
 
@@ -16,21 +16,21 @@ extension ManagedLibraryItem {
         return NSFetchRequest<ManagedLibraryItem>(entityName: "ManagedLibraryItem")
     }
 
-    @NSManaged public var id: UUID?
-    @NSManaged public var title: String?
-    @NSManaged public var subtitle: String?
-    @NSManaged public var metaInfo: Data?
-    @NSManaged public var isFolder: Bool
-    @NSManaged public var playedTime: Double
-    @NSManaged public var duration: Double
-    @NSManaged public var lastPlayedAt: Date?
-    @NSManaged public var parentId: UUID?
-    @NSManaged public var file: String?
     @NSManaged public var createdAt: Date?
-    @NSManaged public var updatedAt: Date?
+    @NSManaged public var duration: Double
+    @NSManaged public var file: String?
     @NSManaged public var genre: String?
+    @NSManaged public var id: UUID?
     @NSManaged public var image: String?
+    @NSManaged public var isFolder: Bool
+    @NSManaged public var lastPlayedAt: Date?
+    @NSManaged public var metaInfo: Data?
+    @NSManaged public var playedTime: Double
+    @NSManaged public var subtitle: String?
+    @NSManaged public var title: String?
+    @NSManaged public var updatedAt: Date?
     @NSManaged public var children: NSOrderedSet?
+    @NSManaged public var parent: ManagedLibraryItem?
 
 }
 

@@ -44,7 +44,6 @@
         <attribute name="isFolder" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="lastPlayedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="metaInfo" optional="YES" attributeType="Binary"/>
-        <attribute name="parentId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="playedTime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="subtitle" optional="YES" attributeType="String"/>
         <attribute name="title" attributeType="String"/>
@@ -56,7 +55,7 @@
                 <constraint value="id"/>
             </uniquenessConstraint>
             <uniquenessConstraint>
-                <constraint value="parentId"/>
+                <constraint value="parent"/>
                 <constraint value="title"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
@@ -75,7 +74,7 @@
     <elements>
         <element name="ManagedAudioFile" positionX="-63" positionY="-18" width="128" height="164"/>
         <element name="ManagedDictionaryItem" positionX="-63" positionY="54" width="128" height="134"/>
-        <element name="ManagedLibraryItem" positionX="-63" positionY="72" width="128" height="269"/>
+        <element name="ManagedLibraryItem" positionX="-63" positionY="72" width="128" height="254"/>
         <element name="ManagedSubtitles" positionX="-63" positionY="54" width="128" height="74"/>
     </elements>
 </model>

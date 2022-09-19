@@ -20,7 +20,7 @@ extension ManagedLibraryItem {
         
         return .init(
             id: id!,
-            parentId: parentId == Self.emptyId ? nil : parentId,
+            parentId: parent?.id,
             createdAt: createdAt!,
             updatedAt: updatedAt,
             title: title!,
@@ -42,7 +42,7 @@ extension ManagedLibraryItem {
         
         return .init(
             id: id!,
-            parentId: parentId == Self.emptyId ? nil : parentId,
+            parentId: parent?.id,
             createdAt: createdAt!,
             updatedAt: updatedAt,
             title: title!,

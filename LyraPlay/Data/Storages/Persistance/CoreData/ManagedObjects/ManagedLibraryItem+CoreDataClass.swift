@@ -1,8 +1,8 @@
 //
 //  ManagedLibraryItem+CoreDataClass.swift
-//  LyraPlayTests
+//  LyraPlay
 //
-//  Created by Azat Kaiumov on 17.09.22.
+//  Created by Azat Kaiumov on 19.09.22.
 //
 //
 
