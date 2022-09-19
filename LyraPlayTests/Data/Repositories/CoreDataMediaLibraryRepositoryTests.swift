@@ -613,7 +613,7 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         let fileId = UUID()
         
         // When
-        let result = await sut.deleteFile(id: fileId)
+        let result = await sut.deleteItem(id: fileId)
         
         // Then
         let error = try AssertResultFailed(result)
@@ -624,24 +624,56 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         }
     }
     
-    func test_deleteFile__not_empty_list() async throws {
+    func test_deleteItem__not_empty_list() async throws {
         
         let sut = createSUT()
         
         // Given
-        let existingFiles = try await given(sut: sut, folderId: nil, withFiles: ["file1", "file2"])
+        let existingFolders = try await given(sut: sut, withFolderTitles: ["folder0", "folder1"])
+        let existingFiles = try await given(sut: sut, folderId: existingFolders[0].id, withFiles: ["file0", "file1"])
 
         // When
-        let result = await sut.deleteFile(id: existingFiles[0].id)
+        let result = await sut.deleteItem(id: existingFiles[0].id)
         
         // Then
         try AssertResultSucceded(result)
         
-        let listFilesResult = await sut.listItems(folderId: nil)
+        let listFilesResult = await sut.listItems(folderId: existingFolders[0].id)
         let listedFiles = try AssertResultSucceded(listFilesResult)
         
         AssertEqualReadable(listedFiles.map { $0 }, [.file(existingFiles[1])])
     }
+    
+    func test_deleteItem__cascade() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        let existingFolders = try await given(sut: sut, withFolderTitles: ["folder0", "folder1"])
+        let existingFoldersInFolder0 = await try given(sut: sut, withFolderTitles: ["folder11"], parentId: existingFolders[0].id)
+        let existingFilesInFolder0 = await try given(sut: sut, folderId: existingFolders[0].id, withFiles: ["file0"])
+        
+        // When
+        let result = await sut.deleteItem(id: existingFolders[0].id)
+        
+        // Then
+        try AssertResultSucceded(result)
+        
+        let resultFetchFile = await sut.getItem(id: existingFilesInFolder0[0].id)
+        
+        guard case .fileNotFound = try AssertResultFailed(resultFetchFile) else {
+            XCTFail("Wrong error type \(resultFetchFile)")
+            return
+        }
+        
+        let resultFetchFolder = await sut.getItem(id: existingFoldersInFolder0[0].id)
+        
+        guard case .fileNotFound = try AssertResultFailed(resultFetchFolder) else {
+            XCTFail("Wrong error type \(resultFetchFile)")
+            return
+        }
+    }
+
 }
 
 // MARK: - Helpers

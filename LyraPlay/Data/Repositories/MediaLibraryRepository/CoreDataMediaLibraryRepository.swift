@@ -203,7 +203,7 @@ extension CoreDataMediaLibraryRepository {
         return .success(())
     }
     
-    public func deleteFile(id: UUID) async -> Result<Void, MediaLibraryRepositoryError> {
+    public func deleteItem(id: UUID) async -> Result<Void, MediaLibraryRepositoryError> {
         
         guard let managedFile = try? getManagedItem(id: id) else {
             return .failure(.fileNotFound)

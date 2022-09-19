@@ -24,7 +24,7 @@ class MediaLibraryRepositoryMockDeprecated: MediaLibraryRepository {
         fatalError()
     }
     
-    func deleteFile(id: UUID) async -> Result<Void, MediaLibraryRepositoryError> {
+    func deleteItem(id: UUID) async -> Result<Void, MediaLibraryRepositoryError> {
         fatalError()
     }
     
