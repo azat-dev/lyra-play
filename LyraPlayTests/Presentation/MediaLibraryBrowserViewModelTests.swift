@@ -50,23 +50,33 @@ class MediaLibraryBrowserViewModelTests: XCTestCase {
         )
     }
     
-    private func getTestFile(index: Int) -> (info: MediaLibraryAudioFile, data: Data) {
-        return (
-            info: MediaLibraryAudioFile.create(name: "Test \(index)", duration: 19, audioFile: "test.mp3"),
-            data: "Test \(index)".data(using: .utf8)!
+    private func anyFolder() -> MediaLibraryFolder {
+        
+        return .init(
+            id: UUID(),
+            parentId: nil,
+            createdAt: .now,
+            updatedAt: nil,
+            title: "test",
+            image: nil
         )
     }
     
     func test_load() async throws {
         
-        let sut = await createSUT(folderId: nil)
-        
         // Given
-        let testFiles: [MediaLibraryAudioFile] = (0...3).map { _ in .anyExistingItem() }
+        let folderdId = UUID()
 
-        given(await sut.browseUseCase.listFiles())
-            .willReturn(.success(testFiles))
+        let sut = await createSUT(folderId: folderdId)
         
+        let existingItems: [MediaLibraryItem] = [
+            .folder(anyFolder()),
+            .folder(anyFolder()),
+        ]
+        
+        given(await sut.browseUseCase.listItems(folderId: folderdId))
+            .willReturn(.success(existingItems))
+
         let itemsPromise = watch(sut.viewModel.items)
         let changedItemsPromise = watch(sut.viewModel.changedItems)
 
@@ -74,7 +84,7 @@ class MediaLibraryBrowserViewModelTests: XCTestCase {
         await sut.viewModel.load()
 
         // Then
-        let ids = testFiles.map { $0.id! }
+        let ids = existingItems.map { $0.id }
 
         itemsPromise.expect([
             [],

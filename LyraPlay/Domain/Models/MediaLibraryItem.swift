@@ -13,6 +13,21 @@ public enum MediaLibraryItem: Equatable {
     case folder(MediaLibraryFolder)
 }
 
+public extension MediaLibraryItem {
+    
+    var id: UUID {
+        
+        switch self {
+
+        case .file(let data):
+            return data.id
+
+        case .folder(let data):
+            return data.id
+        }
+    }
+}
+
 public struct MediaLibraryFolder: Equatable {
     
     public let id: UUID

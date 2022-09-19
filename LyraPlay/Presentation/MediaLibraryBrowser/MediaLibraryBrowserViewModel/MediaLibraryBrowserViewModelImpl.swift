@@ -81,31 +81,60 @@ extension MediaLibraryBrowserViewModelImpl {
         
         isLoading.value = true
         
-        let result = await browseUseCase.listFiles()
+        let result = await browseUseCase.listItems(folderId: folderId)
         
-        guard case .success(let loadedFiles) = result else {
+        guard case .success(let loadedItems) = result else {
             return
         }
         
-        let images = await loadImages(names: loadedFiles.compactMap { $0.coverImage })
+        let images = await loadImages(
+            names: loadedItems.map { item in
+                
+                switch item {
+                    
+                case .folder(let item):
+                    return item.image
+                    
+                case .file(let item):
+                    return item.image
+                }
+            }.compactMap { $0 }
+        )
         
         var newItems = [UUID: MediaLibraryBrowserCellViewModel]()
         var ids = [UUID]()
         
-        loadedFiles.forEach { file in
+        loadedItems.forEach { item in
             
-            let item = MediaLibraryBrowserCellViewModel(
-                id: file.id!,
-                isFolder: false,
-                title: file.name,
-                description: file.artist ?? "Unknown",
-                image: images[file.coverImage ?? ""] ?? stubItemImage,
-                delegate: self
-            )
+            let cellViewModel: MediaLibraryBrowserCellViewModel
             
-            newItems[item.id] = item
-            ids.append(item.id)
+            switch item {
+                
+            case .folder(let item):
+                cellViewModel = MediaLibraryBrowserCellViewModel(
+                    id: item.id,
+                    isFolder: true,
+                    title: item.title,
+                    description: "",
+                    image: images[item.image ?? ""] ?? stubItemImage,
+                    delegate: self
+                )
+                
+            case .file(let item):
+                cellViewModel = MediaLibraryBrowserCellViewModel(
+                    id: item.id,
+                    isFolder: false,
+                    title: item.title,
+                    description: item.subtitle ?? "Unknown",
+                    image: images[item.image ?? ""] ?? stubItemImage,
+                    delegate: self
+                )
+            }
+            
+            newItems[cellViewModel.id] = cellViewModel
+            ids.append(cellViewModel.id)
         }
+        
         
         DispatchQueue.main.async { [weak self, newItems, ids] in
             
