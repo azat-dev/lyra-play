@@ -259,6 +259,9 @@
 		AA3C535128BE630E00CBE3C6 /* LoadTrackUseCaseFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3C535028BE630E00CBE3C6 /* LoadTrackUseCaseFactory.swift */; };
 		AA3C535328BE631600CBE3C6 /* LoadTrackUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3C535228BE631600CBE3C6 /* LoadTrackUseCaseImpl.swift */; };
 		AA3C535528BE631D00CBE3C6 /* LoadTrackUseCaseImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3C535428BE631D00CBE3C6 /* LoadTrackUseCaseImplFactory.swift */; };
+		AA4148F928DAF574002FFDD4 /* PromptDialogViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4148F828DAF574002FFDD4 /* PromptDialogViewController+Styles.swift */; };
+		AA4148FB28DAF582002FFDD4 /* PromptDialogViewController+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4148FA28DAF582002FFDD4 /* PromptDialogViewController+Layout.swift */; };
+		AA4148FD28DB1835002FFDD4 /* UIView+Shake.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4148FC28DB1835002FFDD4 /* UIView+Shake.swift */; };
 		AA415084286B0987004549F4 /* AssertResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA415083286B0987004549F4 /* AssertResult.swift */; };
 		AA415088286B2BA4004549F4 /* test_cover_image.png in Resources */ = {isa = PBXBuildFile; fileRef = AA415087286B2BA4004549F4 /* test_cover_image.png */; };
 		AA41508A286B2ECA004549F4 /* FilesRepositoryMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA415089286B2ECA004549F4 /* FilesRepositoryMock.swift */; };
@@ -806,6 +809,9 @@
 		AA3C535028BE630E00CBE3C6 /* LoadTrackUseCaseFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadTrackUseCaseFactory.swift; sourceTree = "<group>"; };
 		AA3C535228BE631600CBE3C6 /* LoadTrackUseCaseImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadTrackUseCaseImpl.swift; sourceTree = "<group>"; };
 		AA3C535428BE631D00CBE3C6 /* LoadTrackUseCaseImplFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadTrackUseCaseImplFactory.swift; sourceTree = "<group>"; };
+		AA4148F828DAF574002FFDD4 /* PromptDialogViewController+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PromptDialogViewController+Styles.swift"; sourceTree = "<group>"; };
+		AA4148FA28DAF582002FFDD4 /* PromptDialogViewController+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PromptDialogViewController+Layout.swift"; sourceTree = "<group>"; };
+		AA4148FC28DB1835002FFDD4 /* UIView+Shake.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Shake.swift"; sourceTree = "<group>"; };
 		AA415083286B0987004549F4 /* AssertResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssertResult.swift; sourceTree = "<group>"; };
 		AA415087286B2BA4004549F4 /* test_cover_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test_cover_image.png; sourceTree = "<group>"; };
 		AA415089286B2ECA004549F4 /* FilesRepositoryMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesRepositoryMock.swift; sourceTree = "<group>"; };
@@ -1333,8 +1339,10 @@
 		45471D50028B5EA98C4DFA0B /* PromptDialog */ = {
 			isa = PBXGroup;
 			children = (
-				377FD5AA25E36B83DA9D0AB2 /* PromptDialogViewModel */,
 				AA5F28D828D9104F0065661C /* PromptDialogViewController.swift */,
+				AA4148FA28DAF582002FFDD4 /* PromptDialogViewController+Layout.swift */,
+				AA4148F828DAF574002FFDD4 /* PromptDialogViewController+Styles.swift */,
+				377FD5AA25E36B83DA9D0AB2 /* PromptDialogViewModel */,
 			);
 			path = PromptDialog;
 			sourceTree = "<group>";
@@ -2556,6 +2564,7 @@
 				AA7B0D7E28721B050067DDB5 /* UIFont+Utils.swift */,
 				AAFB979428759D45007A76A7 /* MessageChannel.swift */,
 				AA0F69C4287F608B00BD13DB /* UIView+Layout.swift */,
+				AA4148FC28DB1835002FFDD4 /* UIView+Shake.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -3135,6 +3144,7 @@
 				AACCE807288815C0002EA7C5 /* ManagedDictionaryItem+CoreDataProperties.swift in Sources */,
 				AACEA3232869B14000111565 /* Observable.swift in Sources */,
 				AA3C535328BE631600CBE3C6 /* LoadTrackUseCaseImpl.swift in Sources */,
+				AA4148FB28DAF582002FFDD4 /* PromptDialogViewController+Layout.swift in Sources */,
 				AACCE80328881551002EA7C5 /* DictionaryItem.swift in Sources */,
 				AA0F69B0287EDF7A00BD13DB /* TimeLineIterator.swift in Sources */,
 				AA3C535528BE631D00CBE3C6 /* LoadTrackUseCaseImplFactory.swift in Sources */,
@@ -3204,6 +3214,7 @@
 				AAF76BB028C0CBE20067FE91 /* String+Utils.swift in Sources */,
 				AA3C532B28BE5AAA00CBE3C6 /* BrowseDictionaryUseCaseFactory.swift in Sources */,
 				AA4F9703286E32870087F45A /* PlayerViewControllerFactory.swift in Sources */,
+				AA4148F928DAF574002FFDD4 /* PromptDialogViewController+Styles.swift in Sources */,
 				AA3C534828BE61CC00CBE3C6 /* LoadSubtitlesUseCaseFactory.swift in Sources */,
 				AA3785992885EFD300FF3B66 /* EnhancedLayoutManager.swift in Sources */,
 				AAC5FFAE28BFEFFE00D402FF /* PlayMediaWithTranslationsUseCaseState+Utils.swift in Sources */,
@@ -3309,6 +3320,7 @@
 				E2829519E2EE0ADDEB669E04 /* SubRipFileFormatParserFactory.swift in Sources */,
 				C51BAE0364BBB7E670CD0EB0 /* SubtitlesParserImpl.swift in Sources */,
 				6849090CBC2CFA4109A09D63 /* SubtitlesParserImplFactory.swift in Sources */,
+				AA4148FD28DB1835002FFDD4 /* UIView+Shake.swift in Sources */,
 				8231B0780ED283990871CF9A /* TextToSpeechConverter.swift in Sources */,
 				AA751E9EAE9EA284D3E3DCB2 /* TextToSpeechConverterFactory.swift in Sources */,
 				F9CD716A774CFA1BA69FEB80 /* TextToSpeechConverterImpl.swift in Sources */,

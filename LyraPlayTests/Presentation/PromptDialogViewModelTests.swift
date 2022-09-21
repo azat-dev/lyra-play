@@ -76,6 +76,7 @@ class PromptDialogViewModelTests: XCTestCase {
             .willReturn(())
         
         let inputText = "test"
+        let processingPromise = watch(sut.viewModel.isProcessing)
 
         // When
         sut.viewModel.submit(value: inputText)
@@ -83,6 +84,11 @@ class PromptDialogViewModelTests: XCTestCase {
         // Then
         verify(sut.delegate.promptDialogViewModelDidSubmit(value: inputText))
             .wasCalled(1)
+        
+        processingPromise.expect([
+            false,
+            true
+        ])
     }
     
     func test_setErrorText() async throws {
@@ -100,6 +106,25 @@ class PromptDialogViewModelTests: XCTestCase {
         errorTextPromise.expect([
             nil,
             errorText
+        ])
+    }
+    
+    func test_setProcessing() async throws {
+
+        // Given
+        let sut = createSUT()
+        
+        let processingPromise = watch(sut.viewModel.isProcessing)
+
+        // When
+        sut.viewModel.setIsProcessing(true)
+        sut.viewModel.setIsProcessing(false)
+
+        // Then
+        processingPromise.expect([
+            false,
+            true,
+            false
         ])
     }
 }

@@ -26,6 +26,8 @@ public protocol PromptDialogViewModelInput: AnyObject {
     func submit(value: String)
 
     func setErrorText(_ text: String?)
+    
+    func setIsProcessing(_: Bool)
 }
 
 public protocol PromptDialogViewModelOutput: AnyObject {
@@ -36,6 +38,8 @@ public protocol PromptDialogViewModelOutput: AnyObject {
 
     var cancelText: String { get }
 
+    var isProcessing: CurrentValueSubject<Bool, Never> { get }
+    
     var errorText: CurrentValueSubject<String?, Never> { get }
 }
 

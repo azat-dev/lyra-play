@@ -17,8 +17,10 @@ public final class PromptDialogViewModelImpl: PromptDialogViewModel {
     public let cancelText: String
     
     public let errorText = CurrentValueSubject<String?, Never>(nil)
+    public var isProcessing = CurrentValueSubject<Bool, Never>(false)
 
     private weak var delegate: PromptDialogViewModelDelegate?
+    
 
     // MARK: - Initializers
 
@@ -52,6 +54,7 @@ extension PromptDialogViewModelImpl {
 
     public func submit(value: String) {
 
+        isProcessing.value = true
         delegate?.promptDialogViewModelDidSubmit(value: value)
     }
 
@@ -59,10 +62,9 @@ extension PromptDialogViewModelImpl {
 
         errorText.value = text
     }
-}
-
-// MARK: - Output Methods
-
-extension PromptDialogViewModelImpl {
-
+    
+    public func setIsProcessing(_ value: Bool) {
+        
+        isProcessing.value = value
+    }
 }

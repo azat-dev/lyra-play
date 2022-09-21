@@ -37,12 +37,15 @@ class AddMediaLibraryItemFlowModelTests: XCTestCase {
         
         given(importMediaFilesFlowModelFactory.create(targetFolderId: any(), delegate: any()))
             .willReturn(importMediaFilesFlowModel)
+        
+        let addMediaLibraryFolderFlowModelFactory = mock(AddMediaLibraryFolderFlowModelFactory.self)
 
         let flowModel = AddMediaLibraryItemFlowModelImpl(
             targetFolderId: targetFolderId,
             delegate: delegate,
             chooseDialogViewModelFactory: chooseDialogViewModelFactory,
-            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory
+            importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory,
+            addMediaLibraryFolderFlowModelFactory: addMediaLibraryFolderFlowModelFactory
         )
 
         detectMemoryLeak(instance: flowModel)
@@ -52,7 +55,8 @@ class AddMediaLibraryItemFlowModelTests: XCTestCase {
             chooseDialogViewModel,
             chooseDialogViewModelFactory,
             importMediaFilesFlowModelFactory,
-            importMediaFilesFlowModel
+            importMediaFilesFlowModel,
+            addMediaLibraryFolderFlowModelFactory
         )
 
         return (

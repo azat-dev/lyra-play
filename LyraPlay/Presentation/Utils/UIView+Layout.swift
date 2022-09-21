@@ -10,9 +10,18 @@ import UIKit
 
 extension UIView {
     
+    func disableAutoConstraints() {
+        
+        guard translatesAutoresizingMaskIntoConstraints else {
+            return
+        }
+        
+        translatesAutoresizingMaskIntoConstraints = false
+    }
+    
     func constraintTo(view: UIView, margins: UIEdgeInsets = .zero) {
         
-        self.translatesAutoresizingMaskIntoConstraints = false
+        disableAutoConstraints()
         
         constraintToHorizontalEdges(
             of: view,
@@ -29,7 +38,7 @@ extension UIView {
     
     func constraintToCenter(of view: UIView) {
         
-        self.translatesAutoresizingMaskIntoConstraints = false
+        disableAutoConstraints()
         
         NSLayoutConstraint.activate([
             
@@ -38,9 +47,25 @@ extension UIView {
         ])
     }
     
+    @discardableResult
+    func constraintToBottom(view: UIView, spacing: CGFloat = .zero) -> NSLayoutConstraint {
+    
+        view.disableAutoConstraints()
+        
+        return NSLayoutConstraint(
+            item: view,
+            attribute: .top,
+            relatedBy: .equal,
+            toItem: self,
+            attribute: .bottom,
+            multiplier: 1,
+            constant: spacing
+        ).activated()
+    }
+    
     func constraintToHorizontalEdges(of view: UIView, leftMargin: CGFloat = .zero, rightMargin: CGFloat = .zero) {
         
-        self.translatesAutoresizingMaskIntoConstraints = false
+        disableAutoConstraints()
         
         NSLayoutConstraint.activate([
             
@@ -50,13 +75,42 @@ extension UIView {
     }
     
     func constraintToVerticalEdges(of view: UIView, topMargin: CGFloat = .zero, bottomMargin: CGFloat = .zero) {
-        
-        self.translatesAutoresizingMaskIntoConstraints = false
+
+        disableAutoConstraints()
         
         NSLayoutConstraint.activate([
-            
             self.topAnchor.constraint(equalTo: view.topAnchor, constant: topMargin),
             self.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -bottomMargin),
         ])
+    }
+}
+
+extension NSLayoutConstraint {
+    
+    @discardableResult
+    func activated() -> NSLayoutConstraint{
+        
+        NSLayoutConstraint.activate([
+            self
+            ])
+        
+//        self.isActive = true
+        return self
+    }
+    
+    @discardableResult
+    func constraintToBottom(view: UIView, spacing: CGFloat = .zero) -> NSLayoutConstraint {
+        
+        view.disableAutoConstraints()
+        
+        return NSLayoutConstraint(
+            item: view,
+            attribute: .top,
+            relatedBy: .equal,
+            toItem: self.firstItem,
+            attribute: .bottom,
+            multiplier: 1,
+            constant: spacing
+        ).activated()
     }
 }
