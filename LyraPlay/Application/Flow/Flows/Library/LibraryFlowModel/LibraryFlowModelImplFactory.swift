@@ -12,7 +12,7 @@ public final class LibraryFlowModelImplFactory: LibraryFlowModelFactory {
     // MARK: - Properties
 
     private let viewModelFactory: MediaLibraryBrowserViewModelFactory
-    private let libraryItemFlowModelFactory: LibraryItemFlowModelFactory
+    private let libraryItemFlowModelFactory: LibraryFolderFlowModelFactory
     private let addMediaLibraryItemFlowModelFactory: AddMediaLibraryItemFlowModelFactory
     private let deleteMediaLibraryItemFlowModelFactory: DeleteMediaLibraryItemFlowModelFactory
     
@@ -20,7 +20,7 @@ public final class LibraryFlowModelImplFactory: LibraryFlowModelFactory {
 
     public init(
         viewModelFactory: MediaLibraryBrowserViewModelFactory,
-        libraryItemFlowModelFactory: LibraryItemFlowModelFactory,
+        libraryItemFlowModelFactory: LibraryFolderFlowModelFactory,
         addMediaLibraryItemFlowModelFactory: AddMediaLibraryItemFlowModelFactory,
         deleteMediaLibraryItemFlowModelFactory: DeleteMediaLibraryItemFlowModelFactory
     ) {

@@ -16,7 +16,7 @@ class LibraryFlowModelTests: XCTestCase {
     typealias SUT = (
         flow: LibraryFlowModelImpl,
         listViewModel: MediaLibraryBrowserViewModelMock,
-        libraryItemFlow: LibraryItemFlowModelMock
+        libraryItemFlow: LibraryFolderFlowModelMock
     )
     
     func createSUT(folderId: UUID?, file: StaticString = #filePath, line: UInt = #line) -> SUT {
@@ -27,12 +27,12 @@ class LibraryFlowModelTests: XCTestCase {
         given(viewModelFactory.create(folderId: folderId, delegate: any()))
             .willReturn(viewModel)
         
-        let libraryItemFlow = mock(LibraryItemFlowModel.self)
-        let libraryItemFlowModelFactory = mock(LibraryItemFlowModelFactory.self)
+        let libraryItemFlow = mock(LibraryFolderFlowModel.self)
+        let libraryItemFlowModelFactory = mock(LibraryFolderFlowModelFactory.self)
         
         let addMediaLibraryItemFlowModelFactory = mock(AddMediaLibraryItemFlowModelFactory.self)
         
-        let delegate = mock(LibraryItemFlowModelDelegate.self)
+        let delegate = mock(LibraryFolderFlowModelDelegate.self)
         
         given(libraryItemFlowModelFactory.create(for: any(), delegate: delegate))
             .willReturn(libraryItemFlow)

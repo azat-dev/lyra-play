@@ -1,5 +1,5 @@
 //
-//  LibraryItemFlowModelImplFactory.swift
+//  LibraryFolderFlowModelImplFactory.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 09.09.22.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class LibraryItemFlowModelImplFactory: LibraryItemFlowModelFactory {
+public final class LibraryFolderFlowModelImplFactory: LibraryFolderFlowModelFactory {
 
     // MARK: - Properties
     
@@ -27,9 +27,9 @@ public final class LibraryItemFlowModelImplFactory: LibraryItemFlowModelFactory 
     
     // MARK: - Methods
     
-    public func create(for mediaId: UUID, delegate: LibraryItemFlowModelDelegate) -> LibraryItemFlowModel {
+    public func create(for mediaId: UUID, delegate: LibraryFolderFlowModelDelegate) -> LibraryFolderFlowModel {
 
-        return LibraryItemFlowModelImpl(
+        return LibraryFolderFlowModelImpl(
             mediaId: mediaId,
             delegate: delegate,
             viewModelFactory: libraryItemViewModelFactory,

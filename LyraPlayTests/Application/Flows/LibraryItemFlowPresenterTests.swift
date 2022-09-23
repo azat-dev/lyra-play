@@ -15,8 +15,8 @@ import LyraPlay
 class LibraryItemFlowPresenterTests: XCTestCase {
     
     typealias SUT = (
-        presenter: LibraryItemFlowPresenter,
-        flow: LibraryItemFlowModelMock,
+        presenter: LibraryFolderFlowPresenter,
+        flow: LibraryFolderFlowModelMock,
         view: LibraryItemViewController
     )
     
@@ -30,7 +30,7 @@ class LibraryItemFlowPresenterTests: XCTestCase {
         given(viewFactory.create(viewModel: any()))
             .willReturn(view)
         
-        let flow = mock(LibraryItemFlowModel.self)
+        let flow = mock(LibraryFolderFlowModel.self)
         
         given(flow.viewModel)
             .willReturn(viewModel)
@@ -42,7 +42,7 @@ class LibraryItemFlowPresenterTests: XCTestCase {
         
         let attachSubtitlesFlowPresenterFactory = mock(AttachSubtitlesFlowPresenterFactory.self)
 
-        let presenter = LibraryItemFlowPresenterImpl(
+        let presenter = LibraryFolderFlowPresenterImpl(
             flowModel: flow,
             libraryItemViewFactory: viewFactory,
             attachSubtitlesFlowPresenterFactory: attachSubtitlesFlowPresenterFactory

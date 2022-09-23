@@ -10,13 +10,13 @@ import Foundation
 public final class LibraryFlowPresenterImplFactory: LibraryFlowPresenterFactory {
     
     private let listViewFactory: MediaLibraryBrowserViewFactory
-    private let libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory
+    private let libraryItemFlowPresenterFactory: LibraryFolderFlowPresenterFactory
     private let addMediaLibraryItemFlowPresenterFactory: AddMediaLibraryItemFlowPresenterFactory
     private let deleteMediaLibraryItemFlowPresenterFactory: DeleteMediaLibraryItemFlowPresenterFactory
     
     public init(
         listViewFactory: MediaLibraryBrowserViewFactory,
-        libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory,
+        libraryItemFlowPresenterFactory: LibraryFolderFlowPresenterFactory,
         addMediaLibraryItemFlowPresenterFactory: AddMediaLibraryItemFlowPresenterFactory,
         deleteMediaLibraryItemFlowPresenterFactory: DeleteMediaLibraryItemFlowPresenterFactory
     ) {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class LibraryItemFlowPresenterImplFactory: LibraryItemFlowPresenterFactory {
+public final class LibraryFolderFlowPresenterImplFactory: LibraryFolderFlowPresenterFactory {
     
     // MARK: - Properties
     
@@ -27,9 +27,9 @@ public final class LibraryItemFlowPresenterImplFactory: LibraryItemFlowPresenter
     
     // MARK: - Methods
     
-    public func create(for flowModel: LibraryItemFlowModel) -> LibraryItemFlowPresenter {
+    public func create(for flowModel: LibraryFolderFlowModel) -> LibraryFolderFlowPresenter {
         
-        return LibraryItemFlowPresenterImpl(
+        return LibraryFolderFlowPresenterImpl(
             flowModel: flowModel,
             libraryItemViewFactory: libraryItemViewFactory,
             attachSubtitlesFlowPresenterFactory: attachSubtitlesFlowPresenterFactory

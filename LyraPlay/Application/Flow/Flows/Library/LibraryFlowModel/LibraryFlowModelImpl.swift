@@ -15,7 +15,7 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
     public let folderId: UUID?
     
     private let viewModelFactory: MediaLibraryBrowserViewModelFactory
-    private let libraryItemFlowModelFactory: LibraryItemFlowModelFactory
+    private let libraryItemFlowModelFactory: LibraryFolderFlowModelFactory
     private let addMediaLibraryItemFlowModelFactory: AddMediaLibraryItemFlowModelFactory
     private let deleteMediaLibraryItemFlowModelFactory: DeleteMediaLibraryItemFlowModelFactory
     
@@ -24,7 +24,7 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
         return viewModelFactory.create(folderId: folderId, delegate: self)
     } ()
     
-    public var libraryItemFlow = CurrentValueSubject<LibraryItemFlowModel?, Never>(nil)
+    public var libraryItemFlow = CurrentValueSubject<LibraryFolderFlowModel?, Never>(nil)
     public var addMediaLibraryItemFlow = CurrentValueSubject<AddMediaLibraryItemFlowModel?, Never>(nil)
     public var deleteMediaLibraryItemFlow = CurrentValueSubject<DeleteMediaLibraryItemFlowModel?, Never>(nil)
     
@@ -33,7 +33,7 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
     public init(
         folderId: UUID?,
         viewModelFactory: MediaLibraryBrowserViewModelFactory,
-        libraryItemFlowModelFactory: LibraryItemFlowModelFactory,
+        libraryItemFlowModelFactory: LibraryFolderFlowModelFactory,
         addMediaLibraryItemFlowModelFactory: AddMediaLibraryItemFlowModelFactory,
         deleteMediaLibraryItemFlowModelFactory: DeleteMediaLibraryItemFlowModelFactory
     ) {
@@ -116,11 +116,11 @@ extension LibraryFlowModelImpl: MediaLibraryBrowserViewModelDelegate {
     }
 }
 
-// MARK: - LibraryItemFlowModelDelegate
+// MARK: - LibraryFolderFlowModelDelegate
 
-extension LibraryFlowModelImpl: LibraryItemFlowModelDelegate {
+extension LibraryFlowModelImpl: LibraryFolderFlowModelDelegate {
     
-    public func libraryItemFlowDidDispose() {
+    public func libraryFolderFlowDidDispose() {
         
         libraryItemFlow.value = nil
     }

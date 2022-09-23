@@ -16,7 +16,7 @@ public protocol LibraryFlowModelOutput: AnyObject {
     
     var listViewModel: MediaLibraryBrowserViewModel { get }
     
-    var libraryItemFlow: CurrentValueSubject<LibraryItemFlowModel?, Never> { get }
+    var libraryItemFlow: CurrentValueSubject<LibraryFolderFlowModel?, Never> { get }
     
     var addMediaLibraryItemFlow: CurrentValueSubject<AddMediaLibraryItemFlowModel?, Never> { get }
     

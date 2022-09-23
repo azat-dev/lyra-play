@@ -16,11 +16,11 @@ public final class LibraryFlowPresenterImpl: LibraryFlowPresenter {
     private let flowModel: LibraryFlowModel
     
     private let listViewFactory: MediaLibraryBrowserViewFactory
-    private let libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory
+    private let libraryItemFlowPresenterFactory: LibraryFolderFlowPresenterFactory
     private let addMediaLibraryItemFlowPresenterFactory: AddMediaLibraryItemFlowPresenterFactory
     private let deleteMediaLibraryItemFlowPresenterFactory: DeleteMediaLibraryItemFlowPresenterFactory
     
-    private var itemFlowPresenter: LibraryItemFlowPresenter?
+    private var itemFlowPresenter: LibraryFolderFlowPresenter?
     private var addMediaLibraryItemFlowPresenter: AddMediaLibraryItemFlowPresenter?
     private var deleteMediaLibraryItemFlowPresenter: DeleteMediaLibraryItemFlowPresenter?
     
@@ -31,7 +31,7 @@ public final class LibraryFlowPresenterImpl: LibraryFlowPresenter {
     public init(
         flowModel: LibraryFlowModel,
         listViewFactory: MediaLibraryBrowserViewFactory,
-        libraryItemFlowPresenterFactory: LibraryItemFlowPresenterFactory,
+        libraryItemFlowPresenterFactory: LibraryFolderFlowPresenterFactory,
         addMediaLibraryItemFlowPresenterFactory: AddMediaLibraryItemFlowPresenterFactory,
         deleteMediaLibraryItemFlowPresenterFactory: DeleteMediaLibraryItemFlowPresenterFactory
     ) {
