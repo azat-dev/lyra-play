@@ -67,10 +67,6 @@ public struct NewMediaLibraryFolderData: Equatable {
 
 public protocol MediaLibraryRepositoryInput {
     
-    func putFile(info: MediaLibraryAudioFile) async -> Result<MediaLibraryAudioFile, MediaLibraryRepositoryError>
-    
-    func delete(fileId: UUID) async -> Result<Void, MediaLibraryRepositoryError>
-    
     func deleteItem(id: UUID) async -> Result<Void, MediaLibraryRepositoryError>
     
     func createFile(data: NewMediaLibraryFileData) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError>
@@ -83,8 +79,6 @@ public protocol MediaLibraryRepositoryInput {
 }
 
 public protocol MediaLibraryRepositoryOutput {
-    
-    func listFiles() async -> Result<[MediaLibraryAudioFile], MediaLibraryRepositoryError>
     
     func listItems(folderId: UUID?) async -> Result<[MediaLibraryItem], MediaLibraryRepositoryError>
     

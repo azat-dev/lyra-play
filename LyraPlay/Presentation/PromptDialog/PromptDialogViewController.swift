@@ -142,6 +142,7 @@ extension PromptDialogViewController {
     @objc
     func didTapSubmit() {
         
+//        textField.becomeFirstResponder()
         viewModel.submit(value: textField.text ?? "")
     }
     
@@ -291,6 +292,10 @@ extension PromptDialogViewController {
     }
     
     @objc func keyboardWillHide() {
+        
+        if textField.isEditing {
+            return
+        }
         
         applyKeyboardOffset(offset: 0)
     }

@@ -66,6 +66,7 @@ extension AddMediaLibraryFolderFlowModelImpl: PromptDialogViewModelDelegate {
         
         if nameCleaned.isEmpty {
             promptFolderNameViewModel.value?.setErrorText("The name can't be empty")
+            promptFolderNameViewModel.value?.setIsProcessing(false)
             return
         }
         
@@ -82,10 +83,13 @@ extension AddMediaLibraryFolderFlowModelImpl: PromptDialogViewModelDelegate {
         switch result {
             
         case .success:
+            promptFolderNameViewModel.value?.setErrorText(nil)
+            promptFolderNameViewModel.value = nil
             delegate?.addMediaLibraryFolderFlowModelDidCreate()
 
         case .failure(.nameMustBeUnique):
             promptFolderNameViewModel.value?.setErrorText("The name of a folder must be unique")
+            promptFolderNameViewModel.value?.setIsProcessing(false)
             
         case .failure:
             // TODO: Handle errors
