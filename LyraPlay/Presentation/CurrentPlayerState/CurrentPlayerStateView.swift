@@ -83,12 +83,15 @@ extension CurrentPlayerStateView {
         switch state {
         
         case .loading:
+            isHidden = true
             break
         
         case .notActive:
+            isHidden = true
             break
             
         case .active(let mediaInfo, let state):
+            isHidden = false
             updateActiveState(mediaInfo: mediaInfo, state: state)
         }
     }
