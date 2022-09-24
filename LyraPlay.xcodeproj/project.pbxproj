@@ -1183,7 +1183,7 @@
 			path = AudioSession;
 			sourceTree = "<group>";
 		};
-		19A550234DC2BB9AB0ADAC9A /* LibraryFlowModel */ = {
+		19A550234DC2BB9AB0ADAC9A /* LibraryFolderFlowModel */ = {
 			isa = PBXGroup;
 			children = (
 				99ECB64C44DAE03477A4ABF8 /* LibraryFolderFlowModel.swift */,
@@ -1191,7 +1191,7 @@
 				2E84E0E9654966EE5526E2F3 /* LibraryFolderFlowModelImpl.swift */,
 				104F7456A0061471FC966569 /* LibraryFolderFlowModelImplFactory.swift */,
 			);
-			path = LibraryFlowModel;
+			path = LibraryFolderFlowModel;
 			sourceTree = "<group>";
 		};
 		2796EF02D076A40689B2A3D7 /* DictionaryListBrowserView */ = {
@@ -1488,7 +1488,7 @@
 				510728F9C8BF7C6C7BA1EAB4 /* DeleteMediaLibraryItem */,
 				72DD67570C56DA68DD47B8AB /* Dictionary */,
 				83D1B90780E561B567AB4AD1 /* ImportMediaFiles */,
-				D98BAA0C6B24C13DB429DEE9 /* Library */,
+				D98BAA0C6B24C13DB429DEE9 /* LibraryFolder */,
 				48F898ACC8E10769376A7605 /* LibraryFile */,
 				16A5EDB34F2D83F67B2671C1 /* Main */,
 			);
@@ -2794,13 +2794,13 @@
 			path = DeleteMediaLibraryItemFlowModel;
 			sourceTree = "<group>";
 		};
-		D98BAA0C6B24C13DB429DEE9 /* Library */ = {
+		D98BAA0C6B24C13DB429DEE9 /* LibraryFolder */ = {
 			isa = PBXGroup;
 			children = (
-				19A550234DC2BB9AB0ADAC9A /* LibraryFlowModel */,
+				19A550234DC2BB9AB0ADAC9A /* LibraryFolderFlowModel */,
 				AA55226528CA5E0C007D5343 /* LibraryFolderFlowPresenter */,
 			);
-			path = Library;
+			path = LibraryFolder;
 			sourceTree = "<group>";
 		};
 		DAA886A81A83E79BA0546845 /* ConfirmDialog */ = {
