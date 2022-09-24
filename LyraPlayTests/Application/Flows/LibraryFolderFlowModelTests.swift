@@ -16,7 +16,8 @@ class LibraryFolderFlowModelTests: XCTestCase {
     typealias SUT = (
         flow: LibraryFolderFlowModelImpl,
         listViewModel: MediaLibraryBrowserViewModelMock,
-        libraryItemFlow: LibraryFileFlowModelMock
+        libraryFileFlow: LibraryFileFlowModelMock,
+        libraryFileFlowModelFactory: LibraryFileFlowModelFactoryMock
     )
     
     func createSUT(folderId: UUID?, file: StaticString = #filePath, line: UInt = #line) -> SUT {
@@ -27,15 +28,13 @@ class LibraryFolderFlowModelTests: XCTestCase {
         given(viewModelFactory.create(folderId: folderId, delegate: any()))
             .willReturn(viewModel)
         
-        let libraryItemFlow = mock(LibraryFileFlowModel.self)
+        let libraryFileFlow = mock(LibraryFileFlowModel.self)
         let libraryFileFlowModelFactory = mock(LibraryFileFlowModelFactory.self)
         
         let addMediaLibraryItemFlowModelFactory = mock(AddMediaLibraryItemFlowModelFactory.self)
         
-        let delegate = mock(LibraryFileFlowModelDelegate.self)
-        
-        given(libraryFileFlowModelFactory.create(for: any(), delegate: delegate))
-            .willReturn(libraryItemFlow)
+        given(libraryFileFlowModelFactory.create(for: any(), delegate: any()))
+            .willReturn(libraryFileFlow)
         
         let deleteMediaLibraryItemFlowModelFactory = mock(DeleteMediaLibraryItemFlowModelFactory.self)
         
@@ -52,9 +51,8 @@ class LibraryFolderFlowModelTests: XCTestCase {
         releaseMocks(
             viewModel,
             viewModelFactory,
-            libraryItemFlow,
+            libraryFileFlow,
             libraryFileFlowModelFactory,
-            delegate,
             addMediaLibraryItemFlowModelFactory,
             deleteMediaLibraryItemFlowModelFactory
         )
@@ -62,25 +60,36 @@ class LibraryFolderFlowModelTests: XCTestCase {
         return (
             flow,
             viewModel,
-            libraryItemFlow
+            libraryFileFlow,
+            libraryFileFlowModelFactory
         )
     }
     
-    func test_runOpenLibraryItemFlow() {
+    func test_runOpenLibraryItemFlow__open_file() {
         
+        // Given
+        let itemId = UUID()
         let sut = createSUT(folderId: nil)
         let libraryItemFlowSequence = expectSequence([false, true])
         
-        // Given
-        let mediaId = UUID()
+        given(sut.libraryFileFlowModelFactory.create(for: itemId, delegate: any()))
+            .willReturn(sut.libraryFileFlow)
         
-        let observer = sut.flow.libraryFileFlow.sink { value in
+        let observer = sut.flow.libraryItemFlow.sink { value in
             
-            libraryItemFlowSequence.fulfill(with: value === sut.libraryItemFlow)
-        }
+            switch value {
 
+            case .none:
+                libraryItemFlowSequence.fulfill(with: false)
+                break
+
+            case .file(let model):
+                libraryItemFlowSequence.fulfill(with: model === sut.libraryFileFlow)
+            }
+        }
+        
         // When
-        sut.flow.runOpenLibraryItemFlow(mediaId: mediaId)
+        sut.flow.runOpenLibraryItemFlow(itemId: itemId)
         
         // Then
         libraryItemFlowSequence.wait(timeout: 1, enforceOrder: true)

@@ -12,7 +12,7 @@ public protocol MediaLibraryBrowserViewModelDelegate: AnyObject {
     
     func runAddMediaLibratyItemFlow(folderId: UUID?)
     
-    func runOpenLibraryItemFlow(mediaId: UUID)
+    func runOpenLibraryItemFlow(itemId: UUID)
     
     func runDeleteLibraryItemFlow(mediaId: UUID)
 }

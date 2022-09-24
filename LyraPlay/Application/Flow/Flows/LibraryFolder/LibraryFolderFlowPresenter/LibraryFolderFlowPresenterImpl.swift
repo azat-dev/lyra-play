@@ -56,9 +56,16 @@ public final class LibraryFolderFlowPresenterImpl: LibraryFolderFlowPresenter {
 
 extension LibraryFolderFlowPresenterImpl {
     
+    private func presentFile(flowModel: LibraryFileFlowModel, container: UINavigationController) {
+     
+        let presenter = self.libraryItemFlowPresenterFactory.create(for: flowModel)
+        presenter.present(at: container)
+        self.itemFlowPresenter = presenter
+    }
+    
     public func present(at container: UINavigationController) {
         
-        flowModel.libraryFileFlow
+        flowModel.libraryItemFlow
             .receive(on: RunLoop.main)
             .sink { [weak self] itemFlow in
                 
@@ -66,17 +73,17 @@ extension LibraryFolderFlowPresenterImpl {
                     return
                 }
                 
-                guard let itemFlow = itemFlow else {
+                switch itemFlow {
                     
+                case .none:
                     self.itemFlowPresenter?.dismiss()
                     self.itemFlowPresenter = nil
-                    return
+                    break
+                    
+                case .file(let fileFlowModel):
+                    self.presentFile(flowModel: fileFlowModel, container: container)
                 }
                 
-                let presenter = self.libraryItemFlowPresenterFactory.create(for: itemFlow)
-                presenter.present(at: container)
-                
-                self.itemFlowPresenter = presenter
             }.store(in: &observers)
         
         flowModel.addMediaLibraryItemFlow

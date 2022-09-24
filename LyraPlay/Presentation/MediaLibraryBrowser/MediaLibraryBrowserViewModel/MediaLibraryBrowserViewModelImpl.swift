@@ -54,7 +54,7 @@ extension MediaLibraryBrowserViewModelImpl: MediaLibraryBrowserCellViewModelDele
     
     public func mediaLibraryBrowserCellViewModelDidOpen(itemId: UUID) {
         
-        delegate?.runOpenLibraryItemFlow(mediaId: itemId)
+        delegate?.runOpenLibraryItemFlow(itemId: itemId)
     }
 }
 

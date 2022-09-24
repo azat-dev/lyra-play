@@ -24,7 +24,7 @@ public final class LibraryFolderFlowModelImpl: LibraryFolderFlowModel {
         return viewModelFactory.create(folderId: folderId, delegate: self)
     } ()
     
-    public var libraryFileFlow = CurrentValueSubject<LibraryFileFlowModel?, Never>(nil)
+    public var libraryItemFlow = CurrentValueSubject<LibraryItemFlowModel?, Never>(nil)
     public var addMediaLibraryItemFlow = CurrentValueSubject<AddMediaLibraryItemFlowModel?, Never>(nil)
     public var deleteMediaLibraryItemFlow = CurrentValueSubject<DeleteMediaLibraryItemFlowModel?, Never>(nil)
     
@@ -93,16 +93,15 @@ extension LibraryFolderFlowModelImpl: MediaLibraryBrowserViewModelDelegate {
         self.addMediaLibraryItemFlow.value = addMediaLibraryItemFlow
     }
     
-    public func runOpenLibraryItemFlow(mediaId: UUID) {
+    public func runOpenLibraryItemFlow(itemId: UUID) {
         
-        guard libraryFileFlow.value == nil else {
+        guard libraryItemFlow.value == nil else {
             return
         }
         
-        let itemFlow = libraryFileFlowModelFactory.create(for: mediaId, delegate: self)
-        itemFlow.delegate = self
+        let itemFlow = libraryFileFlowModelFactory.create(for: itemId, delegate: self)
         
-        libraryFileFlow.value = itemFlow
+        libraryItemFlow.value = .file(itemFlow)
     }
     
     public func runDeleteLibraryItemFlow(mediaId: UUID) {
@@ -122,7 +121,7 @@ extension LibraryFolderFlowModelImpl: LibraryFileFlowModelDelegate {
     
     public func libraryFileFlowDidDispose() {
         
-        libraryFileFlow.value = nil
+        libraryItemFlow.value = nil
     }
 }
 

@@ -8,6 +8,12 @@
 import Foundation
 import Combine
 
+public enum LibraryItemFlowModel {
+    
+    case file(LibraryFileFlowModel)
+}
+
+
 public protocol LibraryFolderFlowModelInput: AnyObject {}
 
 public protocol LibraryFolderFlowModelOutput: AnyObject {
@@ -16,7 +22,7 @@ public protocol LibraryFolderFlowModelOutput: AnyObject {
     
     var listViewModel: MediaLibraryBrowserViewModel { get }
     
-    var libraryFileFlow: CurrentValueSubject<LibraryFileFlowModel?, Never> { get }
+    var libraryItemFlow: CurrentValueSubject<LibraryItemFlowModel?, Never> { get }
     
     var addMediaLibraryItemFlow: CurrentValueSubject<AddMediaLibraryItemFlowModel?, Never> { get }
     
