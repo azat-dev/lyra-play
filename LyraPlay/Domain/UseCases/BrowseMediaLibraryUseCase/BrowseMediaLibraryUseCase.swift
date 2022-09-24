@@ -17,8 +17,6 @@ public protocol BrowseMediaLibraryUseCaseInput {}
 
 public protocol BrowseMediaLibraryUseCaseOutput {
 
-    func getFileInfo(fileId: UUID) async -> Result<MediaLibraryAudioFile, BrowseMediaLibraryUseCaseError>
-
     func fetchImage(name: String) async -> Result<Data, BrowseMediaLibraryUseCaseError>
     
     func listItems(folderId: UUID?) async -> Result<[MediaLibraryItem], BrowseMediaLibraryUseCaseError>

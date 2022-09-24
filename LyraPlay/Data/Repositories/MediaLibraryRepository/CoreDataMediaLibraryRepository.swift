@@ -259,24 +259,6 @@ extension CoreDataMediaLibraryRepository {
         return managedItems.first
     }
     
-    public func getInfo(fileId: UUID) async -> Result<MediaLibraryAudioFile, MediaLibraryRepositoryError> {
-        
-        
-        do {
-            let managedItem = try await getManagedItemDeprecated(id: fileId)
-            
-            guard let item = managedItem?.toDomain() else {
-                return .failure(.fileNotFound)
-            }
-            
-            return .success(item)
-            
-        } catch {
-            
-            return .failure(.internalError(error))
-        }
-    }
-    
     private func getManagedItem(id: UUID, context: NSManagedObjectContext) throws -> ManagedLibraryItem?  {
         
         let request = ManagedLibraryItem.fetchRequest()

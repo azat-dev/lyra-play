@@ -32,16 +32,21 @@ extension LoadTrackUseCaseImpl {
     
     public func load(trackId: UUID) async -> Result<Data, LoadTrackUseCaseError> {
         
-        let resultLibraryItem = await mediaLibraryRepository.getInfo(fileId: trackId)
+        let resultLibraryItem = await mediaLibraryRepository.getItem(id: trackId)
         
         guard case.success(let libraryItem) = resultLibraryItem else {
             return .failure(resultLibraryItem.error!.map())
         }
+
+        guard case .file(let fileInfo) = libraryItem else {
+            
+            return .failure(.internalError(nil))
+        }
+
+        let resultFile = await audioFilesRepository.getFile(name: fileInfo.file)
         
-        let resultAudioFile = await audioFilesRepository.getFile(name: libraryItem.audioFile)
-        
-        guard case .success(let audioData) = resultAudioFile else {
-            return .failure(resultAudioFile.error!.map())
+        guard case .success(let audioData) = resultFile else {
+            return .failure(resultFile.error!.map())
         }
         
         return .success(audioData)
