@@ -1,5 +1,5 @@
 //
-//  LibraryFolderFlowPresenter.swift
+//  LibraryFileFlowPresenter.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 09.09.22.
@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public protocol LibraryFolderFlowPresenter {
+public protocol LibraryFileFlowPresenter {
  
     func present(at: UINavigationController)
     

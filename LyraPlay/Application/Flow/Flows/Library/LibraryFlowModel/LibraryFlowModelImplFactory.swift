@@ -12,7 +12,7 @@ public final class LibraryFlowModelImplFactory: LibraryFlowModelFactory {
     // MARK: - Properties
 
     private let viewModelFactory: MediaLibraryBrowserViewModelFactory
-    private let libraryItemFlowModelFactory: LibraryFolderFlowModelFactory
+    private let libraryFileFlowModelFactory: LibraryFileFlowModelFactory
     private let addMediaLibraryItemFlowModelFactory: AddMediaLibraryItemFlowModelFactory
     private let deleteMediaLibraryItemFlowModelFactory: DeleteMediaLibraryItemFlowModelFactory
     
@@ -20,13 +20,13 @@ public final class LibraryFlowModelImplFactory: LibraryFlowModelFactory {
 
     public init(
         viewModelFactory: MediaLibraryBrowserViewModelFactory,
-        libraryItemFlowModelFactory: LibraryFolderFlowModelFactory,
+        libraryFileFlowModelFactory: LibraryFileFlowModelFactory,
         addMediaLibraryItemFlowModelFactory: AddMediaLibraryItemFlowModelFactory,
         deleteMediaLibraryItemFlowModelFactory: DeleteMediaLibraryItemFlowModelFactory
     ) {
 
         self.viewModelFactory = viewModelFactory
-        self.libraryItemFlowModelFactory = libraryItemFlowModelFactory
+        self.libraryFileFlowModelFactory = libraryFileFlowModelFactory
         self.addMediaLibraryItemFlowModelFactory = addMediaLibraryItemFlowModelFactory
         self.deleteMediaLibraryItemFlowModelFactory = deleteMediaLibraryItemFlowModelFactory
     }
@@ -38,7 +38,7 @@ public final class LibraryFlowModelImplFactory: LibraryFlowModelFactory {
         return LibraryFlowModelImpl(
             folderId: folderId,
             viewModelFactory: viewModelFactory,
-            libraryItemFlowModelFactory: libraryItemFlowModelFactory,
+            libraryFileFlowModelFactory: libraryFileFlowModelFactory,
             addMediaLibraryItemFlowModelFactory: addMediaLibraryItemFlowModelFactory,
             deleteMediaLibraryItemFlowModelFactory: deleteMediaLibraryItemFlowModelFactory
         )

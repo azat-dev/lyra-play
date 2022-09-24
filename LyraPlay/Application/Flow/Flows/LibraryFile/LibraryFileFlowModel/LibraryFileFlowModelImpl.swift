@@ -1,5 +1,5 @@
 //
-//  LibraryFolderFlowModelImpl.swift
+//  LibraryFileFlowModelImpl.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 08.09.22.
@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-public final class LibraryFolderFlowModelImpl: LibraryFolderFlowModel {
+public final class LibraryFileFlowModelImpl: LibraryFileFlowModel {
     
     // MARK: - Properties
     
@@ -16,7 +16,7 @@ public final class LibraryFolderFlowModelImpl: LibraryFolderFlowModel {
     private let viewModelFactory: LibraryItemViewModelFactory
     private let attachSubtitlesFlowModelFactory: AttachSubtitlesFlowModelFactory
     
-    public weak var delegate: LibraryFolderFlowModelDelegate?
+    public weak var delegate: LibraryFileFlowModelDelegate?
     
     public lazy var viewModel: LibraryItemViewModel = {
         viewModelFactory.create(mediaId: mediaId, delegate: self)
@@ -28,7 +28,7 @@ public final class LibraryFolderFlowModelImpl: LibraryFolderFlowModel {
     
     public init(
         mediaId: UUID,
-        delegate: LibraryFolderFlowModelDelegate,
+        delegate: LibraryFileFlowModelDelegate,
         viewModelFactory: LibraryItemViewModelFactory,
         attachSubtitlesFlowModelFactory: AttachSubtitlesFlowModelFactory
     ) {
@@ -42,7 +42,7 @@ public final class LibraryFolderFlowModelImpl: LibraryFolderFlowModel {
 
 // MARK: - Input Methods
 
-extension LibraryFolderFlowModelImpl: LibraryItemViewModelDelegate {
+extension LibraryFileFlowModelImpl: LibraryItemViewModelDelegate {
 
     public func runAttachSubtitlesFlow() {
         
@@ -59,13 +59,13 @@ extension LibraryFolderFlowModelImpl: LibraryItemViewModelDelegate {
     public func finish() {
         
         self.attachSubtitlesFlow.value = nil
-        self.delegate?.libraryFolderFlowDidDispose()
+        self.delegate?.libraryFileFlowDidDispose()
     }
 }
 
 // MARK: - AttachSubtitlesFlowModelDelegate
 
-extension LibraryFolderFlowModelImpl: AttachSubtitlesFlowModelDelegate {
+extension LibraryFileFlowModelImpl: AttachSubtitlesFlowModelDelegate {
     
     public func attachSubtitlesFlowDidAttach() {
         

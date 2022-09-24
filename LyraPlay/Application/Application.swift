@@ -291,7 +291,7 @@ public class Application {
             importSubtitlesUseCaseFactory: importSubtitlesUseCaseFactory
         )
         
-        let libraryItemFlowModelFactory = LibraryFolderFlowModelImplFactory(
+        let libraryFileFlowModelFactory = LibraryFileFlowModelImplFactory(
             libraryItemViewModelFactory: libraryItemViewModelFactory,
             attachSubtitlesFlowModelFactory: attachSubtitlesFlowModelFactory
         )
@@ -337,7 +337,7 @@ public class Application {
         
         let libraryFlowModelFactory = LibraryFlowModelImplFactory(
             viewModelFactory: libraryViewModelFactory,
-            libraryItemFlowModelFactory: libraryItemFlowModelFactory,
+            libraryFileFlowModelFactory: libraryFileFlowModelFactory,
             addMediaLibraryItemFlowModelFactory: addMediaLibraryItemFlowModelFactory,
             deleteMediaLibraryItemFlowModelFactory: deleteMediaLibraryItemFlowModelFactory
         )
@@ -388,7 +388,7 @@ public class Application {
             attachingSubtitlesProgressViewFactory: AttachingSubtitlesProgressViewControllerFactory()
         )
         
-        let libraryItemFlowPresenterFactory = LibraryFolderFlowPresenterImplFactory(
+        let libraryItemFlowPresenterFactory = LibraryFileFlowPresenterImplFactory(
             libraryItemViewFactory: LibraryItemViewControllerFactory(),
             attachSubtitlesFlowPresenterFactory: attachSubtitlesFlowPresenterFactory
         )

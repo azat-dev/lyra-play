@@ -16,11 +16,11 @@ public final class LibraryFlowPresenterImpl: LibraryFlowPresenter {
     private let flowModel: LibraryFlowModel
     
     private let listViewFactory: MediaLibraryBrowserViewFactory
-    private let libraryItemFlowPresenterFactory: LibraryFolderFlowPresenterFactory
+    private let libraryItemFlowPresenterFactory: LibraryFileFlowPresenterFactory
     private let addMediaLibraryItemFlowPresenterFactory: AddMediaLibraryItemFlowPresenterFactory
     private let deleteMediaLibraryItemFlowPresenterFactory: DeleteMediaLibraryItemFlowPresenterFactory
     
-    private var itemFlowPresenter: LibraryFolderFlowPresenter?
+    private var itemFlowPresenter: LibraryFileFlowPresenter?
     private var addMediaLibraryItemFlowPresenter: AddMediaLibraryItemFlowPresenter?
     private var deleteMediaLibraryItemFlowPresenter: DeleteMediaLibraryItemFlowPresenter?
     
@@ -31,7 +31,7 @@ public final class LibraryFlowPresenterImpl: LibraryFlowPresenter {
     public init(
         flowModel: LibraryFlowModel,
         listViewFactory: MediaLibraryBrowserViewFactory,
-        libraryItemFlowPresenterFactory: LibraryFolderFlowPresenterFactory,
+        libraryItemFlowPresenterFactory: LibraryFileFlowPresenterFactory,
         addMediaLibraryItemFlowPresenterFactory: AddMediaLibraryItemFlowPresenterFactory,
         deleteMediaLibraryItemFlowPresenterFactory: DeleteMediaLibraryItemFlowPresenterFactory
     ) {
@@ -58,7 +58,7 @@ extension LibraryFlowPresenterImpl {
     
     public func present(at container: UINavigationController) {
         
-        flowModel.libraryItemFlow
+        flowModel.libraryFileFlow
             .receive(on: RunLoop.main)
             .sink { [weak self] itemFlow in
                 

@@ -1,5 +1,5 @@
 //
-//  LibraryFolderFlowPresenterImpl.swift
+//  LibraryFileFlowPresenterImpl.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 09.09.22.
@@ -9,11 +9,11 @@ import Foundation
 import Combine
 import UIKit
 
-public final class LibraryFolderFlowPresenterImpl: LibraryFolderFlowPresenter {
+public final class LibraryFileFlowPresenterImpl: LibraryFileFlowPresenter {
     
     // MARK: - Properties
     
-    private let flow: LibraryFolderFlowModel
+    private let flow: LibraryFileFlowModel
     private let libraryItemViewFactory: LibraryItemViewFactory
     private let attachSubtitlesFlowPresenterFactory: AttachSubtitlesFlowPresenterFactory
     
@@ -24,7 +24,7 @@ public final class LibraryFolderFlowPresenterImpl: LibraryFolderFlowPresenter {
     // MARK: - Initializers
     
     public init(
-        flowModel: LibraryFolderFlowModel,
+        flowModel: LibraryFileFlowModel,
         libraryItemViewFactory: LibraryItemViewFactory,
         attachSubtitlesFlowPresenterFactory: AttachSubtitlesFlowPresenterFactory
     ) {
@@ -43,7 +43,7 @@ public final class LibraryFolderFlowPresenterImpl: LibraryFolderFlowPresenter {
 
 // MARK: - Methods
 
-extension LibraryFolderFlowPresenterImpl {
+extension LibraryFileFlowPresenterImpl {
     
     public func present(at container: UINavigationController) {
         

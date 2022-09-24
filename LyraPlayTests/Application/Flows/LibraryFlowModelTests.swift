@@ -16,7 +16,7 @@ class LibraryFlowModelTests: XCTestCase {
     typealias SUT = (
         flow: LibraryFlowModelImpl,
         listViewModel: MediaLibraryBrowserViewModelMock,
-        libraryItemFlow: LibraryFolderFlowModelMock
+        libraryItemFlow: LibraryFileFlowModelMock
     )
     
     func createSUT(folderId: UUID?, file: StaticString = #filePath, line: UInt = #line) -> SUT {
@@ -27,14 +27,14 @@ class LibraryFlowModelTests: XCTestCase {
         given(viewModelFactory.create(folderId: folderId, delegate: any()))
             .willReturn(viewModel)
         
-        let libraryItemFlow = mock(LibraryFolderFlowModel.self)
-        let libraryItemFlowModelFactory = mock(LibraryFolderFlowModelFactory.self)
+        let libraryItemFlow = mock(LibraryFileFlowModel.self)
+        let libraryFileFlowModelFactory = mock(LibraryFileFlowModelFactory.self)
         
         let addMediaLibraryItemFlowModelFactory = mock(AddMediaLibraryItemFlowModelFactory.self)
         
-        let delegate = mock(LibraryFolderFlowModelDelegate.self)
+        let delegate = mock(LibraryFileFlowModelDelegate.self)
         
-        given(libraryItemFlowModelFactory.create(for: any(), delegate: delegate))
+        given(libraryFileFlowModelFactory.create(for: any(), delegate: delegate))
             .willReturn(libraryItemFlow)
         
         let deleteMediaLibraryItemFlowModelFactory = mock(DeleteMediaLibraryItemFlowModelFactory.self)
@@ -42,7 +42,7 @@ class LibraryFlowModelTests: XCTestCase {
         let flow = LibraryFlowModelImpl(
             folderId: folderId,
             viewModelFactory: viewModelFactory,
-            libraryItemFlowModelFactory: libraryItemFlowModelFactory,
+            libraryFileFlowModelFactory: libraryFileFlowModelFactory,
             addMediaLibraryItemFlowModelFactory: addMediaLibraryItemFlowModelFactory,
             deleteMediaLibraryItemFlowModelFactory: deleteMediaLibraryItemFlowModelFactory
         )
@@ -53,7 +53,7 @@ class LibraryFlowModelTests: XCTestCase {
             viewModel,
             viewModelFactory,
             libraryItemFlow,
-            libraryItemFlowModelFactory,
+            libraryFileFlowModelFactory,
             delegate,
             addMediaLibraryItemFlowModelFactory,
             deleteMediaLibraryItemFlowModelFactory
@@ -74,7 +74,7 @@ class LibraryFlowModelTests: XCTestCase {
         // Given
         let mediaId = UUID()
         
-        let observer = sut.flow.libraryItemFlow.sink { value in
+        let observer = sut.flow.libraryFileFlow.sink { value in
             
             libraryItemFlowSequence.fulfill(with: value === sut.libraryItemFlow)
         }
