@@ -19,7 +19,7 @@ public protocol MainFlowModelOutput {
 
     var mainTabBarViewModel: MainTabBarViewModel { get }
 
-    var libraryFlow: CurrentValueSubject<LibraryFlowModel?, Never> { get }
+    var libraryFlow: CurrentValueSubject<LibraryFolderFlowModel?, Never> { get }
     
     var dictionaryFlow: CurrentValueSubject<DictionaryFlowModel?, Never> { get }
 }

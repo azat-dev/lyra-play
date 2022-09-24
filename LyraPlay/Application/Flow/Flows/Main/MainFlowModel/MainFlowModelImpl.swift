@@ -13,10 +13,10 @@ public final class MainFlowModelImpl: MainFlowModel {
     // MARK: - Properties
 
     private let mainTabBarViewModelFactory: MainTabBarViewModelFactory
-    private let libraryFlowModelFactory: LibraryFlowModelFactory
+    private let libraryFlowModelFactory: LibraryFolderFlowModelFactory
     private let dictionaryFlowModelFactory: DictionaryFlowModelFactory
     
-    public var libraryFlow: CurrentValueSubject<LibraryFlowModel?, Never> = .init(nil)
+    public var libraryFlow: CurrentValueSubject<LibraryFolderFlowModel?, Never> = .init(nil)
     public var dictionaryFlow: CurrentValueSubject<DictionaryFlowModel?, Never> = .init(nil)
 
     public lazy var mainTabBarViewModel: MainTabBarViewModel = {
@@ -28,7 +28,7 @@ public final class MainFlowModelImpl: MainFlowModel {
 
     public init(
         mainTabBarViewModelFactory: MainTabBarViewModelFactory,
-        libraryFlowModelFactory: LibraryFlowModelFactory,
+        libraryFlowModelFactory: LibraryFolderFlowModelFactory,
         dictionaryFlowModelFactory: DictionaryFlowModelFactory
     ) {
 

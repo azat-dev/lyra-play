@@ -17,10 +17,10 @@ public final class MainFlowPresenterImpl: MainFlowPresenter {
     private let mainFlowModel: MainFlowModel
     private let mainTabBarViewFactory: MainTabBarViewFactory
     
-    private let libraryFlowPresenterFactory: LibraryFlowPresenterFactory
+    private let libraryFlowPresenterFactory: LibraryFolderFlowPresenterFactory
     private let dictionaryFlowPresenterFactory: DictionaryFlowPresenterFactory
     
-    private var libraryFlowPresenter: LibraryFlowPresenter?
+    private var libraryFlowPresenter: LibraryFolderFlowPresenter?
     private var libraryFlowObserver: AnyCancellable?
     
     private var dictionaryFlowPresenter: DictionaryFlowPresenter?
@@ -32,7 +32,7 @@ public final class MainFlowPresenterImpl: MainFlowPresenter {
     public init(
         mainFlowModel: MainFlowModel,
         mainTabBarViewFactory: MainTabBarViewFactory,
-        libraryFlowPresenterFactory: LibraryFlowPresenterFactory,
+        libraryFlowPresenterFactory: LibraryFolderFlowPresenterFactory,
         dictionaryFlowPresenterFactory: DictionaryFlowPresenterFactory
     ) {
         

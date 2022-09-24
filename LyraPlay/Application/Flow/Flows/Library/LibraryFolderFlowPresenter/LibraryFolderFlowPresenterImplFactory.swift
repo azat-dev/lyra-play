@@ -1,5 +1,5 @@
 //
-//  LibraryFlowPresenterImplFactory.swift
+//  LibraryFolderFlowPresenterImplFactory.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 08.09.22.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class LibraryFlowPresenterImplFactory: LibraryFlowPresenterFactory {
+public final class LibraryFolderFlowPresenterImplFactory: LibraryFolderFlowPresenterFactory {
     
     private let listViewFactory: MediaLibraryBrowserViewFactory
     private let libraryItemFlowPresenterFactory: LibraryFileFlowPresenterFactory
@@ -27,9 +27,9 @@ public final class LibraryFlowPresenterImplFactory: LibraryFlowPresenterFactory 
         self.deleteMediaLibraryItemFlowPresenterFactory = deleteMediaLibraryItemFlowPresenterFactory
     }
     
-    public func create(for flowModel: LibraryFlowModel) -> LibraryFlowPresenter {
+    public func create(for flowModel: LibraryFolderFlowModel) -> LibraryFolderFlowPresenter {
         
-        return LibraryFlowPresenterImpl(
+        return LibraryFolderFlowPresenterImpl(
             flowModel: flowModel,
             listViewFactory: listViewFactory,
             libraryItemFlowPresenterFactory: libraryItemFlowPresenterFactory,

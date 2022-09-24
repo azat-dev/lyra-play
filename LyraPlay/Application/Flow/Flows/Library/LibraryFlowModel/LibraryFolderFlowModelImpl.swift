@@ -1,5 +1,5 @@
 //
-//  LibraryFlowModelImpl.swift
+//  LibraryFolderFlowModelImpl.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 07.09.2022.
@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-public final class LibraryFlowModelImpl: LibraryFlowModel {
+public final class LibraryFolderFlowModelImpl: LibraryFolderFlowModel {
     
     // MARK: - Properties
     
@@ -48,11 +48,11 @@ public final class LibraryFlowModelImpl: LibraryFlowModel {
 
 // MARK: - Input Methods
 
-extension LibraryFlowModelImpl {}
+extension LibraryFolderFlowModelImpl {}
 
 // MARK: - DeleteLibraryItem
 
-extension LibraryFlowModelImpl: DeleteMediaLibraryItemFlowDelegate {
+extension LibraryFolderFlowModelImpl: DeleteMediaLibraryItemFlowDelegate {
     
     private func reloadList() {
         
@@ -82,7 +82,7 @@ extension LibraryFlowModelImpl: DeleteMediaLibraryItemFlowDelegate {
 
 // MARK: - MediaLibraryBrowserViewModelDelegate
 
-extension LibraryFlowModelImpl: MediaLibraryBrowserViewModelDelegate {
+extension LibraryFolderFlowModelImpl: MediaLibraryBrowserViewModelDelegate {
     
     public func runAddMediaLibratyItemFlow(folderId: UUID?) {
         
@@ -118,7 +118,7 @@ extension LibraryFlowModelImpl: MediaLibraryBrowserViewModelDelegate {
 
 // MARK: - LibraryFileFlowModelDelegate
 
-extension LibraryFlowModelImpl: LibraryFileFlowModelDelegate {
+extension LibraryFolderFlowModelImpl: LibraryFileFlowModelDelegate {
     
     public func libraryFileFlowDidDispose() {
         
@@ -128,7 +128,7 @@ extension LibraryFlowModelImpl: LibraryFileFlowModelDelegate {
 
 // MARK: - ImportMediaFilesFlowModelDelegate
 
-extension LibraryFlowModelImpl: AddMediaLibraryItemFlowModelDelegate {
+extension LibraryFolderFlowModelImpl: AddMediaLibraryItemFlowModelDelegate {
     
     public func addMediaLibraryItemFlowModelDidFinish() {
         

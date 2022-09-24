@@ -20,8 +20,8 @@ class MainFlowModelTests: XCTestCase {
     
     func createSUT(folderId: UUID?, file: StaticString = #filePath, line: UInt = #line) -> SUT {
         
-        let libraryFlowModel = mock(LibraryFlowModel.self)
-        let libraryFlowModelFactory = mock(LibraryFlowModelFactory.self)
+        let libraryFlowModel = mock(LibraryFolderFlowModel.self)
+        let libraryFlowModelFactory = mock(LibraryFolderFlowModelFactory.self)
         
         given(libraryFlowModelFactory.create(folderId: folderId))
             .willReturn(libraryFlowModel)

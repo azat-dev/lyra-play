@@ -1,5 +1,5 @@
 //
-//  LibraryFlowModelTests.swift
+//  LibraryFolderFlowModelTests.swift
 //  LyraPlayTests
 //
 //  Created by Azat Kaiumov on 07.09.22.
@@ -11,10 +11,10 @@ import Mockingbird
 
 import LyraPlay
 
-class LibraryFlowModelTests: XCTestCase {
+class LibraryFolderFlowModelTests: XCTestCase {
     
     typealias SUT = (
-        flow: LibraryFlowModelImpl,
+        flow: LibraryFolderFlowModelImpl,
         listViewModel: MediaLibraryBrowserViewModelMock,
         libraryItemFlow: LibraryFileFlowModelMock
     )
@@ -39,7 +39,7 @@ class LibraryFlowModelTests: XCTestCase {
         
         let deleteMediaLibraryItemFlowModelFactory = mock(DeleteMediaLibraryItemFlowModelFactory.self)
         
-        let flow = LibraryFlowModelImpl(
+        let flow = LibraryFolderFlowModelImpl(
             folderId: folderId,
             viewModelFactory: viewModelFactory,
             libraryFileFlowModelFactory: libraryFileFlowModelFactory,

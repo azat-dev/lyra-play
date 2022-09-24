@@ -1,5 +1,5 @@
 //
-//  LibraryFlowModel.swift
+//  LibraryFolderFlowModel.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 07.09.2022.
@@ -8,9 +8,9 @@
 import Foundation
 import Combine
 
-public protocol LibraryFlowModelInput: AnyObject {}
+public protocol LibraryFolderFlowModelInput: AnyObject {}
 
-public protocol LibraryFlowModelOutput: AnyObject {
+public protocol LibraryFolderFlowModelOutput: AnyObject {
 
     var folderId: UUID? { get }
     
@@ -23,4 +23,4 @@ public protocol LibraryFlowModelOutput: AnyObject {
     var deleteMediaLibraryItemFlow: CurrentValueSubject<DeleteMediaLibraryItemFlowModel?, Never> { get }
 }
 
-public protocol LibraryFlowModel: LibraryFlowModelOutput, LibraryFlowModelInput {}
+public protocol LibraryFolderFlowModel: LibraryFolderFlowModelOutput, LibraryFolderFlowModelInput {}

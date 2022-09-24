@@ -1,5 +1,5 @@
 //
-//  LibraryItemFlowPresenterTests.swift
+//  LibraryFileFlowPresenterTests.swift
 //  LyraPlayTests
 //
 //  Created by Azat Kaiumov on 09.09.22.
@@ -12,7 +12,7 @@ import Mockingbird
 
 import LyraPlay
 
-class LibraryItemFlowPresenterTests: XCTestCase {
+class LibraryFileFlowPresenterTests: XCTestCase {
     
     typealias SUT = (
         presenter: LibraryFileFlowPresenter,

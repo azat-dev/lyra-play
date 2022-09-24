@@ -257,7 +257,7 @@ public class Application {
             importAudioFileUseCaseFactory: imporAudioFileUseCaseFactory
         )
         
-        let libraryItemViewModelFactory = LibraryItemViewModelImplFactory(
+        let libraryFileViewModelFactory = LibraryItemViewModelImplFactory(
             showMediaInfoUseCase: showMediaInfoUseCase,
             playMediaUseCase: playMediaWithTranslationsUseCase
         )
@@ -292,7 +292,7 @@ public class Application {
         )
         
         let libraryFileFlowModelFactory = LibraryFileFlowModelImplFactory(
-            libraryItemViewModelFactory: libraryItemViewModelFactory,
+            libraryItemViewModelFactory: libraryFileViewModelFactory,
             attachSubtitlesFlowModelFactory: attachSubtitlesFlowModelFactory
         )
         
@@ -335,7 +335,7 @@ public class Application {
             addMediaLibraryFolderFlowModelFactory: addMediaLibraryFolderFlowModelImplFactory
         )
         
-        let libraryFlowModelFactory = LibraryFlowModelImplFactory(
+        let libraryFolderFlowModelFactory = LibraryFolderFlowModelImplFactory(
             viewModelFactory: libraryViewModelFactory,
             libraryFileFlowModelFactory: libraryFileFlowModelFactory,
             addMediaLibraryItemFlowModelFactory: addMediaLibraryItemFlowModelFactory,
@@ -374,7 +374,7 @@ public class Application {
         
         return MainFlowModelImpl(
             mainTabBarViewModelFactory: mainTabBarViewModelFactory,
-            libraryFlowModelFactory: libraryFlowModelFactory,
+            libraryFlowModelFactory: libraryFolderFlowModelFactory,
             dictionaryFlowModelFactory: dictionaryFlowModelFactory
         )
     }
@@ -415,7 +415,7 @@ public class Application {
             addMediaLibraryFolderFlowPresenterFactory: addMediaLibraryFolderFlowPresenterFactory
         )
         
-        let libraryFlowPresenterFactory = LibraryFlowPresenterImplFactory(
+        let libraryFolderFlowPresenterFactory = LibraryFolderFlowPresenterImplFactory(
             listViewFactory: MediaLibraryBrowserViewControllerFactory(),
             libraryItemFlowPresenterFactory: libraryItemFlowPresenterFactory,
             addMediaLibraryItemFlowPresenterFactory: addMediaLibraryItemFlowPresenterFactory,
@@ -434,7 +434,7 @@ public class Application {
         return MainFlowPresenterImpl(
             mainFlowModel: flow,
             mainTabBarViewFactory: MainTabBarViewControllerFactory(),
-            libraryFlowPresenterFactory: libraryFlowPresenterFactory,
+            libraryFlowPresenterFactory: libraryFolderFlowPresenterFactory,
             dictionaryFlowPresenterFactory: dictionaryFlowPresenterFactory
         )
     }

@@ -12,14 +12,14 @@ public final class MainFlowModelImplFactory: MainFlowModelFactory {
     // MARK: - Properties
 
     private let mainTabBarViewModelFactory: MainTabBarViewModelFactory
-    private let libraryFlowModelFactory: LibraryFlowModelFactory
+    private let libraryFlowModelFactory: LibraryFolderFlowModelFactory
     private let dictionaryFlowModelFactory: DictionaryFlowModelFactory
 
     // MARK: - Initializers
 
     public init(
         mainTabBarViewModelFactory: MainTabBarViewModelFactory,
-        libraryFlowModelFactory: LibraryFlowModelFactory,
+        libraryFlowModelFactory: LibraryFolderFlowModelFactory,
         dictionaryFlowModelFactory: DictionaryFlowModelFactory
     ) {
 
