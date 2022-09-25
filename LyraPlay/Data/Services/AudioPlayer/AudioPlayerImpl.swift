@@ -1,0 +1,251 @@
+//
+//  AudioPlayerImpl.swift
+//  LyraPlay
+//
+//  Created by Azat Kaiumov on 01.09.2022.
+//
+
+import Foundation
+import Combine
+import AVFoundation
+import MediaPlayer
+
+public final class AudioPlayerImpl: NSObject, AudioPlayer, AVAudioPlayerDelegate {
+
+    // MARK: - Properties
+
+    private let audioSession: AudioSession
+    public var state: CurrentValueSubject<AudioPlayerState, Never> = .init(.initial)
+    
+    private var player: AVAudioPlayer? = nil
+    private var playerIsPlayingObserver: NSKeyValueObservation? = nil
+
+    // MARK: - Initializers
+
+    public init(audioSession: AudioSession) {
+
+        self.audioSession = audioSession
+    }
+}
+
+
+extension AudioPlayerImpl {
+    
+    public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully: Bool) {
+        
+        guard successfully else {
+            return
+        }
+        
+        switch self.state.value {
+            
+        case .initial, .stopped, .finished, .paused, .loaded:
+            print("Wrong state")
+            dump(self.state.value)
+            break
+            
+        case .playing(let stateData):
+            self.state.value = .finished(session: stateData)
+            break
+        }
+    }
+}
+
+// MARK: - Input Methods
+
+extension AudioPlayerImpl {
+    
+    public func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioPlayerError> {
+        
+        do {
+            
+            let player = try AVAudioPlayer(data: trackData)
+            player.delegate = self
+            
+            self.player = player
+            
+            player.prepareToPlay()
+            self.state.value = .loaded(session: .init(fileId: fileId))
+            
+        } catch {
+            
+            state.value = .initial
+            print("*** Unable to set up the audio player: \(error.localizedDescription) ***")
+            return .failure(.internalError(error))
+        }
+        
+        return .success(())
+    }
+    
+    public func play() -> Result<Void, AudioPlayerError> {
+        
+        guard
+            let player = self.player,
+            let session = self.state.value.session
+        else {
+            
+            return .failure(.noActiveFile)
+        }
+        
+        audioSession.activate()
+        
+        player.play()
+        self.state.value = .playing(session: session)
+        
+        return .success(())
+    }
+    
+    public func play(atTime: TimeInterval) -> Result<Void, AudioPlayerError> {
+        
+        guard
+            let player = self.player,
+            let session = state.value.session
+        else {
+            
+            return .failure(.noActiveFile)
+        }
+        
+        audioSession.activate()
+        
+        player.play(atTime: atTime)
+        self.state.value = .playing(session: session)
+        
+        return .success(())
+    }
+    
+    public func playAndWaitForEnd() async -> Result<Void, AudioPlayerError> {
+        
+        guard let currentSession = state.value.session else {
+            
+            return .failure(.noActiveFile)
+        }
+        
+        var stateCancellation: AnyCancellable?
+        defer { stateCancellation?.cancel() }
+        
+        var isFinished = false
+        var isSetupCall = true
+        
+        return await withCheckedContinuation { continuation  in
+            
+            stateCancellation = state.sink { state in
+                
+                if isSetupCall {
+                    isSetupCall = false
+                    return
+                }
+                
+                guard !isFinished else {
+                    return
+                }
+                
+                switch state {
+                    
+                case .initial:
+                    return
+                    
+                case .playing(let session):
+                    
+                    if session == currentSession {
+                        return
+                    }
+                    
+                    continuation.resume(returning: .failure(.waitIsInterrupted))
+                    return
+                    
+                case .finished(let session):
+                    if session == currentSession {
+                        
+                        isFinished = true
+                        continuation.resume(returning: .success(()))
+                        return
+                    }
+                    
+                    continuation.resume(returning: .failure(.waitIsInterrupted))
+                    return
+                    
+                default:
+                    continuation.resume(returning: .failure(.waitIsInterrupted))
+                }
+            }
+            
+            let result = self.play()
+            
+            guard case .success = result else {
+                continuation.resume(returning: result)
+                return
+            }
+        }
+    }
+    
+    
+    public func playAndWaitForEnd() -> AsyncThrowingStream<AudioPlayerState, Error> {
+        
+        return AsyncThrowingStream { continuation in
+    
+            guard state.value.session != nil else {
+                
+                continuation.finish(throwing: AudioPlayerError.noActiveFile)
+                return
+            }
+
+            let subscription = state.dropFirst().sink { value in
+                
+                continuation.yield(value)
+                
+                if case .stopped = value {
+                    continuation.finish()
+                    return
+                }
+                
+                if case .finished = value {
+                    continuation.finish()
+                }
+            }
+            
+            continuation.onTermination = { _ in
+                subscription.cancel()
+            }
+            
+            if case .failure(let error) = play() {
+                
+                continuation.finish(throwing: error)
+                return
+            }
+        }
+    }
+    
+    
+    public func pause() -> Result<Void, AudioPlayerError> {
+        
+        guard
+            let player = player
+        else {
+            return .failure(.noActiveFile)
+        }
+        
+        player.pause()
+        audioSession.deactivate()
+        
+        guard case .playing(let session) = state.value else {
+            return .success(())
+        }
+        
+        self.state.value = .paused(session: session, time: player.currentTime)
+        return .success(())
+    }
+    
+    public func stop() -> Result<Void, AudioPlayerError> {
+        
+        guard let player = player else {
+            return .failure(.noActiveFile)
+        }
+        
+        player.stop()
+        audioSession.deactivate()
+        self.player = nil
+        
+        self.state.value = .stopped
+        return .success(())
+    }
+}

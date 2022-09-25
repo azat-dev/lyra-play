@@ -27,4 +27,12 @@ DerivedData/
 /*.gcno
 .DS_Store
 
-/Memnotes/website
+## MockingBird
+
+# Generated
+*.generated.swift
+
+# Caches
+**/*.xcodeproj/MockingbirdCache/
+
+MockingbirdSupport

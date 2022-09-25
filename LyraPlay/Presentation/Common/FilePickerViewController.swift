@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import UniformTypeIdentifiers
 
-final class FilePickerViewController: UIDocumentPickerViewController, UIDocumentPickerDelegate {
+public class FilePickerViewController: UIDocumentPickerViewController, UIDocumentPickerDelegate {
 
     public typealias CancelCallback = () -> Void
     public typealias SelectCallback = (_ urls: [URL]) -> Void
@@ -44,15 +44,15 @@ final class FilePickerViewController: UIDocumentPickerViewController, UIDocument
         
     }
     
-    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+    public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
         self.onCancel()
     }
     
-    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+    public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         self.onSelect(urls)
     }
     
-    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
+    public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
         self.onSelect([url])
     }
 }

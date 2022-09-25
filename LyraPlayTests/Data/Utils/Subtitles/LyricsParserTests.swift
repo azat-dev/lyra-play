@@ -27,24 +27,30 @@ class LyricsParserTests: XCTestCase {
         )
     }
     
-    func testParseEmptyLyrics() async throws {
+    func test_parse__empty() async throws {
         
         let sut = createSUT()
+
+        // Given
+        let emptySubtitles = ""
         
-        let text = ""
+        // When
+        let result = await sut.parser.parse(emptySubtitles, fileName: "test.lrc")
         
-        let result = await sut.parser.parse(text)
+        // Then
         let parsedSubtitles = try AssertResultSucceded(result)
         
         let expectedSubtitles = ExpectedSubtitles(duration: 0, sentences: [])
         AssertEqualReadable(.init(from: parsedSubtitles), expectedSubtitles)
     }
     
-    func testParseNormalLyrics() async throws {
+    func test_parse__not_empty_subtitles() async throws {
         
         let sut = createSUT()
         
-        let text = """
+        // Given
+        
+        let notEmptySubtitles = """
         
         [ar: Test Artist]
         [al: Test Album]
@@ -58,7 +64,10 @@ class LyricsParserTests: XCTestCase {
         [00:21.10]Line 3 lyrics
         """
         
-        let result = await sut.parser.parse(text)
+        // When
+        let result = await sut.parser.parse(notEmptySubtitles, fileName: "test.lrc")
+        
+        // Then
         let subtitlesResult = try AssertResultSucceded(result)
         let parsedSubtitles = ExpectedSubtitles(from: subtitlesResult)
         
@@ -86,10 +95,12 @@ class LyricsParserTests: XCTestCase {
         AssertEqualReadable(parsedSubtitles, expecteSubtitles)
     }
     
-    func testParseEnhancedLyrics() async throws {
+    func test_parse__subtitles_with_word_time_marks() async throws {
         
         let sut = createSUT()
         
+        // Given
+        // Subtitles with time marks
         let line1 = " <00:00.04> Word11 <00:00.16> Word12 <00:00.82> Word13"
         let line2 = " <00:07.67> Word21 <00:07.94> Word22"
         let line3 = " <00:14.32> Word31"
@@ -112,7 +123,10 @@ class LyricsParserTests: XCTestCase {
 
         """
         
-        let result = await sut.parser.parse(text)
+        // When
+        let result = await sut.parser.parse(text, fileName: "test.lrc")
+        
+        // Then
         let subtitlesResult = try AssertResultSucceded(result)
         let parsedSubtitles = ExpectedSubtitles(from: subtitlesResult)
         

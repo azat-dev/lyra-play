@@ -9,25 +9,26 @@ import Foundation
 
 import XCTest
 import LyraPlay
+import Mockingbird
 
 class ShowMediaInfoUseCaseTests: XCTestCase {
     
     typealias SUT = (
         useCase: ShowMediaInfoUseCase,
-        audioLibraryRepository: AudioLibraryRepository,
-        imagesRepository: FilesRepository,
+        mediaLibraryRepository: MediaLibraryRepositoryMock,
+        imagesRepository: FilesRepositoryMock,
         defaultImage: Data
     )
     
     func createSUT() -> SUT {
         
-        let audioLibraryRepository = AudioLibraryRepositoryMock()
-        let imagesRepository = FilesRepositoryMock()
+        let mediaLibraryRepository = mock(MediaLibraryRepository.self)
+        let imagesRepository = mock(FilesRepository.self)
         
         let defaultImage = "defaultImage".data(using: .utf8)!
         
-        let useCase = DefaultShowMediaInfoUseCase(
-            audioLibraryRepository: audioLibraryRepository,
+        let useCase = ShowMediaInfoUseCaseImpl(
+            mediaLibraryRepository: mediaLibraryRepository,
             imagesRepository: imagesRepository,
             defaultImage: defaultImage
         )
@@ -36,104 +37,105 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         
         return (
             useCase,
-            audioLibraryRepository,
+            mediaLibraryRepository,
             imagesRepository,
             defaultImage
         )
     }
     
-    func testFetch() async throws {
-        
-        let (
-            useCase,
-            audioLibraryRepository,
-            imagesRepository,
-            _
-        ) = createSUT()
-        
+    func test_fetchInfo() async throws {
+
+        let sut = createSUT()
+
+        // Given
+
+        let file = anyFile()
         let testImageData = "image".data(using: .utf8)!
-        let testImageName = "test.png"
+
+        given(await sut.imagesRepository.getFile(name: file.image!))
+            .willReturn(.success(testImageData))
         
-        let putImage = await imagesRepository.putFile(name: testImageName, data: testImageData)
-        try AssertResultSucceded(putImage)
+        given(await sut.mediaLibraryRepository.getItem(id: file.id))
+            .willReturn(.success(.file(file)))
+
+        // When
+        let resultMediaInfo = await sut.useCase.fetchInfo(trackId: file.id)
         
-        var testFileInfo = AudioFileInfo.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
-        testFileInfo.coverImage = testImageName
-        
-        let putResult = await audioLibraryRepository.putFile(info: testFileInfo)
-        try AssertResultSucceded(putResult)
-        
-        let savedFileInfo = try AssertResultSucceded(putResult)
-        
-        let resultMediaInfo = await useCase.fetchInfo(trackId: savedFileInfo.id!)
+        // Then
         let mediaInfo = try AssertResultSucceded(resultMediaInfo)
-        
+
         XCTAssertNotNil(mediaInfo)
-        XCTAssertEqual(mediaInfo.id, savedFileInfo.id?.uuidString)
+        XCTAssertEqual(mediaInfo.id, file.id.uuidString)
         XCTAssertEqual(mediaInfo.coverImage, testImageData)
-        XCTAssertEqual(mediaInfo.title, testFileInfo.name)
-        XCTAssertEqual(mediaInfo.artist, mediaInfo.artist)
-        XCTAssertEqual(mediaInfo.duration, testFileInfo.duration)
+        XCTAssertEqual(mediaInfo.title, file.title)
+        XCTAssertEqual(mediaInfo.artist, file.subtitle)
+        XCTAssertEqual(mediaInfo.duration, file.duration)
     }
-    
-    func testFetchDefaultImageIfNoImage() async throws {
+
+    func test_fetchInfo__default_image() async throws {
+
+        let sut = createSUT()
+
+        // Given
+
+        var file = anyFile()
+        file.image = nil
         
-        let (
-            useCase,
-            audioLibraryRepository,
-            _,
-            defaultImage
-        ) = createSUT()
+        given(await sut.mediaLibraryRepository.getItem(id: file.id))
+            .willReturn(.success(.file(file)))
+
+        // When
+        let resultMediaInfo = await sut.useCase.fetchInfo(trackId: file.id)
         
-        let testFileInfo = AudioFileInfo.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
-        
-        let putResult = await audioLibraryRepository.putFile(info: testFileInfo)
-        let savedFileInfo = try AssertResultSucceded(putResult)
-        
-        let resultMediaInfo = await useCase.fetchInfo(trackId: savedFileInfo.id!)
+        // Then
         let mediaInfo = try AssertResultSucceded(resultMediaInfo)
         
-        XCTAssertEqual(mediaInfo.coverImage, defaultImage)
+        verify(await sut.imagesRepository.getFile(name: any()))
+            .wasNeverCalled()
+
+        XCTAssertEqual(mediaInfo.coverImage, sut.defaultImage)
     }
     
-    func testFetchDefaultImageIfError() async throws {
+    func test_fetchInfo__not_exist() async throws {
         
-        let (
-            useCase,
-            audioLibraryRepository,
-            _,
-            defaultImage
-        ) = createSUT()
+        let sut = createSUT()
         
-        var testFileInfo = AudioFileInfo.create(name: "TestFile", duration: 10, audioFile: "test.mp3")
-        testFileInfo.coverImage = "someimage.png"
+        // Given
+        let fileId = UUID()
         
-        let putResult = await audioLibraryRepository.putFile(info: testFileInfo)
-        let savedFileInfo = try AssertResultSucceded(putResult)
+        given(await sut.mediaLibraryRepository.getItem(id: fileId))
+            .willReturn(.failure(.fileNotFound))
         
-        let resultMediaInfo = await useCase.fetchInfo(trackId: savedFileInfo.id!)
-        let mediaInfo = try AssertResultSucceded(resultMediaInfo)
+        // When
+        let resultMediaInfo = await sut.useCase.fetchInfo(trackId: fileId)
         
-        XCTAssertEqual(mediaInfo.coverImage, defaultImage)
-    }
-    
-    func testFetchTrackDoesntExist() async throws {
-        
-        let (
-            useCase,
-            _,
-            _,
-            _
-        ) = createSUT()
-        
-        let trackId = UUID()
-        
-        let resultMediaInfo = await useCase.fetchInfo(trackId: trackId)
+        // Then
         let error = try AssertResultFailed(resultMediaInfo)
         
         guard case .trackNotFound = error else {
-            XCTFail("Wrong error")
+            XCTFail("Wrong error ")
             return
         }
+    }
+}
+
+// MARK: - Helpers
+
+fileprivate extension ShowMediaInfoUseCaseTests {
+    
+    private func anyFile() -> MediaLibraryFile {
+        
+        return .init(
+            id: UUID(),
+            parentId: nil,
+            createdAt: .now,
+            updatedAt: nil,
+            title: "test",
+            subtitle: "subtitle",
+            file: "test.mp3",
+            duration: 100,
+            image: "test.png",
+            genre: "rock"
+        )
     }
 }

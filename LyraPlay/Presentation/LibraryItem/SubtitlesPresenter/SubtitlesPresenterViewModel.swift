@@ -6,31 +6,26 @@
 //
 
 import Foundation
+import Combine
 
 // MARK: - Interfaces
 
-public struct SubtitlesPresentationState {
+public enum SubtitlesPresentationState {
     
-    public var numberOfSentences: Int
-    public var activeSentenceIndex: Int?
+    case loading
+    case playing(activeSentenceIndex: Int?, rows: [SentenceViewModel])
 }
 
 public protocol SubtitlesPresenterViewModelOutput {
 
-    var state: Observable<SubtitlesPresentationState?> { get }
+    var state: CurrentValueSubject<SubtitlesPresentationState, Never> { get }
     
     func getSentenceViewModel(at index: Int) -> SentenceViewModel?
 }
 
 public protocol SubtitlesPresenterViewModelInput {
 
-    func load() async
-    
-    func play(at: TimeInterval) async
-    
-    func pause() async
-    
-    func stop() async
+    func update(with: SubtitlesState?)
 }
 
 public protocol SubtitlesPresenterViewModel: SubtitlesPresenterViewModelOutput, SubtitlesPresenterViewModelInput {
@@ -38,205 +33,97 @@ public protocol SubtitlesPresenterViewModel: SubtitlesPresenterViewModelOutput, 
 
 // MARK: - Implementations
 
-extension DefaultSentenceViewModel {
-    
-    
-}
+public final class SubtitlesPresenterViewModelImpl: SubtitlesPresenterViewModel {
 
-public final class DefaultSubtitlesPresenterViewModel: SubtitlesPresenterViewModel {
-
-    private let subtitles: Subtitles
-    public let subtitlesIterator: SubtitlesIterator
-
-    private var sentenceTimer: ActionTimer? = nil
-    private var wordTimer: ActionTimer? = nil
-    private var currentSpeed: Double = 1.0
-    private var scheduler: Scheduler
+    // MARK: - Properties
     
-    private var items: [DefaultSentenceViewModel] = []
-    private var currentSentenceWithSelectedWord: Int?
-    public let state: Observable<SubtitlesPresentationState?> = Observable(nil)
+    public let state = CurrentValueSubject<SubtitlesPresentationState, Never>(.loading)
     
-    public init(subtitles: Subtitles, subtitlesTimeSlots: [SubtitlesTimeSlot]) {
-        
-        self.subtitles = subtitles
-        
-        self.subtitlesIterator = DefaultSubtitlesIterator(
-            subtitlesTimeSlots: subtitlesTimeSlots
-        )
-        
-        self.scheduler = DefaultScheduler(timer: DefaultActionTimer())
+    // MARK: - Initializers
+    
+    public init() {}
+
+    public func getSentenceViewModel(at index: Int) -> SentenceViewModel? {
+
+        guard
+            case .playing(_, let rows) = state.value,
+            index < rows.count
+        else {
+            return nil
+        }
+
+        return rows[index]
     }
 }
 
-// MARK: - Input
+// MARK: - Input Methods
 
-extension DefaultSubtitlesPresenterViewModel {
-
-    public func load() async {
+extension SubtitlesPresenterViewModelImpl {
+    
+    public func update(with subtitlesState: SubtitlesState?) {
         
-        var models: [DefaultSentenceViewModel] = []
-        let sentences = subtitles.sentences
-        let numberOfSentences = sentences.count
+        DispatchQueue.main.async { [weak self] in
+            self?.updateState(subtitlesState)
+        }
+    }
+}
+
+// MARK: - Handlers
+
+extension SubtitlesPresenterViewModelImpl {
+    
+    private func updateState(_ subtitlesState: SubtitlesState?) {
+    
+        guard let subtitlesState = subtitlesState else {
+            state.value = .loading
+            return
+        }
+        
+        var rows: [SentenceViewModel]
+
+        if case .playing(let prevActiveSentenceIndex, let prevRows) = state.value {
+             
+            rows = prevRows
+            
+            if let prevActiveSentenceIndex = prevActiveSentenceIndex {
+                rows[prevActiveSentenceIndex].isActive.value = false
+            }
+            
+        } else {
+            rows = getInitialModels(subtitlesState: subtitlesState)
+        }
+        
+        
+        if let newActiveSentenceIndex = subtitlesState.position?.sentenceIndex {
+            rows[newActiveSentenceIndex].isActive.value = true
+        }
+        
+        state.value = .playing(
+            activeSentenceIndex: subtitlesState.position?.sentenceIndex,
+            rows: rows
+        )
+    }
+    
+    private func getInitialModels(subtitlesState: SubtitlesState) -> [SentenceViewModel] {
+        
+        let sentences = subtitlesState.subtitles.sentences
         
         let toggleWord: ToggleWordCallback = { [weak self] index, range in
             self?.toggleWord(index, range)
         }
         
-        for index in 0..<numberOfSentences {
+        return sentences.indices.map { sentenceIndex in
             
-            let sentence = sentences[index]
-
-            let text = sentence.text
+            let sentence = sentences[sentenceIndex]
             
-            var sentenceModel = DefaultSentenceViewModel(
-                id: index,
-                text: text,
+            return SentenceViewModelImpl(
+                id: sentenceIndex,
+                text: sentence.text,
                 toggleWord: toggleWord
             )
-            
-            sentenceModel.textComponents = sentence.components
-
-            models.append(
-                sentenceModel
-            )
         }
-        
-        DispatchQueue.main.sync { [models] in
-            
-            self.items = models
-            self.state.value = .init(
-                numberOfSentences: self.items.count
-            )
-        }
-        
-    }
-    
-    private func updatePrevPosition() {
-
-        guard let prevActiveSentence = self.state.value?.activeSentenceIndex else {
-            return
-        }
-        
-        let sentenceModel = getSentenceViewModel(at: prevActiveSentence)
-        sentenceModel?.isActive.value = false
-    }
-    
-    private func updateCurrentPosition(sentence: Int) {
-        
-        let sentenceModel = getSentenceViewModel(at: sentence)
-        sentenceModel?.isActive.value = true
-    }
-    
-    private func updatePosition() {
-        
-        let currentPosition = subtitlesIterator.currentPosition
-        
-        DispatchQueue.main.async {
-        
-            self.updatePrevPosition()
-            
-            if let currentSentence = currentPosition?.sentenceIndex {
-                self.updateCurrentPosition(sentence: currentSentence)
-            }
-
-            var newState = self.state.value
-            newState?.activeSentenceIndex = currentPosition?.sentenceIndex
-            
-            self.state.value = newState
-        }
-    }
-    
-    public func play(at time: TimeInterval) async {
-        
-        scheduler.execute(timeline: subtitlesIterator, from: time) { [weak self] time in
-            
-            guard let self = self else {
-                return
-            }
-
-            self.updatePosition()
-        }
-    }
-    
-    public func pause() async {
-        
-        scheduler.pause()
-    }
-    
-    public func stop() async {
-        
-        scheduler.stop()
-    }
-    
-    private func deactivateWord(atSentence index: Int) {
-        
-        let item = items[index]
-        let currentValue = item.selectedWordRange.value
-        
-        guard currentValue != nil else {
-            return
-        }
-        
-        item.selectedWordRange.value = nil
     }
 
     private func toggleWord(_ sentenceIndex: Int, _ tapRange: Range<String.Index>?) {
-        
-        DispatchQueue.main.async {
-            
-            guard sentenceIndex < self.items.count else {
-                return
-            }
-            
-            guard let tapRange = tapRange else {
-                
-                if let currentSentenceIndex = self.currentSentenceWithSelectedWord {
-                    self.deactivateWord(atSentence: currentSentenceIndex)
-                }
-                return
-            }
-            
-            if
-                let currentSentenceIndex = self.currentSentenceWithSelectedWord,
-                currentSentenceIndex != sentenceIndex
-            {
-                
-                self.deactivateWord(atSentence: currentSentenceIndex)
-            }
-            
-            let item = self.items[sentenceIndex]
-            let selectedComponent = item.textComponents.first { item in item.range.overlaps(tapRange) }
-            let currentRange = item.selectedWordRange.value
-            
-            guard
-                let selectedType = selectedComponent?.type,
-                selectedType == .word
-            else {
-                
-                self.deactivateWord(atSentence: sentenceIndex)
-                return
-            }
-            
-            let selectedWordRange = selectedComponent?.range
-            
-            guard selectedWordRange != currentRange else {
-                
-                self.deactivateWord(atSentence: sentenceIndex)
-                return
-            }
-            
-            item.selectedWordRange.value = selectedWordRange
-            self.currentSentenceWithSelectedWord = sentenceIndex
-        }
-    }
-    
-    public func getSentenceViewModel(at index: Int) -> SentenceViewModel? {
-        
-        guard index < items.count else {
-            return nil
-        }
-        
-        return items[index]
     }
 }

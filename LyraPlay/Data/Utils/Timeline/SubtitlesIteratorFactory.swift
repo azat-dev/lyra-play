@@ -16,7 +16,7 @@ public protocol SubtitlesIteratorFactory {
 
 // MARK: - Implementations
 
-public final class DefaultSubtitlesIteratorFactory: SubtitlesIteratorFactory {
+public final class SubtitlesIteratorFactoryImpl: SubtitlesIteratorFactory {
     
     public init() {}
     
@@ -24,7 +24,7 @@ public final class DefaultSubtitlesIteratorFactory: SubtitlesIteratorFactory {
         
         let timeSlotsParser = SubtitlesTimeSlotsParser()
         
-        return DefaultSubtitlesIterator(
+        return SubtitlesIteratorImpl(
             subtitlesTimeSlots: timeSlotsParser.parse(from: subtitles)
         )
     }

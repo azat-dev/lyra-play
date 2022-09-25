@@ -23,14 +23,14 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         let timeSlotsParser = SubtitlesTimeSlotsParser()
         
-        let subtitlesIterator = DefaultSubtitlesIterator(
+        let subtitlesIterator = SubtitlesIteratorImpl(
             subtitlesTimeSlots: timeSlotsParser.parse(from: subtitles)
         )
-        let timer = ActionTimerMock2()
+        let timer = ActionTimerMockDeprecated()
         
-        let scheduler = DefaultScheduler(timer: timer)
+        let scheduler = SchedulerImpl(timer: timer)
         
-        let useCase = DefaultPlaySubtitlesUseCase(
+        let useCase = PlaySubtitlesUseCaseImpl(
             subtitlesIterator: subtitlesIterator,
             scheduler: scheduler
         )
@@ -75,64 +75,6 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
     
     func anyTime() -> TimeInterval {
         return .init()
-    }
-    
-    private func observeStates(
-        _ sut: SUT,
-        timeout: TimeInterval = 1,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) throws -> (([PlaySubtitlesUseCaseState]) async -> Void) {
-        
-        var result = [PlaySubtitlesUseCaseState]()
-        let observer = sut.useCase.state
-            .sink { state in
-                result.append(state)
-            }
-        
-        return { expectedStates in
-            
-            observer.cancel()
-            let sequence = self.expectSequence(expectedStates)
-            
-            result.forEach { sequence.fulfill(with: $0) }
-            
-            let sequenceObserver = sut.useCase.state.dropFirst().sink { state in
-                sequence.fulfill(with: state)
-            }
-            
-            sequence.wait(timeout: timeout, enforceOrder: true, file: file, line: line)
-            sequenceObserver.cancel()
-        }
-    }
-    
-    private func observeChanges(
-        _ sut: SUT,
-        timeout: TimeInterval = 1,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) throws -> (([WillChangeSubtitlesPositionData]) async -> Void) {
-        
-        var result = [WillChangeSubtitlesPositionData]()
-        let observer = sut.useCase.willChangePosition
-            .sink { state in
-                result.append(state)
-            }
-        
-        return { expectedStates in
-            
-            observer.cancel()
-            let sequence = self.expectSequence(expectedStates)
-            
-            result.forEach { sequence.fulfill(with: $0) }
-            
-            let sequenceObserver = sut.useCase.willChangePosition.dropFirst().sink { state in
-                sequence.fulfill(with: state)
-            }
-            
-            sequence.wait(timeout: timeout, enforceOrder: true, file: file, line: line)
-            sequenceObserver.cancel()
-        }
     }
     
     private func waitForState(_ sut: SUT, where whereState: (PlaySubtitlesUseCaseState) -> Bool) async throws {
@@ -203,19 +145,19 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         // Given
         let sut = createSUT(subtitles: emptySubtitles())
         
-        let assertStatesEqualTo = try observeStates(sut)
-        let assertChangesEqualTo = try observeChanges(sut)
+        let statesPromise = watch(sut.useCase.state)
+        let changesPromise = watch(sut.useCase.willChangePosition)
         
         // When
         sut.useCase.play()
         
         // Then
-        await assertStatesEqualTo([
+        statesPromise.expect([
             .initial,
-            .finished
+            .finished,
         ])
         
-        await assertChangesEqualTo([])
+        changesPromise.expect([])
     }
     
     func test_play__empty_subtitles__with_offset() async throws {
@@ -223,19 +165,19 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         // Given
         let sut = createSUT(subtitles: emptySubtitles())
         
-        let assertStatesEqualTo = try observeStates(sut)
-        let assertChangesEqualTo = try observeChanges(sut)
+        let statesPromise = watch(sut.useCase.state)
+        let changesPromise = watch(sut.useCase.willChangePosition)
         
         // When
         sut.useCase.play(atTime: 100)
         
         // Then
-        await assertStatesEqualTo([
+        statesPromise.expect([
             .initial,
             .finished
         ])
         
-        await assertChangesEqualTo([])
+        changesPromise.expect([])
     }
     
     func test_play__not_empty_subtitles__from_zero() async throws {
@@ -243,21 +185,21 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         // Given
         let sut = createSUT(subtitles: anySubtitles())
         
-        let assertStatesEqualTo = try observeStates(sut)
-        let assertChangesEqualTo = try observeChanges(sut)
+        let statesPromise = watch(sut.useCase.state)
+        let changesPromise = watch(sut.useCase.willChangePosition)
         
         // When
         sut.useCase.play(atTime: 0)
         
         // Then
-        await assertStatesEqualTo([
+        statesPromise.expect([
             .initial,
             .playing(position: .sentence(0)),
             .playing(position: .sentence(1)),
             .finished
         ])
         
-        await assertChangesEqualTo([
+        changesPromise.expect([
             .init(from: nil, to: .sentence(0)),
             .init(from: .sentence(0), to: .sentence(1)),
             .init(from: .sentence(1), to: nil)
@@ -269,21 +211,21 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         // Given
         let sut = createSUT(subtitles: anySubtitles())
         
-        let assertStatesEqualTo = try observeStates(sut)
-        let assertChangesEqualTo = try observeChanges(sut)
+        let statesPromise = watch(sut.useCase.state)
+        let changesPromise = watch(sut.useCase.willChangePosition)
         
         // When
         sut.useCase.play()
         
         // Then
-        await assertStatesEqualTo([
+        statesPromise.expect([
             .initial,
             .playing(position: .sentence(0)),
             .playing(position: .sentence(1)),
             .finished
         ])
         
-        await assertChangesEqualTo([
+        changesPromise.expect([
             .init(from: nil, to: .sentence(0)),
             .init(from: .sentence(0), to: .sentence(1)),
             .init(from: .sentence(1), to: nil)
@@ -295,20 +237,20 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         // Given
         let sut = createSUT(subtitles: anySubtitles())
         
-        let assertStatesEqualTo = try observeStates(sut)
-        let assertChangesEqualTo = try observeChanges(sut)
+        let statesPromise = watch(sut.useCase.state)
+        let changesPromise = watch(sut.useCase.willChangePosition)
         
         // When
         sut.useCase.play(atTime: 0.1)
         
         // Then
-        await assertStatesEqualTo([
+        statesPromise.expect([
             .initial,
             .playing(position: .sentence(1)),
             .finished
         ])
         
-        await assertChangesEqualTo([
+        changesPromise.expect([
             .init(from: nil, to: .sentence(1)),
             .init(from: .sentence(1), to: nil),
         ])
@@ -321,18 +263,18 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         // Given
         try await givenStopped(sut)
         
-        let assertStatesEqualTo = try observeStates(sut)
-        let assertChangesEqualTo = try observeChanges(sut)
+        let statesPromise = watch(sut.useCase.state)
+        let changesPromise = watch(sut.useCase.willChangePosition)
         
         // When
         sut.useCase.pause()
         
         // Then
-        await assertStatesEqualTo([
+        statesPromise.expect([
             .stopped,
             .paused(position: .sentence(0))
         ])
-        await assertChangesEqualTo([])
+        changesPromise.expect([])
     }
     
     func test_pause__playing() async throws {
@@ -342,18 +284,18 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         // Given
         try await givenPlaying(sut)
         
-        let assertStatesEqualTo = try observeStates(sut)
-        let assertChangesEqualTo = try observeChanges(sut)
+        let statesPromise = watch(sut.useCase.state)
+        let changesPromise = watch(sut.useCase.willChangePosition)
         
         // When
         sut.useCase.pause()
         
         // Then
-        await assertStatesEqualTo([
+        statesPromise.expect([
             .playing(position: .sentence(0)),
             .paused(position: .sentence(0))
         ])
-        await assertChangesEqualTo([])
+        changesPromise.expect([])
     }
     
     func test_stop__not_playing() async throws {
@@ -362,18 +304,18 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         
         // Given
         
-        let assertStatesEqualTo = try observeStates(sut)
-        let assertChangesEqualTo = try observeChanges(sut)
+        let statesPromise = watch(sut.useCase.state)
+        let changesPromise = watch(sut.useCase.willChangePosition)
         
         // When
         sut.useCase.stop()
         
         // Then
-        await assertStatesEqualTo([
+        statesPromise.expect([
             .initial,
             .stopped
         ])
-        await assertChangesEqualTo([])
+        changesPromise.expect([])
     }
     
     func test_stop__playing() async throws {
@@ -383,18 +325,18 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         // Given
         try await givenPlaying(sut)
         
-        let assertStatesEqualTo = try observeStates(sut)
-        let assertChangesEqualTo = try observeChanges(sut)
+        let statesPromise = watch(sut.useCase.state)
+        let changesPromise = watch(sut.useCase.willChangePosition)
         
         // When
         sut.useCase.stop()
         
         // Then
-        await assertStatesEqualTo([
+        statesPromise.expect([
             .playing(position: .sentence(0)),
             .stopped
         ])
-        await assertChangesEqualTo([])
+        changesPromise.expect([])
     }
     
     func test_stop__paused() async throws {
@@ -404,18 +346,18 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         // Given
         try await givenPaused(sut)
         
-        let assertStatesEqualTo = try observeStates(sut)
-        let assertChangesEqualTo = try observeChanges(sut)
+        let statesPromise = watch(sut.useCase.state)
+        let changesPromise = watch(sut.useCase.willChangePosition)
         
         // When
         sut.useCase.stop()
         
         // Then
-        await assertStatesEqualTo([
+        statesPromise.expect([
             .paused(position: .sentence(0)),
             .stopped
         ])
-        await assertChangesEqualTo([])
+        changesPromise.expect([])
     }
 }
 

@@ -34,6 +34,32 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="ManagedLibraryItem" representedClassName="ManagedLibraryItem" syncable="YES">
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="file" optional="YES" attributeType="String"/>
+        <attribute name="genre" optional="YES" attributeType="String"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="image" optional="YES" attributeType="String"/>
+        <attribute name="isFolder" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="lastPlayedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="metaInfo" optional="YES" attributeType="Binary"/>
+        <attribute name="playedTime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="subtitle" optional="YES" attributeType="String"/>
+        <attribute name="title" attributeType="String"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="children" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ManagedLibraryItem" inverseName="parent" inverseEntity="ManagedLibraryItem"/>
+        <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ManagedLibraryItem" inverseName="children" inverseEntity="ManagedLibraryItem"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+            <uniquenessConstraint>
+                <constraint value="parent"/>
+                <constraint value="title"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="ManagedSubtitles" representedClassName=".ManagedSubtitles" syncable="YES">
         <attribute name="file" attributeType="String"/>
         <attribute name="language" attributeType="String"/>
@@ -48,6 +74,7 @@
     <elements>
         <element name="ManagedAudioFile" positionX="-63" positionY="-18" width="128" height="164"/>
         <element name="ManagedDictionaryItem" positionX="-63" positionY="54" width="128" height="134"/>
+        <element name="ManagedLibraryItem" positionX="-63" positionY="72" width="128" height="254"/>
         <element name="ManagedSubtitles" positionX="-63" positionY="54" width="128" height="74"/>
     </elements>
 </model>

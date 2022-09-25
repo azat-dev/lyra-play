@@ -10,16 +10,16 @@ import LyraPlay
 
 final class SubtitlesParserMock: SubtitlesParser {
 
-    typealias ParseCallback = (_ text: String) async -> Result<Subtitles, SubtitlesParserError>
+    typealias ParseCallback = (_ text: String, _ fileName: String) async -> Result<Subtitles, SubtitlesParserError>
     
     public var resolve: ParseCallback?
     
-    func parse(_ text: String) async -> Result<Subtitles, SubtitlesParserError> {
+    func parse(_ text: String, fileName: String) async -> Result<Subtitles, SubtitlesParserError> {
         
         guard let resolve = resolve else {
             fatalError("Specify resolver")
         }
         
-        return await resolve(text)
+        return await resolve(text, fileName)
     }
 }

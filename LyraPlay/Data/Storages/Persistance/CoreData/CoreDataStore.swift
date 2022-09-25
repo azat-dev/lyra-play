@@ -54,6 +54,22 @@ public class CoreDataStore {
         
         return try result.get()
     }
+    
+    func perform<R>(_ action: @escaping ActionCallBack<R>) async throws -> R {
+
+        return try await container.performBackgroundTask { context in
+            
+            do {
+                
+                return try action(context)
+                
+            } catch {
+                
+                context.reset()
+                throw error
+            }
+        }
+    }
 }
 
 

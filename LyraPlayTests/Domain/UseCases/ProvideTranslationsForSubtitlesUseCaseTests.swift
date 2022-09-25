@@ -13,7 +13,7 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
     typealias SUT = (
         useCase: ProvideTranslationsForSubtitlesUseCase,
         dictionaryRepository: DictionaryRepository,
-        textSplitter: TextSplitterMock,
+        textSplitter: TextSplitter,
         lemmatizer: Lemmatizer
     )
     
@@ -24,10 +24,10 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         
         let dictionaryRepository = CoreDataDictionaryRepository(coreDataStore: coreDataStore)
         
-        let textSplitter = TextSplitterMock()
-        let lemmatizer = DefaultLemmatizer()
+        let textSplitter = TextSplitterImpl()
+        let lemmatizer = LemmatizerImpl()
         
-        let useCase = DefaultProvideTranslationsForSubtitlesUseCase(
+        let useCase = ProvideTranslationsForSubtitlesUseCaseImpl(
             dictionaryRepository: dictionaryRepository,
             textSplitter: textSplitter,
             lemmatizer: lemmatizer
@@ -41,6 +41,8 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
             lemmatizer
         )
     }
+    
+    // MARK: - Helpers
     
     func anyPlayerSession(mediaId: UUID, subtitles: Subtitles) -> AdvancedPlayerSession {
         return .init(
@@ -103,28 +105,46 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         )
     }
     
+    // MARK: - Test Methods
+    
     func test_prepare__empty_subtitles() async throws {
         
         let sut = createSUT()
         
+        // Given
         let mediaId = anyMediaId()
-        let testOptions = anyPlayerSession(mediaId: mediaId, subtitles: emptySubtitles())
+        let testOptions = anyPlayerSession(
+            mediaId: mediaId,
+            subtitles: emptySubtitles()
+        )
         
+        // When
         await sut.useCase.prepare(
             options: testOptions
         )
     }
     
-    func test_getTranslations__by_lemma() async throws {
+    func test_getTranslations__by_lemmas_and_original_texts() async throws {
         
         let sut = createSUT()
         
-        let sentences = [
-            "Apple, pear",
-            "Banana"
-        ]
+        // Given
+//        let sentences = [
+//            "Apple, pear",
+//            "Banana",
+//            "orange"
+//        ]
         
-        let subtitles = anySubtitles(sentences: sentences)
+        let subtitles = Subtitles(
+            duration: 10,
+            sentences: [
+                .anySentence(at: 0, duration: 0, timeMarks: nil, text: "Apple, pear"),
+                .anySentence(at: 1, duration: 0, timeMarks: nil, text: "Banana"),
+                .anySentence(at: 2, duration: 0, timeMarks: nil, text: "orange"),
+            ]
+        )
+        
+        let sentences = subtitles.sentences
         
         let putTranslationResult = await sut.dictionaryRepository.putItem(
             anyDictionaryItem(
@@ -135,31 +155,65 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
             ])
         )
         
-        let savedDictionaryItem = try AssertResultSucceded(putTranslationResult)
+        let savedDictionaryItemWithLemma = try AssertResultSucceded(putTranslationResult)
         
-        await sut.useCase.prepare(options: anyPlayerSession(mediaId: anyMediaId(), subtitles: subtitles))
-        let receivedItems = await sut.useCase.getTranslations(
-            sentenceIndex: 0
+        let putTranslationWithoutLemmaResult = await sut.dictionaryRepository.putItem(
+            anyDictionaryItem(
+                originalText: "banana",
+                lemma: "",
+                translations: [
+                    .init(id: UUID(), text: "translatedbanana", mediaId: nil, timeMark: nil, position: nil)
+                ]
+            )
         )
         
-        let expectedItems: [SubtitlesTranslation] = [
+        let savedDictionaryItemWithoutLemma = try AssertResultSucceded(putTranslationWithoutLemmaResult)
+        await sut.useCase.prepare(options: anyPlayerSession(mediaId: anyMediaId(), subtitles: subtitles))
+        
+        // When
+        
+        let receivedItems1 = await sut.useCase.getTranslations(sentenceIndex: 0)
+
+        // Then
+        let expectedItems1: [SubtitlesTranslation] = [
             .init(
-                textRange: sentences[0].range(of: "Apple")!,
+                textRange: sentences[0].text.range(of: "Apple")!,
                 translation: .init(
-                    dictionaryItemId: savedDictionaryItem.id!,
+                    dictionaryItemId: savedDictionaryItemWithLemma.id!,
                     translationId: anyTranslationId(),
-                    originalText: savedDictionaryItem.originalText,
+                    originalText: savedDictionaryItemWithLemma.originalText,
                     translatedText: "translatedapple"
                 )
             )
         ]
-        AssertEqualReadable(receivedItems, expectedItems)
+
+        AssertEqualReadable(receivedItems1, expectedItems1)
+        
+        
+        // When
+        let receivedItems2 = await sut.useCase.getTranslations(sentenceIndex: 1)
+        
+        // Then
+        let expectedItems2: [SubtitlesTranslation] = [
+            .init(
+                textRange: sentences[1].text.range(of: "Banana")!,
+                translation: .init(
+                    dictionaryItemId: savedDictionaryItemWithoutLemma.id!,
+                    translationId: savedDictionaryItemWithoutLemma.translations.first!.id!,
+                    originalText: savedDictionaryItemWithoutLemma.originalText,
+                    translatedText: "translatedbanana"
+                )
+            )
+        ]
+        
+        AssertEqualReadable(receivedItems2, expectedItems2)
     }
     
     func test_getTranslations__with_text_ranges() async throws {
         
         let sut = createSUT()
-        
+
+        // Given
         let sentence1 = "Apple, pear, apple"
         let sentence2 = "banana apple"
         
@@ -199,8 +253,10 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
         let translationWithLemma = translations[0]
         let translationWithRange = translations[1]
         
+        // When
         await sut.useCase.prepare(options: anyPlayerSession(mediaId: anyMediaId(), subtitles: subtitles))
         
+        // Then
         let expectedItems1: [SubtitlesTranslation] = [
             .init(
                 textRange: sentence1.range(of: "Apple")!,

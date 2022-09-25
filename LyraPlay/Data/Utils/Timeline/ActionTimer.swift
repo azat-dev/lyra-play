@@ -16,7 +16,7 @@ public protocol ActionTimer {
     func cancel()
 }
 
-public final class DefaultActionTimer: ActionTimer {
+public final class ActionTimerImpl: ActionTimer {
     
     private let queue = DispatchQueue(label: "lyraplay.timer", qos: .userInteractive)
     private var workItem: DispatchWorkItem?

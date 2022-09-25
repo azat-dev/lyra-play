@@ -12,18 +12,18 @@ class LoadSubtitlesUseCaseTests: XCTestCase {
 
     typealias SUT = (
         useCase: LoadSubtitlesUseCase,
-        subtitlesRepository: SubtitlesRepositoryMock,
-        subtitlesFiles: FilesRepositoryMock,
+        subtitlesRepository: SubtitlesRepositoryMockDeprecated,
+        subtitlesFiles: FilesRepositoryMockDeprecated,
         subtitlesParser: SubtitlesParserMock
     )
 
     func createSUT() -> SUT {
         
-        let subtitlesRepository = SubtitlesRepositoryMock()
-        let subtitlesFiles = FilesRepositoryMock()
+        let subtitlesRepository = SubtitlesRepositoryMockDeprecated()
+        let subtitlesFiles = FilesRepositoryMockDeprecated()
         let subtitlesParser = SubtitlesParserMock()
         
-        let useCase = DefaultLoadSubtitlesUseCase(
+        let useCase = LoadSubtitlesUseCaseImpl(
             subtitlesRepository: subtitlesRepository,
             subtitlesFiles: subtitlesFiles,
             subtitlesParser: subtitlesParser
@@ -80,7 +80,7 @@ class LoadSubtitlesUseCaseTests: XCTestCase {
         
         let _ = await sut.subtitlesFiles.putFile(name: "test", data: brokenData)
 
-        sut.subtitlesParser.resolve = { text in
+        sut.subtitlesParser.resolve = { text, _ in
             return .failure(.internalError(nil))
         }
 
@@ -115,7 +115,7 @@ class LoadSubtitlesUseCaseTests: XCTestCase {
         )
         
         let _ = await sut.subtitlesFiles.putFile(name: "test", data: Data())
-        sut.subtitlesParser.resolve = { text in .success(expectedSubtitles) }
+        sut.subtitlesParser.resolve = { text, _ in .success(expectedSubtitles) }
 
         let result = await sut.useCase.load(for: trackId, language: anyLanguage())
         let loadedSubtitles = try AssertResultSucceded(result)

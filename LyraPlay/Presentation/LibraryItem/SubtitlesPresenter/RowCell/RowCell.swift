@@ -19,6 +19,11 @@ final class RowCell: UITableViewCell, NSLayoutManagerDelegate {
     public var viewModel: SentenceViewModel! {
 
         didSet {
+            
+            if let oldModel = oldValue {
+                disconnect(viewModel: oldModel)
+            }
+            
             bind(to: viewModel)
         }
     }
@@ -49,9 +54,14 @@ extension RowCell {
         if isActive {
             Styles.apply(activeTextView: self.textView)
         } else {
-            
             Styles.apply(textView: self.textView)
         }
+    }
+
+    func disconnect(viewModel: SentenceViewModel) {
+        
+        viewModel.isActive.remove(observer: self)
+        viewModel.selectedWordRange.remove(observer: self)
     }
     
     func bind(to viewModel: SentenceViewModel) {
@@ -59,7 +69,6 @@ extension RowCell {
         textView.text = viewModel.text
         
         viewModel.isActive.observe(on: self, queue: .main) { [weak self] isActive in
-
             self?.updateActive(isActive)
         }
         

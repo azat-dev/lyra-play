@@ -15,18 +15,19 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
  
     typealias SUT = (
         useCase: ImportSubtitlesUseCase,
-        subtitlesRepository: SubtitlesRepositoryMock,
+        subtitlesRepository: SubtitlesRepositoryMockDeprecated,
         subtitlesParser: SubtitlesParserMock,
-        subtitlesFilesRepository: FilesRepositoryMock
+        subtitlesFilesRepository: FilesRepositoryMockDeprecated
     )
     
     func createSUT() -> SUT {
         
-        let subtitlesRepository = SubtitlesRepositoryMock()
+        let subtitlesRepository = SubtitlesRepositoryMockDeprecated()
         let subtitlesParser = SubtitlesParserMock()
-        let subtitlesFilesRepository = FilesRepositoryMock()
+        let subtitlesFilesRepository = FilesRepositoryMockDeprecated()
         
-        let useCase = DefaultImportSubtitlesUseCase(
+        let useCase = ImportSubtitlesUseCaseImpl(
+            supportedExtensions: [".lrc"],
             subtitlesRepository: subtitlesRepository,
             subtitlesParser: subtitlesParser,
             subtitlesFilesRepository: subtitlesFilesRepository
@@ -57,7 +58,7 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         let testFileName = "test.lrc"
         
         
-        subtitlesParser.resolve = { _ in
+        subtitlesParser.resolve = { _, _ in
             return .success(.init(duration: 0, sentences: []))
         }
         
@@ -102,7 +103,7 @@ class ImportSubtitlesUseCaseTests: XCTestCase {
         let trackId = UUID()
         let testFileName = "test.lrc"
         
-        subtitlesParser.resolve = { _ in .success(.init(duration: 0, sentences: [])) }
+        subtitlesParser.resolve = { _, _ in .success(.init(duration: 0, sentences: [])) }
         
         let _ = await useCase.importFile(
             trackId: trackId,

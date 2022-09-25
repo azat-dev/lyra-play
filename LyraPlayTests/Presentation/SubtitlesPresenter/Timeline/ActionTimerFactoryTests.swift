@@ -15,7 +15,7 @@ class ActionTimerFactoryTests: XCTestCase {
     
     func createSUT() -> SUT {
         
-        let factory = DefaultActionTimerFactory()
+        let factory = ActionTimerFactoryImpl()
         detectMemoryLeak(instance: factory)
         
         return factory

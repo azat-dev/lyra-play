@@ -25,13 +25,7 @@ extension LibraryItemViewController {
         ) {
             
             mainGroup.translatesAutoresizingMaskIntoConstraints = false
-            activityIndicator.translatesAutoresizingMaskIntoConstraints = false
             imageView.translatesAutoresizingMaskIntoConstraints = false
-            titleLabel.translatesAutoresizingMaskIntoConstraints = false
-            artistLabel.translatesAutoresizingMaskIntoConstraints = false
-            durationLabel.translatesAutoresizingMaskIntoConstraints = false
-            playButton.translatesAutoresizingMaskIntoConstraints = false
-            attachSubtitlesButton.translatesAutoresizingMaskIntoConstraints = false
             
             NSLayoutConstraint.activate([
                 
@@ -43,55 +37,32 @@ extension LibraryItemViewController {
 
             NSLayoutConstraint.activate([
                 
-                imageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.87),
+                imageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.85),
                 imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor),
                 
                 imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                imageView.topAnchor.constraint(equalTo: mainGroup.topAnchor, constant: 20)
+                imageView.topAnchor.constraint(equalTo: mainGroup.topAnchor, constant: 0)
             ])
+            
+            titleLabel .constraintToHorizontalEdges(of: imageView)
+            artistLabel.constraintToHorizontalEdges(of: imageView)
+            durationLabel.constraintToHorizontalEdges(of: imageView)
+            playButton.constraintToHorizontalEdges(of: imageView)
+            attachSubtitlesButton.constraintToHorizontalEdges(of: imageView)
+            
+            titleLabel.constraintToHorizontalEdges(of: imageView)
             
             NSLayoutConstraint.activate([
                 
-                titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 30),
-                titleLabel.widthAnchor.constraint(lessThanOrEqualTo: imageView.widthAnchor, multiplier: 0.9),
-                titleLabel.leftAnchor.constraint(equalTo: imageView.leftAnchor),
-                titleLabel.rightAnchor.constraint(equalTo: imageView.rightAnchor),
-            ])
-            
-            NSLayoutConstraint.activate([
-                
+                titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10),
+//                titleLabel.widthAnchor.constraint(lessThanOrEqualTo: imageView.widthAnchor, multiplier: 0.9),
                 artistLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0),
-                artistLabel.leftAnchor.constraint(equalTo: imageView.leftAnchor),
-                artistLabel.rightAnchor.constraint(equalTo: imageView.rightAnchor),
-            ])
-            
-            NSLayoutConstraint.activate([
-                
                 durationLabel.topAnchor.constraint(equalTo: artistLabel.bottomAnchor, constant: 0),
-                durationLabel.leftAnchor.constraint(equalTo: imageView.leftAnchor),
-                durationLabel.rightAnchor.constraint(equalTo: imageView.rightAnchor),
-            ])
-            
-            
-            NSLayoutConstraint.activate([
-                
                 playButton.topAnchor.constraint(equalTo: durationLabel.bottomAnchor, constant: 0),
-                playButton.leftAnchor.constraint(equalTo: imageView.leftAnchor),
-                playButton.rightAnchor.constraint(equalTo: imageView.rightAnchor),
+                attachSubtitlesButton.topAnchor.constraint(equalTo: playButton.bottomAnchor, constant: 15),
             ])
             
-            NSLayoutConstraint.activate([
-                
-                attachSubtitlesButton.topAnchor.constraint(equalTo: playButton.bottomAnchor, constant: 20),
-                attachSubtitlesButton.leftAnchor.constraint(equalTo: imageView.leftAnchor),
-                attachSubtitlesButton.rightAnchor.constraint(equalTo: imageView.rightAnchor),
-            ])
-            
-            NSLayoutConstraint.activate([
-
-                activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-            ])
+            activityIndicator.constraintToCenter(of: view)
         }
     }
 }

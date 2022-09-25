@@ -53,11 +53,12 @@
 			<key>UTTypeIconFiles</key>
 			<array/>
 			<key>UTTypeIdentifier</key>
-			<string>com.azatkaiumov.lrc</string>
+			<string>com.azatkaiumov.subtitles</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
 				<array>
+					<string>srt</string>
 					<string>lrc</string>
 				</array>
 				<key>public.mime-type</key>

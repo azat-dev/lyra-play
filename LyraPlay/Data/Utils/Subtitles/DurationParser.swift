@@ -10,7 +10,12 @@ import Foundation
 
 final public class DurationParser {
 
-    public init() {}
+    private let millisecondsSeparator: String
+    
+    public init(millisecondsSeparator: String = ".") {
+        
+        self.millisecondsSeparator = millisecondsSeparator
+    }
     
     private static func parseMilliseconds(text: String) -> Double? {
         
@@ -31,7 +36,7 @@ final public class DurationParser {
             return nil
         }
 
-        let splittedText = durationText.components(separatedBy: ".")
+        let splittedText = durationText.components(separatedBy: millisecondsSeparator)
         
         guard
             splittedText.count <= 2,

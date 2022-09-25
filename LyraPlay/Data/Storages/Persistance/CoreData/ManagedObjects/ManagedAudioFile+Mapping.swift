@@ -10,8 +10,8 @@ import CoreData
 
 extension ManagedAudioFile {
     
-    func toDomain() -> AudioFileInfo {
-        return AudioFileInfo(
+    func toDomain() -> MediaLibraryAudioFile {
+        return MediaLibraryAudioFile(
             id: id,
             createdAt: createdAt,
             updatedAt: updatedAt,
@@ -24,7 +24,7 @@ extension ManagedAudioFile {
         )
     }
     
-    func fillFields(from source: AudioFileInfo) {
+    func fillFields(from source: MediaLibraryAudioFile) {
         
         self.name = source.name
         self.artist = source.artist
@@ -36,7 +36,7 @@ extension ManagedAudioFile {
         self.duration = source.duration
     }
     
-    static func create(_ context: NSManagedObjectContext, from domain: AudioFileInfo) -> ManagedAudioFile {
+    static func create(_ context: NSManagedObjectContext, from domain: MediaLibraryAudioFile) -> ManagedAudioFile {
 
         let item = ManagedAudioFile(context: context)
         

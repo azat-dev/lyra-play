@@ -1,5 +1,5 @@
 //
-//  SubtitlesRepositoryMock.swift
+//  SubtitlesRepositoryMockDeprecated.swift
 //  LyraPlayTests
 //
 //  Created by Azat Kaiumov on 09.07.22.
@@ -8,7 +8,7 @@
 import Foundation
 import LyraPlay
 
-class SubtitlesRepositoryMock: SubtitlesRepository {
+class SubtitlesRepositoryMockDeprecated: SubtitlesRepository {
    
    public var items = [SubtitlesInfo]()
    

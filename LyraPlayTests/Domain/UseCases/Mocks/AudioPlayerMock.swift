@@ -18,7 +18,7 @@ class AudioPlayerMock: AudioPlayer {
     
     public var currentFileId: String?
     
-    func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioPlayerError> {
+    func prepare(fileId: String, data: Data) -> Result<Void, AudioPlayerError> {
         
         currentFileId = fileId
         state.value = .loaded(session: .init(fileId: fileId))

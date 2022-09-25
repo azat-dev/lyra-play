@@ -8,7 +8,9 @@
 import Foundation
 import UIKit
 
-public final class LibraryItemViewController: UIViewController {
+public final class LibraryItemViewController: UIViewController, LibraryItemView {
+    
+    // MARK: - Properties
     
     private let viewModel: LibraryItemViewModel
     
@@ -21,9 +23,10 @@ public final class LibraryItemViewController: UIViewController {
     private var addSubtitlesButton = UIButton()
     
     private var mainGroup = UIView()
-    private var subtitlesPresenter = SubtitlesPresenterView()
     
-    init(viewModel: LibraryItemViewModel) {
+    // MARK: - Initializers
+    
+    public init(viewModel: LibraryItemViewModel) {
         
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -32,6 +35,8 @@ public final class LibraryItemViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Methods
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,6 +54,18 @@ public final class LibraryItemViewController: UIViewController {
         style()
         layout()
         bind(to: viewModel)
+    }
+
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationItem.largeTitleDisplayMode = .never
+    }
+    
+    public override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        viewModel.dispose()
     }
 }
 
@@ -71,16 +88,6 @@ extension LibraryItemViewController {
         activityIndicator.isHidden = !isLoading
     }
     
-    private func showSubtitles() {
-        
-        subtitlesPresenter.viewModel = viewModel.subtitlesPresenterViewModel.value
-        subtitlesPresenter.isHidden = false
-    }
-    
-    private func hideSubtitles() {
-        subtitlesPresenter.isHidden = true
-    }
-
     private func bind(to viewModel: LibraryItemViewModel) {
         
         viewModel.info.observe(on: self, queue: .main) { [weak self] mediaInfo in
@@ -106,24 +113,14 @@ extension LibraryItemViewController {
             guard let self = self else {
                 return
             }
-            
+
             guard isPlaying else {
+
                 Styles.apply(playButton: self.playButton)
-                self.showSubtitles()
                 return
             }
-            
+
             Styles.apply(pauseButton: self.playButton)
-        }
-        
-        viewModel.subtitlesPresenterViewModel.observe(on: self, queue: .main) { [weak self] model in
-            
-            guard model != nil else {
-                self?.hideSubtitles()
-                return
-            }
-            
-            self?.showSubtitles()
         }
     }
 }
@@ -138,6 +135,8 @@ extension LibraryItemViewController {
         Task {
             await viewModel.togglePlay()
         }
+        
+        print("NKext")
     }
     
     @objc
@@ -159,8 +158,6 @@ extension LibraryItemViewController {
         
         view.addSubview(activityIndicator)
         view.addSubview(mainGroup)
-        
-        view.addSubview(subtitlesPresenter)
         
         playButton.addTarget(
             self,
@@ -192,8 +189,6 @@ extension LibraryItemViewController {
             playButton: playButton,
             attachSubtitlesButton: addSubtitlesButton
         )
-        
-        subtitlesPresenter.constraintTo(view: view)
     }
 }
 

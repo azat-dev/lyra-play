@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import Combine
 import UIKit
 
 public final class SubtitlesPresenterView: UIView {
     
+    private var viewModelObserver: AnyCancellable?
     private var tableView: UITableView!
     
     public var viewModel: SubtitlesPresenterViewModel? {
@@ -41,6 +43,10 @@ public final class SubtitlesPresenterView: UIView {
         layout()
         style()
     }
+    
+    deinit {
+        viewModelObserver?.cancel()
+    }
 }
 
 // MARK: - Bind viewModel
@@ -48,22 +54,39 @@ public final class SubtitlesPresenterView: UIView {
 extension SubtitlesPresenterView {
     
     private func bind(to viewModel: SubtitlesPresenterViewModel) {
+        
+        var prevActiveIndex: Int?
 
-        viewModel.state.observe(on: self, queue: .main) { [weak self] newState in
+        viewModelObserver = viewModel.state
+            .receive(on: RunLoop.main)
+            .sink { [weak self] newState in
            
-            defer { self?.prevState = newState }
-            
             guard let self = self else {
                 return
             }
-            
-            guard
-                let prevState = self.prevState,
-                let newState = newState,
-                prevState.numberOfSentences == newState.numberOfSentences
-            else {
+                
+            switch newState {
+                
+            case .loading:
+                prevActiveIndex = nil
                 self.tableView.reloadData()
-                return
+                
+            case .playing(let activeSentenceIndex, _):
+                
+                
+//                if let prevActiveIndex = prevActiveIndex {
+//                    
+//                    let prevIndexPath = IndexPath(row: prevActiveIndex, section: 0)
+//                }
+//                
+                if let activeSentenceIndex = activeSentenceIndex {
+                    
+                    let indexPath = IndexPath(row: activeSentenceIndex, section: 0)
+                    
+                    self.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+                }
+                
+                prevActiveIndex = activeSentenceIndex
             }
         }
     }
@@ -123,7 +146,14 @@ extension SubtitlesPresenterView: UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel?.state.value?.numberOfSentences ?? 0
+        
+        guard
+            case .playing(_, let rows) = viewModel?.state.value
+        else {
+            return 0
+        }
+        
+        return rows.count
     }
 
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -139,7 +169,10 @@ extension SubtitlesPresenterView: UITableViewDataSource {
             fatalError("Can't dequee a cell")
         }
         
-        cell.viewModel = viewModel?.getSentenceViewModel(at: indexPath.item)
+        if case .playing(_, let rows) = viewModel?.state.value {
+            cell.viewModel = rows[indexPath.row]
+        }
+        
         return cell
     }
 }

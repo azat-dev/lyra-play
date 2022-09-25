@@ -1,0 +1,13 @@
+{
+  "pins" : [
+    {
+      "identity" : "mockingbird",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/birdrides/mockingbird",
+      "state" : {
+        "revision" : "85d8eae902c49f39d106318bd517ad8357ffd766"
+      }
+    }
+  ],
+  "version" : 2
+}

@@ -1,309 +1,198 @@
-////
-////  LibraryItemViewModel.swift
-////  LyraPlayTests
-////
-////  Created by Azat Kaiumov on 02.07.22.
-////
 //
+//  LibraryItemViewModelTests.swift
+//  LyraPlayTests
+//
+//  Created by Azat Kaiumov on 17.09.22.
+//
+
 import Foundation
-import LyraPlay
 import XCTest
-//
-//class LibraryItemViewModelTests: XCTestCase {
-//    
-//    fileprivate typealias SUT = (
-//        coordinator: LibraryItemCoordinatorMock,
-//        showMediaInfoUseCase: ShowMediaInfoUseCaseMock,
-//        playMediaUseCase: PlayMediaUseCaseMock,
-//        currentPlayerStateUseCase: CurrentPlayerStateUseCaseMock,
-//        importSubtitlesUseCase: ImportSubtitlesUseCaseMock
-//    )
-//    
-//    fileprivate func createSUT() -> SUT {
-//        
-//        let coordinator = LibraryItemCoordinatorMock()
-//        
-//        let showMediaInfoUseCase = ShowMediaInfoUseCaseMock()
-//        let currentPlayerStateUseCase = CurrentPlayerStateUseCaseMock(showMediaInfoUseCase: showMediaInfoUseCase)
-//        let playMediaUseCase = PlayMediaUseCaseMock(currentPlayerStateUseCase: currentPlayerStateUseCase)
-//        
-//        let importSubtitlesUseCase = ImportSubtitlesUseCaseMock()
-//        
-//        return (
-//            coordinator,
-//            showMediaInfoUseCase,
-//            playMediaUseCase,
-//            currentPlayerStateUseCase,
-//            importSubtitlesUseCase
-//        )
-//    }
-//    
-//    fileprivate func createViewModel(trackId: UUID, sut: SUT) -> LibraryItemViewModel {
-//        
-//        let viewModel = DefaultLibraryItemViewModel(
-//            trackId: trackId,
-//            coordinator: sut.coordinator,
-//            showMediaInfoUseCase: sut.showMediaInfoUseCase,
-//            currentPlayerStateUseCase: sut.currentPlayerStateUseCase,
-//            playMediaUseCase: sut.playMediaUseCase,
-//            importSubtitlesUseCase: sut.importSubtitlesUseCase
-//        )
-//        
-//        detectMemoryLeak(instance: viewModel)
-//        return viewModel
-//    }
-//    
-//    func testLoadNotExistingTrack() async throws {
-//        
-//        let sut = createSUT()
-//        let viewModel = createViewModel(trackId: UUID(), sut: sut)
-//        
-//        await viewModel.load()
-//        // TODO: Implement "doesn't exist" logic
-//    }
-//    
-//    private func setUpTestTrack(trackId: UUID, sut: SUT) {
-//        
-//        sut.showMediaInfoUseCase.tracks[trackId] = MediaInfo(
-//            id: trackId.uuidString,
-//            coverImage: Data(),
-//            title: "Test \(trackId)",
-//            duration: 20,
-//            artist: "Artist \(trackId)"
-//        )
-//    }
-//    
-//    func testLoad() async throws {
-//        
-//        let sut = createSUT()
-//        let trackId = UUID()
-//        
-//        let viewModel = createViewModel(trackId: trackId, sut: sut)
-//        setUpTestTrack(trackId: trackId, sut: sut)
-//        
-//        let mediaInfoSequence = self.expectSequence([false, true])
-//        let playingSequence = self.expectSequence([false])
-//        
-//        mediaInfoSequence.observe(viewModel.info, mapper: { $0 != nil })
-//        playingSequence.observe(viewModel.isPlaying)
-//        
-//        await viewModel.load()
-//        
-//        playingSequence.wait(timeout: 3, enforceOrder: true)
-//        mediaInfoSequence.wait(timeout: 3, enforceOrder: true)
-//        
-//        let isPlaying = viewModel.isPlaying.value
-//        XCTAssertEqual(isPlaying, false)
-//    }
-//    
-//    func testTogglePlay() async throws {
-//        
-//        let sut = createSUT()
-//        let trackId = UUID()
-//        
-//        let viewModel = createViewModel(trackId: trackId, sut: sut)
-//        setUpTestTrack(trackId: trackId, sut: sut)
-//        
-//        let playingSequence = self.expectSequence([false, true, false, true])
-//        playingSequence.observe(viewModel.isPlaying)
-//        
-//        let _ = await viewModel.load()
-//        
-//        await viewModel.togglePlay()
-//        await viewModel.togglePlay()
-//        await viewModel.togglePlay()
-//        
-//        playingSequence.wait(timeout: 3, enforceOrder: true)
-//    }
-//    
-//    func testTogglePlayDifferentTrack() async throws {
-//        
-//        let sut = createSUT()
-//        
-//        let trackId1 = UUID()
-//        
-//        let viewModel1 = createViewModel(trackId: trackId1, sut: sut)
-//        setUpTestTrack(trackId: trackId1, sut: sut)
-//        
-//        let trackId2 = UUID()
-//        
-//        let viewModel2 = createViewModel(trackId: trackId2, sut: sut)
-//        setUpTestTrack(trackId: trackId2, sut: sut)
-//        
-//        
-//        let playingSequence1 = self.expectSequence([false, true, false])
-//        playingSequence1.observe(viewModel1.isPlaying)
-//        
-//        let playingSequence2 = self.expectSequence([false, true])
-//        playingSequence2.observe(viewModel2.isPlaying)
-//        
-//        
-//        let _ = await viewModel1.load()
-//        await viewModel1.togglePlay()
-//        
-//        let _ = await viewModel2.load()
-//        await viewModel2.togglePlay()
-//        
-//        playingSequence1.wait(timeout: 3, enforceOrder: true)
-//        playingSequence2.wait(timeout: 3, enforceOrder: true)
-//    }
-//
-//    func testAttachSubtitlesCancel() async throws {
-//        
-//        let expectation = expectation(description: "Shouldn't be called")
-//        expectation.isInverted = true
-//        
-//        let trackId = UUID()
-//        let language = "English"
-//        
-//        let sut = createSUT()
-//        let viewModel = createViewModel(trackId: trackId, sut: sut)
-//    
-//        sut.coordinator.resolveChooseSubtitles = { nil }
-//        sut.importSubtitlesUseCase.resolveImportFile = { _, _, _, _ in
-//            expectation.fulfill()
-//            return .success(())
-//        }
-//        
-//        await viewModel.attachSubtitles(language: language)
-//        
-//        wait(for: [expectation], timeout: 1)
-//    }
-//    
-//    func testAttachSubtitlesResolvedWithBrokenFile() async throws {
-//        
-//        let trackId = UUID()
-//        let language = "English"
-//        
-//        let showImportErrorSequence = self.expectSequence([true])
-//        let sut = createSUT()
-//        let viewModel = createViewModel(trackId: trackId, sut: sut)
-//
-//        
-//        sut.coordinator.resolveChooseSubtitles = {
-//            
-//            let bundle = Bundle(for: type(of: self ))
-//            let url = bundle.url(forResource: "test_cover_image", withExtension: "png")!
-//            
-//            return url
-//        }
-//        
-//        sut.coordinator.resolveShowImportSubtitlesError = {
-//            showImportErrorSequence.fulfill(with: true)
-//        }
-//        
-//        sut.importSubtitlesUseCase.resolveImportFile = { _, _, _, _ in
-//            return .failure(.wrongData)
-//        }
-//        
-//        await viewModel.attachSubtitles(language: language)
-//        showImportErrorSequence.wait(timeout: 1, enforceOrder: true)
-//        
-//        // TODO: How to show to the user?
-//    }
-//    
-//    func testAttachSubtitlesResolvedWithGoodFile() async throws {
-//        
-//        let trackId = UUID()
-//        let language = "English"
-//        
-//        let showImportErrorExpectation = expectation(description: "Shouldn't be called")
-//        showImportErrorExpectation.isInverted = true
-//        let sut = createSUT()
-//        let viewModel = createViewModel(trackId: trackId, sut: sut)
-//
-//        sut.coordinator.resolveChooseSubtitles = {
-//            
-//            let bundle = Bundle(for: type(of: self ))
-//            let url = bundle.url(forResource: "test_subtitles", withExtension: "lrc")!
-//            
-//            return url
-//        }
-//        
-//        sut.coordinator.resolveShowImportSubtitlesError = {
-//            showImportErrorExpectation.fulfill()
-//        }
-//
-//        await viewModel.attachSubtitles(language: language)
-//        
-//        // TODO: How to show to the user?
-//        wait(for: [showImportErrorExpectation], timeout: 1)
-//    }
-//}
-//
-// MARK: - Mocks
+import Mockingbird
+import LyraPlay
 
-private final class LibraryItemCoordinatorMock: LibraryItemCoordinator {
-
-    typealias ChooseSubtitlesCallback = () -> URL?
-    typealias ShowImportSubttitlesErrorCallback = () -> Void?
+class LibraryItemViewModelTests: XCTestCase {
     
-    public var resolveChooseSubtitles: ChooseSubtitlesCallback?
-    public var resolveShowImportSubtitlesError: ShowImportSubttitlesErrorCallback?
+    typealias SUT = (
+        viewModel: LibraryItemViewModel,
+        delegate: LibraryItemViewModelDelegateMock,
+        showMediaInfoUseCase: ShowMediaInfoUseCaseMock,
+        playMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCaseMock,
+        playerState: PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>
+    )
     
-    public func chooseSubtitles(completion: @escaping (_ urls: URL?) -> Void) {
-
-        guard let resolveChooseSubtitles = resolveChooseSubtitles else {
-            XCTFail("No implementation")
-            completion(nil)
-            return
-        }
+    func createSUT(mediaId: UUID) async -> SUT {
         
-        completion(resolveChooseSubtitles())
+        let delegate = mock(LibraryItemViewModelDelegate.self)
+        let showMediaInfoUseCase = mock(ShowMediaInfoUseCase.self)
+        let playMediaWithTranslationsUseCase = mock(PlayMediaWithTranslationsUseCase.self)
+        
+        given(playMediaWithTranslationsUseCase.togglePlay())
+            .willReturn(.success(()))
+        
+        given(playMediaWithTranslationsUseCase.play())
+            .willReturn(.success(()))
+        
+        given(await playMediaWithTranslationsUseCase.prepare(session: any()))
+            .willReturn(.success(()))
+        
+        let playerState = PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>(.initial)
+        
+        given(playMediaWithTranslationsUseCase.state)
+            .willReturn(playerState)
+        
+        let viewModel = LibraryItemViewModelImpl(
+            trackId: mediaId,
+            delegate: delegate,
+            showMediaInfoUseCase: showMediaInfoUseCase,
+            playMediaUseCase: playMediaWithTranslationsUseCase
+        )
+        detectMemoryLeak(instance: viewModel)
+        
+        return (
+            viewModel,
+            delegate,
+            showMediaInfoUseCase,
+            playMediaWithTranslationsUseCase,
+            playerState
+        )
     }
     
-    public func showImportSubtitlesError() -> Void {
+    private func givenExistingMedia(sut: SUT, mediaId: UUID) async {
         
-        guard let resolveShowImportSubtitlesError = resolveShowImportSubtitlesError else {
-            XCTFail("No implementation")
-            return
-        }
+        let info = MediaInfo(
+            id: mediaId.uuidString,
+            coverImage: "".data(using: .utf8)!,
+            title: "",
+            artist: nil,
+            duration: 0
+        )
         
-        resolveShowImportSubtitlesError()
+        given(await sut.showMediaInfoUseCase.fetchInfo(trackId: mediaId))
+            .willReturn(.success(info))
     }
-}
+    
+    func test_isPlaying__no_playing_audio() async throws {
+        
+        // Given
+        let mediaId = UUID()
+        let sut = await createSUT(mediaId: mediaId)
+        
+        await givenExistingMedia(sut: sut, mediaId: mediaId)
+        
+        let isPlayingPromise = watch(sut.viewModel.isPlaying)
+        
+        // When
+        await sut.viewModel.load()
+        
+        // Then
+        isPlayingPromise.expect([false])
+    }
+    
+    private func givenUseCasePlayingMedia(sut: SUT, id: UUID) {
+        
+        sut.playerState.value = .playing(
+            session: .init(
+                mediaId: id,
+                learningLanguage: "",
+                nativeLanguage: ""
+            ),
+            subtitlesState: nil
+        )
+    }
+    
+    func test_isPlaying__playing_same_audio() async throws {
+        
+        // Given
+        let mediaId = UUID()
+        let sut = await createSUT(mediaId: mediaId)
+        
+        givenUseCasePlayingMedia(sut: sut, id: mediaId)
+        await givenExistingMedia(sut: sut, mediaId: mediaId)
+        
+        let isPlayingPromise = watch(sut.viewModel.isPlaying)
+        
+        // When
+        await sut.viewModel.load()
+        
+        // Then
+        isPlayingPromise.expect([true])
+    }
+    
+    func test_isPlaying__playing_different_audio() async throws {
+        
+        // Given
+        let mediaId = UUID()
+        let playingMediaId = UUID()
+        let sut = await createSUT(mediaId: mediaId)
+        
+        givenUseCasePlayingMedia(sut: sut, id: playingMediaId)
+        await givenExistingMedia(sut: sut, mediaId: mediaId)
 
-final class CurrentPlayerStateUseCaseMock: CurrentPlayerStateUseCase {
-    
-    var info: Observable<MediaInfo?> = Observable(nil)
-    
-    var state: Observable<PlayerState> = Observable(.stopped)
-    
-    var currentTime: Observable<Double> = Observable(0.0)
-    
-    var volume: Observable<Double> = Observable(0.0)
-    
-    private var showMediaInfoUseCase: ShowMediaInfoUseCaseMock
-    
-    init(showMediaInfoUseCase: ShowMediaInfoUseCaseMock) {
-        self.showMediaInfoUseCase = showMediaInfoUseCase
+        let isPlayingPromise = watch(sut.viewModel.isPlaying)
+        
+        // When
+        await sut.viewModel.load()
+        
+        // Then
+        isPlayingPromise.expect([false])
     }
     
-    public func setTrack(trackId: UUID?) async {
+    func test_togglePlay__new_session() async throws {
         
-        guard let trackId = trackId else {
-            info.value = nil
-            return
-        }
+        // Given
+        let mediaId = UUID()
+        let sut = await createSUT(mediaId: mediaId)
         
-        let result = await showMediaInfoUseCase.fetchInfo(trackId: trackId)
-        guard case .success(let data) = result else {
-            return
-        }
+        await givenExistingMedia(sut: sut, mediaId: mediaId)
+        await sut.viewModel.load()
         
-        info.value = data
+        // When
+        let _ = await sut.viewModel.togglePlay()
+        
+        // Then
+        verify(sut.playMediaWithTranslationsUseCase.play())
+            .wasCalled(1)
     }
-}
-
-final class ImportSubtitlesUseCaseMock: ImportSubtitlesUseCase {
     
-    typealias ImportFileCallback = (_ trackId: UUID, _ language: String, _ fileName: String, _ data: Data) -> Result<Void, ImportSubtitlesUseCaseError>
-    
-    public var resolveImportFile: ImportFileCallback? = nil
-    
-    
-    func importFile(trackId: UUID, language: String, fileName: String, data: Data) async -> Result<Void, ImportSubtitlesUseCaseError> {
+    func test_togglePlay__existing_session() async throws {
         
-        return resolveImportFile?(trackId, language, fileName, data) ?? .success(())
+        // Given
+        let mediaId = UUID()
+        let sut = await createSUT(mediaId: mediaId)
+        
+        await givenExistingMedia(sut: sut, mediaId: mediaId)
+        givenUseCasePlayingMedia(sut: sut, id: mediaId)
+        
+        await sut.viewModel.load()
+        
+        // When
+        let _ = await sut.viewModel.togglePlay()
+        
+        // Then
+        verify(sut.playMediaWithTranslationsUseCase.togglePlay())
+            .wasCalled(1)
+    }
+    
+    func test_togglePlay__existing_session_different_media() async throws {
+        
+        // Given
+        let mediaId = UUID()
+        let secondMediaId = UUID()
+        
+        let sut = await createSUT(mediaId: mediaId)
+        
+        await givenExistingMedia(sut: sut, mediaId: mediaId)
+        givenUseCasePlayingMedia(sut: sut, id: secondMediaId)
+        
+        await sut.viewModel.load()
+        
+        // When
+        let _ = await sut.viewModel.togglePlay()
+        
+        // Then
+        verify(await sut.playMediaWithTranslationsUseCase.prepare(session: any()))
+            .wasCalled(1)
+        verify(sut.playMediaWithTranslationsUseCase.play())
+            .wasCalled(1)
     }
 }

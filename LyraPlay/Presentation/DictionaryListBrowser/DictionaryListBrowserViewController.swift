@@ -9,16 +9,20 @@ import Foundation
 import Combine
 import UIKit
 
-public final class DictionaryListBrowserViewController: UIViewController {
+public final class DictionaryListBrowserViewController: UIViewController, DictionaryListBrowserView {
+    
+    // MARK: - Properties
     
     private var observers = Set<AnyCancellable>()
     
     private var tableView = UITableView()
-    private var tableDataSource: UITableViewDiffableDataSource<Int, DictionaryListBrowserItemViewModel>!
+    private var tableDataSource: DataSource<Int, UUID>!
     
     private let viewModel: DictionaryListBrowserViewModel
+
+    // MARK: - Initializers
     
-    init(viewModel: DictionaryListBrowserViewModel) {
+    public init(viewModel: DictionaryListBrowserViewModel) {
         
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -28,6 +32,8 @@ public final class DictionaryListBrowserViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Methods
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,10 +68,19 @@ extension DictionaryListBrowserViewController {
             
         }.store(in: &observers)
         
-        viewModel.listChanged.receive(on: RunLoop.main).sink { event in
-            
-            self.listChanged(event: event)
-        }.store(in: &observers)
+        viewModel.items
+            .receive(on: RunLoop.main)
+            .sink { [weak self] ids in
+                
+                self?.updateList(ids)
+            }.store(in: &observers)
+        
+        viewModel.changedItems
+            .receive(on: RunLoop.main)
+            .sink { [weak self] ids in
+                
+                self?.updateItems(with: ids)
+            }.store(in: &observers)
     }
 }
 
@@ -73,9 +88,9 @@ extension DictionaryListBrowserViewController {
 
 extension DictionaryListBrowserViewController {
     
-    private func listLoaded(items: [DictionaryListBrowserItemViewModel]) {
+    private func updateList(_ items: [UUID]) {
         
-        var snapshot = NSDiffableDataSourceSnapshot<Int, DictionaryListBrowserItemViewModel>()
+        var snapshot = NSDiffableDataSourceSnapshot<Int, UUID>()
         
         snapshot.appendSections([0])
         snapshot.appendItems(items, toSection: 0)
@@ -85,11 +100,13 @@ extension DictionaryListBrowserViewController {
         }
     }
     
-    private func listChanged(event: DictionaryListBrowserChangeEvent) {
+    private func updateItems(with ids: [UUID]) {
+
+        var snapshot = tableDataSource.snapshot()
+        snapshot.reconfigureItems(ids)
         
-        switch event {
-        case .loaded(let items):
-            listLoaded(items: items)
+        DispatchQueue.main.async {
+            self.tableDataSource.apply(snapshot, animatingDifferences: true)
         }
     }
 }
@@ -104,15 +121,6 @@ extension DictionaryListBrowserViewController {
         viewModel.addNewItem()
     }
     
-    private func setupTabBar() {
-        
-        tabBarItem = .init(
-            title: "Dictionary",
-            image: .init(systemName: "character.book.closed"),
-            selectedImage: .init(systemName: "character.book.closed.fill")
-        )
-    }
-    
     private func setupNavigatioBar() {
         
         let addButton = UIBarButtonItem(
@@ -122,36 +130,48 @@ extension DictionaryListBrowserViewController {
         )
         
         navigationItem.rightBarButtonItem = addButton
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
     }
 
     private func setupViews() {
         
-        setupTabBar()
         setupNavigatioBar()
         
-        self.tableView.register(
+        tableView.register(
             DictionaryListBrowserCell.self,
             forCellReuseIdentifier: DictionaryListBrowserCell.reuseIdentifier
         )
 
-        self.tableDataSource = UITableViewDiffableDataSource(
+        let dataSource = DataSource<Int, UUID>(
             tableView: tableView,
-            cellProvider: { tableView, indexPath, cellViewModel in
+            cellProvider: { [weak self] tableView, indexPath, itemId in
 
+                guard let self = self else {
+                    return nil
+                }
+                
                 let cell = tableView.dequeueReusableCell(
                     withIdentifier: DictionaryListBrowserCell.reuseIdentifier,
                     for: indexPath
                 ) as! DictionaryListBrowserCell
                 
+                
+                let cellViewModel = self.viewModel.getItem(with: itemId)
                 cell.fill(with: cellViewModel)
+                
                 return cell
             }
         )
         
-        self.tableDataSource.defaultRowAnimation = .fade
+        dataSource.onDeleteItem = { [weak self] in self?.viewModel.deleteItem($0) }
+        
+        tableDataSource = dataSource
+        tableDataSource.defaultRowAnimation = .fade
 
-        self.tableView.dataSource = tableDataSource
-        view.addSubview(self.tableView)
+        tableView.dataSource = tableDataSource
+        view.addSubview(tableView)
     }
 }
 
@@ -176,5 +196,37 @@ extension DictionaryListBrowserViewController {
         Styles.apply(navigationItem: navigationItem)
         Styles.apply(contentView: view)
         Styles.apply(tableView: tableView)
+    }
+}
+
+// MARK: - Helper Classes
+
+fileprivate final class DataSource<SectionIdentifierType, ItemIdentifierType>: UITableViewDiffableDataSource<SectionIdentifierType, ItemIdentifierType>
+    where SectionIdentifierType: Hashable, ItemIdentifierType: Hashable {
+    
+    typealias DeleteItemCallBack = (_ id: ItemIdentifierType) -> Void
+    
+    // MARK: - Properties
+    
+    public var onDeleteItem: DeleteItemCallBack?
+    
+    // MARK: - Methods
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(
+        _ tableView: UITableView,
+        commit editingStyle: UITableViewCell.EditingStyle,
+        forRowAt indexPath: IndexPath
+    ) {
+        
+        if editingStyle == .delete {
+    
+            if let identifierToDelete = itemIdentifier(for: indexPath) {
+                onDeleteItem?(identifierToDelete)
+            }
+        }
     }
 }

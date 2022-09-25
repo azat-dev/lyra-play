@@ -17,7 +17,7 @@ public protocol TextSplitter {
 
 // MARK: - Implementations
 
-public final class DefaultTextSplitter: TextSplitter {
+public final class TextSplitterImpl: TextSplitter {
     
     public init() {}
     
