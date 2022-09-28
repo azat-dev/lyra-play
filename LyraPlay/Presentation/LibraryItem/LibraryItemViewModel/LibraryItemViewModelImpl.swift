@@ -59,21 +59,19 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
                 return
             }
             
-            let currentPlayingMediaId = state.session?.mediaId
             var isPlaying = false
             
-            if
-                case .playing = state,
-                currentPlayingMediaId == self.trackId
-            {
-                isPlaying = true
+            switch state {
+
+            case .activeSession(let session, .loaded(.playing, _)):
+                isPlaying = session.mediaId == self.trackId
+                
+            default:
+                isPlaying = false
             }
             
-            guard isPlaying != self.isPlaying.value else {
-                return
-            }
-
             self.isPlaying.value = isPlaying
+            
         }.store(in: &observers)
     }
 }

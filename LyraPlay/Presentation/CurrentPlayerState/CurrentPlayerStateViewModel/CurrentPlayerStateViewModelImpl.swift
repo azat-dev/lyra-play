@@ -113,15 +113,18 @@ fileprivate extension PlayMediaWithTranslationsUseCaseState {
     func map() -> PlayerState {
         
         switch self {
-            
-        case .initial, .loading, .loadFailed, .loaded, .stopped:
-            return .stopped
-            
-        case .playing, .pronouncingTranslations:
+
+        case .activeSession(_, .loaded(.playing, _)):
             return .playing
             
-        case .paused, .finished:
+        case .activeSession(_, .loaded(.pronouncingTranslations, _)):
+            return .playing
+            
+        case .activeSession(_, .loaded(.paused, _)):
             return .paused
+            
+        default:
+            return .stopped
         }
     }
 }

@@ -8,6 +8,8 @@
 import Foundation
 import Combine
 
+// MARK: - Enums
+
 public enum PlayMediaWithTranslationsUseCaseError: Error {
     
     case mediaFileNotFound
@@ -16,18 +18,30 @@ public enum PlayMediaWithTranslationsUseCaseError: Error {
     case taskCancelled
 }
 
-public enum PlayMediaWithTranslationsUseCaseState: Equatable {
+public enum PlayMediaWithTranslationsUseCasePlayerState: Equatable {
     
     case initial
-    case loading(session: PlayMediaWithTranslationsSession)
-    case loadFailed(session: PlayMediaWithTranslationsSession)
-    case loaded(session: PlayMediaWithTranslationsSession, subtitlesState: SubtitlesState?)
-    case playing(session: PlayMediaWithTranslationsSession, subtitlesState: SubtitlesState?)
-    case pronouncingTranslations(session: PlayMediaWithTranslationsSession, subtitlesState: SubtitlesState?, data: PronounceTranslationsUseCaseStateData)
-    case paused(session: PlayMediaWithTranslationsSession, subtitlesState: SubtitlesState?, time: TimeInterval)
-    case stopped(session: PlayMediaWithTranslationsSession)
-    case finished(session: PlayMediaWithTranslationsSession)
+    case playing
+    case pronouncingTranslations(data: PronounceTranslationsUseCaseStateData)
+    case paused(time: TimeInterval)
+    case stopped
+    case finished
 }
+
+public enum PlayMediaWithTranslationsUseCaseLoadState: Equatable {
+    
+    case loading
+    case loadFailed
+    case loaded(PlayMediaWithTranslationsUseCasePlayerState, SubtitlesState?)
+}
+
+public enum PlayMediaWithTranslationsUseCaseState: Equatable {
+    
+    case noActiveSession
+    case activeSession(PlayMediaWithTranslationsSession, PlayMediaWithTranslationsUseCaseLoadState)
+}
+
+// MARK: - Protocols
 
 public protocol PlayMediaWithTranslationsUseCaseInput {
     
@@ -49,6 +63,4 @@ public protocol PlayMediaWithTranslationsUseCaseOutput {
     var state: PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never> { get }
 }
 
-public protocol PlayMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCaseOutput, PlayMediaWithTranslationsUseCaseInput {
-    
-}
+public protocol PlayMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCaseOutput, PlayMediaWithTranslationsUseCaseInput {}

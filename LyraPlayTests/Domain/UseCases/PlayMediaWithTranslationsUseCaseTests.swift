@@ -160,9 +160,9 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             subtitles: nil,
             isMediaExist: false,
             expectedStateItems: [
-                .initial,
-                .loading(session: session),
-                .loadFailed(session: session)
+                .noActiveSession,
+                .activeSession(session, .loading),
+                .activeSession(session, .loadFailed),
             ]
         )
     }
@@ -179,9 +179,9 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             subtitles: nil,
             isMediaExist: true,
             expectedStateItems: [
-                .initial,
-                .loading(session: session),
-                .loaded(session: session, subtitlesState: nil)
+                .noActiveSession,
+                .activeSession(session, .loading),
+                .activeSession(session, .loaded(.initial, nil)),
             ]
         )
     }
@@ -199,9 +199,9 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             subtitles: subtitles,
             isMediaExist: true,
             expectedStateItems: [
-                .initial,
-                .loading(session: session),
-                .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles))
+                .noActiveSession,
+                .activeSession(session, .loading),
+                .activeSession(session, .loaded(.initial, .init(position: nil, subtitles: subtitles))),
             ]
         )
     }
@@ -219,9 +219,9 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             subtitles: nil,
             isMediaExist: true,
             expectedStateItems: [
-                .initial,
-                .loading(session: session),
-                .loaded(session: session, subtitlesState: nil),
+                .noActiveSession,
+                .activeSession(session, .loading),
+                .activeSession(session, .loaded(.initial, nil)),
             ]
         )
         
@@ -248,9 +248,9 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         
         statePromise.expect(
             [
-                .loaded(session: session, subtitlesState: nil),
-                .playing(session: session, subtitlesState: nil),
-                .finished(session: session)
+                .activeSession(session, .loaded(.initial, nil)),
+                .activeSession(session, .loaded(.playing, nil)),
+                .activeSession(session, .loaded(.finished, nil))
             ],
             timeout: 3
         )
@@ -277,9 +277,9 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             subtitles: subtitles,
             isMediaExist: true,
             expectedStateItems: [
-                .initial,
-                .loading(session: session),
-                .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
+                .noActiveSession,
+                .activeSession(session, .loading),
+                .activeSession(session, .loaded(.initial, .init(position: nil, subtitles: subtitles)))
             ]
         )
         
@@ -293,11 +293,11 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         
         statePromise.expect(
             [
-                .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
-                .playing(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
-                .playing(session: session, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
-                .playing(session: session, subtitlesState: .init(position: .sentence(1), subtitles: subtitles)),
-                .playing(session: session, subtitlesState: .init(position: .sentence(2), subtitles: subtitles)),
+                .activeSession(session, .loaded(.initial, .init(position: nil, subtitles: subtitles))),
+                .activeSession(session, .loaded(.playing, .init(position: nil, subtitles: subtitles))),
+                .activeSession(session, .loaded(.playing, .init(position: .sentence(0), subtitles: subtitles))),
+                .activeSession(session, .loaded(.playing, .init(position: .sentence(1), subtitles: subtitles))),
+                .activeSession(session, .loaded(.playing, .init(position: .sentence(2), subtitles: subtitles))),
             ],
             timeout: 3
         )
@@ -364,9 +364,9 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             subtitles: subtitles,
             isMediaExist: true,
             expectedStateItems: [
-                .initial,
-                .loading(session: session),
-                .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
+                .noActiveSession,
+                .activeSession(session, .loading),
+                .activeSession(session, .loaded(.initial, .init(position: nil, subtitles: subtitles))),
             ]
         )
         
@@ -380,31 +380,58 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         
         statePromise.expect(
             [
-                .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
-                .playing(session: session, subtitlesState: .init(position: nil, subtitles: subtitles)),
-                .playing(session: session, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
-                .pronouncingTranslations(
-                    session: session,
-                    subtitlesState: .init(position: .sentence(0), subtitles: subtitles),
-                    data: .group(translations: [translation1, translation2], currentTranslationIndex: 0)
+                .activeSession(session, .loaded(.initial, .init(position: nil, subtitles: subtitles))),
+                .activeSession(session, .loaded(.playing, .init(position: nil, subtitles: subtitles))),
+                .activeSession(session, .loaded(.playing, .init(position: .sentence(0), subtitles: subtitles))),
+                .activeSession(
+                    session,
+                    .loaded(
+                        .pronouncingTranslations(
+                            data: .group(
+                                translations: [translation1, translation2],
+                                currentTranslationIndex: 0
+                            )
+                        ),
+                        .init(
+                            position: .sentence(0),
+                            subtitles: subtitles
+                        )
+                    )
                 ),
-                .pronouncingTranslations(
-                    session: session,
-                    subtitlesState: .init(position: .sentence(0), subtitles: subtitles),
-                    data: .group(translations: [translation1, translation2], currentTranslationIndex: 1)
+                .activeSession(
+                    session,
+                    .loaded(
+                        .pronouncingTranslations(
+                            data: .group(
+                                translations: [translation1, translation2],
+                                currentTranslationIndex: 1
+                            )
+                        ),
+                        .init(
+                            position: .sentence(0),
+                            subtitles: subtitles
+                        )
+                    )
                 ),
-                .playing(session: session, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
-                .playing(session: session, subtitlesState: .init(position: .sentence(1), subtitles: subtitles)),
-                .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 0), subtitles: subtitles)),
-                .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 1), subtitles: subtitles)),
-                .pronouncingTranslations(
-                    session: session,
-                    subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 1), subtitles: subtitles),
-                    data: .single(translation: translation2)
+                .activeSession(session, .loaded(.playing, .init(position: .sentence(0), subtitles: subtitles))),
+                .activeSession(session, .loaded(.playing, .init(position: .sentence(1), subtitles: subtitles))),
+                .activeSession(session, .loaded(.playing, .init(position: .init(sentenceIndex: 1, timeMarkIndex: 0), subtitles: subtitles))),
+                .activeSession(session, .loaded(.playing, .init(position: .init(sentenceIndex: 1, timeMarkIndex: 1), subtitles: subtitles))),
+                .activeSession(
+                    session,
+                    .loaded(
+                        .pronouncingTranslations(
+                            data: .single(translation: translation2)
+                        ),
+                        .init(
+                            position: .init(sentenceIndex: 1, timeMarkIndex: 1),
+                            subtitles: subtitles
+                        )
+                    )
                 ),
-                .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 1), subtitles: subtitles)),
-                .playing(session: session, subtitlesState: .init(position: .init(sentenceIndex: 1, timeMarkIndex: 2), subtitles: subtitles)),
-                .playing(session: session, subtitlesState: .init(position: .sentence(2), subtitles: subtitles)),
+                .activeSession(session, .loaded(.playing, .init(position: .init(sentenceIndex: 1, timeMarkIndex: 1), subtitles: subtitles))),
+                .activeSession(session, .loaded(.playing, .init(position: .init(sentenceIndex: 1, timeMarkIndex: 2), subtitles: subtitles))),
+                .activeSession(session, .loaded(.playing, .init(position: .sentence(2), subtitles: subtitles))),
             ],
             timeout: 3
         )

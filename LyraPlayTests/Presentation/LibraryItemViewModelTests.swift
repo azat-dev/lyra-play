@@ -35,7 +35,7 @@ class LibraryItemViewModelTests: XCTestCase {
         given(await playMediaWithTranslationsUseCase.prepare(session: any()))
             .willReturn(.success(()))
         
-        let playerState = PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>(.initial)
+        let playerState = PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>(.noActiveSession)
         
         given(playMediaWithTranslationsUseCase.state)
             .willReturn(playerState)
@@ -90,13 +90,13 @@ class LibraryItemViewModelTests: XCTestCase {
     
     private func givenUseCasePlayingMedia(sut: SUT, id: UUID) {
         
-        sut.playerState.value = .playing(
-            session: .init(
+        sut.playerState.value = .activeSession(
+            .init(
                 mediaId: id,
                 learningLanguage: "",
                 nativeLanguage: ""
             ),
-            subtitlesState: nil
+            .loaded(.playing, nil)
         )
     }
     

@@ -13,25 +13,20 @@ extension PlayMediaWithTranslationsUseCaseState {
         
         switch self {
             
-        case .initial:
-            return nil
-            
-        case .loading(let session), .loadFailed(let session), .loaded(let session, _), .playing(let session, _), .pronouncingTranslations(let session, _, _), .paused(let session, _, _), .stopped(let session), .finished(let session):
-            
+        case .activeSession(let session, _):
             return session
+            
+        case .noActiveSession:
+            return nil
         }
     }
     
     public var subtitlesState: SubtitlesState? {
         
-        switch self {
-            
-        case .initial, .loading, .loadFailed, .stopped, .finished:
+        guard case .activeSession(_, .loaded(_, let subtitlesState)) = self else {
             return nil
-            
-        case .playing(_, let subtitlesState), .pronouncingTranslations(_, let subtitlesState, _), .paused(_, let subtitlesState, _), .loaded(_, let subtitlesState):
-            
-            return subtitlesState
         }
+
+        return subtitlesState
     }
 }

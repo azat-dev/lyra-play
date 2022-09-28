@@ -28,7 +28,7 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
 
         let playMediaUseCase = mock(PlayMediaWithTranslationsUseCase.self)
         
-        let state = PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>(.initial)
+        let state = PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>(.noActiveSession)
         
         given(playMediaUseCase.state)
             .willReturn(state)
@@ -74,9 +74,9 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
             .willReturn(.success(anyMediaInfo()))
         
         // When
-        sut.playerState.value = .playing(
-            session: .init(mediaId: mediaId, learningLanguage: "", nativeLanguage: ""),
-            subtitlesState: nil
+        sut.playerState.value = .activeSession(
+            .init(mediaId: mediaId, learningLanguage: "", nativeLanguage: ""),
+            .loaded(.playing, nil)
         )
 
         // Then
@@ -112,10 +112,9 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
             .willReturn(.success(anyMediaInfo()))
         
         // When
-        sut.playerState.value = .paused(
-            session: .init(mediaId: mediaId, learningLanguage: "", nativeLanguage: ""),
-            subtitlesState: nil,
-            time: 10
+        sut.playerState.value = .activeSession(
+            .init(mediaId: mediaId, learningLanguage: "", nativeLanguage: ""),
+            .loaded(.paused(time: 10), nil)
         )
 
         // Then
