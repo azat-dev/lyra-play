@@ -87,9 +87,9 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         }
         
         statePromise.expect([
-            .initial,
-            .loading(session: sessionParams),
-            .loadFailed(session: sessionParams)
+            .noActiveSession,
+            .activeSession(sessionParams, .loading),
+            .activeSession(sessionParams, .loadFailed)
         ], timeout: 1)
     }
     
@@ -112,9 +112,9 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         
         // Then
         statePromise.expect([
-            .initial,
-            .loading(session: sessionParams),
-            .loaded(session: sessionParams, subtitlesState: nil)
+            .noActiveSession,
+            .activeSession(sessionParams, .loading),
+            .activeSession(sessionParams, .loaded(.initial, nil))
         ], timeout: 1)
     }
     
@@ -138,9 +138,9 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
 
         // Then
         statePromise.expect([
-            .initial,
-            .loading(session: sessionParams),
-            .loaded(session: sessionParams, subtitlesState: .init(position: nil, subtitles: subtitles))
+            .noActiveSession,
+            .activeSession(sessionParams, .loading),
+            .activeSession(sessionParams, .loaded(.initial, .init(position: nil, subtitles: subtitles)))
         ])
     }
     
@@ -162,7 +162,7 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
         }
         
         statePromise.expect([
-            .initial
+            .noActiveSession
         ])
     }
     
@@ -245,12 +245,12 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
             waitFor: 1,
             expectedStateItems: [
                 
-                .initial,
-                .loading(session: sessionParams),
-                .loaded(session: sessionParams, subtitlesState: .init(position: nil, subtitles: subtitles)),
-                .playing(session: sessionParams, subtitlesState: .init(position: nil, subtitles: subtitles)),
-                .playing(session: sessionParams, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
-                .finished(session: sessionParams),
+                .noActiveSession,
+                .activeSession(sessionParams, .loading),
+                .activeSession(sessionParams, .loaded(.initial, .init(position: nil, subtitles: subtitles))),
+                .activeSession(sessionParams, .loaded(.playing, .init(position: nil, subtitles: subtitles))),
+                .activeSession(sessionParams, .loaded(.playing, .init(position: .sentence(0), subtitles: subtitles))),
+                .activeSession(sessionParams, .loaded(.finished, .init(position: .sentence(0), subtitles: subtitles))),
             ],
             expecteSubtitlesChanges: [
                 .init(from: nil, to: .sentence(0)),
@@ -296,12 +296,12 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
             waitFor: 1,
             expectedStateItems: [
                 
-                .initial,
-                .loading(session: sessionParams),
-                .loaded(session: sessionParams, subtitlesState: .init(position: nil, subtitles: subtitles)),
-                .playing(session: sessionParams, subtitlesState: .init(position: nil, subtitles: subtitles)),
-                .playing(session: sessionParams, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
-                .finished(session: sessionParams),
+                .noActiveSession,
+                .activeSession(sessionParams, .loading),
+                .activeSession(sessionParams, .loaded(.initial, .init(position: nil, subtitles: subtitles))),
+                .activeSession(sessionParams, .loaded(.playing, .init(position: nil, subtitles: subtitles))),
+                .activeSession(sessionParams, .loaded(.playing, .init(position: .sentence(0), subtitles: subtitles))),
+                .activeSession(sessionParams, .loaded(.finished, .init(position: .sentence(0), subtitles: subtitles))),
             ],
             expecteSubtitlesChanges: [
                 .init(from: nil, to: .sentence(0)),
@@ -352,16 +352,16 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
             },
             waitFor: 1,
             expectedStateItems: [
-                
-                .initial,
-                .loading(session: sessionParams),
-                .loaded(session: sessionParams, subtitlesState: .init(position: nil, subtitles: subtitles)),
-                .playing(session: sessionParams, subtitlesState: .init(position: nil, subtitles: subtitles)),
-                .playing(session: sessionParams, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
-                .paused(session: sessionParams, subtitlesState: .init(position: .sentence(0), subtitles: subtitles), time: 0),
-                .playing(session: sessionParams, subtitlesState: .init(position: .sentence(0), subtitles: subtitles)),
-                .playing(session: sessionParams, subtitlesState: .init(position: .sentence(1), subtitles: subtitles)),
-                .stopped(session: sessionParams),
+              
+                .noActiveSession,
+                .activeSession(sessionParams, .loading),
+                .activeSession(sessionParams, .loaded(.initial, .init(position: nil, subtitles: subtitles))),
+                .activeSession(sessionParams, .loaded(.playing, .init(position: nil, subtitles: subtitles))),
+                .activeSession(sessionParams, .loaded(.playing, .init(position: .sentence(0), subtitles: subtitles))),
+                .activeSession(sessionParams, .loaded(.paused(time: 0), .init(position: .sentence(0), subtitles: subtitles))),
+                .activeSession(sessionParams, .loaded(.playing, .init(position: .sentence(0), subtitles: subtitles))),
+                .activeSession(sessionParams, .loaded(.playing, .init(position: .sentence(1), subtitles: subtitles))),
+                .noActiveSession
             ],
             expecteSubtitlesChanges: [
                 .init(from: nil, to: .sentence(0)),

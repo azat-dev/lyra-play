@@ -77,7 +77,7 @@ extension PlayMediaWithTranslationsUseCaseImpl {
             return .failure(.taskCancelled)
         }
         
-        guard case .loaded(_, let subtitlesData) = playMediaWithSubtitlesUseCase.state.value else {
+        guard case .activeSession(_, .loaded(_, let subtitlesData)) = playMediaWithSubtitlesUseCase.state.value else {
             
             state.value = .activeSession(session, .loadFailed)
             return .failure(.internalError(nil))
@@ -160,29 +160,46 @@ extension PlayMediaWithTranslationsUseCaseImpl {
             return
         }
         
-        switch newState {
-            
-        case .initial, .loading, .loadFailed, .loaded:
-            break
-            
-        case .paused(_, let subtitlesState, let time):
-            state.value = .activeSession(
-                session,
-                .loaded(
-                    .paused(time: time),
-                    subtitlesState
-                )
-            )
-            
-        case .stopped:
-            state.value = .activeSession(session, .loaded(.stopped, nil))
-            
-        case .finished:
-            state.value = .activeSession(session, .loaded(.finished, currentState.subtitlesState))
-    
-        case .playing(_, let subtitlesState):
-            state.value = .activeSession(session, .loaded(.playing,subtitlesState))
+        guard case .activeSession(let session, let loadState) = currentState else {
+            state.value = .noActiveSession
+            return
         }
+        
+        switch loadState {
+        
+        case .loading:
+            state.value = .activeSession(session, .loading)
+        
+        case .loadFailed:
+            state.value = .activeSession(session, .loadFailed)
+        
+        case .loaded(let playerState, let subtitlesState):
+            
+            switch playerState {
+            
+            case .initial:
+                state.value = .activeSession(session, .loaded(.initial, subtitlesState))
+                
+            case .playing:
+                state.value = .activeSession(session, .loaded(.playing, subtitlesState))
+                
+            case .pronouncingTranslations(let data):
+                
+                state.value = .activeSession(
+                    session,
+                    .loaded(.pronouncingTranslations(data: data), subtitlesState)
+                )
+                
+            case .paused(let time):
+                state.value = .activeSession(session, .loaded(.paused(time: time), subtitlesState))
+                
+            case .stopped:
+                state.value = .activeSession(session, .loaded(.stopped, subtitlesState))
+                
+            case .finished:
+                state.value = .activeSession(session, .loaded(.finished, subtitlesState))
+            }
+        }        
     }
 }
 
