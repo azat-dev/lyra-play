@@ -78,5 +78,20 @@ extension MainFlowModelImpl: MainTabBarViewModelDelegate {
     
     public func runOpenCurrentPlayerStateDetailsFlow() {
         
+        if currentPlayerStateDetailsFlow.value != nil {
+            return
+        }
+        
+        currentPlayerStateDetailsFlow.value = currentPlayerStateDetailsFlowModelFactory.create(delegate: self)
+    }
+}
+
+// MARK: - CurrentPlayerStateDetailsFlowModelDelegate
+
+extension MainFlowModelImpl: CurrentPlayerStateDetailsFlowModelDelegate {
+    
+    public func currentPlayerStateDetailsFlowModelDidDispose() {
+        
+        currentPlayerStateDetailsFlow.value = nil
     }
 }

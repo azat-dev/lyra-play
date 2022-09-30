@@ -36,9 +36,7 @@ class MainFlowModelTests: XCTestCase {
         let currentPlayerStateDetailsFlowModel = mock(CurrentPlayerStateDetailsFlowModel.self)
         let currentPlayerStateDetailsFlowModelFactory = mock(CurrentPlayerStateDetailsFlowModelFactory.self)
         
-        let currentPlayerStateDetailsFlowModelDelegate = mock(CurrentPlayerStateDetailsFlowModelDelegate.self)
-        
-        given(currentPlayerStateDetailsFlowModelFactory.create(delegate: currentPlayerStateDetailsFlowModelDelegate))
+        given(currentPlayerStateDetailsFlowModelFactory.create(delegate: any()))
             .willReturn(currentPlayerStateDetailsFlowModel)
         
         let mainTabBarViewModel = mock(MainTabBarViewModel.self)
@@ -64,8 +62,7 @@ class MainFlowModelTests: XCTestCase {
             dictionaryFlowModel,
             dictionaryFlowModelFactory,
             currentPlayerStateDetailsFlowModel,
-            currentPlayerStateDetailsFlowModelFactory,
-            currentPlayerStateDetailsFlowModelDelegate
+            currentPlayerStateDetailsFlowModelFactory
         )
         
         return (
