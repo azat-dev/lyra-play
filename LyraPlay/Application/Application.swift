@@ -221,9 +221,26 @@ public class Application {
     
     func makeFlow() -> MainFlowModel {
         
+        let playMediaWithTranslationsUseCaseFactory = PlayMediaWithTranslationsUseCaseImplFactory(
+            playMediaWithSubtitlesUseCase: playMediaWithSubtitlesUseCase,
+            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
+            provideTranslationsToPlayUseCase: provideTranslationsToPlayUseCase,
+            pronounceTranslationsUseCase: pronounceTranslationsUseCase
+        )
+        
+        let showMediaInfoUseCaseFactory = ShowMediaInfoUseCaseImplFactory(
+            mediaLibraryRepository: mediaLibraryRepository,
+            imagesRepository: imagesRepository,
+            defaultImage: UIImage(named: "Image.CoverPlaceholder")!.pngData()!
+        )
+        
+        let playMediaWithInfoUseCase = PlayMediaWithInfoUseCaseImpl(
+            playMediaWithTranslationsUseCaseFactory: playMediaWithTranslationsUseCaseFactory,
+            showMediaInfoUseCaseFactory: showMediaInfoUseCaseFactory
+        )
+        
         let currentPlayerStateViewModelFactory = CurrentPlayerStateViewModelImplFactory(
-            playMediaUseCase: playMediaWithTranslationsUseCase,
-            showMediaInfoUseCase: showMediaInfoUseCase
+            playMediaUseCase: playMediaWithInfoUseCase
         )
         
         let mainTabBarViewModelFactory = MainTabBarViewModelImplFactory(

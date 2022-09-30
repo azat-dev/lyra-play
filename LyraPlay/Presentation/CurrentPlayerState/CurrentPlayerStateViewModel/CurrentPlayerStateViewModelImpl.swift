@@ -14,8 +14,7 @@ public final class CurrentPlayerStateViewModelImpl: CurrentPlayerStateViewModel 
 
     private weak var delegate: CurrentPlayerStateViewModelDelegate?
     
-    private let playMediaUseCase: PlayMediaWithTranslationsUseCase
-    private let showMediaInfoUseCase: ShowMediaInfoUseCase
+    private let playMediaUseCase: PlayMediaWithInfoUseCase
     public var state = CurrentValueSubject<CurrentPlayerStateViewModelState, Never>(.loading)
     
     private var observers = Set<AnyCancellable>()
@@ -24,72 +23,41 @@ public final class CurrentPlayerStateViewModelImpl: CurrentPlayerStateViewModel 
 
     public init(
         delegate: CurrentPlayerStateViewModelDelegate,
-        playMediaUseCase: PlayMediaWithTranslationsUseCase,
-        showMediaInfoUseCase: ShowMediaInfoUseCase
+        playMediaUseCase: PlayMediaWithInfoUseCase
     ) {
 
         self.delegate = delegate
         self.playMediaUseCase = playMediaUseCase
-        self.showMediaInfoUseCase = showMediaInfoUseCase
         
         observePlayerState(playMediaUseCase: playMediaUseCase)
     }
     
-    private func loadInfo(mediaId: UUID) async {
-        
-        let result = await showMediaInfoUseCase.fetchInfo(trackId: mediaId)
-        
-        guard case .success(let mediaInfo) = result else {
-            return
-        }
-        
-        guard case .loading = state.value else {
-            return
-        }
-        
-        let playerState = playMediaUseCase.state.value.map()
-        
-        state.value = .active(
-            mediaInfo: mediaInfo,
-            state: playerState
-        )
+    private func observePlayerState(playMediaUseCase: PlayMediaWithInfoUseCase) {
+
+        playMediaUseCase.state.publisher
+            .sink { [weak self] state in self?.updateState(state) }
+            .store(in: &observers)
     }
     
-    private func observePlayerState(playMediaUseCase: PlayMediaWithTranslationsUseCase) {
-
-        var prevMediaId: UUID?
+    private func updateState(_ state: PlayMediaWithInfoUseCaseState) {
         
-        playMediaUseCase.state.publisher.sink { [weak self] state in
-  
-            defer { prevMediaId = state.session?.mediaId }
+        guard case .activeSession(_, let loadState) = state else {
             
-            guard let self = self else {
-                return
-            }
-
-            guard let session = state.session else {
-                
-                self.state.value = .notActive
-                return
-            }
+            self.state.value = .notActive
+            return
+        }
+        
+        switch loadState {
             
-            if prevMediaId != session.mediaId {
-
-                self.state.value = .loading
-                
-                Task {
-                    await self.loadInfo(mediaId: session.mediaId)
-                }
-                
-                return
-            }
+        case .loading:
+            self.state.value = .loading
             
-            self.state.value = .active(
-                mediaInfo: self.state.value.mediaInfo!,
-                state: state.map()
-            )
+        case .loadFailed:
+            self.state.value = .notActive
             
-        }.store(in: &observers)
+        case .loaded(let playerState, _, let mediaInfo):
+            self.state.value = .active(mediaInfo: mediaInfo, state: playerState.map())
+        }
     }
 }
 
@@ -108,22 +76,25 @@ extension CurrentPlayerStateViewModelImpl {
     }
 }
 
-fileprivate extension PlayMediaWithTranslationsUseCaseState {
+fileprivate extension PlayMediaWithTranslationsUseCasePlayerState {
     
     func map() -> PlayerState {
         
         switch self {
-
-        case .activeSession(_, .loaded(.playing, _)):
+        
+        case .initial:
+            return .stopped
+            
+        case .playing, .pronouncingTranslations:
             return .playing
             
-        case .activeSession(_, .loaded(.pronouncingTranslations, _)):
-            return .playing
-            
-        case .activeSession(_, .loaded(.paused, _)):
+        case .paused:
             return .paused
             
-        default:
+        case .stopped:
+            return .stopped
+            
+        case .finished:
             return .stopped
         }
     }
