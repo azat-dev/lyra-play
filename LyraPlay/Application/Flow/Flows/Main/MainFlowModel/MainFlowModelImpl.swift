@@ -65,6 +65,7 @@ extension MainFlowModelImpl: MainTabBarViewModelDelegate {
         }
         
         libraryFlow.value = libraryFlowModelFactory.create(folderId: nil)
+        runOpenCurrentPlayerStateDetailsFlow()
     }
     
     public func runDictionaryFlow() {

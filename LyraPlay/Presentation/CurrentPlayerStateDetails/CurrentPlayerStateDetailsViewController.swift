@@ -15,6 +15,15 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     
     private let viewModel: CurrentPlayerStateDetailsViewModel
     
+    private let activityIndicator = UIActivityIndicatorView()
+    private let contentGroup = UIStackView()
+    private let coverImageView = UIImageView()
+    private let titleLabel = UILabel()
+    private let subtitleLabel = UILabel()
+    
+    private let buttonsGroup = UIView()
+    private let togglePlayButton = UIImageView()
+    
     private var observers = Set<AnyCancellable>()
     
     // MARK: - Initializers
@@ -56,19 +65,42 @@ extension CurrentPlayerStateDetailsViewController {
     
     private func updateActiveState(_ data: CurrentPlayerStateDetailsViewModelPresentation) {
         
+        titleLabel.text = data.title
+        subtitleLabel.text = data.subtitle
         
+        if let coverImage = data.coverImage {
+            
+            coverImageView.image = UIImage(data: coverImage)
+        }
+        
+        contentGroup.isHidden = false
+        activityIndicator.stopAnimating()
+        
+        if data.isPlaying {
+            
+            Styles.apply(pauseButton: togglePlayButton)
+        } else {
+            
+            Styles.apply(playButton: togglePlayButton)
+        }
+    }
+    
+    private func updateLoadingState() {
+        
+        contentGroup.isHidden = true
+        activityIndicator.startAnimating()
     }
     
     private func updateState(_ newState: CurrentPlayerStateDetailsViewModelState) {
-
-        switch newState {
         
+        switch newState {
+            
         case .loading:
-            break
+            updateLoadingState()
             
         case .notActive:
-            break
-        
+            updateLoadingState()
+            
         case .active(let data):
             updateActiveState(data)
         }
@@ -87,7 +119,31 @@ extension CurrentPlayerStateDetailsViewController {
 
 extension CurrentPlayerStateDetailsViewController {
     
+    @objc
+    private func didTapTogglePlayButton() {
+        
+        viewModel.togglePlay()
+    }
+    
     private func setupViews() {
+        
+        let togglePlayButtonGestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.didTapTogglePlayButton)
+        )
+        
+        togglePlayButton.isUserInteractionEnabled = true
+        togglePlayButton.addGestureRecognizer(togglePlayButtonGestureRecognizer)
+        
+        buttonsGroup.addSubview(togglePlayButton)
+        
+        contentGroup.addArrangedSubview(coverImageView)
+        contentGroup.addArrangedSubview(titleLabel)
+        contentGroup.addArrangedSubview(subtitleLabel)
+        contentGroup.addArrangedSubview(buttonsGroup)
+        
+        view.addSubview(contentGroup)
+        view.addSubview(activityIndicator)
     }
 }
 
@@ -95,9 +151,23 @@ extension CurrentPlayerStateDetailsViewController {
 extension CurrentPlayerStateDetailsViewController {
     
     private func layout() {
+
+        Layout.apply(
+            buttonsGroup: buttonsGroup,
+            togglePlayButton: togglePlayButton
+        )
         
         Layout.apply(
-            view: view
+            contentGroup: contentGroup,
+            coverImageView: coverImageView,
+            titleLabel: titleLabel,
+            subtitleLabel: subtitleLabel
+        )
+        
+        Layout.apply(
+            view: view,
+            activityIndicator: activityIndicator,
+            contentGroup: contentGroup
         )
     }
 }
@@ -109,6 +179,7 @@ extension CurrentPlayerStateDetailsViewController {
     private func style() {
         
         Styles.apply(contentView: view)
+        Styles.apply(activityIndicator: activityIndicator)
+        Styles.apply(coverImage: coverImageView)
     }
 }
-

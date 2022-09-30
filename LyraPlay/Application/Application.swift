@@ -239,6 +239,19 @@ public class Application {
             showMediaInfoUseCaseFactory: showMediaInfoUseCaseFactory
         )
         
+        Task {
+            
+            let _ = await playMediaWithInfoUseCase.prepare(
+                session: .init(
+                    mediaId: UUID(uuidString: "67BCD338-5652-4054-95D3-29B979D9C092")!,
+                    learningLanguage: "",
+                    nativeLanguage: ""
+                )
+            )
+            
+            playMediaWithInfoUseCase.play()
+        }
+        
         let currentPlayerStateViewModelFactory = CurrentPlayerStateViewModelImplFactory(
             playMediaUseCase: playMediaWithInfoUseCase
         )
