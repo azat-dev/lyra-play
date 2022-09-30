@@ -16,7 +16,7 @@ public final class PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseC
     private let playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory
     private let loadSubtitlesUseCase: LoadSubtitlesUseCase
     
-    public var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseState, Never> = .init(.initial)
+    public var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseState, Never> = .init(.noActiveSession)
     public var willChangeSubtitlesPosition = PassthroughSubject<WillChangeSubtitlesPositionData, Never>()
     
     private var playSubtitlesObserver: AnyCancellable?
@@ -86,13 +86,13 @@ extension PlayMediaWithSubtitlesUseCaseImpl {
     public func prepare(params session: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         updateStateHash()
-        state.value = .loading(session: session)
+        state.value = .activeSession(session, .loading)
         
         let loadMediaResult = await playMediaUseCase.prepare(mediaId: session.mediaId)
         
         guard case .success = loadMediaResult else {
             
-            state.value = .loadFailed(session: session)
+            state.value = .activeSession(session, .loadFailed)
             return loadMediaResult.mapResult()
         }
         
@@ -103,43 +103,38 @@ extension PlayMediaWithSubtitlesUseCaseImpl {
         
         guard case .success(let subtitles) = loadSubtitlesResult else {
             
-            state.value = .loaded(session: session, subtitlesState: nil)
+            state.value = .activeSession(session, .loaded(.initial, nil))
             return .success(())
         }
         
         playSubtitlesUseCase = playSubtitlesUseCaseFactory.create(subtitles: subtitles)
         
-        self.state.value = .loaded(
-            session: session,
-            subtitlesState: .init(
-                position: nil,
-                subtitles: subtitles
-            )
+        self.state.value = .activeSession(
+            session,
+            .loaded(.initial, .init(position: nil, subtitles: subtitles))
         )
         
         return .success(())
     }
     
     public func play() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        
+
         switch state.value {
             
-        case .initial, .loading, .loadFailed:
+        case .noActiveSession, .activeSession(_, .loadFailed), .activeSession(_, .loading):
             return .failure(.noActiveMedia)
             
         default:
-            break
+            updateStateHash()
+            return playMediaUseCase.play().mapResult()
         }
-        
-        updateStateHash()
-        return playMediaUseCase.play().mapResult()
     }
     
     public func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         switch state.value {
             
-        case .initial, .loading, .loadFailed:
+        case .noActiveSession, .activeSession(_, .loadFailed), .activeSession(_, .loading):
             return .failure(.noActiveMedia)
             
         default:
@@ -150,7 +145,7 @@ extension PlayMediaWithSubtitlesUseCaseImpl {
     
     public func pause() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
-        guard case .playing = state.value else {
+        guard case .activeSession = state.value else {
             return .failure(.noActiveMedia)
         }
         
@@ -174,19 +169,18 @@ extension PlayMediaWithSubtitlesUseCaseImpl {
         updateStateHash()
         
         switch state.value {
-            
-        case .initial, .stopped, .loadFailed:
-            break
-            
-        case .loading:
-            stopLoading()
-            
-        case .loaded:
+        
+        case .activeSession(_, .loaded(.playing, _)), .activeSession(_, .loaded(.paused, _)):
+            return playMediaUseCase.stop().mapResult()
+
+        case .activeSession(_, .loaded(.initial, _)):
             releaseResources()
             
-        case .playing, .paused, .finished:
+        case .activeSession(_, .loading):
+            stopLoading()
             
-            return playMediaUseCase.stop().mapResult()
+        default:
+            break
         }
         
         return .success(())
@@ -196,10 +190,10 @@ extension PlayMediaWithSubtitlesUseCaseImpl {
         
         switch state.value {
         
-        case .playing:
+        case .activeSession(_, .loaded(.playing, _)):
             return pause()
             
-        case .paused:
+        case .activeSession(_, .loaded(.paused, _)):
             return play()
             
         default:
@@ -229,13 +223,23 @@ extension PlayMediaWithSubtitlesUseCaseImpl {
         
         switch currentState {
             
-        case .playing(let session, _):
-            state.value = .playing(session: session, subtitlesState: newSubtitlesState)
+        case .noActiveSession, .activeSession(_, .loadFailed), .activeSession(_, .loading):
+            return
             
-        case .paused(let session, _, let time):
-            state.value = .paused(session: session, subtitlesState: newSubtitlesState, time: time)
+        case .activeSession(let session, .loaded(.playing, _)):
             
-        case .initial, .stopped, .finished, .loading, .loaded, .loadFailed:
+            state.value = .activeSession(
+                session,
+                .loaded(.playing, newSubtitlesState)
+            )
+            
+        case .activeSession(let session, .loaded(.paused(let time), _)):
+            state.value = .activeSession(
+                session,
+                .loaded(.paused(time: time), newSubtitlesState)
+            )
+            
+        default:
             return
         }
     }
@@ -243,6 +247,7 @@ extension PlayMediaWithSubtitlesUseCaseImpl {
     private func updateStateOnMediaChange(_ mediaState: PlayMediaUseCaseState) {
         
         let currentState = state.value
+        
         guard let session = currentState.session else {
             return
         }
@@ -254,13 +259,16 @@ extension PlayMediaWithSubtitlesUseCaseImpl {
             
         case .stopped:
             subtitlesChangesObserver?.cancel()
-            state.value = .stopped(session: session)
+            state.value = .noActiveSession
             
         case .playing:
             
-            state.value = .playing(session: session, subtitlesState: currentState.subtitlesState)
+            state.value = .activeSession(
+                session,
+                .loaded(.playing, currentState.subtitlesState)
+            )
 
-            guard case .playing = state.value else {
+            guard case .activeSession(_, .loaded(.playing, _)) = state.value else {
                 return
             }
 
@@ -277,16 +285,19 @@ extension PlayMediaWithSubtitlesUseCaseImpl {
             
         case .paused(_, let time):
             playSubtitlesUseCase?.pause()
-            state.value = .paused(session: session, subtitlesState: currentState.subtitlesState, time: time)
+            state.value = .activeSession(session, .loaded(.paused(time: time), currentState.subtitlesState))
             
         case .finished:
             
             subtitlesChangesObserver?.cancel()
+            let currentPosition = playSubtitlesUseCase?.state.value.position
+            let subtitlesState = currentState.subtitlesState
+            
             playSubtitlesUseCase?.stop()
             
             let stateHash = self.stateHash
             
-            if let currentPosition = currentState.subtitlesState?.position {
+            if let currentPosition = currentPosition {
                 
                 willChangeSubtitlesPosition.send(.init(from: currentPosition, to: nil))
     
@@ -295,7 +306,13 @@ extension PlayMediaWithSubtitlesUseCaseImpl {
                 }
             }
             
-            state.value = .finished(session: session)
+            self.state.value = .activeSession(
+                session,
+                .loaded(
+                    .finished,
+                    subtitlesState
+                )
+            )
         }
     }
 }

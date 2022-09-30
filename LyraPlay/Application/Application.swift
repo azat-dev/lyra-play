@@ -221,9 +221,39 @@ public class Application {
     
     func makeFlow() -> MainFlowModel {
         
+        let playMediaWithTranslationsUseCaseFactory = PlayMediaWithTranslationsUseCaseImplFactory(
+            playMediaWithSubtitlesUseCase: playMediaWithSubtitlesUseCase,
+            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
+            provideTranslationsToPlayUseCase: provideTranslationsToPlayUseCase,
+            pronounceTranslationsUseCase: pronounceTranslationsUseCase
+        )
+        
+        let showMediaInfoUseCaseFactory = ShowMediaInfoUseCaseImplFactory(
+            mediaLibraryRepository: mediaLibraryRepository,
+            imagesRepository: imagesRepository,
+            defaultImage: UIImage(named: "Image.CoverPlaceholder")!.pngData()!
+        )
+        
+        let playMediaWithInfoUseCase = PlayMediaWithInfoUseCaseImpl(
+            playMediaWithTranslationsUseCaseFactory: playMediaWithTranslationsUseCaseFactory,
+            showMediaInfoUseCaseFactory: showMediaInfoUseCaseFactory
+        )
+        
+        Task {
+            
+            let _ = await playMediaWithInfoUseCase.prepare(
+                session: .init(
+                    mediaId: UUID(uuidString: "67BCD338-5652-4054-95D3-29B979D9C092")!,
+                    learningLanguage: "",
+                    nativeLanguage: ""
+                )
+            )
+            
+            playMediaWithInfoUseCase.play()
+        }
+        
         let currentPlayerStateViewModelFactory = CurrentPlayerStateViewModelImplFactory(
-            playMediaUseCase: playMediaWithTranslationsUseCase,
-            showMediaInfoUseCase: showMediaInfoUseCase
+            playMediaUseCase: playMediaWithInfoUseCase
         )
         
         let mainTabBarViewModelFactory = MainTabBarViewModelImplFactory(
@@ -259,7 +289,7 @@ public class Application {
         
         let libraryFileViewModelFactory = LibraryItemViewModelImplFactory(
             showMediaInfoUseCase: showMediaInfoUseCase,
-            playMediaUseCase: playMediaWithTranslationsUseCase
+            playMediaUseCase: playMediaWithInfoUseCase
         )
         
         let browseDictionaryUseCase = BrowseDictionaryUseCaseImpl(
@@ -372,10 +402,19 @@ public class Application {
             deleteDictionaryItemFlowModelFactory: deleteDictionaryItemFlowModelFactory
         )
         
+        let currentPlayerStateDetailsViewModelFactory = CurrentPlayerStateDetailsViewModelImplFactory(
+            playMediaUseCase: playMediaWithInfoUseCase
+        )
+        
+        let currentPlayerStateDetailsFlowModelFactory = CurrentPlayerStateDetailsFlowModelImplFactory(
+            currentPlayerStateDetailsViewModelFactory: currentPlayerStateDetailsViewModelFactory
+        )
+        
         return MainFlowModelImpl(
             mainTabBarViewModelFactory: mainTabBarViewModelFactory,
             libraryFlowModelFactory: libraryFolderFlowModelFactory,
-            dictionaryFlowModelFactory: dictionaryFlowModelFactory
+            dictionaryFlowModelFactory: dictionaryFlowModelFactory,
+            currentPlayerStateDetailsFlowModelFactory: currentPlayerStateDetailsFlowModelFactory
         )
     }
     
@@ -431,11 +470,18 @@ public class Application {
             addDictionaryItemFlowPresenterFactory: addDictionaryItemFlowPresenterFactory
         )
         
+        let currentPlayerStateDetailsViewControllerFactory = CurrentPlayerStateDetailsViewControllerFactory()
+        
+        let currentPlayerStateDetailsFlowPresenterFactory = CurrentPlayerStateDetailsFlowPresenterImplFactory(
+            currentPlayerStateDetailsViewControllerFactory: currentPlayerStateDetailsViewControllerFactory
+        )
+        
         return MainFlowPresenterImpl(
             mainFlowModel: flow,
             mainTabBarViewFactory: MainTabBarViewControllerFactory(),
             libraryFlowPresenterFactory: libraryFolderFlowPresenterFactory,
-            dictionaryFlowPresenterFactory: dictionaryFlowPresenterFactory
+            dictionaryFlowPresenterFactory: dictionaryFlowPresenterFactory,
+            currentPlayerStateDetailsFlowPresenterFactory: currentPlayerStateDetailsFlowPresenterFactory
         )
     }
 }

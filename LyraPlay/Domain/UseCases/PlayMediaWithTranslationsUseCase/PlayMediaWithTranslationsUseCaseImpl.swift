@@ -17,7 +17,7 @@ public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslatio
     private let provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase
     private let pronounceTranslationsUseCase: PronounceTranslationsUseCase
     
-    public let state = PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>(.initial)
+    public let state = PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>(.noActiveSession)
     
     private var playMediaWithSubtitlesObserver: AnyCancellable?
     private var subtitlesChangesObserver: AnyCancellable?
@@ -59,7 +59,7 @@ extension PlayMediaWithTranslationsUseCaseImpl {
 
     public func prepare(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        state.value = .loading(session: session)
+        state.value = .activeSession(session, .loading)
         
         let result = await playMediaWithSubtitlesUseCase.prepare(
             params: .init(mediaId: session.mediaId, subtitlesLanguage: session.learningLanguage)
@@ -67,24 +67,25 @@ extension PlayMediaWithTranslationsUseCaseImpl {
         
         guard case .success = result else {
             
-            state.value = .loadFailed(session: session)
+            state.value = .activeSession(session, .loadFailed)
             return .failure(result.error!.map())
         }
         
         if Task.isCancelled {
-            state.value = .loadFailed(session: session)
+            
+            state.value = .activeSession(session, .loadFailed)
             return .failure(.taskCancelled)
         }
         
-        guard case .loaded(_, let subtitlesData) = playMediaWithSubtitlesUseCase.state.value else {
+        guard case .activeSession(_, .loaded(_, let subtitlesData)) = playMediaWithSubtitlesUseCase.state.value else {
             
-            state.value = .loadFailed(session: session)
+            state.value = .activeSession(session, .loadFailed)
             return .failure(.internalError(nil))
         }
         
         guard let subtitles = subtitlesData?.subtitles else {
             
-            state.value = .loaded(session: session, subtitlesState: nil)
+            state.value = .activeSession(session, .loaded(.initial, nil))
             return .success(())
         }
         
@@ -96,8 +97,15 @@ extension PlayMediaWithTranslationsUseCaseImpl {
                 subtitles: subtitles
             )
         )
-        
-        state.value = .loaded(session: session, subtitlesState: .init(position: nil, subtitles: subtitles))
+
+        state.value = .activeSession(
+            session,
+            .loaded(
+                .initial,
+                .init(position: nil, subtitles: subtitles)
+            )
+        )
+
         return .success(())
     }
     
@@ -127,10 +135,10 @@ extension PlayMediaWithTranslationsUseCaseImpl {
         
         switch state.value {
             
-        case .playing, .pronouncingTranslations:
+        case .activeSession(_, .loaded(.playing, nil)):
             return pause()
             
-        case .paused:
+        case .activeSession(_, .loaded):
             return play()
             
         default:
@@ -152,23 +160,46 @@ extension PlayMediaWithTranslationsUseCaseImpl {
             return
         }
         
-        switch newState {
-            
-        case .initial, .loading, .loadFailed, .loaded:
-            break
-            
-        case .paused(_, let subtitlesState, let time):
-            state.value = .paused(session: session, subtitlesState: subtitlesState, time: time)
-            
-        case .stopped:
-            state.value = .stopped(session: session)
-            
-        case .finished:
-            state.value = .finished(session: session)
-    
-        case .playing(_, let subtitlesState):
-            state.value = .playing(session: session, subtitlesState: subtitlesState)
+        guard case .activeSession(_, let loadState) = newState else {
+            state.value = .noActiveSession
+            return
         }
+        
+        switch loadState {
+        
+        case .loading:
+            state.value = .activeSession(session, .loading)
+
+        case .loadFailed:
+            state.value = .activeSession(session, .loadFailed)
+
+        case .loaded(let playerState, let subtitlesState):
+
+            switch playerState {
+
+            case .initial:
+                state.value = .activeSession(session, .loaded(.initial, subtitlesState))
+
+            case .playing:
+                state.value = .activeSession(session, .loaded(.playing, subtitlesState))
+
+            case .pronouncingTranslations(let data):
+
+                state.value = .activeSession(
+                    session,
+                    .loaded(.pronouncingTranslations(data: data), subtitlesState)
+                )
+
+            case .paused(let time):
+                state.value = .activeSession(session, .loaded(.paused(time: time), subtitlesState))
+
+            case .stopped:
+                state.value = .activeSession(session, .loaded(.stopped, subtitlesState))
+
+            case .finished:
+                state.value = .activeSession(session, .loaded(.finished, subtitlesState))
+            }
+        }        
     }
 }
 
@@ -194,7 +225,7 @@ extension PlayMediaWithTranslationsUseCaseImpl {
         
         guard
             let currentPosition = data.from,
-            case .playing = currentState,
+            case .activeSession(_, .loaded(.playing, _)) = currentState,
             let session = currentState.session,
             let subtitlesState = state.value.subtitlesState
         else {
@@ -234,11 +265,7 @@ extension PlayMediaWithTranslationsUseCaseImpl {
                     
                     do {
                         try state.send(
-                            .pronouncingTranslations(
-                                session: session,
-                                subtitlesState: subtitlesState,
-                                data: stateData
-                            )
+                            .activeSession(session, .loaded(.pronouncingTranslations(data: stateData), subtitlesState))
                         )
                         
                     } catch is PublisherFlowIsChanged {

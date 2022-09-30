@@ -36,7 +36,6 @@ public final class EditDictionaryItemViewController: UIViewController, EditDicti
         
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        setup()
     }
     
     public required init?(coder: NSCoder) {

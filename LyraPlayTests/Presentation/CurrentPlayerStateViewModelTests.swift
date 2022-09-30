@@ -15,9 +15,9 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
     typealias SUT = (
         viewModel: CurrentPlayerStateViewModel,
         delegate: CurrentPlayerStateViewModelDelegateMock,
-        playMediaUseCase: PlayMediaWithTranslationsUseCaseMock,
+        playMediaUseCase: PlayMediaWithInfoUseCaseMock,
         showMediaInfoUseCase: ShowMediaInfoUseCaseMock,
-        playerState: PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>
+        playerState: PublisherWithSession<PlayMediaWithInfoUseCaseState, Never>
     )
 
     // MARK: - Methods
@@ -26,19 +26,24 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
 
         let delegate = mock(CurrentPlayerStateViewModelDelegate.self)
 
-        let playMediaUseCase = mock(PlayMediaWithTranslationsUseCase.self)
+        let showMediaInfoUseCase = mock(ShowMediaInfoUseCase.self)
+        let showMediaInfoUseCaseFactory = mock(ShowMediaInfoUseCaseFactory.self)
         
-        let state = PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>(.initial)
+        given(showMediaInfoUseCaseFactory.create())
+            .willReturn(showMediaInfoUseCase)
+        
+        
+        let playMediaUseCase = mock(PlayMediaWithInfoUseCase.self)
+        
+        let state = PublisherWithSession<PlayMediaWithInfoUseCaseState, Never>(.noActiveSession)
         
         given(playMediaUseCase.state)
             .willReturn(state)
 
-        let showMediaInfoUseCase = mock(ShowMediaInfoUseCase.self)
         
         let viewModel = CurrentPlayerStateViewModelImpl(
             delegate: delegate,
-            playMediaUseCase: playMediaUseCase,
-            showMediaInfoUseCase: showMediaInfoUseCase
+            playMediaUseCase: playMediaUseCase
         )
 
         detectMemoryLeak(instance: viewModel)
@@ -52,10 +57,10 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         )
     }
     
-    func anyMediaInfo() -> MediaInfo {
+    func anyMediaInfo(id: String) -> MediaInfo {
         
         return .init(
-            id: "",
+            id: id,
             coverImage: "".data(using: .utf8)!,
             title: "",
             artist: nil,
@@ -69,14 +74,15 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
 
         // Given
         let mediaId = UUID()
+        let mediaInfo = anyMediaInfo(id: mediaId.uuidString)
         
         given(await sut.showMediaInfoUseCase.fetchInfo(trackId: mediaId))
-            .willReturn(.success(anyMediaInfo()))
+            .willReturn(.success(mediaInfo))
         
         // When
-        sut.playerState.value = .playing(
-            session: .init(mediaId: mediaId, learningLanguage: "", nativeLanguage: ""),
-            subtitlesState: nil
+        sut.playerState.value = .activeSession(
+            .init(mediaId: mediaId, learningLanguage: "", nativeLanguage: ""),
+            .loaded(.playing, nil, mediaInfo)
         )
 
         // Then
@@ -107,15 +113,15 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
 
         // Given
         let mediaId = UUID()
+        let mediaInfo = anyMediaInfo(id: mediaId.uuidString)
         
         given(await sut.showMediaInfoUseCase.fetchInfo(trackId: mediaId))
-            .willReturn(.success(anyMediaInfo()))
+            .willReturn(.success(mediaInfo))
         
         // When
-        sut.playerState.value = .paused(
-            session: .init(mediaId: mediaId, learningLanguage: "", nativeLanguage: ""),
-            subtitlesState: nil,
-            time: 10
+        sut.playerState.value = .activeSession(
+            .init(mediaId: mediaId, learningLanguage: "", nativeLanguage: ""),
+            .loaded(.paused(time: 10), nil, mediaInfo)
         )
 
         // Then

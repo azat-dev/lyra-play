@@ -22,6 +22,8 @@ public protocol MainFlowModelOutput {
     var libraryFlow: CurrentValueSubject<LibraryFolderFlowModel?, Never> { get }
     
     var dictionaryFlow: CurrentValueSubject<DictionaryFlowModel?, Never> { get }
+    
+    var currentPlayerStateDetailsFlow: CurrentValueSubject<CurrentPlayerStateDetailsFlowModel?, Never> { get }
 }
 
 public protocol MainFlowModel: MainFlowModelOutput, MainFlowModelInput {

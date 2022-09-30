@@ -13,6 +13,8 @@ public protocol MainTabBarViewModelDelegate: AnyObject {
     func runDictionaryFlow()
     
     func runLibraryFlow()
+    
+    func runOpenCurrentPlayerStateDetailsFlow()
 }
 
 public protocol MainTabBarViewModelInput: AnyObject {

@@ -19,11 +19,14 @@ public final class MainFlowPresenterImpl: MainFlowPresenter {
     
     private let libraryFlowPresenterFactory: LibraryFolderFlowPresenterFactory
     private let dictionaryFlowPresenterFactory: DictionaryFlowPresenterFactory
+    private let currentPlayerStateDetailsFlowPresenterFactory: CurrentPlayerStateDetailsFlowPresenterFactory
     
     private var libraryFlowPresenter: LibraryFolderFlowPresenter?
     private var libraryFlowObserver: AnyCancellable?
     
     private var dictionaryFlowPresenter: DictionaryFlowPresenter?
+    private var currentPlayerStateDetailsPresenter: CurrentPlayerStateDetailsFlowPresenter?
+    
     private var observers = Set<AnyCancellable>()
     
     
@@ -33,13 +36,15 @@ public final class MainFlowPresenterImpl: MainFlowPresenter {
         mainFlowModel: MainFlowModel,
         mainTabBarViewFactory: MainTabBarViewFactory,
         libraryFlowPresenterFactory: LibraryFolderFlowPresenterFactory,
-        dictionaryFlowPresenterFactory: DictionaryFlowPresenterFactory
+        dictionaryFlowPresenterFactory: DictionaryFlowPresenterFactory,
+        currentPlayerStateDetailsFlowPresenterFactory: CurrentPlayerStateDetailsFlowPresenterFactory
     ) {
         
         self.mainFlowModel = mainFlowModel
         self.mainTabBarViewFactory = mainTabBarViewFactory
         self.libraryFlowPresenterFactory = libraryFlowPresenterFactory
         self.dictionaryFlowPresenterFactory = dictionaryFlowPresenterFactory
+        self.currentPlayerStateDetailsFlowPresenterFactory = currentPlayerStateDetailsFlowPresenterFactory
     }
     
     deinit {
@@ -52,6 +57,9 @@ public final class MainFlowPresenterImpl: MainFlowPresenter {
 extension MainFlowPresenterImpl {
     
     public func present(at container: UIWindow) {
+
+        let rootNavigationContainer = UINavigationController()
+        rootNavigationContainer.navigationBar.isHidden = true
         
         let mainTabBarView = mainTabBarViewFactory.create(viewModel: mainFlowModel.mainTabBarViewModel)
         
@@ -98,6 +106,29 @@ extension MainFlowPresenterImpl {
                 self.dictionaryFlowPresenter = presenter
             }.store(in: &observers)
         
-        container.setRoot(mainTabBarView)
+        mainFlowModel.currentPlayerStateDetailsFlow
+            .receive(on: RunLoop.main)
+            .sink { [weak self] currentPlayerStateDetailsFlow in
+                
+                guard let self = self else {
+                    return
+                }
+                
+                guard let flow = currentPlayerStateDetailsFlow else {
+                    
+                    self.currentPlayerStateDetailsPresenter?.dismiss()
+                    self.currentPlayerStateDetailsPresenter = nil
+                    return
+                }
+                
+                let presenter = self.currentPlayerStateDetailsFlowPresenterFactory.create(for: flow)
+                
+                self.currentPlayerStateDetailsPresenter = presenter
+                presenter.present(at: rootNavigationContainer)
+            }
+            .store(in: &observers)
+        
+        rootNavigationContainer.setRoot(mainTabBarView)
+        container.setRoot(rootNavigationContainer)
     }
 }

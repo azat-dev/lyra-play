@@ -15,9 +15,11 @@ public final class MainFlowModelImpl: MainFlowModel {
     private let mainTabBarViewModelFactory: MainTabBarViewModelFactory
     private let libraryFlowModelFactory: LibraryFolderFlowModelFactory
     private let dictionaryFlowModelFactory: DictionaryFlowModelFactory
+    private let currentPlayerStateDetailsFlowModelFactory: CurrentPlayerStateDetailsFlowModelFactory
     
     public var libraryFlow: CurrentValueSubject<LibraryFolderFlowModel?, Never> = .init(nil)
     public var dictionaryFlow: CurrentValueSubject<DictionaryFlowModel?, Never> = .init(nil)
+    public var currentPlayerStateDetailsFlow: CurrentValueSubject<CurrentPlayerStateDetailsFlowModel?, Never> = .init(nil)
 
     public lazy var mainTabBarViewModel: MainTabBarViewModel = {
         
@@ -29,12 +31,14 @@ public final class MainFlowModelImpl: MainFlowModel {
     public init(
         mainTabBarViewModelFactory: MainTabBarViewModelFactory,
         libraryFlowModelFactory: LibraryFolderFlowModelFactory,
-        dictionaryFlowModelFactory: DictionaryFlowModelFactory
+        dictionaryFlowModelFactory: DictionaryFlowModelFactory,
+        currentPlayerStateDetailsFlowModelFactory: CurrentPlayerStateDetailsFlowModelFactory
     ) {
 
         self.mainTabBarViewModelFactory = mainTabBarViewModelFactory
         self.libraryFlowModelFactory = libraryFlowModelFactory
         self.dictionaryFlowModelFactory = dictionaryFlowModelFactory
+        self.currentPlayerStateDetailsFlowModelFactory = currentPlayerStateDetailsFlowModelFactory
         
         runLibraryFlow()
     }
@@ -61,6 +65,7 @@ extension MainFlowModelImpl: MainTabBarViewModelDelegate {
         }
         
         libraryFlow.value = libraryFlowModelFactory.create(folderId: nil)
+        runOpenCurrentPlayerStateDetailsFlow()
     }
     
     public func runDictionaryFlow() {
@@ -70,5 +75,24 @@ extension MainFlowModelImpl: MainTabBarViewModelDelegate {
         }
         
         dictionaryFlow.value = dictionaryFlowModelFactory.create()
+    }
+    
+    public func runOpenCurrentPlayerStateDetailsFlow() {
+        
+        if currentPlayerStateDetailsFlow.value != nil {
+            return
+        }
+        
+        currentPlayerStateDetailsFlow.value = currentPlayerStateDetailsFlowModelFactory.create(delegate: self)
+    }
+}
+
+// MARK: - CurrentPlayerStateDetailsFlowModelDelegate
+
+extension MainFlowModelImpl: CurrentPlayerStateDetailsFlowModelDelegate {
+    
+    public func currentPlayerStateDetailsFlowModelDidDispose() {
+        
+        currentPlayerStateDetailsFlow.value = nil
     }
 }

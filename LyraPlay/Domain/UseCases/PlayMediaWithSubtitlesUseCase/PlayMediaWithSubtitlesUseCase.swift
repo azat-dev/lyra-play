@@ -15,17 +15,29 @@ public enum PlayMediaWithSubtitlesUseCaseError: Error {
     case noActiveMedia
 }
 
-public enum PlayMediaWithSubtitlesUseCaseState: Equatable {
+public enum PlayMediaWithSubtitlesUseCasePlayerState: Equatable {
 
     case initial
-    case loading(session: PlayMediaWithSubtitlesSessionParams)
-    case loadFailed(session: PlayMediaWithSubtitlesSessionParams)
-    case loaded(session: PlayMediaWithSubtitlesSessionParams, subtitlesState: SubtitlesState?)
-    case playing(session: PlayMediaWithSubtitlesSessionParams, subtitlesState: SubtitlesState?)
-    case paused(session: PlayMediaWithSubtitlesSessionParams, subtitlesState: SubtitlesState?, time: TimeInterval)
-    case stopped(session: PlayMediaWithSubtitlesSessionParams)
-    case finished(session: PlayMediaWithSubtitlesSessionParams)
+    case playing(SubtitlesState?)
+    case paused(subtitlesState: SubtitlesState?, time: TimeInterval)
+    case stopped
+    case finished(SubtitlesState)
 }
+
+public enum PlayMediaWithSubtitlesUseCaseLoadState: Equatable {
+
+    case loading
+    case loadFailed
+    case loaded(Subtitles, PlayMediaWithTranslationsUseCasePlayerState)
+}
+
+public enum PlayMediaWithSubtitlesUseCaseState: Equatable {
+
+    case noActiveSession
+    case activeSession(PlayMediaWithSubtitlesSessionParams, PlayMediaWithTranslationsUseCaseLoadState)
+}
+
+// MARK: - Protocols
 
 public protocol PlayMediaWithSubtitlesUseCaseInput {
 

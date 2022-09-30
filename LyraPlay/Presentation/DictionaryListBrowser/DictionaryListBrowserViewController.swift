@@ -26,7 +26,6 @@ public final class DictionaryListBrowserViewController: UIViewController, Dictio
         
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        setup()
     }
     
     required init?(coder: NSCoder) {

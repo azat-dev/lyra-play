@@ -16,35 +16,36 @@ class LibraryItemViewModelTests: XCTestCase {
         viewModel: LibraryItemViewModel,
         delegate: LibraryItemViewModelDelegateMock,
         showMediaInfoUseCase: ShowMediaInfoUseCaseMock,
-        playMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCaseMock,
-        playerState: PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>
+        playMediaUseCase: PlayMediaWithInfoUseCaseMock,
+        playerState: PublisherWithSession<PlayMediaWithInfoUseCaseState, Never>
     )
     
     func createSUT(mediaId: UUID) async -> SUT {
         
         let delegate = mock(LibraryItemViewModelDelegate.self)
         let showMediaInfoUseCase = mock(ShowMediaInfoUseCase.self)
-        let playMediaWithTranslationsUseCase = mock(PlayMediaWithTranslationsUseCase.self)
+        let playMediaUseCase = mock(PlayMediaWithInfoUseCase.self)
         
-        given(playMediaWithTranslationsUseCase.togglePlay())
+        given(playMediaUseCase.togglePlay())
             .willReturn(.success(()))
         
-        given(playMediaWithTranslationsUseCase.play())
+        given(playMediaUseCase.play())
             .willReturn(.success(()))
         
-        given(await playMediaWithTranslationsUseCase.prepare(session: any()))
+        given(await playMediaUseCase.prepare(session: any()))
             .willReturn(.success(()))
         
-        let playerState = PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>(.initial)
+        let playerState = PublisherWithSession<PlayMediaWithInfoUseCaseState, Never>(.noActiveSession)
         
-        given(playMediaWithTranslationsUseCase.state)
+        given(playMediaUseCase.state)
             .willReturn(playerState)
+        
         
         let viewModel = LibraryItemViewModelImpl(
             trackId: mediaId,
             delegate: delegate,
             showMediaInfoUseCase: showMediaInfoUseCase,
-            playMediaUseCase: playMediaWithTranslationsUseCase
+            playMediaUseCase: playMediaUseCase
         )
         detectMemoryLeak(instance: viewModel)
         
@@ -52,7 +53,7 @@ class LibraryItemViewModelTests: XCTestCase {
             viewModel,
             delegate,
             showMediaInfoUseCase,
-            playMediaWithTranslationsUseCase,
+            playMediaUseCase,
             playerState
         )
     }
@@ -88,15 +89,27 @@ class LibraryItemViewModelTests: XCTestCase {
         isPlayingPromise.expect([false])
     }
     
+    private func anyMediaInfo(id: String) -> MediaInfo {
+        return .init(
+            id: id,
+            coverImage: "".data(using: .utf8)!,
+            title: "",
+            artist: nil,
+            duration: 0
+        )
+    }
+    
     private func givenUseCasePlayingMedia(sut: SUT, id: UUID) {
         
-        sut.playerState.value = .playing(
-            session: .init(
+        let mediaInfo = anyMediaInfo(id: id.uuidString)
+        
+        sut.playerState.value = .activeSession(
+            .init(
                 mediaId: id,
                 learningLanguage: "",
                 nativeLanguage: ""
             ),
-            subtitlesState: nil
+            .loaded(.playing, nil, mediaInfo)
         )
     }
     
@@ -150,7 +163,7 @@ class LibraryItemViewModelTests: XCTestCase {
         let _ = await sut.viewModel.togglePlay()
         
         // Then
-        verify(sut.playMediaWithTranslationsUseCase.play())
+        verify(sut.playMediaUseCase.play())
             .wasCalled(1)
     }
     
@@ -169,7 +182,7 @@ class LibraryItemViewModelTests: XCTestCase {
         let _ = await sut.viewModel.togglePlay()
         
         // Then
-        verify(sut.playMediaWithTranslationsUseCase.togglePlay())
+        verify(sut.playMediaUseCase.togglePlay())
             .wasCalled(1)
     }
     
@@ -190,9 +203,9 @@ class LibraryItemViewModelTests: XCTestCase {
         let _ = await sut.viewModel.togglePlay()
         
         // Then
-        verify(await sut.playMediaWithTranslationsUseCase.prepare(session: any()))
+        verify(await sut.playMediaUseCase.prepare(session: any()))
             .wasCalled(1)
-        verify(sut.playMediaWithTranslationsUseCase.play())
+        verify(sut.playMediaUseCase.play())
             .wasCalled(1)
     }
 }

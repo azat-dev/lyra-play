@@ -59,14 +59,12 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
         return tabControllers[.dictionary]!
     }
     
-    
     // MARK: - Initializers
     
     init(viewModel: MainTabBarViewModel) {
         
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        setup()
     }
     
     required init?(coder: NSCoder) {

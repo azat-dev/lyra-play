@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct MediaInfo {
+public struct MediaInfo: Equatable {
 
     // MARK: - Properties
 

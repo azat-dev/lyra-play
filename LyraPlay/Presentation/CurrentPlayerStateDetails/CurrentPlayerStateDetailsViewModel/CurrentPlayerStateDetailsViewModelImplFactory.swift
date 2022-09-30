@@ -1,13 +1,13 @@
 //
-//  CurrentPlayerStateViewModelImplFactory.swift
+//  CurrentPlayerStateDetailsViewModelImplFactory.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 15.09.2022.
+//  Created by Azat Kaiumov on 30.09.2022.
 //
 
 import Foundation
 
-public final class CurrentPlayerStateViewModelImplFactory: CurrentPlayerStateViewModelFactory {
+public final class CurrentPlayerStateDetailsViewModelImplFactory: CurrentPlayerStateDetailsViewModelFactory {
 
     // MARK: - Properties
 
@@ -22,9 +22,9 @@ public final class CurrentPlayerStateViewModelImplFactory: CurrentPlayerStateVie
 
     // MARK: - Methods
 
-    public func create(delegate: CurrentPlayerStateViewModelDelegate) -> CurrentPlayerStateViewModel {
+    public func create(delegate: CurrentPlayerStateDetailsViewModelDelegate) -> CurrentPlayerStateDetailsViewModel {
 
-        return CurrentPlayerStateViewModelImpl(
+        return CurrentPlayerStateDetailsViewModelImpl(
             delegate: delegate,
             playMediaUseCase: playMediaUseCase
         )

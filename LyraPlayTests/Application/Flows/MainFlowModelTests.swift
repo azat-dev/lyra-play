@@ -32,6 +32,13 @@ class MainFlowModelTests: XCTestCase {
         given(dictionaryFlowModelFactory.create())
             .willReturn(dictionaryFlowModel)
         
+        
+        let currentPlayerStateDetailsFlowModel = mock(CurrentPlayerStateDetailsFlowModel.self)
+        let currentPlayerStateDetailsFlowModelFactory = mock(CurrentPlayerStateDetailsFlowModelFactory.self)
+        
+        given(currentPlayerStateDetailsFlowModelFactory.create(delegate: any()))
+            .willReturn(currentPlayerStateDetailsFlowModel)
+        
         let mainTabBarViewModel = mock(MainTabBarViewModel.self)
         let mainTabBarViewModelFactory = mock(MainTabBarViewModelFactory.self)
         
@@ -41,7 +48,8 @@ class MainFlowModelTests: XCTestCase {
         let flow = MainFlowModelImpl(
             mainTabBarViewModelFactory: mainTabBarViewModelFactory,
             libraryFlowModelFactory: libraryFlowModelFactory,
-            dictionaryFlowModelFactory: dictionaryFlowModelFactory
+            dictionaryFlowModelFactory: dictionaryFlowModelFactory,
+            currentPlayerStateDetailsFlowModelFactory: currentPlayerStateDetailsFlowModelFactory
         )
         
         detectMemoryLeak(instance: flow)
@@ -52,7 +60,9 @@ class MainFlowModelTests: XCTestCase {
             libraryFlowModel,
             libraryFlowModelFactory,
             dictionaryFlowModel,
-            dictionaryFlowModelFactory
+            dictionaryFlowModelFactory,
+            currentPlayerStateDetailsFlowModel,
+            currentPlayerStateDetailsFlowModelFactory
         )
         
         return (
@@ -92,5 +102,20 @@ class MainFlowModelTests: XCTestCase {
         
         // Then
         dictionaryFlowSequence.expect([true, false])
+    }
+    
+    func test_runOpenCurrentPlayerStateDetailsFlow() async throws {
+        
+        // Given
+        let sut = createSUT(folderId: nil)
+        
+        let currentPlayerStateDetailsPromise = watch(sut.flow.currentPlayerStateDetailsFlow, mapper: { $0 == nil })
+        
+        // When
+        sut.flow.runOpenCurrentPlayerStateDetailsFlow()
+        sut.flow.runOpenCurrentPlayerStateDetailsFlow()
+        
+        // Then
+        currentPlayerStateDetailsPromise.expect([true, false])
     }
 }

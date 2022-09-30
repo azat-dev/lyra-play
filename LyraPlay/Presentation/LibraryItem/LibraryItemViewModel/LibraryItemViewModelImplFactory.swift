@@ -12,13 +12,13 @@ public final class LibraryItemViewModelImplFactory: LibraryItemViewModelFactory 
     // MARK: - Properties
 
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
-    private let playMediaUseCase: PlayMediaWithTranslationsUseCase
+    private let playMediaUseCase: PlayMediaWithInfoUseCase
 
     // MARK: - Initializers
 
     public init(
         showMediaInfoUseCase: ShowMediaInfoUseCase,
-        playMediaUseCase: PlayMediaWithTranslationsUseCase
+        playMediaUseCase: PlayMediaWithInfoUseCase
     ) {
 
         self.showMediaInfoUseCase = showMediaInfoUseCase
