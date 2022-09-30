@@ -21,8 +21,12 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
     
+    private let sliderView = UISlider()
+    
     private let buttonsGroup = UIView()
     private let togglePlayButton = UIImageView()
+    private let goForwardButton = UIImageView()
+    private let goBackwardButton = UIImageView()
     
     private var observers = Set<AnyCancellable>()
     
@@ -135,11 +139,15 @@ extension CurrentPlayerStateDetailsViewController {
         togglePlayButton.isUserInteractionEnabled = true
         togglePlayButton.addGestureRecognizer(togglePlayButtonGestureRecognizer)
         
+        buttonsGroup.addSubview(goForwardButton)
         buttonsGroup.addSubview(togglePlayButton)
+        buttonsGroup.addSubview(goBackwardButton)
         
         contentGroup.addArrangedSubview(coverImageView)
         contentGroup.addArrangedSubview(titleLabel)
         contentGroup.addArrangedSubview(subtitleLabel)
+        
+        contentGroup.addArrangedSubview(sliderView)
         contentGroup.addArrangedSubview(buttonsGroup)
         
         view.addSubview(contentGroup)
@@ -154,7 +162,9 @@ extension CurrentPlayerStateDetailsViewController {
 
         Layout.apply(
             buttonsGroup: buttonsGroup,
-            togglePlayButton: togglePlayButton
+            togglePlayButton: togglePlayButton,
+            goForwardButton: goForwardButton,
+            goBackwardButton: goBackwardButton
         )
         
         Layout.apply(
@@ -181,5 +191,9 @@ extension CurrentPlayerStateDetailsViewController {
         Styles.apply(contentView: view)
         Styles.apply(activityIndicator: activityIndicator)
         Styles.apply(coverImage: coverImageView)
+        Styles.apply(slider: sliderView)
+        
+        Styles.apply(goForwardButton: goForwardButton)
+        Styles.apply(goBackwardButton: goBackwardButton)
     }
 }

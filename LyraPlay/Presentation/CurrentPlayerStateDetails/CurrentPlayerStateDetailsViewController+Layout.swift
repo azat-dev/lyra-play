@@ -14,26 +14,47 @@ extension CurrentPlayerStateDetailsViewController {
         
         // MARK: - Properties
         
-        private static let buttonSize: CGFloat = 40
+        private static let buttonSize: CGFloat = 38
         
         // MARK: - Methods
         
-        static func apply(
-            buttonsGroup: UIView,
-            togglePlayButton: UIImageView
-        ) {
+        static func applyButtonSize(button: UIImageView) {
             
-            togglePlayButton.translatesAutoresizingMaskIntoConstraints = false
+            button.translatesAutoresizingMaskIntoConstraints = false
             
             NSLayoutConstraint.activate([
-
+                
+                button.heightAnchor.constraint(equalTo: button.widthAnchor),
+                button.widthAnchor.constraint(equalToConstant: buttonSize)
+            ])
+        }
+        
+        static func apply(
+            buttonsGroup: UIView,
+            togglePlayButton: UIImageView,
+            goForwardButton: UIImageView,
+            goBackwardButton: UIImageView
+        ) {
+            
+            applyButtonSize(button: togglePlayButton)
+            applyButtonSize(button: goForwardButton)
+            applyButtonSize(button: goBackwardButton)
+            
+            NSLayoutConstraint.activate([
+                
                 togglePlayButton.topAnchor.constraint(equalTo: buttonsGroup.topAnchor, constant: 10),
                 togglePlayButton.bottomAnchor.constraint(equalTo: buttonsGroup.bottomAnchor, constant: -10),
                 
-                togglePlayButton.heightAnchor.constraint(equalTo: togglePlayButton.widthAnchor),
-                togglePlayButton.widthAnchor.constraint(equalToConstant: buttonSize),
+                togglePlayButton.centerXAnchor.constraint(equalTo: buttonsGroup.centerXAnchor),
+            ])
+            
+            NSLayoutConstraint.activate([
+
+                goBackwardButton.rightAnchor.constraint(equalTo: togglePlayButton.leftAnchor, constant: -50),
+                goForwardButton.leftAnchor.constraint(equalTo: togglePlayButton.rightAnchor, constant: 50),
                 
-                togglePlayButton.centerXAnchor.constraint(equalTo: buttonsGroup.centerXAnchor)
+                goBackwardButton.centerYAnchor.constraint(equalTo: togglePlayButton.centerYAnchor),
+                goForwardButton.centerYAnchor.constraint(equalTo: togglePlayButton.centerYAnchor),
             ])
         }
         
@@ -59,7 +80,8 @@ extension CurrentPlayerStateDetailsViewController {
             
             activityIndicator.constraintToCenter(of: view)
             contentGroup.axis = .vertical
-
+            contentGroup.alignment = .center
+            
             contentGroup.constraintTo(view: view)
         }
     }

@@ -18,8 +18,12 @@ extension CurrentPlayerStateDetailsViewController {
         private static let cornerRadius: CGFloat = 20
         
         static let imageConfig = UIImage.SymbolConfiguration(weight: .bold)
+        
         static let iconPlay = UIImage(systemName: "play.fill")
         static let iconPause = UIImage(systemName: "pause.fill")
+        
+        static let iconGoForward = UIImage(systemName: "goforward.30")
+        static let iconGoBackward = UIImage(systemName: "gobackward.30")
         
         // MARK: - Methods
         
@@ -60,6 +64,23 @@ extension CurrentPlayerStateDetailsViewController {
             
             apply(button: button)
             button.image = iconPause
+        }
+        
+        static func apply(goForwardButton button: UIImageView) {
+            
+            apply(button: button)
+            button.image = iconGoForward
+        }
+        
+        static func apply(goBackwardButton button: UIImageView) {
+            
+            apply(button: button)
+            button.image = iconGoForward
+        }
+        
+        static func apply(slider: UISlider) {
+            
+            slider.tintColor = .white
         }
     }
 }
