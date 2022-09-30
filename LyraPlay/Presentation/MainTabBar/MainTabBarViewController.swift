@@ -66,7 +66,6 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
         
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        setup()
     }
     
     required init?(coder: NSCoder) {
