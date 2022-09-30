@@ -15,7 +15,8 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
     typealias SUT = (
         viewModel: CurrentPlayerStateDetailsViewModel,
         delegate: CurrentPlayerStateDetailsViewModelDelegateMock,
-        playMediaUseCase: PlayMediaWithInfoUseCaseMock
+        playMediaUseCase: PlayMediaWithInfoUseCaseMock,
+        playerState: PublisherWithSession<PlayMediaWithInfoUseCaseState, Never>
     )
 
     // MARK: - Methods
@@ -25,6 +26,11 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
         let delegate = mock(CurrentPlayerStateDetailsViewModelDelegate.self)
 
         let playMediaUseCase = mock(PlayMediaWithInfoUseCase.self)
+        
+        let playerState = PublisherWithSession<PlayMediaWithInfoUseCaseState, Never>(.noActiveSession)
+        
+        given(playMediaUseCase.state)
+            .willReturn(playerState)
 
         let viewModel = CurrentPlayerStateDetailsViewModelImpl(
             delegate: delegate,
@@ -34,9 +40,10 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
         detectMemoryLeak(instance: viewModel)
 
         return (
-            viewModel: viewModel,
-            delegate: delegate,
-            playMediaUseCase: playMediaUseCase
+            viewModel,
+            delegate,
+            playMediaUseCase,
+            playerState
         )
     }
 
@@ -54,11 +61,27 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
             duration: 10
         )
         
+        let session = PlayMediaWithInfoSession(
+            mediaId: UUID(uuidString: mediaInfo.id)!,
+            learningLanguage: "",
+            nativeLanguage: ""
+        )
+        
+        given(sut.playMediaUseCase.togglePlay())
+            .willReturn(.success(()))
+        
         // When
         sut.viewModel.togglePlay()
         sut.viewModel.togglePlay()
+        
+        sut.playerState.value = .activeSession(session, .loading)
+        sut.playerState.value = .activeSession(session, .loaded(.playing, nil, mediaInfo))
+        sut.playerState.value = .activeSession(session, .loaded(.paused(time: 0), nil, mediaInfo))
 
         // Then
+        verify(sut.playMediaUseCase.togglePlay())
+            .wasCalled(2)
+        
         statePromise.expect([
             .notActive,
             .loading,

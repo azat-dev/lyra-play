@@ -17,6 +17,8 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
     private let playMediaUseCase: PlayMediaWithInfoUseCase
 
     public let state = CurrentValueSubject<CurrentPlayerStateDetailsViewModelState, Never>(.loading)
+    
+    private var observers = Set<AnyCancellable>()
 
     // MARK: - Initializers
 
@@ -27,6 +29,49 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
 
         self.delegate = delegate
         self.playMediaUseCase = playMediaUseCase
+        
+        bind(to: playMediaUseCase)
+    }
+    
+    // MARK: - Methods
+    
+    private func updateState(_ newState: PlayMediaWithInfoUseCaseState) {
+        
+        switch newState {
+            
+        case .noActiveSession:
+            state.value = .notActive
+            
+        case .activeSession(_, let loadState):
+            
+            switch loadState {
+            
+            case .loading:
+                state.value = .loading
+                
+            case .loadFailed:
+                state.value = .notActive
+                
+            case .loaded(let playerState, _, let mediaInfo):
+
+                state.value = .active(
+                    data: .init(
+                        title: mediaInfo.title,
+                        subtitle: mediaInfo.artist ?? "",
+                        coverImage: mediaInfo.coverImage,
+                        isPlaying: playerState.isPlaying
+                    )
+                )
+            }
+        }
+    }
+    
+    private func bind(to playMediaUseCase: PlayMediaWithInfoUseCase) {
+        
+        playMediaUseCase.state.publisher
+            .sink { [weak self] state in
+                self?.updateState(state)
+            }.store(in: &observers)
     }
 }
 
@@ -36,7 +81,7 @@ extension CurrentPlayerStateDetailsViewModelImpl {
 
     public func togglePlay() {
 
-        fatalError()
+        playMediaUseCase.togglePlay()
     }
 
     public func dispose() {
@@ -49,4 +94,21 @@ extension CurrentPlayerStateDetailsViewModelImpl {
 
 extension CurrentPlayerStateDetailsViewModelImpl {
 
+}
+
+// MARK: - Helpers
+
+fileprivate extension PlayMediaWithInfoUseCasePlayerState {
+    
+    var isPlaying: Bool {
+        
+        switch self {
+
+        case .playing, .pronouncingTranslations:
+            return true
+
+        default:
+            return false
+        }
+    }
 }

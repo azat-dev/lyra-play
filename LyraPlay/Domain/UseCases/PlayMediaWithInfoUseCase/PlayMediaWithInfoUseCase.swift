@@ -32,7 +32,7 @@ public enum PlayMediaWithInfoUseCaseLoadState: Equatable {
     
     case loading
     case loadFailed
-    case loaded(PlayMediaWithTranslationsUseCasePlayerState, SubtitlesState?, MediaInfo)
+    case loaded(PlayMediaWithInfoUseCasePlayerState, SubtitlesState?, MediaInfo)
 }
 
 public enum PlayMediaWithInfoUseCaseState: Equatable {

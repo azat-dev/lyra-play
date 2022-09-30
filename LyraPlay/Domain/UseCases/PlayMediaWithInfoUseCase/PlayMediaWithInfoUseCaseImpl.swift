@@ -62,7 +62,7 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
             return .loadFailed
             
         case .loaded(let playerState, let subtitlesState):
-            return .loaded(playerState, subtitlesState, currentMediaInfo!)
+            return .loaded(playerState.map(), subtitlesState, currentMediaInfo!)
         }
     }
 }
@@ -171,6 +171,33 @@ extension ShowMediaInfoUseCaseError {
             
         case .internalError(let error):
             return .internalError(error)
+        }
+    }
+}
+
+extension PlayMediaWithTranslationsUseCasePlayerState {
+    
+    func map() -> PlayMediaWithInfoUseCasePlayerState {
+        
+        switch self {
+        
+        case .initial:
+            return .initial
+        
+        case .playing:
+            return .playing
+            
+        case .pronouncingTranslations(let data):
+            return .pronouncingTranslations(data: data)
+            
+        case .paused(let time):
+            return .paused(time: time)
+            
+        case .stopped:
+            return .stopped
+            
+        case .finished:
+            return .finished
         }
     }
 }

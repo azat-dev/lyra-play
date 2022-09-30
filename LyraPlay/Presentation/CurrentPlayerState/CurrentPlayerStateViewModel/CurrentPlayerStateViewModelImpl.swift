@@ -76,7 +76,7 @@ extension CurrentPlayerStateViewModelImpl {
     }
 }
 
-fileprivate extension PlayMediaWithTranslationsUseCasePlayerState {
+fileprivate extension PlayMediaWithInfoUseCasePlayerState {
     
     func map() -> PlayerState {
         
