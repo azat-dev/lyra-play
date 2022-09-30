@@ -197,6 +197,7 @@
 		AA0F69C3287F5E8600BD13DB /* RowCell+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69C2287F5E8600BD13DB /* RowCell+Styles.swift */; };
 		AA0F69C5287F608B00BD13DB /* UIView+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69C4287F608B00BD13DB /* UIView+Layout.swift */; };
 		AA1571F428C681BF0059854C /* LibraryItemInfoPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1571F328C681BF0059854C /* LibraryItemInfoPresentation.swift */; };
+		AA180D4028E6E55500023C7A /* PlayMediaWithInfoUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA180D3F28E6E55500023C7A /* PlayMediaWithInfoUseCaseTests.swift */; };
 		AA190E6F287ABC9C000514AB /* SubtitlesPresenterViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA190E6E287ABC9C000514AB /* SubtitlesPresenterViewModelTests.swift */; };
 		AA190E72287AC6AC000514AB /* SubtitlesPresenterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA190E71287AC6AC000514AB /* SubtitlesPresenterViewModel.swift */; };
 		AA1ACC222862FE7E000EEDD5 /* DefaultTagsParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1ACC212862FE7E000EEDD5 /* DefaultTagsParserTests.swift */; };
@@ -416,6 +417,9 @@
 		AAD5208C28CFCB44008023DD /* EditDictionaryItemViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD5208B28CFCB44008023DD /* EditDictionaryItemViewController+Styles.swift */; };
 		AAD5208E28CFCB4B008023DD /* EditDictionaryItemViewController+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD5208D28CFCB4B008023DD /* EditDictionaryItemViewController+Layout.swift */; };
 		AAD6746628A441D4005AFD91 /* PlayMediaUseCaseStateEquatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD6746528A441D4005AFD91 /* PlayMediaUseCaseStateEquatable.swift */; };
+		AADB434928E4F26F00C0A9A0 /* PlayMediaWithInfoUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADB434828E4F26F00C0A9A0 /* PlayMediaWithInfoUseCase.swift */; };
+		AADB434B28E4F32400C0A9A0 /* PlayMediaWithInfoSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADB434A28E4F32400C0A9A0 /* PlayMediaWithInfoSession.swift */; };
+		AADB434D28E4F44200C0A9A0 /* PlayMediaWithInfoUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADB434C28E4F44200C0A9A0 /* PlayMediaWithInfoUseCaseImpl.swift */; };
 		AAEE8A142889B6C7007E41F3 /* TextSplitterMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE8A132889B6C7007E41F3 /* TextSplitterMock.swift */; };
 		AAEE8A162889C2C6007E41F3 /* ProvideTranslationsForSubtitlesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE8A152889C2C6007E41F3 /* ProvideTranslationsForSubtitlesUseCaseTests.swift */; };
 		AAF2CFE42876CA370003FCF7 /* ManagedSubtitles+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF2CFE32876CA370003FCF7 /* ManagedSubtitles+Mapping.swift */; };
@@ -741,6 +745,7 @@
 		AA0F69C2287F5E8600BD13DB /* RowCell+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RowCell+Styles.swift"; sourceTree = "<group>"; };
 		AA0F69C4287F608B00BD13DB /* UIView+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Layout.swift"; sourceTree = "<group>"; };
 		AA1571F328C681BF0059854C /* LibraryItemInfoPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemInfoPresentation.swift; sourceTree = "<group>"; };
+		AA180D3F28E6E55500023C7A /* PlayMediaWithInfoUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithInfoUseCaseTests.swift; sourceTree = "<group>"; };
 		AA190E6E287ABC9C000514AB /* SubtitlesPresenterViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterViewModelTests.swift; sourceTree = "<group>"; };
 		AA190E71287AC6AC000514AB /* SubtitlesPresenterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterViewModel.swift; sourceTree = "<group>"; };
 		AA1ACC212862FE7E000EEDD5 /* DefaultTagsParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTagsParserTests.swift; sourceTree = "<group>"; };
@@ -962,6 +967,9 @@
 		AAD5208D28CFCB4B008023DD /* EditDictionaryItemViewController+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditDictionaryItemViewController+Layout.swift"; sourceTree = "<group>"; };
 		AAD6746528A441D4005AFD91 /* PlayMediaUseCaseStateEquatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayMediaUseCaseStateEquatable.swift; sourceTree = "<group>"; };
 		AAD766D331BB4632BD5DA671 /* MediaLibraryBrowserViewFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MediaLibraryBrowserViewFactory.swift; sourceTree = "<group>"; };
+		AADB434828E4F26F00C0A9A0 /* PlayMediaWithInfoUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithInfoUseCase.swift; sourceTree = "<group>"; };
+		AADB434A28E4F32400C0A9A0 /* PlayMediaWithInfoSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithInfoSession.swift; sourceTree = "<group>"; };
+		AADB434C28E4F44200C0A9A0 /* PlayMediaWithInfoUseCaseImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithInfoUseCaseImpl.swift; sourceTree = "<group>"; };
 		AAEE8A132889B6C7007E41F3 /* TextSplitterMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextSplitterMock.swift; sourceTree = "<group>"; };
 		AAEE8A152889C2C6007E41F3 /* ProvideTranslationsForSubtitlesUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvideTranslationsForSubtitlesUseCaseTests.swift; sourceTree = "<group>"; };
 		AAF2CFE32876CA370003FCF7 /* ManagedSubtitles+Mapping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ManagedSubtitles+Mapping.swift"; sourceTree = "<group>"; };
@@ -2284,8 +2292,8 @@
 			isa = PBXGroup;
 			children = (
 				AA9BEB032865D76C0028DF8E /* Interfaces */,
-				AA9BEAF92865BF310028DF8E /* UseCases */,
 				AA1ACC1628624D25000EEDD5 /* Models */,
+				AA9BEAF92865BF310028DF8E /* UseCases */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -2347,6 +2355,7 @@
 		AA9BEAF92865BF310028DF8E /* UseCases */ = {
 			isa = PBXGroup;
 			children = (
+				AADB434728E4F23500C0A9A0 /* PlayMediaWithInfoUseCase */,
 				AA3C532728BE5A6700CBE3C6 /* BrowseDictionaryUseCase */,
 				AA3C531E28BE545600CBE3C6 /* BrowseMediaLibraryUseCase */,
 				0A9355CA9112C0E0FA874F04 /* EditDictionaryItemUseCase */,
@@ -2392,6 +2401,7 @@
 				AA976F9A28CE27DE00BC608A /* LoadDictionaryItemUseCaseTests.swift */,
 				AA66FD25287A02F9005AD524 /* LoadSubtitlesUseCaseTests.swift */,
 				AA731CC92870BE890044412F /* LoadTrackUseCaseTests.swift */,
+				AA180D3F28E6E55500023C7A /* PlayMediaWithInfoUseCaseTests.swift */,
 				E63D3476A7E4C5739A5C38E5 /* ManageSubtitlesUseCaseTests.swift */,
 				AACEA3132869A31900111565 /* Mocks */,
 				AAD6746528A441D4005AFD91 /* PlayMediaUseCaseStateEquatable.swift */,
@@ -2570,6 +2580,16 @@
 				AACEA32E286A418600111565 /* FilePickerViewController.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		AADB434728E4F23500C0A9A0 /* PlayMediaWithInfoUseCase */ = {
+			isa = PBXGroup;
+			children = (
+				AADB434828E4F26F00C0A9A0 /* PlayMediaWithInfoUseCase.swift */,
+				AADB434C28E4F44200C0A9A0 /* PlayMediaWithInfoUseCaseImpl.swift */,
+				AADB434A28E4F32400C0A9A0 /* PlayMediaWithInfoSession.swift */,
+			);
+			path = PlayMediaWithInfoUseCase;
 			sourceTree = "<group>";
 		};
 		AADCDBAA28B88E70006AF136 /* Flow */ = {
@@ -3082,6 +3102,7 @@
 				AA6774E728CB3BA500023392 /* MainFlowPresenterImpl.swift in Sources */,
 				AA190E72287AC6AC000514AB /* SubtitlesPresenterViewModel.swift in Sources */,
 				AA7B0D7F28721B050067DDB5 /* UIFont+Utils.swift in Sources */,
+				AADB434D28E4F44200C0A9A0 /* PlayMediaWithInfoUseCaseImpl.swift in Sources */,
 				AA040E0128834F04000CFC26 /* SubtitlesPresenterView+Styles.swift in Sources */,
 				AA89C05028D3988C004902C5 /* ConfirmDialogViewController.swift in Sources */,
 				AA273A1E28AD47BE00119088 /* Publisher+Utils.swift in Sources */,
@@ -3213,6 +3234,7 @@
 				E30427FC9ADA9EEEA1364805 /* PlayMediaWithSubtitlesUseCase.swift in Sources */,
 				0B48BC6726B5A8A775BD9F3E /* PlayMediaWithSubtitlesUseCaseFactory.swift in Sources */,
 				E694A057588488E9B7547E36 /* PlayMediaWithSubtitlesUseCaseImpl.swift in Sources */,
+				AADB434B28E4F32400C0A9A0 /* PlayMediaWithInfoSession.swift in Sources */,
 				E5ED85CF51774BB8F182FFB6 /* PlayMediaWithSubtitlesUseCaseImplFactory.swift in Sources */,
 				B8A4FE7C3F6FC60AB3D67A52 /* SubtitlesState.swift in Sources */,
 				AAC728A928CCB1FA00834D72 /* AttachingSubtitlesProgressViewController.swift in Sources */,
@@ -3368,6 +3390,7 @@
 				37BB135D973BB7A40D443A3D /* ImportMediaFilesFlowModelImplFactory.swift in Sources */,
 				9287DFA8D827896B66AA5BA4 /* ImportMediaFilesFlowPresenter.swift in Sources */,
 				BF3F582B03B5F0D567ECFA10 /* ImportMediaFilesFlowPresenterFactory.swift in Sources */,
+				AADB434928E4F26F00C0A9A0 /* PlayMediaWithInfoUseCase.swift in Sources */,
 				679AE3E27A79271347FC63D9 /* ImportMediaFilesFlowPresenterImpl.swift in Sources */,
 				235E82D1BB8FE1371B89F6DD /* ImportMediaFilesFlowPresenterImplFactory.swift in Sources */,
 				C2C8B4A6924C0A76CC07ED26 /* LoadDictionaryItemUseCase.swift in Sources */,
@@ -3487,6 +3510,7 @@
 				AA5A1AD128AA887700DE29CD /* Subtitles+Helpers.swift in Sources */,
 				AAEE8A142889B6C7007E41F3 /* TextSplitterMock.swift in Sources */,
 				AAEE8A162889C2C6007E41F3 /* ProvideTranslationsForSubtitlesUseCaseTests.swift in Sources */,
+				AA180D4028E6E55500023C7A /* PlayMediaWithInfoUseCaseTests.swift in Sources */,
 				AA5B6CFD28C88C0E0025E00F /* MainFlowModelTests.swift in Sources */,
 				AAF2EEB8287DC3EA00894F71 /* ActionTimerTests.swift in Sources */,
 				AA369EA428845F2700FDAD27 /* TextSplitterTests.swift in Sources */,
