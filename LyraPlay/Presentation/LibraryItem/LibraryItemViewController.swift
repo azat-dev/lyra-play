@@ -135,8 +135,6 @@ extension LibraryItemViewController {
         Task {
             await viewModel.togglePlay()
         }
-        
-        print("NKext")
     }
     
     @objc

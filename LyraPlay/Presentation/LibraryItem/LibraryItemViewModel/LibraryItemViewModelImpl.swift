@@ -16,29 +16,29 @@ public protocol LibraryItemViewModelDelegate: AnyObject {
 }
 
 public final class LibraryItemViewModelImpl: LibraryItemViewModel {
-
+    
     // MARK: - Properties
-
+    
     private let trackId: UUID
     private weak var delegate: LibraryItemViewModelDelegate?
     
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
-    private let playMediaUseCase: PlayMediaWithTranslationsUseCase
+    private let playMediaUseCase: PlayMediaWithInfoUseCase
     
     public var isPlaying: Observable<Bool> = .init(false)
     public var info: Observable<LibraryItemInfoPresentation?> = .init(nil)
     
     private var observers = Set<AnyCancellable>()
-
+    
     // MARK: - Initializers
-
+    
     public init(
         trackId: UUID,
         delegate: LibraryItemViewModelDelegate,
         showMediaInfoUseCase: ShowMediaInfoUseCase,
-        playMediaUseCase: PlayMediaWithTranslationsUseCase
+        playMediaUseCase: PlayMediaWithInfoUseCase
     ) {
-
+        
         self.trackId = trackId
         self.delegate = delegate
         self.showMediaInfoUseCase = showMediaInfoUseCase
@@ -51,26 +51,31 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
         observers.removeAll()
     }
     
-    private func bind(to: PlayMediaWithTranslationsUseCase) {
+    private func updateState(_ state: PlayMediaWithInfoUseCaseState) {
+        
+        var isPlaying = false
+        
+        switch state {
+            
+        case .activeSession(let session, .loaded(.playing, _, _)),
+                .activeSession(let session, .loaded(.pronouncingTranslations, _, _)):
+            
+            isPlaying = session.mediaId == trackId
+            
+        default:
+            isPlaying = false
+        }
+        
+        if self.isPlaying.value != isPlaying {
+            self.isPlaying.value = isPlaying
+        }
+    }
+    
+    private func bind(to playMediaUseCase: PlayMediaWithInfoUseCase) {
         
         playMediaUseCase.state.publisher.sink { [weak self] state in
-         
-            guard let self = self else {
-                return
-            }
             
-            var isPlaying = false
-            
-            switch state {
-
-            case .activeSession(let session, .loaded(.playing, _)):
-                isPlaying = session.mediaId == self.trackId
-                
-            default:
-                isPlaying = false
-            }
-            
-            self.isPlaying.value = isPlaying
+            self?.updateState(state)
             
         }.store(in: &observers)
     }
@@ -79,7 +84,7 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
 // MARK: - Input Methods
 
 extension LibraryItemViewModelImpl {
-
+    
     private func formatDuration(_ value: Double) -> String {
         return "\(value)"
     }
@@ -123,19 +128,19 @@ extension LibraryItemViewModelImpl {
     }
     
     public func togglePlay() async {
-     
-        if
-            let session = playMediaUseCase.state.value.session,
+        
+        guard
+            case .activeSession(let session, _) = playMediaUseCase.state.value,
             session.mediaId == trackId
-        {
-           
-            let _ = playMediaUseCase.togglePlay()
+        else {
+            
+            await startNewSession()
             return
         }
         
-        await startNewSession()
+        print(session)
+        let _ = playMediaUseCase.togglePlay()
     }
-    
     
     private func showImportSuccess() {
         

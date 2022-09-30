@@ -160,7 +160,7 @@ extension PlayMediaWithTranslationsUseCaseImpl {
             return
         }
         
-        guard case .activeSession(let session, let loadState) = currentState else {
+        guard case .activeSession(_, let loadState) = newState else {
             state.value = .noActiveSession
             return
         }
@@ -169,33 +169,33 @@ extension PlayMediaWithTranslationsUseCaseImpl {
         
         case .loading:
             state.value = .activeSession(session, .loading)
-        
+
         case .loadFailed:
             state.value = .activeSession(session, .loadFailed)
-        
+
         case .loaded(let playerState, let subtitlesState):
-            
+
             switch playerState {
-            
+
             case .initial:
                 state.value = .activeSession(session, .loaded(.initial, subtitlesState))
-                
+
             case .playing:
                 state.value = .activeSession(session, .loaded(.playing, subtitlesState))
-                
+
             case .pronouncingTranslations(let data):
-                
+
                 state.value = .activeSession(
                     session,
                     .loaded(.pronouncingTranslations(data: data), subtitlesState)
                 )
-                
+
             case .paused(let time):
                 state.value = .activeSession(session, .loaded(.paused(time: time), subtitlesState))
-                
+
             case .stopped:
                 state.value = .activeSession(session, .loaded(.stopped, subtitlesState))
-                
+
             case .finished:
                 state.value = .activeSession(session, .loaded(.finished, subtitlesState))
             }
