@@ -389,10 +389,19 @@ public class Application {
             deleteDictionaryItemFlowModelFactory: deleteDictionaryItemFlowModelFactory
         )
         
+        let currentPlayerStateDetailsViewModelFactory = CurrentPlayerStateDetailsViewModelImplFactory(
+            playMediaUseCase: playMediaWithInfoUseCase
+        )
+        
+        let currentPlayerStateDetailsFlowModelFactory = CurrentPlayerStateDetailsFlowModelImplFactory(
+            currentPlayerStateDetailsViewModelFactory: currentPlayerStateDetailsViewModelFactory
+        )
+        
         return MainFlowModelImpl(
             mainTabBarViewModelFactory: mainTabBarViewModelFactory,
             libraryFlowModelFactory: libraryFolderFlowModelFactory,
-            dictionaryFlowModelFactory: dictionaryFlowModelFactory
+            dictionaryFlowModelFactory: dictionaryFlowModelFactory,
+            currentPlayerStateDetailsFlowModelFactory: currentPlayerStateDetailsFlowModelFactory
         )
     }
     

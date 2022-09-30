@@ -52,5 +52,6 @@ extension MainTabBarViewModelImpl: CurrentPlayerStateViewModelDelegate {
 
     public func currentPlayerStateViewModelDidOpen() {
         
+        delegate?.runOpenCurrentPlayerStateDetailsFlow()
     }
 }
