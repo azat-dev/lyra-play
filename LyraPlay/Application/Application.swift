@@ -457,11 +457,18 @@ public class Application {
             addDictionaryItemFlowPresenterFactory: addDictionaryItemFlowPresenterFactory
         )
         
+        let currentPlayerStateDetailsViewControllerFactory = CurrentPlayerStateDetailsViewControllerFactory()
+        
+        let currentPlayerStateDetailsFlowPresenterFactory = CurrentPlayerStateDetailsFlowPresenterImplFactory(
+            currentPlayerStateDetailsViewControllerFactory: currentPlayerStateDetailsViewControllerFactory
+        )
+        
         return MainFlowPresenterImpl(
             mainFlowModel: flow,
             mainTabBarViewFactory: MainTabBarViewControllerFactory(),
             libraryFlowPresenterFactory: libraryFolderFlowPresenterFactory,
-            dictionaryFlowPresenterFactory: dictionaryFlowPresenterFactory
+            dictionaryFlowPresenterFactory: dictionaryFlowPresenterFactory,
+            currentPlayerStateDetailsFlowPresenterFactory: currentPlayerStateDetailsFlowPresenterFactory
         )
     }
 }

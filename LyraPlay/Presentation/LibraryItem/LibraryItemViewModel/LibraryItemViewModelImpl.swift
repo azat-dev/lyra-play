@@ -138,14 +138,7 @@ extension LibraryItemViewModelImpl {
             return
         }
         
-        print(session)
         let _ = playMediaUseCase.togglePlay()
-    }
-    
-    private func showImportSuccess() {
-        
-        // TODO:
-        print("Import success")
     }
     
     public func attachSubtitles(language: String) async {

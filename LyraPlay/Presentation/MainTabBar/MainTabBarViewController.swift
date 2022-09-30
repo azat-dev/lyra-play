@@ -59,7 +59,6 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
         return tabControllers[.dictionary]!
     }
     
-    
     // MARK: - Initializers
     
     init(viewModel: MainTabBarViewModel) {
