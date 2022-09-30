@@ -15,6 +15,20 @@ extension CurrentPlayerStateDetailsViewController {
         // MARK: - Properties
         
         private static let buttonSize: CGFloat = 38
+
+        private static let contentGroupPadding = UIEdgeInsets(
+            top: 10,
+            left: 10,
+            bottom: 10,
+            right: 10
+        )
+
+        private static let buttonsGroupPadding = UIEdgeInsets(
+            top: 15,
+            left: 15,
+            bottom: 15,
+            right: 15
+        )
         
         // MARK: - Methods
         
@@ -27,6 +41,11 @@ extension CurrentPlayerStateDetailsViewController {
                 button.heightAnchor.constraint(equalTo: button.widthAnchor),
                 button.widthAnchor.constraint(equalToConstant: buttonSize)
             ])
+        }
+        
+        static func applyLabelsGroup(group: UIStackView) {
+            
+            group.axis = .vertical
         }
         
         static func apply(
@@ -42,8 +61,8 @@ extension CurrentPlayerStateDetailsViewController {
             
             NSLayoutConstraint.activate([
                 
-                togglePlayButton.topAnchor.constraint(equalTo: buttonsGroup.topAnchor, constant: 10),
-                togglePlayButton.bottomAnchor.constraint(equalTo: buttonsGroup.bottomAnchor, constant: -10),
+                togglePlayButton.topAnchor.constraint(equalTo: buttonsGroup.topAnchor, constant: buttonsGroupPadding.top),
+                togglePlayButton.bottomAnchor.constraint(equalTo: buttonsGroup.bottomAnchor, constant: -buttonsGroupPadding.bottom),
                 
                 togglePlayButton.centerXAnchor.constraint(equalTo: buttonsGroup.centerXAnchor),
             ])
@@ -82,7 +101,7 @@ extension CurrentPlayerStateDetailsViewController {
             contentGroup.axis = .vertical
             contentGroup.alignment = .center
             
-            contentGroup.constraintTo(view: view)
+            contentGroup.constraintTo(view: view, margins: contentGroupPadding)
         }
     }
 }

@@ -32,8 +32,14 @@ extension CurrentPlayerStateDetailsViewController {
             contentView.backgroundColor = colorBackground
         }
         
-        static func apply(titleLabel: UILabel) {
+        static func apply(titleLabel label: UILabel) {
             
+            label.textAlignment = .left
+        }
+        
+        static func apply(subtitleLabel label: UILabel) {
+            
+            label.textAlignment = .left
         }
         
         static func apply(activityIndicator: UIActivityIndicatorView) {

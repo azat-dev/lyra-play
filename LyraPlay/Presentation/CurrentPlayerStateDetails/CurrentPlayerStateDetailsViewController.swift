@@ -18,6 +18,8 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     private let activityIndicator = UIActivityIndicatorView()
     private let contentGroup = UIStackView()
     private let coverImageView = UIImageView()
+    
+    private let labelsGroup = UIStackView()
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
     
@@ -143,9 +145,12 @@ extension CurrentPlayerStateDetailsViewController {
         buttonsGroup.addSubview(togglePlayButton)
         buttonsGroup.addSubview(goBackwardButton)
         
+        
+        labelsGroup.addArrangedSubview(titleLabel)
+        labelsGroup.addArrangedSubview(subtitleLabel)
+        
         contentGroup.addArrangedSubview(coverImageView)
-        contentGroup.addArrangedSubview(titleLabel)
-        contentGroup.addArrangedSubview(subtitleLabel)
+        contentGroup.addArrangedSubview(labelsGroup)
         
         contentGroup.addArrangedSubview(sliderView)
         contentGroup.addArrangedSubview(buttonsGroup)
@@ -174,6 +179,8 @@ extension CurrentPlayerStateDetailsViewController {
             subtitleLabel: subtitleLabel
         )
         
+        Layout.applyLabelsGroup(group: labelsGroup)
+        
         Layout.apply(
             view: view,
             activityIndicator: activityIndicator,
@@ -195,5 +202,8 @@ extension CurrentPlayerStateDetailsViewController {
         
         Styles.apply(goForwardButton: goForwardButton)
         Styles.apply(goBackwardButton: goBackwardButton)
+        
+        Styles.apply(titleLabel: titleLabel)
+        Styles.apply(subtitleLabel: subtitleLabel)
     }
 }
