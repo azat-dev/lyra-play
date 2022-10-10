@@ -63,6 +63,22 @@ extension UIView {
         ).activated()
     }
     
+    @discardableResult
+    func constraintToBottom(of view: UIView, spacing: CGFloat = .zero) -> NSLayoutConstraint {
+    
+        view.disableAutoConstraints()
+        
+        return NSLayoutConstraint(
+            item: self,
+            attribute: .top,
+            relatedBy: .equal,
+            toItem: view,
+            attribute: .bottom,
+            multiplier: 1,
+            constant: spacing
+        ).activated()
+    }
+    
     func constraintToHorizontalEdges(of view: UIView, leftMargin: CGFloat = .zero, rightMargin: CGFloat = .zero) {
         
         disableAutoConstraints()

@@ -16,10 +16,9 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     private let viewModel: CurrentPlayerStateDetailsViewModel
     
     private let activityIndicator = UIActivityIndicatorView()
-    private let contentGroup = UIStackView()
+    private let contentGroup = UIView()
     private let coverImageView = UIImageView()
     
-    private let labelsGroup = UIStackView()
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
     
@@ -140,21 +139,19 @@ extension CurrentPlayerStateDetailsViewController {
         
         togglePlayButton.isUserInteractionEnabled = true
         togglePlayButton.addGestureRecognizer(togglePlayButtonGestureRecognizer)
-        
+
         buttonsGroup.addSubview(goForwardButton)
         buttonsGroup.addSubview(togglePlayButton)
         buttonsGroup.addSubview(goBackwardButton)
         
         
-        labelsGroup.addArrangedSubview(titleLabel)
-        labelsGroup.addArrangedSubview(subtitleLabel)
+        contentGroup.addSubview(coverImageView)
+        contentGroup.addSubview(titleLabel)
+        contentGroup.addSubview(subtitleLabel)
         
-        contentGroup.addArrangedSubview(coverImageView)
-        contentGroup.addArrangedSubview(labelsGroup)
-        
-        contentGroup.addArrangedSubview(sliderView)
-        contentGroup.addArrangedSubview(buttonsGroup)
-        
+        contentGroup.addSubview(sliderView)
+        contentGroup.addSubview(buttonsGroup)
+
         view.addSubview(contentGroup)
         view.addSubview(activityIndicator)
     }
@@ -171,16 +168,16 @@ extension CurrentPlayerStateDetailsViewController {
             goForwardButton: goForwardButton,
             goBackwardButton: goBackwardButton
         )
-        
+
         Layout.apply(
             contentGroup: contentGroup,
             coverImageView: coverImageView,
             titleLabel: titleLabel,
-            subtitleLabel: subtitleLabel
+            subtitleLabel: subtitleLabel,
+            slider: sliderView,
+            buttonsGroup: buttonsGroup
         )
-        
-        Layout.applyLabelsGroup(group: labelsGroup)
-        
+
         Layout.apply(
             view: view,
             activityIndicator: activityIndicator,

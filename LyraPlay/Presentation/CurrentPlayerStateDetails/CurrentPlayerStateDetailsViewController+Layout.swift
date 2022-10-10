@@ -43,11 +43,6 @@ extension CurrentPlayerStateDetailsViewController {
             ])
         }
         
-        static func applyLabelsGroup(group: UIStackView) {
-            
-            group.axis = .vertical
-        }
-        
         static func apply(
             buttonsGroup: UIView,
             togglePlayButton: UIImageView,
@@ -71,38 +66,57 @@ extension CurrentPlayerStateDetailsViewController {
 
                 goBackwardButton.rightAnchor.constraint(equalTo: togglePlayButton.leftAnchor, constant: -50),
                 goForwardButton.leftAnchor.constraint(equalTo: togglePlayButton.rightAnchor, constant: 50),
-                
+
                 goBackwardButton.centerYAnchor.constraint(equalTo: togglePlayButton.centerYAnchor),
                 goForwardButton.centerYAnchor.constraint(equalTo: togglePlayButton.centerYAnchor),
             ])
         }
         
         static func apply(
-            contentGroup: UIStackView,
+            contentGroup: UIView,
             coverImageView: UIImageView,
             titleLabel: UILabel,
-            subtitleLabel: UILabel
+            subtitleLabel: UILabel,
+            slider: UISlider,
+            buttonsGroup: UIView
         ) {
             
+            coverImageView.translatesAutoresizingMaskIntoConstraints = false
+            slider.translatesAutoresizingMaskIntoConstraints = false
+            titleLabel.translatesAutoresizingMaskIntoConstraints = false
+            subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+
+            slider.constraintToBottom(of: coverImageView, spacing: 10)
+
+            titleLabel.constraintToBottom(of: slider, spacing: 10)
+            subtitleLabel.constraintToBottom(of: titleLabel, spacing: 0)
+
+            titleLabel.constraintToHorizontalEdges(of: contentGroup)
+            subtitleLabel.constraintToHorizontalEdges(of: contentGroup)
+            
+            buttonsGroup.constraintToBottom(of: subtitleLabel, spacing: 10)
+            buttonsGroup.constraintToHorizontalEdges(of: contentGroup)
+
             NSLayoutConstraint.activate([
-                
+
+                coverImageView.topAnchor.constraint(equalTo: contentGroup.topAnchor, constant: 10),
+                coverImageView.centerXAnchor.constraint(equalTo: contentGroup.centerXAnchor),
+
                 coverImageView.heightAnchor.constraint(equalTo: coverImageView.widthAnchor),
-                coverImageView.widthAnchor.constraint(equalTo: contentGroup.widthAnchor, multiplier: 0.8)
+                coverImageView.widthAnchor.constraint(equalTo: contentGroup.widthAnchor, multiplier: 0.8),
+
+                slider.widthAnchor.constraint(equalTo: contentGroup.widthAnchor),
             ])
         }
         
         static func apply(
             view: UIView,
             activityIndicator: UIActivityIndicatorView,
-            contentGroup: UIStackView
+            contentGroup: UIView
         ) {
             
             activityIndicator.constraintToCenter(of: view)
-            contentGroup.axis = .vertical
-            contentGroup.alignment = .center
-            
             contentGroup.constraintTo(view: view, margins: contentGroupPadding)
         }
     }
 }
-
