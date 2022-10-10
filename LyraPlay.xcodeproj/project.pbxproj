@@ -440,6 +440,7 @@
 		AADB434928E4F26F00C0A9A0 /* PlayMediaWithInfoUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADB434828E4F26F00C0A9A0 /* PlayMediaWithInfoUseCase.swift */; };
 		AADB434B28E4F32400C0A9A0 /* PlayMediaWithInfoSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADB434A28E4F32400C0A9A0 /* PlayMediaWithInfoSession.swift */; };
 		AADB434D28E4F44200C0A9A0 /* PlayMediaWithInfoUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADB434C28E4F44200C0A9A0 /* PlayMediaWithInfoUseCaseImpl.swift */; };
+		AAE202EA28F4A239009A9C8E /* SubtitlesPresenterViewModelImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE202E928F4A239009A9C8E /* SubtitlesPresenterViewModelImpl.swift */; };
 		AAEE8A142889B6C7007E41F3 /* TextSplitterMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE8A132889B6C7007E41F3 /* TextSplitterMock.swift */; };
 		AAEE8A162889C2C6007E41F3 /* ProvideTranslationsForSubtitlesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE8A152889C2C6007E41F3 /* ProvideTranslationsForSubtitlesUseCaseTests.swift */; };
 		AAF2CFE42876CA370003FCF7 /* ManagedSubtitles+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF2CFE32876CA370003FCF7 /* ManagedSubtitles+Mapping.swift */; };
@@ -1007,6 +1008,7 @@
 		AADB434828E4F26F00C0A9A0 /* PlayMediaWithInfoUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithInfoUseCase.swift; sourceTree = "<group>"; };
 		AADB434A28E4F32400C0A9A0 /* PlayMediaWithInfoSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithInfoSession.swift; sourceTree = "<group>"; };
 		AADB434C28E4F44200C0A9A0 /* PlayMediaWithInfoUseCaseImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithInfoUseCaseImpl.swift; sourceTree = "<group>"; };
+		AAE202E928F4A239009A9C8E /* SubtitlesPresenterViewModelImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterViewModelImpl.swift; sourceTree = "<group>"; };
 		AAEE8A132889B6C7007E41F3 /* TextSplitterMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextSplitterMock.swift; sourceTree = "<group>"; };
 		AAEE8A152889C2C6007E41F3 /* ProvideTranslationsForSubtitlesUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvideTranslationsForSubtitlesUseCaseTests.swift; sourceTree = "<group>"; };
 		AAF2CFE32876CA370003FCF7 /* ManagedSubtitles+Mapping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ManagedSubtitles+Mapping.swift"; sourceTree = "<group>"; };
@@ -1875,6 +1877,7 @@
 			children = (
 				AA0F69BD287F587F00BD13DB /* RowCell */,
 				AA190E71287AC6AC000514AB /* SubtitlesPresenterViewModel.swift */,
+				AAE202E928F4A239009A9C8E /* SubtitlesPresenterViewModelImpl.swift */,
 				AA0F69BB287F4F0D00BD13DB /* SubtitlesPresenterView.swift */,
 				AA040E0228835247000CFC26 /* SubtitlesPresenterView+Layout.swift */,
 				AA040E0028834F04000CFC26 /* SubtitlesPresenterView+Styles.swift */,
@@ -2257,7 +2260,6 @@
 				AA7B0D512871A6E00067DDB5 /* LibraryItemViewController+Layout.swift */,
 				AA7B0D532871A70F0067DDB5 /* LibraryItemViewController+Styles.swift */,
 				350F132DB22CF0995FD938BE /* LibraryItemViewModel */,
-				AA190E70287AC694000514AB /* SubtitlesPresenter */,
 			);
 			path = LibraryItem;
 			sourceTree = "<group>";
@@ -2779,6 +2781,7 @@
 		B3A92DC211CB47FE445671BE /* CurrentPlayerStateDetails */ = {
 			isa = PBXGroup;
 			children = (
+				AA190E70287AC694000514AB /* SubtitlesPresenter */,
 				AA180D4528E7253C00023C7A /* CurrentPlayerStateDetailsViewController.swift */,
 				AA180D4928E7254C00023C7A /* CurrentPlayerStateDetailsViewController+Layout.swift */,
 				AA180D4728E7254500023C7A /* CurrentPlayerStateDetailsViewController+Styles.swift */,
@@ -3631,6 +3634,7 @@
 				2330BFAE2139FC3A28114FFB /* CurrentPlayerStateDetailsFlowModelImplFactory.swift in Sources */,
 				1395BA71D6F2819E7E5F9C30 /* CurrentPlayerStateDetailsFlowPresenter.swift in Sources */,
 				9CB36E42233E69FF222B52A8 /* CurrentPlayerStateDetailsFlowPresenterFactory.swift in Sources */,
+				AAE202EA28F4A239009A9C8E /* SubtitlesPresenterViewModelImpl.swift in Sources */,
 				7509EDCBC7D7F0F09E499C8C /* CurrentPlayerStateDetailsFlowPresenterImpl.swift in Sources */,
 				57D4A107D1B8C1936BECA357 /* CurrentPlayerStateDetailsFlowPresenterImplFactory.swift in Sources */,
 			);
