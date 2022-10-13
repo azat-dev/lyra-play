@@ -12,18 +12,25 @@ public final class SubtitlesPresenterViewModelImpl: SubtitlesPresenterViewModel 
 
     // MARK: - Properties
     
-    public let state = CurrentValueSubject<SubtitlesPresentationState, Never>(.loading)
+    public let state: CurrentValueSubject<SubtitlesPresentationState, Never>
     
     // MARK: - Initializers
     
-    public init() {}
+    public init(subtitles: Subtitles) {
+        
+        state = .init(
+            .init(
+                activeSentenceIndex: nil,
+                rows: Self.getInitialModels(subtitles: subtitles, position: nil)
+            )
+        )
+    }
 
     public func getSentenceViewModel(at index: Int) -> SentenceViewModel? {
 
-        guard
-            case .playing(_, let rows) = state.value,
-            index < rows.count
-        else {
+        let rows = state.value.rows
+        
+        guard index < rows.count else {
             return nil
         }
 
@@ -35,10 +42,10 @@ public final class SubtitlesPresenterViewModelImpl: SubtitlesPresenterViewModel 
 
 extension SubtitlesPresenterViewModelImpl {
     
-    public func update(with subtitlesState: SubtitlesState?) {
+    public func update(position: SubtitlesPosition?) {
         
         DispatchQueue.main.async { [weak self] in
-            self?.updateState(subtitlesState)
+            self?.updatePosition(position)
         }
     }
 }
@@ -47,44 +54,33 @@ extension SubtitlesPresenterViewModelImpl {
 
 extension SubtitlesPresenterViewModelImpl {
     
-    private func updateState(_ subtitlesState: SubtitlesState?) {
+    private func updatePosition(_ position: SubtitlesPosition?) {
     
-        guard let subtitlesState = subtitlesState else {
-            state.value = .loading
-            return
+        let prevState = state.value
+        var rows = prevState.rows
+        
+        if let prevActiveSentenceIndex = prevState.activeSentenceIndex {
+            rows[prevActiveSentenceIndex].isActive.value = false
         }
         
-        var rows: [SentenceViewModel]
-
-        if case .playing(let prevActiveSentenceIndex, let prevRows) = state.value {
-             
-            rows = prevRows
-            
-            if let prevActiveSentenceIndex = prevActiveSentenceIndex {
-                rows[prevActiveSentenceIndex].isActive.value = false
-            }
-            
-        } else {
-            rows = getInitialModels(subtitlesState: subtitlesState)
-        }
-        
-        
-        if let newActiveSentenceIndex = subtitlesState.position?.sentenceIndex {
+        if let newActiveSentenceIndex = position?.sentenceIndex {
             rows[newActiveSentenceIndex].isActive.value = true
         }
         
-        state.value = .playing(
-            activeSentenceIndex: subtitlesState.position?.sentenceIndex,
+        state.value = .init(
+            activeSentenceIndex: position?.sentenceIndex,
             rows: rows
         )
     }
     
-    private func getInitialModels(subtitlesState: SubtitlesState) -> [SentenceViewModel] {
+    private static func getInitialModels(subtitles: Subtitles, position: SubtitlesPosition?) -> [SentenceViewModel] {
         
-        let sentences = subtitlesState.subtitles.sentences
+        let sentences = subtitles.sentences
         
-        let toggleWord: ToggleWordCallback = { [weak self] index, range in
-            self?.toggleWord(index, range)
+        let toggleWord: ToggleWordCallback = { index, range in
+
+            // FIXME: Add implementation
+            fatalError("Add implementations")
         }
         
         return sentences.indices.map { sentenceIndex in
@@ -98,8 +94,4 @@ extension SubtitlesPresenterViewModelImpl {
             )
         }
     }
-
-    private func toggleWord(_ sentenceIndex: Int, _ tapRange: Range<String.Index>?) {
-    }
 }
-

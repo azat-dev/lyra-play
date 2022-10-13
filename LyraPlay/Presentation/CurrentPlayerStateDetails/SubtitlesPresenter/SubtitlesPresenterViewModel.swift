@@ -10,22 +10,31 @@ import Combine
 
 // MARK: - Interfaces
 
-public enum SubtitlesPresentationState {
+public struct SubtitlesPresentationState {
     
-    case loading
-    case playing(activeSentenceIndex: Int?, rows: [SentenceViewModel])
+    public var activeSentenceIndex: Int?
+    public var rows: [SentenceViewModel]
+    
+    public init(
+        activeSentenceIndex: Int? = nil,
+        rows: [SentenceViewModel]
+    ) {
+        
+        self.activeSentenceIndex = activeSentenceIndex
+        self.rows = rows
+    }
 }
 
 public protocol SubtitlesPresenterViewModelOutput {
-
+    
     var state: CurrentValueSubject<SubtitlesPresentationState, Never> { get }
     
     func getSentenceViewModel(at index: Int) -> SentenceViewModel?
 }
 
 public protocol SubtitlesPresenterViewModelInput {
-
-    func update(with: SubtitlesState?)
+    
+    func update(position: SubtitlesPosition?)
 }
 
 public protocol SubtitlesPresenterViewModel: SubtitlesPresenterViewModelOutput, SubtitlesPresenterViewModelInput {
