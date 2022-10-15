@@ -1884,10 +1884,7 @@
 				AA0F69BB287F4F0D00BD13DB /* SubtitlesPresenterView.swift */,
 				AA040E0228835247000CFC26 /* SubtitlesPresenterView+Layout.swift */,
 				AA040E0028834F04000CFC26 /* SubtitlesPresenterView+Styles.swift */,
-				AA190E71287AC6AC000514AB /* SubtitlesPresenterViewModel.swift */,
-				AAE202E928F4A239009A9C8E /* SubtitlesPresenterViewModelImpl.swift */,
-				AAE202EB28F4A392009A9C8E /* SubtitlesPresenterViewModelFactory.swift */,
-				AAE202ED28F4A3FD009A9C8E /* SubtitlesPresenterViewModelImplFactory.swift */,
+				AA41836E28FB407000CA2D20 /* SubtitlesPresenterViewModel */,
 			);
 			path = SubtitlesPresenter;
 			sourceTree = "<group>";
@@ -2111,6 +2108,17 @@
 				AA81426D28D509F3004A37C0 /* XCTest+Observers.swift */,
 			);
 			path = TestUtils;
+			sourceTree = "<group>";
+		};
+		AA41836E28FB407000CA2D20 /* SubtitlesPresenterViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				AA190E71287AC6AC000514AB /* SubtitlesPresenterViewModel.swift */,
+				AAE202EB28F4A392009A9C8E /* SubtitlesPresenterViewModelFactory.swift */,
+				AAE202E928F4A239009A9C8E /* SubtitlesPresenterViewModelImpl.swift */,
+				AAE202ED28F4A3FD009A9C8E /* SubtitlesPresenterViewModelImplFactory.swift */,
+			);
+			path = SubtitlesPresenterViewModel;
 			sourceTree = "<group>";
 		};
 		AA55226128CA4FBB007D5343 /* UIKit */ = {
