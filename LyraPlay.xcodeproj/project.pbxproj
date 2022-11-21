@@ -433,6 +433,7 @@
 		AACEA32B2869ED5800111565 /* MediaLibraryBrowserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA32A2869ED5800111565 /* MediaLibraryBrowserCell.swift */; };
 		AACEA32D2869EDE400111565 /* MediaLibraryBrowserCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA32C2869EDE400111565 /* MediaLibraryBrowserCellViewModel.swift */; };
 		AACEA32F286A418600111565 /* FilePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACEA32E286A418600111565 /* FilePickerViewController.swift */; };
+		AAD17689292BFF7C00867802 /* ObserveSequenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD17688292BFF7C00867802 /* ObserveSequenceTests.swift */; };
 		AAD5208A28CFCB3B008023DD /* EditDictionaryItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD5208928CFCB3B008023DD /* EditDictionaryItemViewController.swift */; };
 		AAD5208C28CFCB44008023DD /* EditDictionaryItemViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD5208B28CFCB44008023DD /* EditDictionaryItemViewController+Styles.swift */; };
 		AAD5208E28CFCB4B008023DD /* EditDictionaryItemViewController+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD5208D28CFCB4B008023DD /* EditDictionaryItemViewController+Layout.swift */; };
@@ -1002,6 +1003,7 @@
 		AACEA32A2869ED5800111565 /* MediaLibraryBrowserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaLibraryBrowserCell.swift; sourceTree = "<group>"; };
 		AACEA32C2869EDE400111565 /* MediaLibraryBrowserCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaLibraryBrowserCellViewModel.swift; sourceTree = "<group>"; };
 		AACEA32E286A418600111565 /* FilePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePickerViewController.swift; sourceTree = "<group>"; };
+		AAD17688292BFF7C00867802 /* ObserveSequenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObserveSequenceTests.swift; sourceTree = "<group>"; };
 		AAD5208928CFCB3B008023DD /* EditDictionaryItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDictionaryItemViewController.swift; sourceTree = "<group>"; };
 		AAD5208B28CFCB44008023DD /* EditDictionaryItemViewController+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditDictionaryItemViewController+Styles.swift"; sourceTree = "<group>"; };
 		AAD5208D28CFCB4B008023DD /* EditDictionaryItemViewController+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditDictionaryItemViewController+Layout.swift"; sourceTree = "<group>"; };
@@ -2106,6 +2108,7 @@
 				AA55226E28CA76A9007D5343 /* XCTestCase+Mocks.swift */,
 				AA5802182879A53700655B4A /* XCTestCase+Sequence.swift */,
 				AA81426D28D509F3004A37C0 /* XCTest+Observers.swift */,
+				AAD17688292BFF7C00867802 /* ObserveSequenceTests.swift */,
 			);
 			path = TestUtils;
 			sourceTree = "<group>";
@@ -3691,6 +3694,7 @@
 				AABB49EF28AFFE3C0088484B /* DictionaryListBrowserViewModelTests.swift in Sources */,
 				AA5DD70D28B970FA00929906 /* LyraPlayTests-LyraPlayMocks.generated.swift in Sources */,
 				AAC8D1D3287B26AA00FAB35E /* LoadSubtitlesUseCaseMock.swift in Sources */,
+				AAD17689292BFF7C00867802 /* ObserveSequenceTests.swift in Sources */,
 				AACEA3262869B17E00111565 /* ObservableTests.swift in Sources */,
 				AA0D3F7D2875F811006717B9 /* DurationParserTests.swift in Sources */,
 				AA66FD26287A02F9005AD524 /* LoadSubtitlesUseCaseTests.swift in Sources */,

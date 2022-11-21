@@ -91,8 +91,10 @@ extension XCTestCase {
 
 extension XCTestCase {
     
-    public class ObserveSequence<Value, MappedValue: Equatable> {
+    public class ObserveSequence<Value, MappedValue> {
 
+        public typealias Matcher<T> = (_ rhs: T) -> Bool
+        
         // MARK: - Properties
         
         private unowned var testCase: XCTestCase
@@ -138,7 +140,7 @@ extension XCTestCase {
             timeout: TimeInterval = 1,
             file: StaticString = #filePath,
             line: UInt = #line
-        ) {
+        ) where MappedValue: Equatable {
             
             if capturedValues.count < expectedValues.count {
                 
@@ -168,7 +170,46 @@ extension XCTestCase {
                 file: file,
                 line: line
             )
+        }
+        
+        func expect(
+            match matchers: [Matcher<Value>],
+            timeout: TimeInterval = 1,
+            file: StaticString = #filePath,
+            line: UInt = #line
+        ) {
             
+            if capturedValues.count < matchers.count {
+                
+                semaphore.wait()
+                
+                let valuesExpectation = testCase.expectation(description: "Wait for rest items")
+                valuesExpectation.expectedFulfillmentCount = matchers.count
+                
+                capturedValues.forEach { _ in
+                    valuesExpectation.fulfill()
+                }
+                
+                self.expectation = valuesExpectation
+                semaphore.signal()
+
+                testCase.wait(for: [valuesExpectation], timeout: timeout)
+            }
+            
+            if let onTearDown = onTearDown {
+                onTearDown()
+            }
+            
+            for index in 0..<matchers.count {
+                
+                let isMatch = matchers[index]
+                let capturedValue = capturedValues[index]
+                
+                guard isMatch(capturedValue) else {
+                    XCTFail("Captured value at index \(index) doesn't match: ", file: file, line: line)
+                    return
+                }
+            }
         }
     }
 }
