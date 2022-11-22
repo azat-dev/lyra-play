@@ -13,14 +13,14 @@ import LyraPlay
 
 class ObserveSequenceTests: XCTestCase {
     
-    typealias SUT = (
-        observer: XCTestCase.ObserveSequence<Int, Int>,
-        publisher: CurrentValueSubject<Int, Never>
+    fileprivate typealias SUT = (
+        observer: XCTestCase.ObserveSequence<NotEquatable, NotEquatable>,
+        publisher: CurrentValueSubject<NotEquatable, Never>
     )
     
-    func createSUT(initialValue: Int) -> SUT {
+    fileprivate func createSUT(initialValue: NotEquatable) -> SUT {
         
-        let publisher = CurrentValueSubject<Int, Never>(initialValue)
+        let publisher = CurrentValueSubject<NotEquatable, Never>(initialValue)
         
         let observer = watch(publisher)
         detectMemoryLeak(instance: observer)
@@ -33,40 +33,47 @@ class ObserveSequenceTests: XCTestCase {
  
     func test_expectation__with_matcher__success() throws {
         
-        let sut = createSUT(initialValue: 0)
+        let sut = createSUT(initialValue: NotEquatable(value: 0))
         
-        sut.publisher.send(1)
-        sut.publisher.send(2)
+        sut.publisher.send(NotEquatable(value: 1))
+        sut.publisher.send(NotEquatable(value: 2))
         
         sut.observer.expect(match: [
             
-            equalTo(value: 0),
-            equalTo(value: 1),
-            equalTo(value: 2)
+            customMatch(value: NotEquatable(value: 0)),
+            customMatch(value: NotEquatable(value: 1)),
+            customMatch(value: NotEquatable(value: 2))
         ])
     }
     
     func test_expectation__with_matcher__fail() throws {
         
-        let sut = createSUT(initialValue: 0)
+        let sut = createSUT(initialValue: NotEquatable(value: 0))
         
-        sut.publisher.send(2)
+        sut.publisher.send(NotEquatable(value: 2))
         
         XCTExpectFailure("Expected fail") {
             
             sut.observer.expect(match: [
                 
-                equalTo(value: 0),
-                equalTo(value: 1),
-                equalTo(value: 2)
+                customMatch(value: NotEquatable(value: 0)),
+                customMatch(value: NotEquatable(value: 1)),
+                customMatch(value: NotEquatable(value: 2))
             ])
         }
     }
 }
 
-fileprivate func equalTo(value lhs: Int) -> XCTestCase.ObserveSequence<Int, Int>.Matcher<Int> {
+// MARK: - Helpers
+    
+fileprivate struct NotEquatable {
+    
+    let value: Int
+}
+
+fileprivate func customMatch(value lhs: NotEquatable) -> XCTestCase.ObserveSequence<NotEquatable, NotEquatable>.Matcher<NotEquatable> {
     
     return { rhs in
-        return rhs == lhs
+        return rhs.value == lhs.value
     }
 }

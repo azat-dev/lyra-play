@@ -34,7 +34,7 @@ extension XCTestCase {
     }
     
     func watch<P>(_ publisher: P) -> ObserveSequence<P.Output, P.Output>
-        where P: Publisher, P.Failure == Never, P.Output: Equatable  {
+        where P: Publisher, P.Failure == Never  {
         
         let sequence = ObserveSequence<P.Output, P.Output>(testCase: self)
         
