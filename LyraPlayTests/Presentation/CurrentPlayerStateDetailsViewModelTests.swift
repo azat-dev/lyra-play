@@ -31,10 +31,17 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
         
         given(playMediaUseCase.state)
             .willReturn(playerState)
+        
+        let subtitlesPresenterViewModelFactory = mock(SubtitlesPresenterViewModelFactory.self)
+        let subtitlesPresenterViewModel = mock(SubtitlesPresenterViewModel.self)
+        
+        given(subtitlesPresenterViewModelFactory.create(subtitles: any()))
+            .willReturn(subtitlesPresenterViewModel)
 
         let viewModel = CurrentPlayerStateDetailsViewModelImpl(
             delegate: delegate,
-            playMediaUseCase: playMediaUseCase
+            playMediaUseCase: playMediaUseCase,
+            subtitlesPresenterViewModelFactory: subtitlesPresenterViewModelFactory
         )
 
         detectMemoryLeak(instance: viewModel)
@@ -82,26 +89,27 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
         verify(sut.playMediaUseCase.togglePlay())
             .wasCalled(2)
         
-        statePromise.expect([
-            .notActive,
-            .loading,
-            .active(
-                data: .init(
+        statePromise.expect(match: [
+            .caseName(.notActive),
+            .caseName(.loading),
+            .activeData(
+                .init(
                     title: mediaInfo.title,
                     subtitle: mediaInfo.artist ?? "",
                     coverImage: mediaInfo.coverImage,
                     isPlaying: true
                 )
+            
             ),
-            .active(
-                data: .init(
+            .activeData(
+                .init(
                     title: mediaInfo.title,
                     subtitle: mediaInfo.artist ?? "",
                     coverImage: mediaInfo.coverImage,
                     isPlaying: false
                 )
             )
-        ])
+        ] as [Match])
     }
 
     func test_dispose() async throws {
@@ -116,4 +124,76 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
         verify(sut.delegate.currentPlayerStateDetailsViewModelDidDispose())
             .wasCalled(1)
     }
+}
+
+// MARK: - Helpers
+
+fileprivate enum Match: ValueMatcher {
+    
+    typealias CapturedValue = CurrentPlayerStateDetailsViewModelState
+    
+    case caseName(CurrentPlayerStateDetailsViewModelState)
+    case activeData(CurrentPlayerStateDetailsViewModelPresentationPartial)
+    
+    // MARK: - Methods
+    
+    private func matchCaseName(
+        _ expectedValue: CurrentPlayerStateDetailsViewModelState,
+        _ capturedValue: CapturedValue
+    ) -> Bool {
+        
+        switch (expectedValue, capturedValue) {
+
+        case (.loading, .loading):
+            return true
+
+        case (.notActive, .notActive):
+            return true
+
+        case (.active, .active):
+            return true
+
+        case (_, _):
+            return false
+        }
+    }
+    
+    private func matchActiveData(
+        _ expectedValue: CurrentPlayerStateDetailsViewModelPresentationPartial,
+        _ capturedValue: CapturedValue
+    ) -> Bool {
+        
+        guard case .active(let rhsData) = capturedValue else {
+            return false
+        }
+        
+        let capturedData = CurrentPlayerStateDetailsViewModelPresentationPartial(
+            title: rhsData.title,
+            subtitle: rhsData.subtitle,
+            coverImage: rhsData.coverImage,
+            isPlaying: rhsData.isPlaying
+        )
+
+        return expectedValue == capturedData
+    }
+    
+    public func match(capturedValue: CapturedValue) -> Bool {
+        
+        switch self {
+            
+        case .caseName(let expectedValue):
+            return matchCaseName(expectedValue, capturedValue)
+            
+        case .activeData(let expectedValue):
+            return matchActiveData(expectedValue, capturedValue)
+        }
+    }
+}
+
+fileprivate struct CurrentPlayerStateDetailsViewModelPresentationPartial: Equatable {
+
+    var title: String
+    var subtitle: String
+    var coverImage: Data?
+    var isPlaying: Bool
 }

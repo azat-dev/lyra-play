@@ -89,12 +89,17 @@ extension XCTestCase {
     }
 }
 
+public protocol ValueMatcher {
+    
+    associatedtype CapturedValue    
+    
+    func match(capturedValue: CapturedValue) -> Bool
+}
+
 extension XCTestCase {
     
     public class ObserveSequence<Value, MappedValue> {
 
-        public typealias Matcher<T> = (_ rhs: T) -> Bool
-        
         // MARK: - Properties
         
         private unowned var testCase: XCTestCase
@@ -172,12 +177,12 @@ extension XCTestCase {
             )
         }
         
-        func expect(
-            match matchers: [Matcher<Value>],
+        func expect<Matcher: ValueMatcher>(
+            match matchers: [Matcher],
             timeout: TimeInterval = 1,
             file: StaticString = #filePath,
             line: UInt = #line
-        ) {
+        ) where Value == Matcher.CapturedValue  {
             
             if capturedValues.count < matchers.count {
                 
@@ -202,11 +207,11 @@ extension XCTestCase {
             
             for index in 0..<matchers.count {
                 
-                let isMatch = matchers[index]
+                let matcher = matchers[index]
                 let capturedValue = capturedValues[index]
                 
-                guard isMatch(capturedValue) else {
-                    XCTFail("Captured value at index \(index) doesn't match: ", file: file, line: line)
+                guard matcher.match(capturedValue: capturedValue) else {
+                    XCTFail("Captured value at index \(index) doesn't match: \(capturedValue)", file: file, line: line)
                     return
                 }
             }

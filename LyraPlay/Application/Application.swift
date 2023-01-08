@@ -402,8 +402,11 @@ public class Application {
             deleteDictionaryItemFlowModelFactory: deleteDictionaryItemFlowModelFactory
         )
         
+        let subtitlesPresenterViewModelFactory = SubtitlesPresenterViewModelImplFactory()
+        
         let currentPlayerStateDetailsViewModelFactory = CurrentPlayerStateDetailsViewModelImplFactory(
-            playMediaUseCase: playMediaWithInfoUseCase
+            playMediaUseCase: playMediaWithInfoUseCase,
+            subtitlesPresenterViewModelFactory: subtitlesPresenterViewModelFactory
         )
         
         let currentPlayerStateDetailsFlowModelFactory = CurrentPlayerStateDetailsFlowModelImplFactory(

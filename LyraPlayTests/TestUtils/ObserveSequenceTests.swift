@@ -40,9 +40,9 @@ class ObserveSequenceTests: XCTestCase {
         
         sut.observer.expect(match: [
             
-            customMatch(value: NotEquatable(value: 0)),
-            customMatch(value: NotEquatable(value: 1)),
-            customMatch(value: NotEquatable(value: 2))
+            MatchNotEquatable(0),
+            MatchNotEquatable(1),
+            MatchNotEquatable(2)
         ])
     }
     
@@ -56,9 +56,9 @@ class ObserveSequenceTests: XCTestCase {
             
             sut.observer.expect(match: [
                 
-                customMatch(value: NotEquatable(value: 0)),
-                customMatch(value: NotEquatable(value: 1)),
-                customMatch(value: NotEquatable(value: 2))
+                MatchNotEquatable(0),
+                MatchNotEquatable(1),
+                MatchNotEquatable(2)
             ])
         }
     }
@@ -66,14 +66,32 @@ class ObserveSequenceTests: XCTestCase {
 
 // MARK: - Helpers
     
-fileprivate struct NotEquatable {
+struct NotEquatable {
     
     let value: Int
 }
 
-fileprivate func customMatch(value lhs: NotEquatable) -> XCTestCase.ObserveSequence<NotEquatable, NotEquatable>.Matcher<NotEquatable> {
+struct MatchNotEquatable: ValueMatcher {
     
-    return { rhs in
-        return rhs.value == lhs.value
+    typealias ExpectedValue = Int
+    
+    typealias CapturedValue = NotEquatable
+    
+    // MARK: - Properties
+    
+    var expectedValue: ExpectedValue
+    
+    // MARK: - Initializers
+    
+    init(_ expectedValue: ExpectedValue) {
+        
+        self.expectedValue = expectedValue
+    }
+    
+    // MARK: - Methods
+    
+    func match(capturedValue: NotEquatable) -> Bool {
+        
+        return capturedValue.value == expectedValue
     }
 }

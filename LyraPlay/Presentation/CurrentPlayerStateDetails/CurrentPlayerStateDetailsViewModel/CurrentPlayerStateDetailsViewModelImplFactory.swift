@@ -12,12 +12,17 @@ public final class CurrentPlayerStateDetailsViewModelImplFactory: CurrentPlayerS
     // MARK: - Properties
 
     private let playMediaUseCase: PlayMediaWithInfoUseCase
+    private let subtitlesPresenterViewModelFactory: SubtitlesPresenterViewModelFactory
 
     // MARK: - Initializers
 
-    public init(playMediaUseCase: PlayMediaWithInfoUseCase) {
+    public init(
+        playMediaUseCase: PlayMediaWithInfoUseCase,
+        subtitlesPresenterViewModelFactory: SubtitlesPresenterViewModelFactory
+    ) {
 
         self.playMediaUseCase = playMediaUseCase
+        self.subtitlesPresenterViewModelFactory = subtitlesPresenterViewModelFactory
     }
 
     // MARK: - Methods
@@ -26,7 +31,8 @@ public final class CurrentPlayerStateDetailsViewModelImplFactory: CurrentPlayerS
 
         return CurrentPlayerStateDetailsViewModelImpl(
             delegate: delegate,
-            playMediaUseCase: playMediaUseCase
+            playMediaUseCase: playMediaUseCase,
+            subtitlesPresenterViewModelFactory: subtitlesPresenterViewModelFactory
         )
     }
 }

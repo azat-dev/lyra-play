@@ -12,9 +12,10 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
 
     // MARK: - Properties
 
-    private weak var delegate: CurrentPlayerStateDetailsViewModelDelegate? 
+    private weak var delegate: CurrentPlayerStateDetailsViewModelDelegate?
 
     private let playMediaUseCase: PlayMediaWithInfoUseCase
+    private let subtitlesPresenterViewModelFactory: SubtitlesPresenterViewModelFactory
 
     public let state = CurrentValueSubject<CurrentPlayerStateDetailsViewModelState, Never>(.loading)
     
@@ -24,11 +25,13 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
 
     public init(
         delegate: CurrentPlayerStateDetailsViewModelDelegate,
-        playMediaUseCase: PlayMediaWithInfoUseCase
+        playMediaUseCase: PlayMediaWithInfoUseCase,
+        subtitlesPresenterViewModelFactory: SubtitlesPresenterViewModelFactory
     ) {
 
         self.delegate = delegate
         self.playMediaUseCase = playMediaUseCase
+        self.subtitlesPresenterViewModelFactory = subtitlesPresenterViewModelFactory
         
         bind(to: playMediaUseCase)
     }
@@ -52,14 +55,22 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
             case .loadFailed:
                 state.value = .notActive
                 
-            case .loaded(let playerState, _, let mediaInfo):
+            case .loaded(let playerState, let subtitlesState, let mediaInfo):
 
+                var subtitlesPresenterViewModel: SubtitlesPresenterViewModel?
+                
+                if let subtitlesState = subtitlesState {
+                    
+                    subtitlesPresenterViewModel = subtitlesPresenterViewModelFactory.create(subtitles: subtitlesState.subtitles)
+                }
+                
                 state.value = .active(
                     data: .init(
                         title: mediaInfo.title,
                         subtitle: mediaInfo.artist ?? "",
                         coverImage: mediaInfo.coverImage,
-                        isPlaying: playerState.isPlaying
+                        isPlaying: playerState.isPlaying,
+                        subtitlesPresenterViewModel: subtitlesPresenterViewModel
                     )
                 )
             }
