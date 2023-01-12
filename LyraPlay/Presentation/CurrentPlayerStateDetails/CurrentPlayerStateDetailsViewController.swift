@@ -29,6 +29,8 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     private let goForwardButton = UIImageView()
     private let goBackwardButton = UIImageView()
     
+    private let subtitlesPresenterView = SubtitlesPresenterView()
+    
     private var observers = Set<AnyCancellable>()
     
     // MARK: - Initializers
@@ -88,6 +90,8 @@ extension CurrentPlayerStateDetailsViewController {
             
             Styles.apply(playButton: togglePlayButton)
         }
+        
+        subtitlesPresenterView.viewModel = data.subtitlesPresenterViewModel
     }
     
     private func updateLoadingState() {
@@ -154,6 +158,8 @@ extension CurrentPlayerStateDetailsViewController {
 
         view.addSubview(contentGroup)
         view.addSubview(activityIndicator)
+        
+        view.addSubview(subtitlesPresenterView)
     }
 }
 
@@ -176,6 +182,11 @@ extension CurrentPlayerStateDetailsViewController {
             subtitleLabel: subtitleLabel,
             slider: sliderView,
             buttonsGroup: buttonsGroup
+        )
+        
+        Layout.apply(
+            contentView: contentGroup,
+            subtitlesPresenterView: subtitlesPresenterView
         )
 
         Layout.apply(

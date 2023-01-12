@@ -20,6 +20,8 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
     public let state = CurrentValueSubject<CurrentPlayerStateDetailsViewModelState, Never>(.loading)
     
     private var observers = Set<AnyCancellable>()
+    
+    private var currentSubtitles: Subtitles?
 
     // MARK: - Initializers
 
@@ -61,7 +63,15 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
                 
                 if let subtitlesState = subtitlesState {
                     
-                    subtitlesPresenterViewModel = subtitlesPresenterViewModelFactory.create(subtitles: subtitlesState.subtitles)
+                    if case .active(let prevState) = state.value {
+                        subtitlesPresenterViewModel = prevState.subtitlesPresenterViewModel
+                    }
+                    
+                    if subtitlesPresenterViewModel == nil || currentSubtitles != subtitlesState.subtitles {
+                        subtitlesPresenterViewModel = subtitlesPresenterViewModelFactory.create(subtitles: subtitlesState.subtitles)
+                    }
+                    
+                    subtitlesPresenterViewModel?.update(position: subtitlesState.position)
                 }
                 
                 state.value = .active(

@@ -118,5 +118,14 @@ extension CurrentPlayerStateDetailsViewController {
             activityIndicator.constraintToCenter(of: view)
             contentGroup.constraintTo(view: view, margins: contentGroupPadding)
         }
+        
+        static func apply(
+            contentView: UIView,
+            subtitlesPresenterView: SubtitlesPresenterView
+        ) {
+            
+            subtitlesPresenterView.translatesAutoresizingMaskIntoConstraints = false
+            subtitlesPresenterView.constraintTo(view: contentView)
+        }
     }
 }
