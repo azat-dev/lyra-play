@@ -12,7 +12,7 @@ extension RowCell {
     
     final class Styles {
     
-        static let font = Fonts.RedHatDisplay.medium.preferred(with: .title2)
+        static let font = Fonts.RedHatDisplay.medium.preferred(with: .title1)
         
         static func apply(commonTextView textView: UITextView) {
             
@@ -28,12 +28,14 @@ extension RowCell {
             apply(commonTextView: textView)
             
             textView.textColor = .white
+            textView.layer.opacity = 0.5
         }
         
         static func apply(activeTextView textView: UITextView) {
             
             apply(commonTextView: textView)
-            textView.textColor = .red
+            textView.textColor = .white
+            textView.layer.opacity = 1
         }
         
         static func apply(contentView: UIView) {

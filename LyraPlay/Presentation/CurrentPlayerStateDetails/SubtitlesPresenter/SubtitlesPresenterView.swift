@@ -65,7 +65,7 @@ extension SubtitlesPresenterView {
                 
                 if let activeSentenceIndex = newState.activeSentenceIndex {
                     
-                    let indexPath = IndexPath(row: activeSentenceIndex, section: 0)
+                    let indexPath = IndexPath(row: 0, section: activeSentenceIndex)
                     self.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
                 }
             }
@@ -73,6 +73,18 @@ extension SubtitlesPresenterView {
 }
 
 // MARK: - Setup Views
+
+extension SubtitlesPresenterView: UITableViewDelegate {
+    
+    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        
+        return 10
+    }
+}
 
 extension SubtitlesPresenterView {
     
@@ -89,6 +101,10 @@ extension SubtitlesPresenterView {
         )
         
         tableView.dataSource = self
+        tableView.delegate = self
+        tableView.sectionHeaderHeight = 1
+        tableView.tableFooterView = nil
+        tableView.estimatedSectionFooterHeight = 0
         
         addSubview(tableView)
     }
@@ -122,12 +138,13 @@ extension SubtitlesPresenterView {
 extension SubtitlesPresenterView: UITableViewDataSource {
     
     public func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        
+        return viewModel?.state.value.rows.count ?? 0
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return viewModel?.state.value.rows.count ?? 0
+        return 1
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -144,10 +161,10 @@ extension SubtitlesPresenterView: UITableViewDataSource {
         }
         
         guard let rows = viewModel?.state.value.rows else {
-            fatalError("Can't find row at: \(indexPath.row)")
+            fatalError("Can't find row at: \(indexPath.section)")
         }
         
-        cell.viewModel = rows[indexPath.row]
+        cell.viewModel = rows[indexPath.section]
         return cell
     }
 }
