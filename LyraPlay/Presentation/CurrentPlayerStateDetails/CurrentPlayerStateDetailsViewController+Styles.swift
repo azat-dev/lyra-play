@@ -55,6 +55,16 @@ extension CurrentPlayerStateDetailsViewController {
             activityIndicator.hidesWhenStopped = true
         }
         
+        static func apply(backgroundImage imageView: UIImageView) {
+            
+            imageView.contentMode = .scaleAspectFill
+        }
+        
+        static func apply(blurView: UIVisualEffectView) {
+            
+            blurView.effect = UIBlurEffect(style: .dark)
+        }
+        
         static func apply(coverImage imageView: UIImageView) {
             
             imageView.layer.cornerRadius = cornerRadius

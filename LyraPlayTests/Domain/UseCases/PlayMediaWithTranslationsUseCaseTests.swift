@@ -188,52 +188,56 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
     
     func test_play__without_subtitles() async throws {
         
-//        let sut = createSUT()
-//
-//        // Given
-//        let session = anySession()
-//
-//        try await prepare(
-//            sut: sut,
-//            session: session,
-//            subtitles: nil,
-//            isMediaExist: true,
-//            expectedStateItems: [
-//                .noActiveSession,
-//                .activeSession(session, .loading),
-//                .activeSession(session, .loaded(.initial, nil)),
-//            ]
-//        )
-//
-//        let controlledPublisher = sut.useCase.state.publisher
-//            .enumerated()
-//            .map { index, item -> PlayMediaWithTranslationsUseCaseState in
-//
-//                if index == 1 {
-//                    Task {
-//                        sut.playMediaUseCase.finish()
-//                    }
-//                }
-//
-//                return item
-//            }
-//
-//        let statePromise = watch(controlledPublisher)
-//
-//        // When
-//        let result = sut.useCase.play()
-//
-//        // Then
-//        try AssertResultSucceded(result)
-//
-//        statePromise.expect(
-//            [
-//                .activeSession(session, .loaded(.initial, nil)),
-//                .activeSession(session, .loaded(.playing, nil)),
-//                .activeSession(session, .loaded(.finished, nil))
-//            ],
-//            timeout: 3
-//        )
+        let sut = createSUT()
+
+        // Given
+        let session = anySession()
+
+        try await prepare(
+            sut: sut,
+            session: session,
+            subtitles: nil,
+            isMediaExist: true,
+            expectedStateItems: [
+                .noActiveSession,
+                .activeSession(session, .loading),
+                .activeSession(session, .loaded(.initial, nil)),
+            ]
+        )
+        
+        given(sut.playMediaUseCase.play())
+            .willReturn(.success(()))
+
+        let controlledPublisher = sut.useCase.state.publisher
+            .enumerated()
+            .map { index, item -> PlayMediaWithTranslationsUseCaseState in
+
+                if index == 1 {
+                    Task {
+                        // Finish
+                        sut.playMediaUseCase.state.value = .finished(mediaId: session.mediaId)
+                    }
+                }
+
+                return item
+            }
+
+        let statePromise = watch(controlledPublisher)
+
+        // When
+        let result = sut.useCase.play()
+
+        // Then
+        try AssertResultSucceded(result)
+
+        statePromise.expect(
+            [
+                .activeSession(session, .loaded(.initial, nil)),
+                .activeSession(session, .loaded(.playing, nil)),
+                .activeSession(session, .loaded(.finished, nil))
+            ],
+            timeout: 3
+        )
     }
     
     func test_play__with_subtitles_without_translations() async throws {

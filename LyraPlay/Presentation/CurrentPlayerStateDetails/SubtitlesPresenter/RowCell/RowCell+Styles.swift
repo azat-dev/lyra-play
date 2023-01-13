@@ -20,11 +20,13 @@ extension RowCell {
             textView.isScrollEnabled = false
             textView.isEditable = false
             textView.isSelectable = false
+            textView.backgroundColor = .clear
         }
         
         static func apply(textView: UITextView) {
         
             apply(commonTextView: textView)
+            
             textView.textColor = .white
         }
         
@@ -32,6 +34,11 @@ extension RowCell {
             
             apply(commonTextView: textView)
             textView.textColor = .red
+        }
+        
+        static func apply(contentView: UIView) {
+            
+            contentView.backgroundColor = .clear
         }
     }
 }

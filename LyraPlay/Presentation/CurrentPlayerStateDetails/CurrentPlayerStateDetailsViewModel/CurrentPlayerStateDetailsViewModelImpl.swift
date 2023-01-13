@@ -15,6 +15,7 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
     private weak var delegate: CurrentPlayerStateDetailsViewModelDelegate?
 
     private let playMediaUseCase: PlayMediaWithInfoUseCase
+    
     private let subtitlesPresenterViewModelFactory: SubtitlesPresenterViewModelFactory
 
     public let state = CurrentValueSubject<CurrentPlayerStateDetailsViewModelState, Never>(.loading)
@@ -68,7 +69,9 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
                     }
                     
                     if subtitlesPresenterViewModel == nil || currentSubtitles != subtitlesState.subtitles {
+                        
                         subtitlesPresenterViewModel = subtitlesPresenterViewModelFactory.create(subtitles: subtitlesState.subtitles)
+                        currentSubtitles = subtitlesState.subtitles
                     }
                     
                     subtitlesPresenterViewModel?.update(position: subtitlesState.position)

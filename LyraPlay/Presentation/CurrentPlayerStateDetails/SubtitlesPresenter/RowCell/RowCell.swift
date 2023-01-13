@@ -42,6 +42,7 @@ final class RowCell: UITableViewCell, NSLayoutManagerDelegate {
         
         setupViews()
         layout()
+        style()
     }
 }
 
@@ -192,5 +193,19 @@ extension RowCell {
     private func layout() {
 
         textView.constraintTo(view: contentView)
+    }
+}
+
+// MARK: - Style
+
+extension RowCell {
+    
+    private func style() {
+        
+        backgroundColor = .clear
+        backgroundView = nil
+        selectedBackgroundView = nil
+        
+        Styles.apply(contentView: contentView)
     }
 }
