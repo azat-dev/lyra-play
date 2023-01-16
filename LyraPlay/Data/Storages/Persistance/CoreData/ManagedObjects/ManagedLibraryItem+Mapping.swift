@@ -24,7 +24,7 @@ extension ManagedLibraryItem {
             createdAt: createdAt!,
             updatedAt: updatedAt,
             title: title!,
-            subtitle: subtitle!,
+            subtitle: subtitle,
             file: file!,
             duration: duration,
             image: image,
