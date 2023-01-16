@@ -65,6 +65,10 @@ extension SubtitlesPresenterView {
                 
                 if let activeSentenceIndex = newState.activeSentenceIndex {
                     
+                    guard self.tableView.numberOfSections > activeSentenceIndex else {
+                        return
+                    }
+                    
                     let indexPath = IndexPath(row: 0, section: activeSentenceIndex)
                     self.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
                 }
@@ -82,7 +86,7 @@ extension SubtitlesPresenterView: UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         
-        return 10
+        return 25
     }
 }
 
