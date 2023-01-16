@@ -13,6 +13,8 @@ public protocol DictionaryListBrowserViewModelDelegate: AnyObject {
     func runCreationFlow()
     
     func runDeleteDictionaryItemFlow(itemId: UUID)
+    
+    func runExportDictionaryFlow()
 }
 
 public protocol DictionaryListBrowserViewModelInput: AnyObject {
@@ -22,6 +24,8 @@ public protocol DictionaryListBrowserViewModelInput: AnyObject {
     func addNewItem()
     
     func deleteItem(_ itemId: UUID)
+    
+    func exportDictionary()
 }
 
 public protocol DictionaryListBrowserViewModelOutput: AnyObject {
