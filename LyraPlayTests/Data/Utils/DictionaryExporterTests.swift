@@ -88,6 +88,12 @@ class DictionaryExporterTests: XCTestCase {
                     items[0].translations[0].text,
                     items[0].translations[1].text
                 ]
+            ),
+            .init(
+                original: items[1].originalText,
+                translations: [
+                    items[1].translations[0].text,
+                ]
             )
         ]
         
