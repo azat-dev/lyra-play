@@ -38,6 +38,12 @@ extension ExportDictionaryUseCaseImpl {
 
     public func export() async -> Result<[ExportedDictionaryItem], ExportDictionaryUseCaseError> {
 
-        fatalError()
+        let result = await dictionaryExporter.export(repository: dictionaryRepository)
+        
+        guard case .success(let items) = result else {
+            return .failure(.internalError)
+        }
+        
+        return .success(items)
     }
 }
