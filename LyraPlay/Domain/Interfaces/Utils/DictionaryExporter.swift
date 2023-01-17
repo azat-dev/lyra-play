@@ -9,5 +9,5 @@ import Foundation
 
 public protocol DictionaryExporter {
     
-    func export(repository: DictionaryRepository) async -> Result<[ExportedDictionaryItem], Error>
+    func export(repository: DictionaryRepositoryOutputList) async -> Result<[ExportedDictionaryItem], Error>
 }

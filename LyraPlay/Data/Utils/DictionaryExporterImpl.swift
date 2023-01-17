@@ -15,7 +15,8 @@ public class DictionaryExporterImpl: DictionaryExporter {
     
     // MARK: - Methods
     
-    public func export(repository: DictionaryRepository) async -> Result<[ExportedDictionaryItem], Error> {
+    public func export(repository: DictionaryRepositoryOutputList) async -> Result<[ExportedDictionaryItem], Error> {
+        
         fatalError()
     }
 }
