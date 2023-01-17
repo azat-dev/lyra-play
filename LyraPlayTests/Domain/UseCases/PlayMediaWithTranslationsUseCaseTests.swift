@@ -16,6 +16,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         useCase: PlayMediaWithTranslationsUseCase,
         playMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCase,
         playMediaUseCase: PlayMediaUseCaseMock,
+        playerState: CurrentValueSubject<PlayMediaUseCaseState, Never>,
         loadSubtitlesUseCase: LoadSubtitlesUseCaseMock,
         playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory,
         provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCaseMock,
@@ -49,8 +50,13 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             
         )
         
-        let playMediaUseCase = PlayMediaUseCaseMock()
+        let playMediaUseCase = mock(PlayMediaUseCase.self)
         
+        let playerState = CurrentValueSubject<PlayMediaUseCaseState, Never>(.initial)
+        
+        given(playMediaUseCase.state)
+            .willReturn(playerState)
+            
         let playMediaWithSubtitlesUseCase = PlayMediaWithSubtitlesUseCaseImpl(
             playMediaUseCase: playMediaUseCase,
             playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
@@ -69,6 +75,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             useCase,
             playMediaWithSubtitlesUseCase,
             playMediaUseCase,
+            playerState,
             loadSubtitlesUseCase,
             playSubtitlesUseCaseFactory,
             provideTranslationsToPlayUseCase,
@@ -77,46 +84,19 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         )
     }
     
-    func anyMediaId() -> UUID {
-        return UUID()
-    }
-    
-    func anyNativeLanguage() -> String {
-        return "ru_RU"
-    }
-    
-    func anyLearningLanguage() -> String {
-        return "en_US"
-    }
-    
-    func anyAt() -> TimeInterval {
-        return .init()
-    }
-    
-    func emptySubtitles() -> Subtitles {
-        return .init(duration: 0, sentences: [])
-    }
-    
-    func anySession() -> PlayMediaWithTranslationsSession {
-        
-        .init(
-            mediaId: anyMediaId(),
-            learningLanguage: anyLearningLanguage(),
-            nativeLanguage: anyNativeLanguage()
-        )
-    }
-    
     func prepare(
         sut: SUT,
         session: PlayMediaWithTranslationsSession,
         subtitles: Subtitles?,
-        isMediaExist: Bool,
+        isMediaExist: Bool = true,
         expectedStateItems: [PlayMediaWithTranslationsUseCaseState],
         file: StaticString = #filePath,
         line: UInt = #line
     ) async throws {
         
-        sut.playMediaUseCase.prepareWillReturn = { _ in isMediaExist ? .success(()) : .failure(.trackNotFound) }
+        given(await sut.playMediaUseCase.prepare(mediaId: any()))
+            .willReturn(isMediaExist ? .success(()) : .failure(.trackNotFound))
+        
         sut.loadSubtitlesUseCase.willReturn = { _, _ in
             
             if let subtitles = subtitles {
@@ -209,10 +189,10 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
     func test_play__without_subtitles() async throws {
         
         let sut = createSUT()
-        
+
         // Given
         let session = anySession()
-        
+
         try await prepare(
             sut: sut,
             session: session,
@@ -225,27 +205,31 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
             ]
         )
         
+        given(sut.playMediaUseCase.play())
+            .willReturn(.success(()))
+
         let controlledPublisher = sut.useCase.state.publisher
             .enumerated()
             .map { index, item -> PlayMediaWithTranslationsUseCaseState in
-                
+
                 if index == 1 {
                     Task {
-                        sut.playMediaUseCase.finish()
+                        // Finish
+                        sut.playMediaUseCase.state.value = .finished(mediaId: session.mediaId)
                     }
                 }
-                
+
                 return item
             }
-        
+
         let statePromise = watch(controlledPublisher)
-        
+
         // When
         let result = sut.useCase.play()
-        
+
         // Then
         try AssertResultSucceded(result)
-        
+
         statePromise.expect(
             [
                 .activeSession(session, .loaded(.initial, nil)),
@@ -434,6 +418,123 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
                 .activeSession(session, .loaded(.playing, .init(position: .sentence(2), subtitles: subtitles))),
             ],
             timeout: 3
+        )
+    }
+    
+    func prepareLoaded(sut: SUT) async throws {
+        
+        let session = anySession()
+        
+        try await prepare(
+            sut: sut,
+            session: session,
+            subtitles: nil,
+            isMediaExist: true,
+            expectedStateItems: [
+                .noActiveSession,
+                .activeSession(session, .loading),
+                .activeSession(session, .loaded(.initial, nil)),
+            ]
+        )
+    }
+    
+    func test_togglePlay__no_active_session() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        // No active session
+        
+        // When
+        let result = sut.useCase.togglePlay()
+        
+        // Then
+        guard case .failure(.noActiveMedia) = result else {
+            XCTFail("Wrong error type")
+            return
+        }
+    }
+    
+    func test_togglePlay__active_session() async throws {
+        
+        // Given
+        let sut = createSUT()
+        try await prepareLoaded(sut: sut)
+        
+        given(sut.playMediaUseCase.play())
+            .willReturn(.success(()))
+        
+        // When
+        let result = sut.useCase.togglePlay()
+        
+        // Then
+        guard case .success(()) = result else {
+            XCTFail("Wrong result")
+            return
+        }
+        
+        verify(sut.playMediaUseCase.play())
+            .wasCalled()
+    }
+    
+    func test_togglePlay__active_session__playing() async throws {
+        
+        // Given
+        let sut = createSUT()
+        try await prepareLoaded(sut: sut)
+        
+        sut.useCase.state.value = .activeSession(
+            anySession(),
+            .loaded(.playing, nil)
+        )
+        
+        given(sut.playMediaUseCase.pause())
+            .willReturn(.success(()))
+        
+        // When
+        let result = sut.useCase.togglePlay()
+        
+        // Then
+        guard case .success(()) = result else {
+            XCTFail("Wrong result")
+            return
+        }
+        
+        verify(sut.playMediaUseCase.pause())
+            .wasCalled()
+    }
+}
+
+// MARK: - Helpers
+
+extension PlayMediaWithTranslationsUseCaseTests {
+    
+    func anyMediaId() -> UUID {
+        return UUID()
+    }
+    
+    func anyNativeLanguage() -> String {
+        return "ru_RU"
+    }
+    
+    func anyLearningLanguage() -> String {
+        return "en_US"
+    }
+    
+    func anyAt() -> TimeInterval {
+        return .init()
+    }
+    
+    func emptySubtitles() -> Subtitles {
+        return .init(duration: 0, sentences: [])
+    }
+    
+    func anySession() -> PlayMediaWithTranslationsSession {
+        
+        .init(
+            mediaId: anyMediaId(),
+            learningLanguage: anyLearningLanguage(),
+            nativeLanguage: anyNativeLanguage()
         )
     }
 }

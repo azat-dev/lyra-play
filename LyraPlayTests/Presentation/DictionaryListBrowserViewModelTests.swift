@@ -139,11 +139,22 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
         // Given
         let sut = await createSUT()
 
-
         // When
         sut.viewModel.addNewItem()
 
         // Then
         verify(sut.dictionaryListBrowserDelegate.runCreationFlow()).wasCalled(1)
+    }
+    
+    func test_exportDictionary() async {
+
+        // Given
+        let sut = await createSUT()
+
+        // When
+        sut.viewModel.exportDictionary()
+
+        // Then
+        verify(sut.dictionaryListBrowserDelegate.runExportDictionaryFlow()).wasCalled(1)
     }
 }

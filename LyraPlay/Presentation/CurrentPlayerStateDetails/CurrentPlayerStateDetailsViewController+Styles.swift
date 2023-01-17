@@ -25,6 +25,12 @@ extension CurrentPlayerStateDetailsViewController {
         static let iconGoForward = UIImage(systemName: "goforward.30")
         static let iconGoBackward = UIImage(systemName: "gobackward.30")
         
+        static let fontTitle = Fonts.RedHatDisplay.semiBold.preferred(with: .headline)
+        static let fontSubtitle = Fonts.RedHatDisplay.regular.preferred(with: .subheadline)
+        
+        static let colorTrackMinimum = UIColor(named: "Color.Slider.Track.Minimum")
+        static let colorTrackMaximum = UIColor(named: "Color.Slider.Track.Maximum")
+        
         // MARK: - Methods
         
         static func apply(contentView: UIView) {
@@ -35,16 +41,28 @@ extension CurrentPlayerStateDetailsViewController {
         static func apply(titleLabel label: UILabel) {
             
             label.textAlignment = .left
+            label.font = fontTitle
         }
         
         static func apply(subtitleLabel label: UILabel) {
             
             label.textAlignment = .left
+            label.font = fontSubtitle
         }
         
         static func apply(activityIndicator: UIActivityIndicatorView) {
             
             activityIndicator.hidesWhenStopped = true
+        }
+        
+        static func apply(backgroundImage imageView: UIImageView) {
+            
+            imageView.contentMode = .scaleAspectFill
+        }
+        
+        static func apply(blurView: UIVisualEffectView) {
+            
+            blurView.effect = UIBlurEffect(style: .dark)
         }
         
         static func apply(coverImage imageView: UIImageView) {
@@ -85,8 +103,9 @@ extension CurrentPlayerStateDetailsViewController {
         }
         
         static func apply(slider: UISlider) {
-            
-            slider.tintColor = .white
+
+            slider.minimumTrackTintColor = colorTrackMinimum
+            slider.maximumTrackTintColor = colorTrackMaximum
         }
     }
 }

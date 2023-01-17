@@ -34,7 +34,7 @@ extension XCTestCase {
     }
     
     func watch<P>(_ publisher: P) -> ObserveSequence<P.Output, P.Output>
-        where P: Publisher, P.Failure == Never, P.Output: Equatable  {
+        where P: Publisher, P.Failure == Never  {
         
         let sequence = ObserveSequence<P.Output, P.Output>(testCase: self)
         
@@ -89,9 +89,16 @@ extension XCTestCase {
     }
 }
 
+public protocol ValueMatcher {
+    
+    associatedtype CapturedValue    
+    
+    func match(capturedValue: CapturedValue) -> Bool
+}
+
 extension XCTestCase {
     
-    public class ObserveSequence<Value, MappedValue: Equatable> {
+    public class ObserveSequence<Value, MappedValue> {
 
         // MARK: - Properties
         
@@ -138,7 +145,7 @@ extension XCTestCase {
             timeout: TimeInterval = 1,
             file: StaticString = #filePath,
             line: UInt = #line
-        ) {
+        ) where MappedValue: Equatable {
             
             if capturedValues.count < expectedValues.count {
                 
@@ -168,7 +175,46 @@ extension XCTestCase {
                 file: file,
                 line: line
             )
+        }
+        
+        func expect<Matcher: ValueMatcher>(
+            match matchers: [Matcher],
+            timeout: TimeInterval = 1,
+            file: StaticString = #filePath,
+            line: UInt = #line
+        ) where Value == Matcher.CapturedValue  {
             
+            if capturedValues.count < matchers.count {
+                
+                semaphore.wait()
+                
+                let valuesExpectation = testCase.expectation(description: "Wait for rest items")
+                valuesExpectation.expectedFulfillmentCount = matchers.count
+                
+                capturedValues.forEach { _ in
+                    valuesExpectation.fulfill()
+                }
+                
+                self.expectation = valuesExpectation
+                semaphore.signal()
+
+                testCase.wait(for: [valuesExpectation], timeout: timeout)
+            }
+            
+            if let onTearDown = onTearDown {
+                onTearDown()
+            }
+            
+            for index in 0..<matchers.count {
+                
+                let matcher = matchers[index]
+                let capturedValue = capturedValues[index]
+                
+                guard matcher.match(capturedValue: capturedValue) else {
+                    XCTFail("Captured value at index \(index) doesn't match: \(capturedValue)", file: file, line: line)
+                    return
+                }
+            }
         }
     }
 }

@@ -20,7 +20,7 @@ public final class SubtitlesPresenterView: UIView {
             guard let viewModel = viewModel else {
                 return
             }
-
+            
             bind(to: viewModel)
         }
     }
@@ -55,60 +55,60 @@ extension SubtitlesPresenterView {
     
     private func bind(to viewModel: SubtitlesPresenterViewModel) {
         
-        var prevActiveIndex: Int?
-
         viewModelObserver = viewModel.state
             .receive(on: RunLoop.main)
             .sink { [weak self] newState in
-           
-            guard let self = self else {
-                return
-            }
                 
-            switch newState {
-                
-            case .loading:
-                prevActiveIndex = nil
-                self.tableView.reloadData()
-                
-            case .playing(let activeSentenceIndex, _):
-                
-                
-//                if let prevActiveIndex = prevActiveIndex {
-//                    
-//                    let prevIndexPath = IndexPath(row: prevActiveIndex, section: 0)
-//                }
-//                
-                if let activeSentenceIndex = activeSentenceIndex {
-                    
-                    let indexPath = IndexPath(row: activeSentenceIndex, section: 0)
-                    
-                    self.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+                guard let self = self else {
+                    return
                 }
                 
-                prevActiveIndex = activeSentenceIndex
+                if let activeSentenceIndex = newState.activeSentenceIndex {
+                    
+                    guard self.tableView.numberOfSections > activeSentenceIndex else {
+                        return
+                    }
+                    
+                    let indexPath = IndexPath(row: 0, section: activeSentenceIndex)
+                    self.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+                }
             }
-        }
     }
 }
 
 // MARK: - Setup Views
 
+extension SubtitlesPresenterView: UITableViewDelegate {
+    
+    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        
+        return 25
+    }
+}
+
 extension SubtitlesPresenterView {
     
     private func setupViews() {
-
+        
         tableView = UITableView(
             frame: frame,
             style: .plain
         )
-
+        
         tableView.register(
             RowCell.self,
             forCellReuseIdentifier: RowCell.reuseIdentifier
         )
-
+        
         tableView.dataSource = self
+        tableView.delegate = self
+        tableView.sectionHeaderHeight = 1
+        tableView.tableFooterView = nil
+        tableView.estimatedSectionFooterHeight = 0
         
         addSubview(tableView)
     }
@@ -142,22 +142,17 @@ extension SubtitlesPresenterView {
 extension SubtitlesPresenterView: UITableViewDataSource {
     
     public func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        
+        return viewModel?.state.value.rows.count ?? 0
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        guard
-            case .playing(_, let rows) = viewModel?.state.value
-        else {
-            return 0
-        }
-        
-        return rows.count
+        return 1
     }
-
+    
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
+        
         let cell = tableView.dequeueReusableCell(
             withIdentifier: RowCell.reuseIdentifier,
             for: indexPath
@@ -169,10 +164,11 @@ extension SubtitlesPresenterView: UITableViewDataSource {
             fatalError("Can't dequee a cell")
         }
         
-        if case .playing(_, let rows) = viewModel?.state.value {
-            cell.viewModel = rows[indexPath.row]
+        guard let rows = viewModel?.state.value.rows else {
+            fatalError("Can't find row at: \(indexPath.section)")
         }
         
+        cell.viewModel = rows[indexPath.section]
         return cell
     }
 }

@@ -113,4 +113,9 @@ extension DictionaryFlowModelImpl: DictionaryListBrowserViewModelDelegate {
             delegate: self
         )
     }
+    
+    public func runExportDictionaryFlow() {
+        
+        fatalError()
+    }
 }

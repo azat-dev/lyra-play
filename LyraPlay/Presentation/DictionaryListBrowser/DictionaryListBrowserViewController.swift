@@ -120,7 +120,7 @@ extension DictionaryListBrowserViewController {
         viewModel.addNewItem()
     }
     
-    private func setupNavigatioBar() {
+    private func setupAddButton() {
         
         let addButton = UIBarButtonItem(
             barButtonSystemItem: .add,
@@ -132,6 +132,11 @@ extension DictionaryListBrowserViewController {
         
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
+    }
+    
+    private func setupNavigatioBar() {
+        
+        setupAddButton()
     }
 
     private func setupViews() {

@@ -15,7 +15,7 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
     
     typealias SUT = (
         useCase: PlayMediaWithSubtitlesUseCase,
-        playMediaUseCase: PlayMediaUseCaseMock,
+        playMediaUseCase: PlayMediaUseCaseMockStateble,
         playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory,
         loadSubtitlesUseCase: LoadSubtitlesUseCaseMock,
         subtitlesTimer: ActionTimer
@@ -23,7 +23,7 @@ class PlayMediaWithSubtitlesUseCaseTests: XCTestCase {
     
     func createSUT() -> SUT {
         
-        let playMediaUseCase = PlayMediaUseCaseMock()
+        let playMediaUseCase = PlayMediaUseCaseMockStateble()
         
         let subtitlesTimer = ActionTimerMockDeprecated()
         

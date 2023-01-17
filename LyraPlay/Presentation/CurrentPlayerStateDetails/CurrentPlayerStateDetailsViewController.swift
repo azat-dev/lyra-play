@@ -16,19 +16,21 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     private let viewModel: CurrentPlayerStateDetailsViewModel
     
     private let activityIndicator = UIActivityIndicatorView()
-    private let contentGroup = UIStackView()
+    private let contentGroup = UIView()
     private let coverImageView = UIImageView()
     
-    private let labelsGroup = UIStackView()
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
     
     private let sliderView = UISlider()
     
     private let buttonsGroup = UIView()
-    private let togglePlayButton = UIImageView()
     private let goForwardButton = UIImageView()
     private let goBackwardButton = UIImageView()
+    
+    private let subtitlesPresenterView = SubtitlesPresenterView()
+    
+    private let blurView = UIVisualEffectView()
     
     private var observers = Set<AnyCancellable>()
     
@@ -82,13 +84,7 @@ extension CurrentPlayerStateDetailsViewController {
         contentGroup.isHidden = false
         activityIndicator.stopAnimating()
         
-        if data.isPlaying {
-            
-            Styles.apply(pauseButton: togglePlayButton)
-        } else {
-            
-            Styles.apply(playButton: togglePlayButton)
-        }
+        subtitlesPresenterView.viewModel = data.subtitlesPresenterViewModel
     }
     
     private func updateLoadingState() {
@@ -133,30 +129,11 @@ extension CurrentPlayerStateDetailsViewController {
     
     private func setupViews() {
         
-        let togglePlayButtonGestureRecognizer = UITapGestureRecognizer(
-            target: self,
-            action: #selector(self.didTapTogglePlayButton)
-        )
-        
-        togglePlayButton.isUserInteractionEnabled = true
-        togglePlayButton.addGestureRecognizer(togglePlayButtonGestureRecognizer)
-        
-        buttonsGroup.addSubview(goForwardButton)
-        buttonsGroup.addSubview(togglePlayButton)
-        buttonsGroup.addSubview(goBackwardButton)
-        
-        
-        labelsGroup.addArrangedSubview(titleLabel)
-        labelsGroup.addArrangedSubview(subtitleLabel)
-        
-        contentGroup.addArrangedSubview(coverImageView)
-        contentGroup.addArrangedSubview(labelsGroup)
-        
-        contentGroup.addArrangedSubview(sliderView)
-        contentGroup.addArrangedSubview(buttonsGroup)
-        
-        view.addSubview(contentGroup)
+        view.addSubview(coverImageView)
         view.addSubview(activityIndicator)
+        
+        view.addSubview(blurView)
+        view.addSubview(subtitlesPresenterView)
     }
 }
 
@@ -166,25 +143,23 @@ extension CurrentPlayerStateDetailsViewController {
     private func layout() {
 
         Layout.apply(
-            buttonsGroup: buttonsGroup,
-            togglePlayButton: togglePlayButton,
-            goForwardButton: goForwardButton,
-            goBackwardButton: goBackwardButton
+            contentView: view,
+            coverImageView: coverImageView
         )
         
         Layout.apply(
-            contentGroup: contentGroup,
-            coverImageView: coverImageView,
-            titleLabel: titleLabel,
-            subtitleLabel: subtitleLabel
+            contentView: view,
+            subtitlesPresenterView: subtitlesPresenterView
+        )
+
+        Layout.apply(
+            contentView: view,
+            activityIndicator: activityIndicator
         )
         
-        Layout.applyLabelsGroup(group: labelsGroup)
-        
         Layout.apply(
-            view: view,
-            activityIndicator: activityIndicator,
-            contentGroup: contentGroup
+            contentView: view,
+            blurView: blurView
         )
     }
 }
@@ -205,5 +180,6 @@ extension CurrentPlayerStateDetailsViewController {
         
         Styles.apply(titleLabel: titleLabel)
         Styles.apply(subtitleLabel: subtitleLabel)
+        Styles.apply(blurView: blurView)
     }
 }

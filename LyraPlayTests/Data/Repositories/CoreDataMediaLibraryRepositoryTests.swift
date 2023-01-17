@@ -50,7 +50,6 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         let sut = createSUT()
         
         // Given
-        
         let newFile = anyNewFile()
         
         // When

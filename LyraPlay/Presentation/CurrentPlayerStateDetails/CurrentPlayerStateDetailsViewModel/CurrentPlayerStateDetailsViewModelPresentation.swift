@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct CurrentPlayerStateDetailsViewModelPresentation: Equatable {
+public struct CurrentPlayerStateDetailsViewModelPresentation {
 
     // MARK: - Properties
 
@@ -15,6 +15,7 @@ public struct CurrentPlayerStateDetailsViewModelPresentation: Equatable {
     public var subtitle: String
     public var coverImage: Data?
     public var isPlaying: Bool
+    public var subtitlesPresenterViewModel: SubtitlesPresenterViewModel?
 
     // MARK: - Initializers
 
@@ -22,12 +23,14 @@ public struct CurrentPlayerStateDetailsViewModelPresentation: Equatable {
         title: String,
         subtitle: String,
         coverImage: Data?,
-        isPlaying: Bool
+        isPlaying: Bool,
+        subtitlesPresenterViewModel: SubtitlesPresenterViewModel?
     ) {
 
         self.title = title
         self.subtitle = subtitle
         self.coverImage = coverImage
         self.isPlaying = isPlaying
+        self.subtitlesPresenterViewModel = subtitlesPresenterViewModel
     }
 }

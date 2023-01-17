@@ -32,7 +32,6 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         given(showMediaInfoUseCaseFactory.create())
             .willReturn(showMediaInfoUseCase)
         
-        
         let playMediaUseCase = mock(PlayMediaWithInfoUseCase.self)
         
         let state = PublisherWithSession<PlayMediaWithInfoUseCaseState, Never>(.noActiveSession)

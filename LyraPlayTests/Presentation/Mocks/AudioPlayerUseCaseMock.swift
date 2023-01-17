@@ -10,7 +10,7 @@ import Combine
 
 import LyraPlay
 
-final class PlayMediaUseCaseMock: PlayMediaUseCase {
+final class PlayMediaUseCaseMockStateble: PlayMediaUseCase {
     
     private var currentTrackId: UUID? = nil
     var state = CurrentValueSubject<PlayMediaUseCaseState, Never>(.initial)

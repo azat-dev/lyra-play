@@ -13,7 +13,7 @@ public protocol CurrentPlayerStateDetailsViewModelDelegate: AnyObject {
     func currentPlayerStateDetailsViewModelDidDispose()
 }
 
-public enum CurrentPlayerStateDetailsViewModelState: Equatable {
+public enum CurrentPlayerStateDetailsViewModelState {
 
     case loading
     case notActive

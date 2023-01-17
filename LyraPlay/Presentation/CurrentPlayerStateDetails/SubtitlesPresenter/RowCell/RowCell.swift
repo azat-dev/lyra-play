@@ -42,6 +42,7 @@ final class RowCell: UITableViewCell, NSLayoutManagerDelegate {
         
         setupViews()
         layout()
+        style()
     }
 }
 
@@ -167,18 +168,19 @@ extension RowCell {
 
         let tapGestureRecognizer = UITapGestureRecognizer(
             target: self,
-            action: #selector(didTap(gesture:)))
+            action: #selector(didTap(gesture:))
+        )
         
-        let textStorage = NSTextStorage()
-        let textContainer = NSTextContainer(size: .zero)
+//        let textStorage = NSTextStorage()
+//        let textContainer = NSTextContainer(size: .zero)
         
-        textLayoutManager.highlights = highlights
-        textStorage.addLayoutManager(self.textLayoutManager)
+//        textLayoutManager.highlights = highlights
+//        textStorage.addLayoutManager(self.textLayoutManager)
+//
+//        textLayoutManager.addTextContainer(textContainer)
+//        textLayoutManager.delegate = self
         
-        textLayoutManager.addTextContainer(textContainer)
-        textLayoutManager.delegate = self
-        
-        textView = UITextView(frame: contentView.frame, textContainer: textContainer)
+        textView = UITextView()
         textView.addGestureRecognizer(tapGestureRecognizer)
         
         contentView.addSubview(textView)
@@ -191,6 +193,20 @@ extension RowCell {
     
     private func layout() {
 
-        textView.constraintTo(view: contentView)
+        textView.constraintTo(view: contentView, margins: .init(top: 0, left: 20, bottom: 0, right: 20))
+    }
+}
+
+// MARK: - Style
+
+extension RowCell {
+    
+    private func style() {
+        
+        backgroundColor = .clear
+        backgroundView = nil
+        selectedBackgroundView = nil
+        
+        Styles.apply(contentView: contentView)
     }
 }

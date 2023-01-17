@@ -15,9 +15,9 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     
     typealias SUT = SubtitlesPresenterViewModel
     
-    func createSUT() -> SUT {
+    func createSUT(subtitles: Subtitles) -> SUT {
         
-        let viewModel = SubtitlesPresenterViewModelImpl()
+        let viewModel = SubtitlesPresenterViewModelImpl(subtitles: subtitles)
         detectMemoryLeak(instance: viewModel)
         
         return viewModel
@@ -27,17 +27,16 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         
         // Given
         let emptySubtitles = Subtitles(duration: 0, sentences: [])
-        let sut = createSUT()
+        let sut = createSUT(subtitles: emptySubtitles)
         
         let statesPromise = watch(sut.state, mapper: { ExpectedState(from: $0) })
         
         // When
-        sut.update(with: .init(position: nil, subtitles: emptySubtitles))
+        sut.update(position: nil)
         
         // Then
         statesPromise.expect([
-            .loading,
-            .playing(activeSentenceIndex: nil, rows: [])
+            .init(activeSentenceIndex: nil, rows: [])
         ])
     }
     
@@ -52,25 +51,25 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
                 .anySentence(at: 2),
             ]
         )
-        let sut = createSUT()
+        let sut = createSUT(subtitles: notEmptySubtitles)
         
         let statesPromise = watch(sut.state, mapper: { ExpectedState(from: $0) })
         
         // When
-        sut.update(with: .init(position: nil, subtitles: notEmptySubtitles))
-        sut.update(with: .init(position: .sentence(0), subtitles: notEmptySubtitles))
-        sut.update(with: .init(position: nil, subtitles: notEmptySubtitles))
-        sut.update(with: .init(position: .sentence(1), subtitles: notEmptySubtitles))
-        sut.update(with: .init(position: .sentence(2), subtitles: notEmptySubtitles))
+        sut.update(position: nil)
+        sut.update(position: .sentence(0))
+        sut.update(position: nil)
+        sut.update(position: .sentence(1))
+        sut.update(position: .sentence(2))
         
         // Then
         statesPromise.expect([
-            .loading,
-            .playing(activeSentenceIndex: nil, rows: [false, false, false]),
-            .playing(activeSentenceIndex: 0, rows: [true, false, false]),
-            .playing(activeSentenceIndex: nil, rows: [false, false, false]),
-            .playing(activeSentenceIndex: 1, rows: [false, true, false]),
-            .playing(activeSentenceIndex: 2, rows: [false, false, true]),
+            .init(activeSentenceIndex: nil, rows: [false, false, false]),
+            .init(activeSentenceIndex: nil, rows: [false, false, false]),
+            .init(activeSentenceIndex: 0, rows: [true, false, false]),
+            .init(activeSentenceIndex: nil, rows: [false, false, false]),
+            .init(activeSentenceIndex: 1, rows: [false, true, false]),
+            .init(activeSentenceIndex: 2, rows: [false, false, true]),
         ])
     }
 }
@@ -80,24 +79,21 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
 
 fileprivate extension SubtitlesPresenterViewModelTests {
     
-    private enum ExpectedState: Equatable {
+    private struct ExpectedState: Equatable {
         
-        case loading
-        case playing(activeSentenceIndex: Int?, rows: [Bool])
+        var activeSentenceIndex: Int?
+        var rows: [Bool]
+        
+        init(activeSentenceIndex: Int? = nil, rows: [Bool]) {
+            
+            self.activeSentenceIndex = activeSentenceIndex
+            self.rows = rows
+        }
         
         init(from source: SubtitlesPresentationState) {
             
-            switch source {
-                
-            case .loading:
-                self = .loading
-                
-            case .playing(let activeSentenceIndex, let rows):
-                self = .playing(
-                    activeSentenceIndex: activeSentenceIndex,
-                    rows: rows.map { $0.isActive.value }
-                )
-            }
+            self.activeSentenceIndex = source.activeSentenceIndex
+            rows = source.rows.map { $0.isActive.value }
         }
         
         init(from sut: SUT) {

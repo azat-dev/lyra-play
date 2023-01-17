@@ -135,7 +135,7 @@ extension PlayMediaWithTranslationsUseCaseImpl {
         
         switch state.value {
             
-        case .activeSession(_, .loaded(.playing, nil)):
+        case .activeSession(_, .loaded(.playing, _)):
             return pause()
             
         case .activeSession(_, .loaded):

@@ -165,6 +165,11 @@ extension DictionaryListBrowserViewModelImpl {
         
         delegate?.runDeleteDictionaryItemFlow(itemId: itemId)
     }
+    
+    public func exportDictionary() {
+        
+        delegate?.runExportDictionaryFlow()
+    }
 }
 
 // MARK: - Output Methods
