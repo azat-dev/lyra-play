@@ -2,7 +2,7 @@
 //  FileSharingViewModelTests.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 17.01.2023.
+//  Created by Azat Kaiumov on 18.01.2023.
 //
 
 import Foundation
@@ -14,7 +14,7 @@ class FileSharingViewModelTests: XCTestCase {
 
     typealias SUT = (
         viewModel: FileSharingViewModel,
-        url: URLMock,
+        provideFileUrlUseCase: ProvideFileUrlUseCaseMock,
         delegate: FileSharingViewModelDelegateMock
     )
 
@@ -22,12 +22,12 @@ class FileSharingViewModelTests: XCTestCase {
 
     func createSUT() -> SUT {
 
-        let url = mock(URL.self)
+        let provideFileUrlUseCase = mock(ProvideFileUrlUseCase.self)
 
         let delegate = mock(FileSharingViewModelDelegate.self)
 
         let viewModel = FileSharingViewModelImpl(
-            url: url,
+            provideFileUrlUseCase: provideFileUrlUseCase,
             delegate: delegate
         )
 
@@ -35,7 +35,7 @@ class FileSharingViewModelTests: XCTestCase {
 
         return (
             viewModel: viewModel,
-            url: url,
+            provideFileUrlUseCase: provideFileUrlUseCase,
             delegate: delegate
         )
     }
@@ -46,9 +46,9 @@ class FileSharingViewModelTests: XCTestCase {
         let sut = createSUT()
 
         // When
-        let result = sut.viewModel.dispose()
+        sut.viewModel.dispose()
 
         // Then
-        let item = try AssertResultSucceded(result)
+        verify(sut.delegate.fileSharingViewModelDidDispose()).wasCalled()
     }
 }

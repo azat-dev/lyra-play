@@ -2,7 +2,7 @@
 //  FileSharingViewModelImplFactory.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 17.01.2023.
+//  Created by Azat Kaiumov on 18.01.2023.
 //
 
 import Foundation
@@ -11,13 +11,13 @@ public final class FileSharingViewModelImplFactory: FileSharingViewModelFactory 
 
     // MARK: - Properties
 
-    private let url: URL
+    private let provideFileUrlUseCase: ProvideFileUrlUseCase
 
     // MARK: - Initializers
 
-    public init(url: URL) {
+    public init(provideFileUrlUseCase: ProvideFileUrlUseCase) {
 
-        self.url = url
+        self.provideFileUrlUseCase = provideFileUrlUseCase
     }
 
     // MARK: - Methods
@@ -25,7 +25,7 @@ public final class FileSharingViewModelImplFactory: FileSharingViewModelFactory 
     public func create(delegate: FileSharingViewModelDelegate) -> FileSharingViewModel {
 
         return FileSharingViewModelImpl(
-            url: url,
+            provideFileUrlUseCase: provideFileUrlUseCase,
             delegate: delegate
         )
     }

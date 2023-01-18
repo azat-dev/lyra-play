@@ -2,13 +2,14 @@
 //  FileSharingViewModel.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 17.01.2023.
+//  Created by Azat Kaiumov on 18.01.2023.
 //
 
 import Foundation
 
 public protocol FileSharingViewModelDelegate: AnyObject {
-    
+ 
+    func fileSharingViewModelDidDispose()
 }
 
 public protocol FileSharingViewModelInput: AnyObject {
@@ -18,7 +19,7 @@ public protocol FileSharingViewModelInput: AnyObject {
 
 public protocol FileSharingViewModelOutput: AnyObject {
 
-    var url: URL { get }
+    func getFile() async -> URL?
 }
 
 public protocol FileSharingViewModel: FileSharingViewModelOutput, FileSharingViewModelInput {

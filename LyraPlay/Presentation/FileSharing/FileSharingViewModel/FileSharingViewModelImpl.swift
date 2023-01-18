@@ -13,16 +13,16 @@ public final class FileSharingViewModelImpl: FileSharingViewModel {
 
     private weak var delegate: FileSharingViewModelDelegate? 
 
-    public let url: URL
+    private let provideFileUrlUseCase: ProvideFileUrlUseCase
 
     // MARK: - Initializers
 
     public init(
-        url: URL,
+        provideFileUrlUseCase: ProvideFileUrlUseCase,
         delegate: FileSharingViewModelDelegate
     ) {
 
-        self.url = url
+        self.provideFileUrlUseCase = provideFileUrlUseCase
         self.delegate = delegate
     }
 }
@@ -33,7 +33,7 @@ extension FileSharingViewModelImpl {
 
     public func dispose() {
 
-        fatalError()
+        delegate?.fileSharingViewModelDidDispose()
     }
 }
 
@@ -41,4 +41,15 @@ extension FileSharingViewModelImpl {
 
 extension FileSharingViewModelImpl {
 
+    public func getFile() -> URL? {
+
+        let result = provideFileUrlUseCase.provideFileUrl()
+
+        guard case .success(let url) = result else {
+            delegate?.fileSharingViewModelDidDispose()
+            return nil
+        }
+        
+        return url
+    }
 }
