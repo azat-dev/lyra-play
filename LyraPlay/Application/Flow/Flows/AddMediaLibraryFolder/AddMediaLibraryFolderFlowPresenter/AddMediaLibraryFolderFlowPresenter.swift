@@ -15,4 +15,4 @@ public protocol AddMediaLibraryFolderFlowPresenterInput: AnyObject {
     func dismiss()
 }
 
-public protocol AddMediaLibraryFolderFlowPresenter: AnyObject, AddMediaLibraryFolderFlowPresenterInput {}
+public protocol AddMediaLibraryFolderFlowPresenter: AddMediaLibraryFolderFlowPresenterInput {}
