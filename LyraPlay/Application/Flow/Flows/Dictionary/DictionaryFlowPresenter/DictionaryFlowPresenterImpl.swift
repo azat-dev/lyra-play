@@ -16,21 +16,26 @@ public final class DictionaryFlowPresenterImpl: DictionaryFlowPresenter {
     private let flowModel: DictionaryFlowModel
     private let listViewFactory: DictionaryListBrowserViewFactory
     private let addDictionaryItemFlowPresenterFactory: AddDictionaryItemFlowPresenterFactory
+    private let exportDictionaryFlowPresenterFactory: ExportDictionaryFlowPresenterFactory
     
     private var observers = Set<AnyCancellable>()
+    
     private var addDictionaryItemPresenter: AddDictionaryItemFlowPresenter?
+    private var exportDictionaryFlowPresenter: ExportDictionaryFlowPresenter?
     
     // MARK: - Initializers
     
     public init(
         flowModel: DictionaryFlowModel,
         listViewFactory: DictionaryListBrowserViewFactory,
-        addDictionaryItemFlowPresenterFactory: AddDictionaryItemFlowPresenterFactory
+        addDictionaryItemFlowPresenterFactory: AddDictionaryItemFlowPresenterFactory,
+        exportDictionaryFlowPresenterFactory: ExportDictionaryFlowPresenterFactory
     ) {
         
         self.flowModel = flowModel
         self.listViewFactory = listViewFactory
         self.addDictionaryItemFlowPresenterFactory = addDictionaryItemFlowPresenterFactory
+        self.exportDictionaryFlowPresenterFactory = exportDictionaryFlowPresenterFactory
     }
     
     deinit {
@@ -63,6 +68,28 @@ extension DictionaryFlowPresenterImpl {
                 let presenter = self.addDictionaryItemFlowPresenterFactory.create(for: flow)
 
                 self.addDictionaryItemPresenter = presenter
+                presenter.present(at: container)
+            }
+            .store(in: &observers)
+        
+        flowModel.exportDictionaryFlow
+            .receive(on: RunLoop.main)
+            .sink { [weak self] exportDictionaryFlow in
+                
+                guard let self = self else {
+                    return
+                }
+                
+                guard let flow = exportDictionaryFlow else {
+
+                    self.exportDictionaryFlowPresenter?.dismiss()
+                    self.exportDictionaryFlowPresenter = nil
+                    return
+                }
+
+                let presenter = self.exportDictionaryFlowPresenterFactory.create(for: flow)
+
+                self.exportDictionaryFlowPresenter = presenter
                 presenter.present(at: container)
             }
             .store(in: &observers)

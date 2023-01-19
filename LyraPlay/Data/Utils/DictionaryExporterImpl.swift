@@ -15,16 +15,41 @@ public class DictionaryExporterImpl: DictionaryExporter {
     
     // MARK: - Methods
     
-    public func export(repository: DictionaryRepositoryOutputList) async -> Result<[ExportedDictionaryItem], Error> {
+    private func listItems(repository: DictionaryRepositoryOutputList, callback: @escaping (_ items: [ExportedDictionaryItem]?) -> Void) {
         
-        let resultItems = await repository.listItems()
+        DispatchQueue(label: "listItemsDictionaryExporter-\(UUID().uuidString)").async {
+            Task {
+                let result = await repository.listItems()
+                
+                guard case .success(let items) = result else {
+                    callback(nil)
+                    return
+                }
+                
+                callback(items.map(ExportedDictionaryItem.init))
+            }
+        }
+    }
+    
+    public func export(repository: DictionaryRepositoryOutputList) -> Result<[ExportedDictionaryItem], Error> {
         
-        guard case .success(let items) = resultItems else {
-            
+        
+        var exportedItems: [ExportedDictionaryItem]?
+        
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        self.listItems(repository: repository) { items in
+            exportedItems = items
+            semaphore.signal()
+        }
+        
+        semaphore.wait()
+        
+        guard let exportedItems = exportedItems else {
             return .failure(NSError(domain: "InternalError", code: 0))
         }
         
-        return .success(items.map(ExportedDictionaryItem.init))
+        return .success(exportedItems)
     }
 }
 

@@ -120,6 +120,12 @@ extension DictionaryListBrowserViewController {
         viewModel.addNewItem()
     }
     
+    @objc
+    private func didExport() {
+        
+        viewModel.exportDictionary()
+    }
+    
     private func setupAddButton() {
         
         let addButton = UIBarButtonItem(
@@ -129,14 +135,27 @@ extension DictionaryListBrowserViewController {
         )
         
         navigationItem.rightBarButtonItem = addButton
+    }
+    
+    private func setupExportButton() {
         
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.largeTitleDisplayMode = .always
+        let exportButton = UIBarButtonItem(
+            image: UIImage(systemName: "square.and.arrow.up"),
+            style: .plain,
+            target: self,
+            action: #selector(Self.didExport)
+        )
+        
+        navigationItem.leftBarButtonItem = exportButton
     }
     
     private func setupNavigatioBar() {
         
         setupAddButton()
+        setupExportButton()
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
     }
 
     private func setupViews() {

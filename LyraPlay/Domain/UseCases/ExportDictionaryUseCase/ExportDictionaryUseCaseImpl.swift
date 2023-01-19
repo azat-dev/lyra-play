@@ -36,9 +36,9 @@ extension ExportDictionaryUseCaseImpl {
 
 extension ExportDictionaryUseCaseImpl {
 
-    public func export() async -> Result<[ExportedDictionaryItem], ExportDictionaryUseCaseError> {
+    public func export() -> Result<[ExportedDictionaryItem], ExportDictionaryUseCaseError> {
 
-        let result = await dictionaryExporter.export(repository: dictionaryRepository)
+        let result = dictionaryExporter.export(repository: dictionaryRepository)
         
         guard case .success(let items) = result else {
             return .failure(.internalError)

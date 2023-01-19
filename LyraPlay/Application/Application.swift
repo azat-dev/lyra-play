@@ -383,10 +383,35 @@ public class Application {
             editDictionaryListUseCaseFactory: editDictionaryListUseCaseFactory
         )
         
+        let dictionaryExporter = DictionaryExporterImpl()
+        
+        let exportDictionaryUseCaseFactory = ExportDictionaryUseCaseImplFactory(
+            dictionaryRepository: dictionaryRepository,
+            dictionaryExporter: dictionaryExporter
+        )
+        
+        let provideFileForSharingUseCaseFactory = ProvideExportedDictionaryFileForSharingUseCaseFactory(
+            exportDictionaryUseCaseFactory: exportDictionaryUseCaseFactory
+        )
+        
+        let tempURLProvider = TempURLProviderImpl(fileManager: FileManager.default)
+        
+        let fileSharingViewModelFactory = FileSharingViewModelImplFactory(
+            provideFileForSharingUseCaseFactory: provideFileForSharingUseCaseFactory,
+            tempURLProvider: tempURLProvider
+        )
+        
+        let exportDictionaryFlowModelFactory = ExportDictionaryFlowModelImplFactory(
+            outputFileName: "dictionary.lyraplay",
+            provideFileForSharingUseCaseFactory: provideFileForSharingUseCaseFactory,
+            fileSharingViewModelFactory: fileSharingViewModelFactory
+        )
+        
         let dictionaryFlowModelFactory = DictionaryFlowModelImplFactory(
             viewModelFactory: dictionaryViewModelFactory,
             addDictionaryItemFlowModelFactory: addDictionaryItemFlowModelFactory,
-            deleteDictionaryItemFlowModelFactory: deleteDictionaryItemFlowModelFactory
+            deleteDictionaryItemFlowModelFactory: deleteDictionaryItemFlowModelFactory,
+            exportDictionaryFlowModelFactory: exportDictionaryFlowModelFactory
         )
         
         let subtitlesPresenterViewModelFactory = SubtitlesPresenterViewModelImplFactory()
@@ -455,9 +480,16 @@ public class Application {
             editDictionaryItemViewFactory: EditDictionaryItemViewControllerFactory()
         )
         
+        let fileSharingViewControllerFactory = FileSharingViewControllerFactory()
+        
+        let exportDictionaryFlowPresenterFactory = ExportDictionaryFlowPresenterImplFactory(
+            fileSharingViewControllerFactory: fileSharingViewControllerFactory
+        )
+        
         let dictionaryFlowPresenterFactory = DictionaryFlowPresenterImplFactory(
             listViewFactory: DictionaryListBrowserViewControllerFactory(),
-            addDictionaryItemFlowPresenterFactory: addDictionaryItemFlowPresenterFactory
+            addDictionaryItemFlowPresenterFactory: addDictionaryItemFlowPresenterFactory,
+            exportDictionaryFlowPresenterFactory: exportDictionaryFlowPresenterFactory
         )
         
         let currentPlayerStateDetailsViewControllerFactory = CurrentPlayerStateDetailsViewControllerFactory()

@@ -18,7 +18,7 @@ public protocol ExportDictionaryUseCaseInput: AnyObject {
 
 public protocol ExportDictionaryUseCaseOutput: AnyObject {
 
-    func export() async -> Result<[ExportedDictionaryItem], ExportDictionaryUseCaseError>
+    func export() -> Result<[ExportedDictionaryItem], ExportDictionaryUseCaseError>
 }
 
 public protocol ExportDictionaryUseCase: ExportDictionaryUseCaseOutput, ExportDictionaryUseCaseInput {

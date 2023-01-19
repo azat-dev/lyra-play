@@ -40,7 +40,7 @@ class DictionaryExporterTests: XCTestCase {
             .willReturn(.success([]))
         
         // When
-        let result = await sut.exporter.export(repository: sut.dictionaryRepository)
+        let result = sut.exporter.export(repository: sut.dictionaryRepository)
         
         // Then
         let exportedItems = try AssertResultSucceded(result)
@@ -76,7 +76,7 @@ class DictionaryExporterTests: XCTestCase {
             .willReturn(.success(items))
         
         // When
-        let result = await sut.exporter.export(repository: sut.dictionaryRepository)
+        let result = sut.exporter.export(repository: sut.dictionaryRepository)
         
         // Then
         let exportedItems = try AssertResultSucceded(result)
