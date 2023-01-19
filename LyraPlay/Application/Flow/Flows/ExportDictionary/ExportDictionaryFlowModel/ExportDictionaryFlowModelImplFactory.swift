@@ -12,19 +12,19 @@ public final class ExportDictionaryFlowModelImplFactory: ExportDictionaryFlowMod
     // MARK: - Properties
 
     private let exportDictionaryUseCaseFactory: ExportDictionaryUseCaseFactory
-    private let provideFileUrlUseCaseFactory: ProvideFileUrlUseCaseFactory
+    private let provideFileForSharingUseCaseFactory: ProvideFileForSharingUseCaseFactory
     private let fileSharingViewModelFactory: FileSharingViewModelFactory
 
     // MARK: - Initializers
 
     public init(
         exportDictionaryUseCaseFactory: ExportDictionaryUseCaseFactory,
-        provideFileUrlUseCaseFactory: ProvideFileUrlUseCaseFactory,
+        provideFileForSharingUseCaseFactory: ProvideFileForSharingUseCaseFactory,
         fileSharingViewModelFactory: FileSharingViewModelFactory
     ) {
 
         self.exportDictionaryUseCaseFactory = exportDictionaryUseCaseFactory
-        self.provideFileUrlUseCaseFactory = provideFileUrlUseCaseFactory
+        self.provideFileForSharingUseCaseFactory = provideFileForSharingUseCaseFactory
         self.fileSharingViewModelFactory = fileSharingViewModelFactory
     }
 
@@ -37,7 +37,7 @@ public final class ExportDictionaryFlowModelImplFactory: ExportDictionaryFlowMod
 
         return ExportDictionaryFlowModelImpl(
             exportDictionaryUseCaseFactory: exportDictionaryUseCaseFactory,
-            provideFileUrlUseCaseFactory: provideFileUrlUseCaseFactory,
+            provideFileForSharingUseCaseFactory: provideFileForSharingUseCaseFactory,
             fileSharingViewModelFactory: fileSharingViewModelFactory,
             delegate: delegate
         )

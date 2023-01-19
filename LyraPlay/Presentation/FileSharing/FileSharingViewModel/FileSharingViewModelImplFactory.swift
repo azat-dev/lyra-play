@@ -11,21 +11,32 @@ public final class FileSharingViewModelImplFactory: FileSharingViewModelFactory 
 
     // MARK: - Properties
 
-    private let provideFileUrlUseCase: ProvideFileUrlUseCase
+    private let provideFileForSharingUseCaseFactory: ProvideFileForSharingUseCaseFactory
 
+    private let tempURLProvider: TempURLProvider
+    
     // MARK: - Initializers
 
-    public init(provideFileUrlUseCase: ProvideFileUrlUseCase) {
-
-        self.provideFileUrlUseCase = provideFileUrlUseCase
+    public init(
+        provideFileForSharingUseCaseFactory: ProvideFileForSharingUseCaseFactory,
+        tempURLProvider: TempURLProvider
+    ) {
+        
+        self.provideFileForSharingUseCaseFactory = provideFileForSharingUseCaseFactory
+        self.tempURLProvider = tempURLProvider
     }
 
     // MARK: - Methods
 
-    public func create(delegate: FileSharingViewModelDelegate) -> FileSharingViewModel {
+    public func create(
+        fileName: String,
+        delegate: FileSharingViewModelDelegate
+    ) -> FileSharingViewModel {
 
         return FileSharingViewModelImpl(
-            provideFileUrlUseCase: provideFileUrlUseCase,
+            fileName: fileName,
+            provideFileForSharingUseCaseFactory: provideFileForSharingUseCaseFactory,
+            tempURLProvider: tempURLProvider,
             delegate: delegate
         )
     }

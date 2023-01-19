@@ -14,20 +14,27 @@ class FileSharingViewModelTests: XCTestCase {
 
     typealias SUT = (
         viewModel: FileSharingViewModel,
-        provideFileUrlUseCase: ProvideFileUrlUseCaseMock,
+        provideFileForSharingUseCaseFactory: ProvideFileForSharingUseCaseFactory,
+        provideFileForSharingUseCase: ProvideFileForSharingUseCaseMock,
+        tempURLProvider: TempURLProviderMock,
         delegate: FileSharingViewModelDelegateMock
     )
 
     // MARK: - Methods
 
-    func createSUT() -> SUT {
+    func createSUT(outputFileName: String) -> SUT {
 
-        let provideFileUrlUseCase = mock(ProvideFileUrlUseCase.self)
+        let provideFileForSharingUseCaseFactory = mock(ProvideFileForSharingUseCaseFactory.self)
+        let provideFileForSharingUseCase = mock(ProvideFileForSharingUseCase.self)
 
         let delegate = mock(FileSharingViewModelDelegate.self)
+        
+        let tempURLProvider = mock(TempURLProvider.self)
 
         let viewModel = FileSharingViewModelImpl(
-            provideFileUrlUseCase: provideFileUrlUseCase,
+            fileName: outputFileName,
+            provideFileForSharingUseCaseFactory: provideFileForSharingUseCaseFactory,
+            tempURLProvider: tempURLProvider,
             delegate: delegate
         )
 
@@ -35,15 +42,34 @@ class FileSharingViewModelTests: XCTestCase {
 
         return (
             viewModel: viewModel,
-            provideFileUrlUseCase: provideFileUrlUseCase,
+            provideFileForSharingUseCaseFactory: provideFileForSharingUseCaseFactory,
+            provideFileForSharingUseCase: provideFileForSharingUseCase,
+            tempURLProvider: tempURLProvider,
             delegate: delegate
         )
     }
-
+    
+    func test_prepareFileURL() async throws {
+        
+        // Given
+        let sut = createSUT(outputFileName: "test.json")
+        
+        let resultURL = URL(fileURLWithPath: "test")
+        
+        given(sut.tempURLProvider.provide(for: any()))
+            .willReturn(resultURL)
+        
+        // When
+        let receivedURL = sut.viewModel.prepareFileURL()
+        
+        // Then
+        XCTAssertEqual(receivedURL, resultURL)
+    }
+    
     func test_dispose() async throws {
 
         // Given
-        let sut = createSUT()
+        let sut = createSUT(outputFileName: "test.json")
 
         // When
         sut.viewModel.dispose()

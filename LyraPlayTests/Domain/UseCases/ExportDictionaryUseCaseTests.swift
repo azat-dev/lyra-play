@@ -48,8 +48,11 @@ class ExportDictionaryUseCaseTests: XCTestCase {
         given(await sut.dictionaryRepository.listItems())
             .willReturn(.failure(.internalError(NSError(domain: "", code: 0))))
         
+        given(sut.dictionaryExporter.export(repository: any()))
+            .willReturn(.failure(NSError(domain: "", code: 0)))
+        
         // When
-        let result = await sut.useCase.export()
+        let result = sut.useCase.export()
         
         // Then
         let error = try AssertResultFailed(result)
@@ -69,11 +72,11 @@ class ExportDictionaryUseCaseTests: XCTestCase {
             .init(original: "test", translations: [ "test1" ])
         ]
         
-        given(await sut.dictionaryExporter.export(repository: any()))
+        given(sut.dictionaryExporter.export(repository: any()))
             .willReturn(.success(items))
 
         // When
-        let result = await sut.useCase.export()
+        let result = sut.useCase.export()
         
         // Then
         let receivedItems = try AssertResultSucceded(result)

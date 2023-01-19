@@ -8,15 +8,11 @@
 import Foundation
 import Combine
 
-public protocol ExportDictionaryFlowModelInput: AnyObject {
-
-}
+public protocol ExportDictionaryFlowModelInput: AnyObject {}
 
 public protocol ExportDictionaryFlowModelOutput: AnyObject {
 
     var fileSharingViewModel: CurrentValueSubject<FileSharingViewModel?, Never> { get }
 }
 
-public protocol ExportDictionaryFlowModel: ExportDictionaryFlowModelOutput, ExportDictionaryFlowModelInput {
-
-}
+public protocol ExportDictionaryFlowModel: ExportDictionaryFlowModelOutput, ExportDictionaryFlowModelInput {}

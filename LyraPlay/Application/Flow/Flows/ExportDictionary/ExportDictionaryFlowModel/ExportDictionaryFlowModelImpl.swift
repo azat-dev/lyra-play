@@ -15,12 +15,15 @@ public final class ExportDictionaryFlowModelImpl: ExportDictionaryFlowModel {
     private weak var delegate: ExportDictionaryFlowModelDelegate?
 
     private let exportDictionaryUseCaseFactory: ExportDictionaryUseCaseFactory
-    private let provideFileUrlUseCaseFactory: ProvideFileUrlUseCaseFactory
+    private let provideFileForSharingUseCaseFactory: ProvideFileForSharingUseCaseFactory
     private let fileSharingViewModelFactory: FileSharingViewModelFactory
 
     public lazy var fileSharingViewModel: CurrentValueSubject<FileSharingViewModel?, Never> = {
         
-        let fileSharingViewModel = fileSharingViewModelFactory.create(delegate: self)
+        let fileSharingViewModel = fileSharingViewModelFactory.create(
+            fileName: "LyraPlay.dict",
+            delegate: self
+        )
         return .init(fileSharingViewModel)
     } ()
 
@@ -28,13 +31,13 @@ public final class ExportDictionaryFlowModelImpl: ExportDictionaryFlowModel {
 
     public init(
         exportDictionaryUseCaseFactory: ExportDictionaryUseCaseFactory,
-        provideFileUrlUseCaseFactory: ProvideFileUrlUseCaseFactory,
+        provideFileForSharingUseCaseFactory: ProvideFileForSharingUseCaseFactory,
         fileSharingViewModelFactory: FileSharingViewModelFactory,
         delegate: ExportDictionaryFlowModelDelegate
     ) {
 
         self.exportDictionaryUseCaseFactory = exportDictionaryUseCaseFactory
-        self.provideFileUrlUseCaseFactory = provideFileUrlUseCaseFactory
+        self.provideFileForSharingUseCaseFactory = provideFileForSharingUseCaseFactory
         self.fileSharingViewModelFactory = fileSharingViewModelFactory
         self.delegate = delegate
     }

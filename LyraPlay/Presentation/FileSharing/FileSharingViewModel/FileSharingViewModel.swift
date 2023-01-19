@@ -19,9 +19,9 @@ public protocol FileSharingViewModelInput: AnyObject {
 
 public protocol FileSharingViewModelOutput: AnyObject {
 
-    func getFile() async -> URL?
+    func putFile(at: URL)
+    
+    func prepareFileURL() -> URL?
 }
 
-public protocol FileSharingViewModel: FileSharingViewModelOutput, FileSharingViewModelInput {
-
-}
+public protocol FileSharingViewModel: FileSharingViewModelOutput, FileSharingViewModelInput {}

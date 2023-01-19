@@ -13,31 +13,10 @@ public class FileSharingViewController: UIActivityViewController, FileSharingVie
     
     public required init(viewModel: FileSharingViewModel) {
         
-        let provider = FileProvider(fileName: "test.json")
+        let provider = ActivityFileProvider(viewModel: viewModel)
         super.init(activityItems: [provider], applicationActivities: [])
     }
 }
 
-extension FileSharingViewController {
     
-    class FileProvider: UIActivityItemProvider {
-        
-        // MARK: - Properties
-        
-        private let temporaryURL: URL
-        
-        override var item: Any {
-            
-            return self.temporaryURL
-        }
-        
-        // MARK: - Initializers
-        
-        init(fileName: String) {
-            
-            self.temporaryURL = URL(fileURLWithPath: NSTemporaryDirectory() + "\(fileName)")
-            super.init(placeholderItem: self.temporaryURL)
-        }
-        
-    }
-}
+

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0043F86F558ACF94ED9C8C8D /* ProvideFileUrlUseCaseImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527A3F52642A54C2760BA697 /* ProvideFileUrlUseCaseImplFactory.swift */; };
+		0043F86F558ACF94ED9C8C8D /* ProvideExportedDictionaryFileForSharingUseCaseFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527A3F52642A54C2760BA697 /* ProvideExportedDictionaryFileForSharingUseCaseFactory.swift */; };
 		0143A50905B394D78ECB8D35 /* AudioPlayerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7FC2B4CDF8280D45B18C54 /* AudioPlayerImpl.swift */; };
 		03D7A848327D5DC33D346496 /* LyricsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D824677DD174F0FD657E689F /* LyricsParser.swift */; };
 		042667FA262AF6F242F5CD37 /* AddMediaLibraryFolderFlowModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AD530318C4CC18CED702BB /* AddMediaLibraryFolderFlowModelFactory.swift */; };
@@ -28,7 +28,7 @@
 		0F51FB3D6BCC47161234D8E7 /* ExportDictionaryFlowModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5BB09BFB11D3581597D5C6 /* ExportDictionaryFlowModel.swift */; };
 		108CD470DDFE601ED58F784C /* CurrentPlayerStateDetailsViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159A6F60C09A2B6E0F1A4F5D /* CurrentPlayerStateDetailsViewFactory.swift */; };
 		117EA77E800BE2499F87AE3A /* AddMediaLibraryItemFlowModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F6A2D174BCD4A8FDCA9557 /* AddMediaLibraryItemFlowModel.swift */; };
-		11B701B8C582276E8731D788 /* ProvideFileUrlUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0B09A4C5F9E484B7F68C0 /* ProvideFileUrlUseCase.swift */; };
+		11B701B8C582276E8731D788 /* ProvideFileForSharingUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0B09A4C5F9E484B7F68C0 /* ProvideFileForSharingUseCase.swift */; };
 		11D1E5F44F4405696D1F071E /* ChooseDialogViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D6C05CD2BF87F49DD596652 /* ChooseDialogViewFactory.swift */; };
 		123C0DD641FC1A2056FA7283 /* AddDictionaryItemFlowModelImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 811CB53DAFF9ED570750C597 /* AddDictionaryItemFlowModelImpl.swift */; };
 		12513C9498F7F0624CC6F155 /* LibraryItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1071275042DC2AAFABFFE82E /* LibraryItemView.swift */; };
@@ -91,7 +91,7 @@
 		4171B158A4F54205B4C40450 /* PronounceTextUseCaseImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638DC4D64B4BE66691A60783 /* PronounceTextUseCaseImplFactory.swift */; };
 		4223737B05E3FE454C410B6C /* CurrentPlayerStateDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0473270ABA10844C4D9CCD96 /* CurrentPlayerStateDetailsView.swift */; };
 		4277175C026E6B6FF3DBC8EB /* LibraryFileFlowModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E57031575D59E6D72DD78576 /* LibraryFileFlowModel.swift */; };
-		435DFFB1FE37A17C4C3DE4C9 /* ProvideFileUrlUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491F676CFAA88C4AC415E155 /* ProvideFileUrlUseCaseImpl.swift */; };
+		435DFFB1FE37A17C4C3DE4C9 /* ProvideExportedDictionaryFileForSharingUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491F676CFAA88C4AC415E155 /* ProvideExportedDictionaryFileForSharingUseCase.swift */; };
 		43C1110A8FDCFFAA70CF76C0 /* DictionaryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6FC9D15A59402CF2B764B5 /* DictionaryRepository.swift */; };
 		4476EACDB5D2E6A892E878DD /* DictionaryListBrowserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB311C52508CA9368598F08A /* DictionaryListBrowserViewModel.swift */; };
 		45CD0ABD075AFB052D87276E /* SubtitlesParserFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392AD692149CC22A4EE93F21 /* SubtitlesParserFactory.swift */; };
@@ -194,7 +194,7 @@
 		9F8B966485D0ABF9F52B9E3E /* MainFlowModelImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D9B5292D090B25F3F68A3D /* MainFlowModelImpl.swift */; };
 		A00B95782939A01A91C76867 /* AttachSubtitlesFlowModelImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D2B940B86C17123E4983EDF /* AttachSubtitlesFlowModelImpl.swift */; };
 		A1172485CD726E6170DE6BE3 /* ChooseDialogViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83198B831AD16DE657BA7671 /* ChooseDialogViewModelTests.swift */; };
-		A1D79FEB5DD81882724FCCFE /* ProvideFileUrlUseCaseFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F24C3C60D093126D888A57DA /* ProvideFileUrlUseCaseFactory.swift */; };
+		A1D79FEB5DD81882724FCCFE /* ProvideFileForSharingUseCaseFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F24C3C60D093126D888A57DA /* ProvideFileForSharingUseCaseFactory.swift */; };
 		A4167FEF1AE674E8FA7D57FF /* CoreDataMediaLibraryRepositoryFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A163F788C153287A07ADF87 /* CoreDataMediaLibraryRepositoryFactory.swift */; };
 		A43D76466C6F16142A63317A /* LoadDictionaryItemUseCaseFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE346F5B2E6775DF1582C67 /* LoadDictionaryItemUseCaseFactory.swift */; };
 		A5585BC577AFFC1173DC602B /* FileSharingViewModelImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EA8C838F8C8A4B6AA4C1B4D /* FileSharingViewModelImpl.swift */; };
@@ -233,6 +233,11 @@
 		AA10BBEB29769577003EC769 /* DictionaryExporterImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10BBEA29769577003EC769 /* DictionaryExporterImpl.swift */; };
 		AA10BBF02976A2D9003EC769 /* ExportDictionaryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10BBEF2976A2D9003EC769 /* ExportDictionaryUseCase.swift */; };
 		AA10BBF22976A348003EC769 /* ExportDictionaryUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10BBF12976A348003EC769 /* ExportDictionaryUseCaseImpl.swift */; };
+		AA1290872979B1CF0010FDAB /* ActivityFileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1290862979B1CF0010FDAB /* ActivityFileProvider.swift */; };
+		AA12908A2979CE0E0010FDAB /* TempURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1290892979CE0E0010FDAB /* TempURLProvider.swift */; };
+		AA12908C2979CE560010FDAB /* TempURLProviderImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12908B2979CE560010FDAB /* TempURLProviderImpl.swift */; };
+		AA12908E2979CF090010FDAB /* TempURLProviderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12908D2979CF090010FDAB /* TempURLProviderFactory.swift */; };
+		AA1290902979CF290010FDAB /* TempURLProviderImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12908F2979CF290010FDAB /* TempURLProviderImplFactory.swift */; };
 		AA1571F428C681BF0059854C /* LibraryItemInfoPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1571F328C681BF0059854C /* LibraryItemInfoPresentation.swift */; };
 		AA180D4028E6E55500023C7A /* PlayMediaWithInfoUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA180D3F28E6E55500023C7A /* PlayMediaWithInfoUseCaseTests.swift */; };
 		AA180D4228E6F07000023C7A /* PlayMediaWithInfoUseCaseFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA180D4128E6F07000023C7A /* PlayMediaWithInfoUseCaseFactory.swift */; };
@@ -683,7 +688,7 @@
 		42AD530318C4CC18CED702BB /* AddMediaLibraryFolderFlowModelFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AddMediaLibraryFolderFlowModelFactory.swift; sourceTree = "<group>"; };
 		450128AA9E22A18C37400881 /* ShowMediaInfoUseCase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ShowMediaInfoUseCase.swift; sourceTree = "<group>"; };
 		4740FD15E2DEF4EFFE066311 /* AttachingSubtitlesProgressViewModelImpl.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AttachingSubtitlesProgressViewModelImpl.swift; sourceTree = "<group>"; };
-		491F676CFAA88C4AC415E155 /* ProvideFileUrlUseCaseImpl.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProvideFileUrlUseCaseImpl.swift; sourceTree = "<group>"; };
+		491F676CFAA88C4AC415E155 /* ProvideExportedDictionaryFileForSharingUseCase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProvideExportedDictionaryFileForSharingUseCase.swift; sourceTree = "<group>"; };
 		49531D22129E6CD2C0E7264F /* EditDictionaryItemUseCaseImpl.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EditDictionaryItemUseCaseImpl.swift; sourceTree = "<group>"; };
 		4A791A9808B54E8D401324C5 /* ChooseDialogViewModelImplFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChooseDialogViewModelImplFactory.swift; sourceTree = "<group>"; };
 		4B4E43161F1E2D79482F6207 /* EditDictionaryItemViewControllerFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EditDictionaryItemViewControllerFactory.swift; sourceTree = "<group>"; };
@@ -697,7 +702,7 @@
 		50386E2E6E66C42777F777BF /* EditDictionaryItemPresentationData.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EditDictionaryItemPresentationData.swift; sourceTree = "<group>"; };
 		5184C971E736DB984EFF1D1C /* PromptDialogView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PromptDialogView.swift; sourceTree = "<group>"; };
 		5191EB965CE91519B79F3F31 /* TextToSpeechConverterFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TextToSpeechConverterFactory.swift; sourceTree = "<group>"; };
-		527A3F52642A54C2760BA697 /* ProvideFileUrlUseCaseImplFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProvideFileUrlUseCaseImplFactory.swift; sourceTree = "<group>"; };
+		527A3F52642A54C2760BA697 /* ProvideExportedDictionaryFileForSharingUseCaseFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProvideExportedDictionaryFileForSharingUseCaseFactory.swift; sourceTree = "<group>"; };
 		56FED21FDF47933D2CE96F7D /* SubtitlesParserImplFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubtitlesParserImplFactory.swift; sourceTree = "<group>"; };
 		570A264DA7E709B92C182968 /* PlayMediaWithTranslationsUseCaseImpl.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlayMediaWithTranslationsUseCaseImpl.swift; sourceTree = "<group>"; };
 		582490F059ECAD5078575CB9 /* CurrentPlayerStateViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CurrentPlayerStateViewModel.swift; sourceTree = "<group>"; };
@@ -792,7 +797,7 @@
 		A31008DABC999E4405D4810A /* FileSharingViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileSharingViewModel.swift; sourceTree = "<group>"; };
 		A3CF0E1CC4EF80DC53B48B90 /* LoadDictionaryItemUseCase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoadDictionaryItemUseCase.swift; sourceTree = "<group>"; };
 		A48C7BDBE5E1B2A111387BD5 /* PromptDialogViewModelImplFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PromptDialogViewModelImplFactory.swift; sourceTree = "<group>"; };
-		A4F0B09A4C5F9E484B7F68C0 /* ProvideFileUrlUseCase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProvideFileUrlUseCase.swift; sourceTree = "<group>"; };
+		A4F0B09A4C5F9E484B7F68C0 /* ProvideFileForSharingUseCase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProvideFileForSharingUseCase.swift; sourceTree = "<group>"; };
 		A6E2AB823BD08D54E64AFD68 /* ConfirmDialogViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ConfirmDialogViewModel.swift; sourceTree = "<group>"; };
 		A7DC13A3CBA88D54BE41CFAD /* AddMediaLibraryFolderFlowPresenter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AddMediaLibraryFolderFlowPresenter.swift; sourceTree = "<group>"; };
 		A893677F3FA2F0D0AB01F86A /* ExportDictionaryUseCaseFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ExportDictionaryUseCaseFactory.swift; sourceTree = "<group>"; };
@@ -830,6 +835,11 @@
 		AA10BBEA29769577003EC769 /* DictionaryExporterImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryExporterImpl.swift; sourceTree = "<group>"; };
 		AA10BBEF2976A2D9003EC769 /* ExportDictionaryUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDictionaryUseCase.swift; sourceTree = "<group>"; };
 		AA10BBF12976A348003EC769 /* ExportDictionaryUseCaseImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDictionaryUseCaseImpl.swift; sourceTree = "<group>"; };
+		AA1290862979B1CF0010FDAB /* ActivityFileProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityFileProvider.swift; sourceTree = "<group>"; };
+		AA1290892979CE0E0010FDAB /* TempURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempURLProvider.swift; sourceTree = "<group>"; };
+		AA12908B2979CE560010FDAB /* TempURLProviderImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempURLProviderImpl.swift; sourceTree = "<group>"; };
+		AA12908D2979CF090010FDAB /* TempURLProviderFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempURLProviderFactory.swift; sourceTree = "<group>"; };
+		AA12908F2979CF290010FDAB /* TempURLProviderImplFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempURLProviderImplFactory.swift; sourceTree = "<group>"; };
 		AA1571F328C681BF0059854C /* LibraryItemInfoPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemInfoPresentation.swift; sourceTree = "<group>"; };
 		AA180D3F28E6E55500023C7A /* PlayMediaWithInfoUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithInfoUseCaseTests.swift; sourceTree = "<group>"; };
 		AA180D4128E6F07000023C7A /* PlayMediaWithInfoUseCaseFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithInfoUseCaseFactory.swift; sourceTree = "<group>"; };
@@ -1163,7 +1173,7 @@
 		F1148C96B9BB66D367F3A27E /* AudioPlayerImplFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AudioPlayerImplFactory.swift; sourceTree = "<group>"; };
 		F16F428CB8574B23A350D21D /* FilesPickerViewFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FilesPickerViewFactory.swift; sourceTree = "<group>"; };
 		F24BEACB5309DDF288A84DD3 /* ManageSubtitlesUseCase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ManageSubtitlesUseCase.swift; sourceTree = "<group>"; };
-		F24C3C60D093126D888A57DA /* ProvideFileUrlUseCaseFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProvideFileUrlUseCaseFactory.swift; sourceTree = "<group>"; };
+		F24C3C60D093126D888A57DA /* ProvideFileForSharingUseCaseFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProvideFileForSharingUseCaseFactory.swift; sourceTree = "<group>"; };
 		F2C8AA68FFC4FACBA66B5692 /* PlayMediaWithSubtitlesUseCaseImplFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlayMediaWithSubtitlesUseCaseImplFactory.swift; sourceTree = "<group>"; };
 		F57012D702CE00739281862D /* EditDictionaryItemUseCaseFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EditDictionaryItemUseCaseFactory.swift; sourceTree = "<group>"; };
 		F655F9E916455F2AF6543CD0 /* EditDictionaryItemUseCaseTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EditDictionaryItemUseCaseTests.swift; sourceTree = "<group>"; };
@@ -1990,6 +2000,17 @@
 			path = ExportDictionaryUseCase;
 			sourceTree = "<group>";
 		};
+		AA1290882979CDFC0010FDAB /* TempURLProvider */ = {
+			isa = PBXGroup;
+			children = (
+				AA1290892979CE0E0010FDAB /* TempURLProvider.swift */,
+				AA12908B2979CE560010FDAB /* TempURLProviderImpl.swift */,
+				AA12908D2979CF090010FDAB /* TempURLProviderFactory.swift */,
+				AA12908F2979CF290010FDAB /* TempURLProviderImplFactory.swift */,
+			);
+			path = TempURLProvider;
+			sourceTree = "<group>";
+		};
 		AA190E70287AC694000514AB /* SubtitlesPresenter */ = {
 			isa = PBXGroup;
 			children = (
@@ -2648,6 +2669,7 @@
 		AA9BEB072865DBCD0028DF8E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				AA1290882979CDFC0010FDAB /* TempURLProvider */,
 				AAFB979C2875CF58007A76A7 /* Subtitles */,
 				954B0F4193DB4AB23CBB9C5E /* SubtitlesParser */,
 				AA1ACC2B286317A2000EEDD5 /* TagsParser.swift */,
@@ -2907,6 +2929,7 @@
 			children = (
 				593C44EB36FEE4EC6E229F74 /* FileSharingViewModel */,
 				AAADD8AE29772E6F001871F5 /* FileSharingViewController.swift */,
+				AA1290862979B1CF0010FDAB /* ActivityFileProvider.swift */,
 			);
 			path = FileSharing;
 			sourceTree = "<group>";
@@ -3110,10 +3133,10 @@
 		E9DAD6A9C0113775CFEF2382 /* ProvideFileUrlUseCase */ = {
 			isa = PBXGroup;
 			children = (
-				A4F0B09A4C5F9E484B7F68C0 /* ProvideFileUrlUseCase.swift */,
-				F24C3C60D093126D888A57DA /* ProvideFileUrlUseCaseFactory.swift */,
-				491F676CFAA88C4AC415E155 /* ProvideFileUrlUseCaseImpl.swift */,
-				527A3F52642A54C2760BA697 /* ProvideFileUrlUseCaseImplFactory.swift */,
+				A4F0B09A4C5F9E484B7F68C0 /* ProvideFileForSharingUseCase.swift */,
+				F24C3C60D093126D888A57DA /* ProvideFileForSharingUseCaseFactory.swift */,
+				491F676CFAA88C4AC415E155 /* ProvideExportedDictionaryFileForSharingUseCase.swift */,
+				527A3F52642A54C2760BA697 /* ProvideExportedDictionaryFileForSharingUseCaseFactory.swift */,
 			);
 			path = ProvideFileUrlUseCase;
 			sourceTree = "<group>";
@@ -3462,8 +3485,10 @@
 				AA7B0D7D28721A5E0067DDB5 /* Fonts.swift in Sources */,
 				AA889EB828D762E100F8131F /* ManagedLibraryItem+Mapping.swift in Sources */,
 				AABB49FE28B030E80088484B /* DictionaryListBrowserCell+Layout.swift in Sources */,
+				AA1290872979B1CF0010FDAB /* ActivityFileProvider.swift in Sources */,
 				AA3BAB22286C7D32005EE01E /* KeyValueStore.swift in Sources */,
 				AA3C532628BE54EA00CBE3C6 /* BrowseMediaLibraryUseCaseImplFactory.swift in Sources */,
+				AA12908C2979CE560010FDAB /* TempURLProviderImpl.swift in Sources */,
 				AAFB97972875BCAD007A76A7 /* Subtitles.swift in Sources */,
 				AA6774DC28CB162000023392 /* LibraryFileFlowPresenterImpl.swift in Sources */,
 				AA641E0F28C3A4AC00641B0C /* MainTabBarViewController+Layout.swift in Sources */,
@@ -3665,6 +3690,7 @@
 				BFE7B8F35FF468F46DEDEE3A /* AttachSubtitlesFlowPresenterImplFactory.swift in Sources */,
 				EB2CB98266021FB0724507F4 /* FilesPickerView.swift in Sources */,
 				82DF336B40F6BFE74E1E0C4B /* FilesPickerViewFactory.swift in Sources */,
+				AA1290902979CF290010FDAB /* TempURLProviderImplFactory.swift in Sources */,
 				CD082B622AEF1C56018D5118 /* FilesPickerViewControllerFactory.swift in Sources */,
 				7A2F56E5F6FE51B335D1119E /* AttachingSubtitlesProgressViewModel.swift in Sources */,
 				5C52E1A3FF337A0F45F53DE1 /* AttachingSubtitlesProgressViewModelFactory.swift in Sources */,
@@ -3762,6 +3788,7 @@
 				117EA77E800BE2499F87AE3A /* AddMediaLibraryItemFlowModel.swift in Sources */,
 				E21C8B0FA7382882C5E93BA1 /* AddMediaLibraryItemFlowModelFactory.swift in Sources */,
 				76361BF7F58AD8089EA74E22 /* AddMediaLibraryItemFlowModelImpl.swift in Sources */,
+				AA12908A2979CE0E0010FDAB /* TempURLProvider.swift in Sources */,
 				B28CE3AA1FE63EF706CBE289 /* AddMediaLibraryItemFlowModelImplFactory.swift in Sources */,
 				2E4D590A1C70F2D145C8C73E /* ChooseDialogView.swift in Sources */,
 				AA41490028DBAF2A002FFDD4 /* ManagedLibraryItem+CoreDataClass.swift in Sources */,
@@ -3786,6 +3813,7 @@
 				2000D9EBF00B165A88BA0671 /* AddMediaLibraryFolderFlowPresenterFactory.swift in Sources */,
 				F6D31C2599C2A1B1917D4AF1 /* AddMediaLibraryFolderFlowPresenterImpl.swift in Sources */,
 				5258959154DFACE3407D2DE9 /* AddMediaLibraryFolderFlowPresenterImplFactory.swift in Sources */,
+				AA12908E2979CF090010FDAB /* TempURLProviderFactory.swift in Sources */,
 				2634EE039A6FD92026AEA2A8 /* CurrentPlayerStateDetailsViewModel.swift in Sources */,
 				8072B7795F1DC1961390CD5E /* CurrentPlayerStateDetailsViewModelFactory.swift in Sources */,
 				5BC61EC14541B44CAC7191D4 /* CurrentPlayerStateDetailsViewModelImpl.swift in Sources */,
@@ -3812,10 +3840,10 @@
 				B908EB36B31A41ABD43375E4 /* FileSharingView.swift in Sources */,
 				312BC7AA83C0DB873C465E0D /* FileSharingViewFactory.swift in Sources */,
 				3599314C0BE4A36C95FBC673 /* FileSharingViewControllerFactory.swift in Sources */,
-				11B701B8C582276E8731D788 /* ProvideFileUrlUseCase.swift in Sources */,
-				A1D79FEB5DD81882724FCCFE /* ProvideFileUrlUseCaseFactory.swift in Sources */,
-				435DFFB1FE37A17C4C3DE4C9 /* ProvideFileUrlUseCaseImpl.swift in Sources */,
-				0043F86F558ACF94ED9C8C8D /* ProvideFileUrlUseCaseImplFactory.swift in Sources */,
+				11B701B8C582276E8731D788 /* ProvideFileForSharingUseCase.swift in Sources */,
+				A1D79FEB5DD81882724FCCFE /* ProvideFileForSharingUseCaseFactory.swift in Sources */,
+				435DFFB1FE37A17C4C3DE4C9 /* ProvideExportedDictionaryFileForSharingUseCase.swift in Sources */,
+				0043F86F558ACF94ED9C8C8D /* ProvideExportedDictionaryFileForSharingUseCaseFactory.swift in Sources */,
 				0F51FB3D6BCC47161234D8E7 /* ExportDictionaryFlowModel.swift in Sources */,
 				303FDF5E8AB6E427A37347CA /* ExportDictionaryFlowModelFactory.swift in Sources */,
 				97E7DA89E755AC39415777C9 /* ExportDictionaryFlowModelImpl.swift in Sources */,

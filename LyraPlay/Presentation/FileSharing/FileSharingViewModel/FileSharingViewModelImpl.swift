@@ -11,18 +11,26 @@ public final class FileSharingViewModelImpl: FileSharingViewModel {
 
     // MARK: - Properties
 
-    private weak var delegate: FileSharingViewModelDelegate? 
+    private weak var delegate: FileSharingViewModelDelegate?
 
-    private let provideFileUrlUseCase: ProvideFileUrlUseCase
+    private let provideFileForSharingUseCaseFactory: ProvideFileForSharingUseCaseFactory
+    
+    private let tempURLProvider: TempURLProvider
+    
+    private let fileName: String
 
     // MARK: - Initializers
 
     public init(
-        provideFileUrlUseCase: ProvideFileUrlUseCase,
+        fileName: String,
+        provideFileForSharingUseCaseFactory: ProvideFileForSharingUseCaseFactory,
+        tempURLProvider: TempURLProvider,
         delegate: FileSharingViewModelDelegate
     ) {
 
-        self.provideFileUrlUseCase = provideFileUrlUseCase
+        self.fileName = fileName
+        self.provideFileForSharingUseCaseFactory = provideFileForSharingUseCaseFactory
+        self.tempURLProvider = tempURLProvider
         self.delegate = delegate
     }
 }
@@ -41,15 +49,16 @@ extension FileSharingViewModelImpl {
 
 extension FileSharingViewModelImpl {
 
-    public func getFile() -> URL? {
+    public func prepareFileURL() -> URL? {
 
-        let result = provideFileUrlUseCase.provideFileUrl()
-
-        guard case .success(let url) = result else {
-            delegate?.fileSharingViewModelDidDispose()
-            return nil
-        }
+        return tempURLProvider.provide(for: fileName)
+    }
+    
+    public func putFile(at url: URL) {
         
-        return url
+        let provideFileForSharingUseCase = provideFileForSharingUseCaseFactory.create()
+        let data = provideFileForSharingUseCase.provideFile()
+        
+        try? data?.write(to: url, options: .atomic)
     }
 }
