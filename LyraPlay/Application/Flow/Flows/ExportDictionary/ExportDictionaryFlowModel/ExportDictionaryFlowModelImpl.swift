@@ -18,7 +18,11 @@ public final class ExportDictionaryFlowModelImpl: ExportDictionaryFlowModel {
     private let provideFileUrlUseCaseFactory: ProvideFileUrlUseCaseFactory
     private let fileSharingViewModelFactory: FileSharingViewModelFactory
 
-    public let fileSharingViewModel = CurrentValueSubject<FileSharingViewModel?, Never>(nil)
+    public lazy var fileSharingViewModel: CurrentValueSubject<FileSharingViewModel?, Never> = {
+        
+        let fileSharingViewModel = fileSharingViewModelFactory.create(delegate: self)
+        return .init(fileSharingViewModel)
+    } ()
 
     // MARK: - Initializers
 
@@ -38,12 +42,11 @@ public final class ExportDictionaryFlowModelImpl: ExportDictionaryFlowModel {
 
 // MARK: - Input Methods
 
-extension ExportDictionaryFlowModelImpl {
-
-}
-
-// MARK: - Output Methods
-
-extension ExportDictionaryFlowModelImpl {
-
+extension ExportDictionaryFlowModelImpl: FileSharingViewModelDelegate {
+    
+    public func fileSharingViewModelDidDispose() {
+        
+        fileSharingViewModel.value = nil
+        delegate?.exportDictionaryFlowModelDidDispose()
+    }
 }

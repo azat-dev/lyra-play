@@ -18,10 +18,10 @@ class ExportDictionaryFlowModelTests: XCTestCase {
         exportDictionaryUseCase: ExportDictionaryUseCaseMock,
         provideFileUrlUseCaseFactory: ProvideFileUrlUseCaseFactoryMock,
         provideFileUrlUseCase: ProvideFileUrlUseCaseMock,
-        provideFileUrlUseCaseCallback: ProvideFileUrlUseCaseCallback?,
+        provideFileUrlUseCaseCallbackStore: StoreValue<ProvideFileUrlUseCaseCallback?>,
         fileSharingViewModelFactory: FileSharingViewModelFactoryMock,
         fileSharingViewModel: FileSharingViewModelMock,
-        fileSharingViewModelDelegate: FileSharingViewModelDelegate?,
+        fileSharingViewModelDelegateStore: StoreValue<FileSharingViewModelDelegate?>,
         delegate: ExportDictionaryFlowModelDelegateMock
     )
     
@@ -38,23 +38,25 @@ class ExportDictionaryFlowModelTests: XCTestCase {
         let provideFileUrlUseCaseFactory = mock(ProvideFileUrlUseCaseFactory.self)
         let provideFileUrlUseCase = mock(ProvideFileUrlUseCase.self)
         
-        var provideFileUrlUseCaseCallback: ProvideFileUrlUseCaseCallback?
+        
+        let provideFileUrlUseCaseCallbackStore = StoreValue<ProvideFileUrlUseCaseCallback?>(nil)
         
         given(provideFileUrlUseCaseFactory.create(callback: any()))
             .will { callback in
-                provideFileUrlUseCaseCallback = callback
+                
+                provideFileUrlUseCaseCallbackStore.value = callback
                 return provideFileUrlUseCase
             }
         
         let fileSharingViewModelFactory = mock(FileSharingViewModelFactory.self)
         let fileSharingViewModel = mock(FileSharingViewModel.self)
         
-        var fileSharingViewModelDelegate: FileSharingViewModelDelegate?
+        let fileSharingViewModelDelegateStore = StoreValue<FileSharingViewModelDelegate?>(nil)
         
         given(fileSharingViewModelFactory.create(delegate: any()))
             .will({ delegate in
                 
-                fileSharingViewModelDelegate = delegate
+                fileSharingViewModelDelegateStore.value = delegate
                 return fileSharingViewModel
             })
         
@@ -74,10 +76,15 @@ class ExportDictionaryFlowModelTests: XCTestCase {
             exportDictionaryUseCaseFactory,
             provideFileUrlUseCaseFactory,
             provideFileUrlUseCase,
-            fileSharingViewModel,
             fileSharingViewModelFactory,
+            fileSharingViewModel,
             delegate
         )
+        
+        addTeardownBlock {
+            fileSharingViewModelDelegateStore.value = nil
+            provideFileUrlUseCaseCallbackStore.value = nil
+        }
         
         return (
             flowModel: flowModel,
@@ -85,41 +92,43 @@ class ExportDictionaryFlowModelTests: XCTestCase {
             exportDictionaryUseCase: exportDictionaryUseCase,
             provideFileUrlUseCaseFactory: provideFileUrlUseCaseFactory,
             provideFileUrlUseCase: provideFileUrlUseCase,
-            provideFileUrlUseCaseCallback: provideFileUrlUseCaseCallback,
+            provideFileUrlUseCaseCallbackStore: provideFileUrlUseCaseCallbackStore,
             fileSharingViewModelFactory: fileSharingViewModelFactory,
             fileSharingViewModel: fileSharingViewModel,
-            fileSharingViewModelDelegate: fileSharingViewModelDelegate,
+            fileSharingViewModelDelegateStore: fileSharingViewModelDelegateStore,
             delegate: delegate
         )
     }
     
     func test_getFile() async throws {
-//        
-//        // Given
-//        let sut = createSUT()
-//        
-//        let exportedItems: [ExportedDictionaryItem] = [
-//            .init(
-//                original: "test",
-//                translations: [
-//                    "test"
-//                ]
-//            )
-//        ]
-//        
-//        given(await sut.exportDictionaryUseCase.export())
-//            .willReturn(.success(exportedItems))
-//        
-//        // When
-//        let _ = sut.provideFileUrlUseCase.provideFileUrl()
-//        
-//        
-//        // Then
-//        let provideFileUrlUseCaseCallback = try XCTUnwrap(sut.provideFileUrlUseCaseCallback)
-//        let receivedURL = provideFileUrlUseCaseCallback()
-//        
-//        verify(await sut.exportDictionaryUseCase.export())
-//            .wasCalled()
+
+        // Given
+        let sut = createSUT()
+
+        let exportedItems: [ExportedDictionaryItem] = [
+            .init(
+                original: "test",
+                translations: [
+                    "test"
+                ]
+            )
+        ]
+
+        given(await sut.exportDictionaryUseCase.export())
+            .willReturn(.success(exportedItems))
+
+        // When
+        let _ = sut.flowModel.fileSharingViewModel
+        
+        let provideFileUrlUseCaseCallback = try XCTUnwrap(sut.provideFileUrlUseCaseCallbackStore.value)
+        let _ = provideFileUrlUseCaseCallback()
+
+        // Then
+        verify(await sut.exportDictionaryUseCase.export())
+            .wasCalled()
+        
+        verify(sut.provideFileUrlUseCase.provideFileUrl())
+            .wasCalled()
     }
     
     func test_dispose() async throws {
@@ -128,12 +137,22 @@ class ExportDictionaryFlowModelTests: XCTestCase {
         let sut = createSUT()
         
         // When
-        sut.fileSharingViewModelDelegate?.fileSharingViewModelDidDispose()
+        let _ = sut.flowModel.fileSharingViewModel
+        sut.fileSharingViewModelDelegateStore.value?.fileSharingViewModelDidDispose()
         
         // Then
-        XCTAssertNil(sut.flowModel.fileSharingViewModel.value)
         verify(sut.delegate.exportDictionaryFlowModelDidDispose())
             .wasCalled()
-        
+    }
+}
+
+// MARK: - Helpers
+
+public class StoreValue<T> {
+    
+    public var value: T
+    
+    public init(_ value: T) {
+        self.value = value
     }
 }
