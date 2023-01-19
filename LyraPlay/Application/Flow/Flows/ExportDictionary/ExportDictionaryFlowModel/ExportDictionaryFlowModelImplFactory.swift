@@ -11,19 +11,19 @@ public final class ExportDictionaryFlowModelImplFactory: ExportDictionaryFlowMod
 
     // MARK: - Properties
 
-    private let exportDictionaryUseCaseFactory: ExportDictionaryUseCaseFactory
+    private let outputFileName: String
     private let provideFileForSharingUseCaseFactory: ProvideFileForSharingUseCaseFactory
     private let fileSharingViewModelFactory: FileSharingViewModelFactory
 
     // MARK: - Initializers
 
     public init(
-        exportDictionaryUseCaseFactory: ExportDictionaryUseCaseFactory,
+        outputFileName: String,
         provideFileForSharingUseCaseFactory: ProvideFileForSharingUseCaseFactory,
         fileSharingViewModelFactory: FileSharingViewModelFactory
     ) {
 
-        self.exportDictionaryUseCaseFactory = exportDictionaryUseCaseFactory
+        self.outputFileName = outputFileName
         self.provideFileForSharingUseCaseFactory = provideFileForSharingUseCaseFactory
         self.fileSharingViewModelFactory = fileSharingViewModelFactory
     }
@@ -31,12 +31,11 @@ public final class ExportDictionaryFlowModelImplFactory: ExportDictionaryFlowMod
     // MARK: - Methods
 
     public func create(
-        originalText: String?,
         delegate: ExportDictionaryFlowModelDelegate
     ) -> ExportDictionaryFlowModel {
 
         return ExportDictionaryFlowModelImpl(
-            exportDictionaryUseCaseFactory: exportDictionaryUseCaseFactory,
+            outputFileName: outputFileName,
             provideFileForSharingUseCaseFactory: provideFileForSharingUseCaseFactory,
             fileSharingViewModelFactory: fileSharingViewModelFactory,
             delegate: delegate

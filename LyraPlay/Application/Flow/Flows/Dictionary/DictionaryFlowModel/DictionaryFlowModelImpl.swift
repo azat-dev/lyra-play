@@ -9,12 +9,13 @@ import Foundation
 import Combine
 
 public final class DictionaryFlowModelImpl: DictionaryFlowModel {
-
+    
     // MARK: - Properties
-
+    
     private let viewModelFactory: DictionaryListBrowserViewModelFactory
     private let addDictionaryItemFlowModelFactory: AddDictionaryItemFlowModelFactory
     private let deleteDictionaryItemFlowModelFactory: DeleteDictionaryItemFlowModelFactory
+    private let exportDictionaryFlowModelFactory: ExportDictionaryFlowModelFactory
     
     public lazy var listViewModel: DictionaryListBrowserViewModel  = {
         return viewModelFactory.create(delegate: self)
@@ -22,20 +23,23 @@ public final class DictionaryFlowModelImpl: DictionaryFlowModel {
     
     public var addDictionaryItemFlow = CurrentValueSubject<AddDictionaryItemFlowModel?, Never>(nil)
     public var deleteDictionaryItemFlow = CurrentValueSubject<DeleteDictionaryItemFlowModel?, Never>(nil)
+    public var exportDictionaryFlow = CurrentValueSubject<ExportDictionaryFlowModel?, Never>(nil)
     
     private var observers = Set<AnyCancellable>()
-
+    
     // MARK: - Initializers
-
+    
     public init(
         viewModelFactory: DictionaryListBrowserViewModelFactory,
         addDictionaryItemFlowModelFactory: AddDictionaryItemFlowModelFactory,
-        deleteDictionaryItemFlowModelFactory: DeleteDictionaryItemFlowModelFactory
+        deleteDictionaryItemFlowModelFactory: DeleteDictionaryItemFlowModelFactory,
+        exportDictionaryFlowModelFactory: ExportDictionaryFlowModelFactory
     ) {
-
+        
         self.viewModelFactory = viewModelFactory
         self.addDictionaryItemFlowModelFactory = addDictionaryItemFlowModelFactory
         self.deleteDictionaryItemFlowModelFactory = deleteDictionaryItemFlowModelFactory
+        self.exportDictionaryFlowModelFactory = exportDictionaryFlowModelFactory
     }
     
     deinit {
@@ -46,7 +50,7 @@ public final class DictionaryFlowModelImpl: DictionaryFlowModel {
 // MARK: - Helpers
 
 extension DictionaryFlowModelImpl {
-
+    
     private func reloadList() {
         
         Task {
@@ -60,7 +64,7 @@ extension DictionaryFlowModelImpl {
 extension DictionaryFlowModelImpl: AddDictionaryItemFlowModelDelegate {
     
     public func addDictionaryItemFlowModelDidFinish() {
-    
+        
         addDictionaryItemFlow.value = nil
         reloadList()
     }
@@ -89,9 +93,9 @@ extension DictionaryFlowModelImpl: DeleteDictionaryItemFlowDelegate {
 // MARK: - DictionaryListBrowserViewModelDelegate
 
 extension DictionaryFlowModelImpl: DictionaryListBrowserViewModelDelegate {
-
+    
     public func runCreationFlow() {
-
+        
         guard addDictionaryItemFlow.value == nil else {
             return
         }
@@ -113,9 +117,25 @@ extension DictionaryFlowModelImpl: DictionaryListBrowserViewModelDelegate {
             delegate: self
         )
     }
+}
+
+// MARK: - ExportDictionaryFlowModelDelegate
+
+extension DictionaryFlowModelImpl: ExportDictionaryFlowModelDelegate {
     
     public func runExportDictionaryFlow() {
         
-        fatalError()
+        guard exportDictionaryFlow.value == nil else {
+            return
+        }
+        
+        exportDictionaryFlow.value = exportDictionaryFlowModelFactory.create(
+            delegate: self
+        )
+    }
+    
+    public func exportDictionaryFlowModelDidDispose() {
+        
+        exportDictionaryFlow.value = nil
     }
 }

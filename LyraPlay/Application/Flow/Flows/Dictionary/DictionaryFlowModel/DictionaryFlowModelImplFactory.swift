@@ -14,18 +14,21 @@ public final class DictionaryFlowModelImplFactory: DictionaryFlowModelFactory {
     private let viewModelFactory: DictionaryListBrowserViewModelFactory
     private let addDictionaryItemFlowModelFactory: AddDictionaryItemFlowModelFactory
     private let deleteDictionaryItemFlowModelFactory: DeleteDictionaryItemFlowModelFactory
+    private let exportDictionaryFlowModelFactory: ExportDictionaryFlowModelFactory
 
     // MARK: - Initializers
 
     public init(
         viewModelFactory: DictionaryListBrowserViewModelFactory,
         addDictionaryItemFlowModelFactory: AddDictionaryItemFlowModelFactory,
-        deleteDictionaryItemFlowModelFactory: DeleteDictionaryItemFlowModelFactory
+        deleteDictionaryItemFlowModelFactory: DeleteDictionaryItemFlowModelFactory,
+        exportDictionaryFlowModelFactory: ExportDictionaryFlowModelFactory
     ) {
 
         self.viewModelFactory = viewModelFactory
         self.addDictionaryItemFlowModelFactory = addDictionaryItemFlowModelFactory
         self.deleteDictionaryItemFlowModelFactory = deleteDictionaryItemFlowModelFactory
+        self.exportDictionaryFlowModelFactory = exportDictionaryFlowModelFactory
     }
 
     // MARK: - Methods
@@ -35,7 +38,8 @@ public final class DictionaryFlowModelImplFactory: DictionaryFlowModelFactory {
         return DictionaryFlowModelImpl(
             viewModelFactory: viewModelFactory,
             addDictionaryItemFlowModelFactory: addDictionaryItemFlowModelFactory,
-            deleteDictionaryItemFlowModelFactory: deleteDictionaryItemFlowModelFactory
+            deleteDictionaryItemFlowModelFactory: deleteDictionaryItemFlowModelFactory,
+            exportDictionaryFlowModelFactory: exportDictionaryFlowModelFactory
         )
     }
 }

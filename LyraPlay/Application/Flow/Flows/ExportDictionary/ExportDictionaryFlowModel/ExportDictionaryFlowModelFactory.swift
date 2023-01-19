@@ -8,7 +8,6 @@
 public protocol ExportDictionaryFlowModelFactory {
 
     func create(
-        originalText: String?,
         delegate: ExportDictionaryFlowModelDelegate
     ) -> ExportDictionaryFlowModel
 }
