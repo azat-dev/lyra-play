@@ -16,7 +16,7 @@ public final class FileSharingViewControllerFactory: FileSharingViewFactory {
 
     // MARK: - Methods
 
-    public func create(viewModel: FileSharingViewModel) -> FileSharingView {
+    public func create(viewModel: FileSharingViewModel) -> FileSharingViewController {
 
         return FileSharingViewController(viewModel: viewModel)
     }
