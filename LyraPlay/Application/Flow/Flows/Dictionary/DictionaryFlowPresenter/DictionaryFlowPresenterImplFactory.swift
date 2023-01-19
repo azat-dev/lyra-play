@@ -13,16 +13,19 @@ public final class DictionaryFlowPresenterImplFactory: DictionaryFlowPresenterFa
     
     private let listViewFactory: DictionaryListBrowserViewFactory
     private let addDictionaryItemFlowPresenterFactory: AddDictionaryItemFlowPresenterFactory
+    private let exportDictionaryFlowPresenterFactory: ExportDictionaryFlowPresenterFactory
     
     // MARK: - Initializers
     
     public init(
         listViewFactory: DictionaryListBrowserViewFactory,
-        addDictionaryItemFlowPresenterFactory: AddDictionaryItemFlowPresenterFactory
+        addDictionaryItemFlowPresenterFactory: AddDictionaryItemFlowPresenterFactory,
+        exportDictionaryFlowPresenterFactory: ExportDictionaryFlowPresenterFactory
     ) {
         
         self.listViewFactory = listViewFactory
         self.addDictionaryItemFlowPresenterFactory = addDictionaryItemFlowPresenterFactory
+        self.exportDictionaryFlowPresenterFactory = exportDictionaryFlowPresenterFactory
     }
     
     // MARK: - Methods
@@ -32,7 +35,8 @@ public final class DictionaryFlowPresenterImplFactory: DictionaryFlowPresenterFa
         return DictionaryFlowPresenterImpl(
             flowModel: flowModel,
             listViewFactory: listViewFactory,
-            addDictionaryItemFlowPresenterFactory: addDictionaryItemFlowPresenterFactory
+            addDictionaryItemFlowPresenterFactory: addDictionaryItemFlowPresenterFactory,
+            exportDictionaryFlowPresenterFactory: exportDictionaryFlowPresenterFactory
         )
     }
 }

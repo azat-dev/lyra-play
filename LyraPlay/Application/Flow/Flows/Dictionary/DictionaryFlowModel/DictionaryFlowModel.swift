@@ -15,6 +15,8 @@ public protocol DictionaryFlowModelOutput {
     
     var addDictionaryItemFlow: CurrentValueSubject<AddDictionaryItemFlowModel?, Never> { get }
     
+    var exportDictionaryFlow: CurrentValueSubject<ExportDictionaryFlowModel?, Never> { get }
+    
     var deleteDictionaryItemFlow: CurrentValueSubject<DeleteDictionaryItemFlowModel?, Never> { get }
 }
 

@@ -480,9 +480,16 @@ public class Application {
             editDictionaryItemViewFactory: EditDictionaryItemViewControllerFactory()
         )
         
+        let fileSharingViewControllerFactory = FileSharingViewControllerFactory()
+        
+        let exportDictionaryFlowPresenterFactory = ExportDictionaryFlowPresenterImplFactory(
+            fileSharingViewControllerFactory: fileSharingViewControllerFactory
+        )
+        
         let dictionaryFlowPresenterFactory = DictionaryFlowPresenterImplFactory(
             listViewFactory: DictionaryListBrowserViewControllerFactory(),
-            addDictionaryItemFlowPresenterFactory: addDictionaryItemFlowPresenterFactory
+            addDictionaryItemFlowPresenterFactory: addDictionaryItemFlowPresenterFactory,
+            exportDictionaryFlowPresenterFactory: exportDictionaryFlowPresenterFactory
         )
         
         let currentPlayerStateDetailsViewControllerFactory = CurrentPlayerStateDetailsViewControllerFactory()
