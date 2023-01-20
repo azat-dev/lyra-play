@@ -38,7 +38,7 @@ public final class ExportDictionaryFlowPresenterImpl: ExportDictionaryFlowPresen
 
 extension ExportDictionaryFlowPresenterImpl {
 
-    public func present(at container: UINavigationController) {
+    public func present(at container: UINavigationController, popoverElement: UIBarButtonItem?) {
 
         flowModel.fileSharingViewModel
             .receive(on: RunLoop.main)
@@ -58,6 +58,7 @@ extension ExportDictionaryFlowPresenterImpl {
                 let view = self.fileSharingViewControllerFactory.create(viewModel: fileSharingViewModel)
                 self.activeFileSharingView = view
                 
+                view.popoverPresentationController?.barButtonItem = popoverElement
                 container.present(view, animated: true)
             }.store(in: &observers)
     }

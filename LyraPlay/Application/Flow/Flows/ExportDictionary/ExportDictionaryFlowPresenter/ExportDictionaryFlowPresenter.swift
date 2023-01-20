@@ -10,11 +10,9 @@ import UIKit
 
 public protocol ExportDictionaryFlowPresenterInput: AnyObject {
 
-    func present(at container: UINavigationController)
+    func present(at container: UINavigationController, popoverElement: UIBarButtonItem?)
 
     func dismiss()
 }
 
-public protocol ExportDictionaryFlowPresenter: AnyObject, ExportDictionaryFlowPresenterInput {
-
-}
+public protocol ExportDictionaryFlowPresenter: ExportDictionaryFlowPresenterInput {}

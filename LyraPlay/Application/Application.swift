@@ -403,7 +403,6 @@ public class Application {
         
         let exportDictionaryFlowModelFactory = ExportDictionaryFlowModelImplFactory(
             outputFileName: "dictionary.lyraplay",
-            provideFileForSharingUseCaseFactory: provideFileForSharingUseCaseFactory,
             fileSharingViewModelFactory: fileSharingViewModelFactory
         )
         
