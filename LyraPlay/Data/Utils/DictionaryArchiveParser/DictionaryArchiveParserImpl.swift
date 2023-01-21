@@ -8,24 +8,32 @@
 import Foundation
 
 public final class DictionaryArchiveParserImpl: DictionaryArchiveParser {
-
+    
     // MARK: - Initializers
-
+    
     public init() {}
 }
 
 // MARK: - Input Methods
 
 extension DictionaryArchiveParserImpl {
-
+    
     public func parse(data: Data) async -> Result<[ExportedDictionaryItem], Error> {
-
-        fatalError()
+        
+        let decoder = JSONDecoder()
+        
+        do {
+            
+            let items = try decoder.decode([ExportedDictionaryItem].self, from: data)
+            return .success(items)
+        } catch {
+            return .failure(error)
+        }
     }
 }
 
 // MARK: - Output Methods
 
 extension DictionaryArchiveParserImpl {
-
+    
 }
