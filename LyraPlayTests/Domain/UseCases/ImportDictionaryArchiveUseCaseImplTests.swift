@@ -75,6 +75,9 @@ class ImportDictionaryArchiveUseCaseImplTests: XCTestCase {
         given(await sut.dictionaryRepository.listItems())
             .willReturn(.success([]))
         
+        given(await sut.dictionaryRepository.searchItems(with: any()))
+            .willReturn(.success([]))
+        
         given(await sut.dictionaryArchiveParser.parse(data: any()))
             .willReturn(.success([]))
         
