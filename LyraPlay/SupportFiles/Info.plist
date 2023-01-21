@@ -2,45 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UTExportedTypeDeclarations</key>
-	<array>
-		<dict>
-			<key>UTTypeDescription</key>
-			<string>LyraPlay Dictionary Archive</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-			</array>
-			<key>UTTypeIdentifier</key>
-			<string>com.azatkaiumov.lyraplay.lyraplay</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.mime-type</key>
-				<array>
-					<string>application/lyraplay</string>
-				</array>
-				<key>public.filename-extension</key>
-				<array>
-					<string>lyraplay</string>
-				</array>
-			</dict>
-		</dict>
-	</array>
-	<key>CFBundleDocumentTypes</key>
-	<array>
-		<dict>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.azatkaiumov.lyraplay.lyraplay</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleTypeName</key>
-			<string>LyraPlay Dictionary Archive</string>
-			<key>LSHandlerRank</key>
-			<string>Owner</string>
-		</dict>
-	</array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>RedHatDisplay-Black.ttf</string>
@@ -78,6 +39,33 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
+	</array>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.content</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>LyraPlay Dictionary Archive</string>
+			<key>UTTypeIconFiles</key>
+			<array/>
+			<key>UTTypeIdentifier</key>
+			<string>com.azatkaiumov.lyraplay.lyraplay</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>lyraplay</string>
+				</array>
+				<key>public.mime-type</key>
+				<array>
+					<string>application/lyraplay</string>
+				</array>
+			</dict>
+		</dict>
 	</array>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
