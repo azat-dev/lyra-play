@@ -50,6 +50,8 @@ extension DictionaryFlowPresenterImpl {
     
     public func present(at container: UINavigationController) {
         
+        let listView = listViewFactory.create(viewModel: flowModel.listViewModel)
+        
         flowModel.addDictionaryItemFlow
             .receive(on: RunLoop.main)
             .sink { [weak self] addDictionaryItemFlow in
@@ -90,11 +92,11 @@ extension DictionaryFlowPresenterImpl {
                 let presenter = self.exportDictionaryFlowPresenterFactory.create(for: flow)
 
                 self.exportDictionaryFlowPresenter = presenter
-                presenter.present(at: container)
+                presenter.present(at: container, popoverElement: listView.navigationItem.leftBarButtonItem)
             }
             .store(in: &observers)
         
-        let view = listViewFactory.create(viewModel: flowModel.listViewModel)
-        container.pushViewController(view, animated: true)
+        
+        container.pushViewController(listView, animated: true)
     }
 }

@@ -14,8 +14,6 @@ public final class ExportDictionaryFlowModelImpl: ExportDictionaryFlowModel {
 
     private weak var delegate: ExportDictionaryFlowModelDelegate?
 
-    private let provideFileForSharingUseCaseFactory: ProvideFileForSharingUseCaseFactory
-    
     private let fileSharingViewModelFactory: FileSharingViewModelFactory
     
     private let outputFilename: String
@@ -33,13 +31,11 @@ public final class ExportDictionaryFlowModelImpl: ExportDictionaryFlowModel {
 
     public init(
         outputFileName: String,
-        provideFileForSharingUseCaseFactory: ProvideFileForSharingUseCaseFactory,
         fileSharingViewModelFactory: FileSharingViewModelFactory,
         delegate: ExportDictionaryFlowModelDelegate
     ) {
 
         self.outputFilename = outputFileName
-        self.provideFileForSharingUseCaseFactory = provideFileForSharingUseCaseFactory
         self.fileSharingViewModelFactory = fileSharingViewModelFactory
         self.delegate = delegate
     }

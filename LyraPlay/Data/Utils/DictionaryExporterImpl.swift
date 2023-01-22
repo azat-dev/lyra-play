@@ -33,7 +33,6 @@ public class DictionaryExporterImpl: DictionaryExporter {
     
     public func export(repository: DictionaryRepositoryOutputList) -> Result<[ExportedDictionaryItem], Error> {
         
-        
         var exportedItems: [ExportedDictionaryItem]?
         
         let semaphore = DispatchSemaphore(value: 0)

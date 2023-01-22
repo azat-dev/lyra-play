@@ -11,6 +11,8 @@ import UIKit
 
 public class Application {
     
+    private let settings: ApplicationSettings
+    
     private lazy var appPresenter: MainFlowPresenter = {
         
         let appFlow = makeFlow()
@@ -21,7 +23,7 @@ public class Application {
     
     private lazy var coreDataStore: CoreDataStore = {
         
-        let url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("LyraPlay.sqlite")
+        let url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent(settings.dbFileName)
         return try! CoreDataStore(storeURL: url)
     } ()
     
@@ -51,7 +53,7 @@ public class Application {
         )
         
         
-        let imagesDirectory = url.appendingPathComponent("mediafiles_images", isDirectory: true)
+        let imagesDirectory = url.appendingPathComponent(settings.imagesFolderName, isDirectory: true)
         
         return try! LocalFilesRepository(baseDirectory: imagesDirectory)
     } ()
@@ -66,7 +68,7 @@ public class Application {
         )
         
         
-        let mediaFilesDirectory = url.appendingPathComponent("mediafiles_data", isDirectory: true)
+        let mediaFilesDirectory = url.appendingPathComponent(settings.audioFilesFolderName, isDirectory: true)
         
         return try! LocalFilesRepository(baseDirectory: mediaFilesDirectory)
     } ()
@@ -82,7 +84,7 @@ public class Application {
         return ShowMediaInfoUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,
             imagesRepository: imagesRepository,
-            defaultImage: UIImage(named: "Image.CoverPlaceholder")!.pngData()!
+            defaultImage: UIImage(named: settings.coverPlaceholderName)!.pngData()!
         )
     } ()
 
@@ -108,7 +110,7 @@ public class Application {
             create: false
         )
         
-        let subtitlesDirectory = url.appendingPathComponent("subtitles", isDirectory: true)
+        let subtitlesDirectory = url.appendingPathComponent(settings.subtitlesFolderName, isDirectory: true)
         
         return try! LocalFilesRepository(baseDirectory: subtitlesDirectory)
     } ()
@@ -140,18 +142,6 @@ public class Application {
             ".srt": subRipParser,
             ".lrc": lyricsParser
         ])
-    } ()
-    
-    private lazy var importSubtitlesUseCase: ImportSubtitlesUseCase = {
-
-        let factory = ImportSubtitlesUseCaseImplFactory(
-            supportedExtensions: [".srt", ".lrc"],
-            subtitlesRepository: subtitlesRepository,
-            subtitlesParser: subtitlesParser,
-            subtitlesFilesRepository: subtitlesFilesRepository
-        )
-        
-        return factory.create()
     } ()
     
     private lazy var playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory = {
@@ -196,20 +186,11 @@ public class Application {
     } ()
     
     
-    private lazy var playMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCase = {
-        
-        return PlayMediaWithTranslationsUseCaseImpl(
-            playMediaWithSubtitlesUseCase: playMediaWithSubtitlesUseCase,
-            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
-            provideTranslationsToPlayUseCase: provideTranslationsToPlayUseCase,
-            pronounceTranslationsUseCase: pronounceTranslationsUseCase
-        )
-    } ()
-
     // MARK: - Initializers
     
-    public init() {
+    public init(settings: ApplicationSettings) {
         
+        self.settings = settings
     }
     
     // MARK: - Methods
@@ -231,7 +212,7 @@ public class Application {
         let showMediaInfoUseCaseFactory = ShowMediaInfoUseCaseImplFactory(
             mediaLibraryRepository: mediaLibraryRepository,
             imagesRepository: imagesRepository,
-            defaultImage: UIImage(named: "Image.CoverPlaceholder")!.pngData()!
+            defaultImage: UIImage(named: settings.coverPlaceholderName)!.pngData()!
         )
         
         let playMediaWithInfoUseCase = PlayMediaWithInfoUseCaseImpl(
@@ -263,7 +244,7 @@ public class Application {
         )
         
         let importSubtitlesUseCaseFactory = ImportSubtitlesUseCaseImplFactory(
-            supportedExtensions: [".srt", ".lrc"],
+            supportedExtensions: settings.supportedSubtitlesExtensions,
             subtitlesRepository: subtitlesRepository,
             subtitlesParser: subtitlesParser,
             subtitlesFilesRepository: subtitlesFilesRepository
@@ -302,7 +283,7 @@ public class Application {
         let filesPickerViewModelFactory = FilesPickerViewModelImplFactory()
         
         let attachSubtitlesFlowModelFactory = AttachSubtitlesFlowModelImplFactory(
-            allowedDocumentTypes: ["com.azatkaiumov.subtitles"],
+            allowedDocumentTypes: settings.allowedSubtitlesDocumentTypes,
             subtitlesPickerViewModelFactory: filesPickerViewModelFactory,
             attachingSubtitlesProgressViewModelFactory: attachingSubtitlesProgressViewModelFactory,
             importSubtitlesUseCaseFactory: importSubtitlesUseCaseFactory
@@ -314,7 +295,7 @@ public class Application {
         )
         
         let importMediaFilesFlowModelFactory = ImportMediaFilesFlowModelImplFactory(
-            allowedDocumentTypes: ["public.audio"],
+            allowedDocumentTypes: settings.allowedMediaDocumentTypes,
             filesPickerViewModelFactory: filesPickerViewModelFactory,
             importAudioFileUseCaseFactory: imporAudioFileUseCaseFactory
         )
@@ -402,8 +383,7 @@ public class Application {
         )
         
         let exportDictionaryFlowModelFactory = ExportDictionaryFlowModelImplFactory(
-            outputFileName: "dictionary.lyraplay",
-            provideFileForSharingUseCaseFactory: provideFileForSharingUseCaseFactory,
+            outputFileName: settings.defaultDictionaryArchiveName,
             fileSharingViewModelFactory: fileSharingViewModelFactory
         )
         

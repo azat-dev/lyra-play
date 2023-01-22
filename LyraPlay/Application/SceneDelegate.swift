@@ -22,7 +22,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         self.window = window
         
-        application = Application()
+        let settings = ApplicationSettings(
+            dbFileName: "LyraPlay.sqlite",
+            imagesFolderName: "mediafiles_images",
+            audioFilesFolderName: "mediafiles_data",
+            subtitlesFolderName: "subtitles",
+            supportedSubtitlesExtensions: [".srt", ".lrc"],
+            coverPlaceholderName: "Image.CoverPlaceholder",
+            allowedSubtitlesDocumentTypes: ["com.azatkaiumov.subtitles"],
+            allowedMediaDocumentTypes: ["public.audio"],
+            defaultDictionaryArchiveName: "dictionary.lyraplay"
+        )
+        
+        application = Application(settings: settings)
         application.start(container: window)
 
         window.makeKeyAndVisible()
