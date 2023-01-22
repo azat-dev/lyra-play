@@ -144,18 +144,6 @@ public class Application {
         ])
     } ()
     
-    private lazy var importSubtitlesUseCase: ImportSubtitlesUseCase = {
-
-        let factory = ImportSubtitlesUseCaseImplFactory(
-            supportedExtensions: settings.supportedSubtitlesExtensions,
-            subtitlesRepository: subtitlesRepository,
-            subtitlesParser: subtitlesParser,
-            subtitlesFilesRepository: subtitlesFilesRepository
-        )
-        
-        return factory.create()
-    } ()
-    
     private lazy var playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory = {
 
         return PlaySubtitlesUseCaseImplFactory(
@@ -198,16 +186,6 @@ public class Application {
     } ()
     
     
-    private lazy var playMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCase = {
-        
-        return PlayMediaWithTranslationsUseCaseImpl(
-            playMediaWithSubtitlesUseCase: playMediaWithSubtitlesUseCase,
-            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
-            provideTranslationsToPlayUseCase: provideTranslationsToPlayUseCase,
-            pronounceTranslationsUseCase: pronounceTranslationsUseCase
-        )
-    } ()
-
     // MARK: - Initializers
     
     public init(settings: ApplicationSettings) {
