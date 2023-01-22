@@ -348,6 +348,7 @@
 		AA5A1AD128AA887700DE29CD /* Subtitles+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5A1AD028AA887700DE29CD /* Subtitles+Helpers.swift */; };
 		AA5B6CFD28C88C0E0025E00F /* MainFlowModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5B6CFC28C88C0E0025E00F /* MainFlowModelTests.swift */; };
 		AA5B6D0128C8CBBF0025E00F /* LibraryFolderFlowModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5B6D0028C8CBBF0025E00F /* LibraryFolderFlowModelTests.swift */; };
+		AA5BBD6D297D0ADC00AF9D43 /* ApplicationSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5BBD6C297D0ADC00AF9D43 /* ApplicationSettings.swift */; };
 		AA5DD6FC28B962BE00929906 /* Presentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD6FB28B962BD00929906 /* Presentable.swift */; };
 		AA5DD70D28B970FA00929906 /* LyraPlayTests-LyraPlayMocks.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD70C28B970FA00929906 /* LyraPlayTests-LyraPlayMocks.generated.swift */; };
 		AA5DD71328B9748800929906 /* TagsParserFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5DD71228B9748800929906 /* TagsParserFactory.swift */; };
@@ -572,7 +573,7 @@
 		E83BBDD22C1FFA257299F478 /* MainTabBarViewModelImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74F947954CFB2CF297F79E4 /* MainTabBarViewModelImpl.swift */; };
 		EA43E08C0335D7665B84B090 /* DictionaryArchiveParserFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079F5969F55463093815E3BE /* DictionaryArchiveParserFactory.swift */; };
 		EAAB9060AC792C0861E262D6 /* DictionaryListBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9637C2EEB35C1093860FE1 /* DictionaryListBrowserView.swift */; };
-		EAAC71B4C29C82B44BE581A6 /* BuildFile in Sources */ = {isa = PBXBuildFile; };
+		EAAC71B4C29C82B44BE581A6 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		EAB1F084D84C3B3F698EC727 /* AudioSessionImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A038B48D98578860715FE5A /* AudioSessionImplFactory.swift */; };
 		EB2CB98266021FB0724507F4 /* FilesPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75D1B51C89251BA8FE0CE35 /* FilesPickerView.swift */; };
 		EBAF9F0D2A43ECF74077F815 /* ExportDictionaryFlowPresenterImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99F8EA13D8959360FCA580C0 /* ExportDictionaryFlowPresenterImpl.swift */; };
@@ -965,6 +966,7 @@
 		AA5A1AD028AA887700DE29CD /* Subtitles+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Subtitles+Helpers.swift"; sourceTree = "<group>"; };
 		AA5B6CFC28C88C0E0025E00F /* MainFlowModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainFlowModelTests.swift; sourceTree = "<group>"; };
 		AA5B6D0028C8CBBF0025E00F /* LibraryFolderFlowModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryFolderFlowModelTests.swift; sourceTree = "<group>"; };
+		AA5BBD6C297D0ADC00AF9D43 /* ApplicationSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationSettings.swift; sourceTree = "<group>"; };
 		AA5DD6FB28B962BD00929906 /* Presentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Presentable.swift; sourceTree = "<group>"; };
 		AA5DD70C28B970FA00929906 /* LyraPlayTests-LyraPlayMocks.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LyraPlayTests-LyraPlayMocks.generated.swift"; sourceTree = "<group>"; };
 		AA5DD71228B9748800929906 /* TagsParserFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsParserFactory.swift; sourceTree = "<group>"; };
@@ -2613,6 +2615,7 @@
 			children = (
 				AA8BF74928567A1C0010FA1E /* AppDelegate.swift */,
 				AA94064F28C5E48E00AEAA56 /* Application.swift */,
+				AA5BBD6C297D0ADC00AF9D43 /* ApplicationSettings.swift */,
 				AADCDBAA28B88E70006AF136 /* Flow */,
 				AA8BF74B28567A1C0010FA1E /* SceneDelegate.swift */,
 			);
@@ -3128,7 +3131,6 @@
 				45F0D4E12B2777EA1E8A7608 /* ImportDictionaryArchiveUseCaseImpl.swift */,
 				0ED302764D0F81E1034ABFA1 /* ImportDictionaryArchiveUseCaseImplFactory.swift */,
 			);
-			name = ImportDictionaryArchiveUseCase;
 			path = ImportDictionaryArchiveUseCase;
 			sourceTree = "<group>";
 		};
@@ -3712,6 +3714,7 @@
 				BC9ECCA466E1DBAA156C8166 /* MediaLibraryBrowserViewModelImpl.swift in Sources */,
 				AA641DFA28C3516800641B0C /* PresentableViewFactory.swift in Sources */,
 				9263D76DDC6AC42E5B491E37 /* MediaLibraryBrowserViewModelImplFactory.swift in Sources */,
+				AA5BBD6D297D0ADC00AF9D43 /* ApplicationSettings.swift in Sources */,
 				9DBBF8D06D7E9DC8BBF585CE /* MainTabBarView.swift in Sources */,
 				AA1571F428C681BF0059854C /* LibraryItemInfoPresentation.swift in Sources */,
 				FBD80C3F8EE9844F1F48C6E1 /* MainTabBarViewFactory.swift in Sources */,
@@ -4011,7 +4014,7 @@
 				AACEA31228699F5500111565 /* BrowseMediaLibraryUseCaseTests.swift in Sources */,
 				AA3BAB25286C7EE2005EE01E /* UserDefaultsKeyValueStoreTests.swift in Sources */,
 				AABB49EA28AFF50E0088484B /* Dictionary+Helpers.swift in Sources */,
-				EAAC71B4C29C82B44BE581A6 /* BuildFile in Sources */,
+				EAAC71B4C29C82B44BE581A6 /* (null) in Sources */,
 				312FF05A74E46DB999FEDBAF /* EditDictionaryItemUseCaseTests.swift in Sources */,
 				525F44AEE191CAABB1CA1646 /* EditDictionaryItemViewModelTests.swift in Sources */,
 				CB61CC1D11936B825CD799AC /* AddDictionaryItemFlowModelTests.swift in Sources */,
