@@ -15,7 +15,7 @@ public enum SubtitlesRepositoryError: Error {
     case internalError(Error?)
 }
 
-public protocol SubtitlesRepository {
+public protocol SubtitlesRepository: AnyObject {
     
     func put(info: SubtitlesInfo) async -> Result<SubtitlesInfo, SubtitlesRepositoryError>
     

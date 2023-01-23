@@ -79,11 +79,6 @@ public class Application {
         )
     } ()
 
-    private lazy var subtitlesRepository: SubtitlesRepository = {
-      
-        return CoreDataSubtitlesRepository(coreDataStore: coreDataStore)
-    } ()
-    
     private lazy var subtitlesFilesRepository: FilesRepository = {
         
         let url = try! FileManager.default.url(
@@ -114,6 +109,8 @@ public class Application {
     
     func makeFlow() -> MainFlowModel {
         
+        let subtitlesRepositoryFactory = CoreDataSubtitlesRepositoryFactory(coreDataStore: coreDataStore)
+        
         let mainAudioSessionFactory = AudioSessionImplSingleInstanceFactory(mode: .mainAudio)
         let secondaryAudioSessionFactory = AudioSessionImplSingleInstanceFactory(mode: .promptAudio)
         
@@ -140,7 +137,7 @@ public class Application {
         )
         
         let loadSubtitlesUseCaseFactory = LoadSubtitlesUseCaseImplFactory(
-            subtitlesRepository: subtitlesRepository,
+            subtitlesRepositoryFactory: subtitlesRepositoryFactory,
             subtitlesFiles: subtitlesFilesRepository,
             subtitlesParserFactory: subtitlesParserFactory
         )
@@ -221,7 +218,7 @@ public class Application {
         
         let importSubtitlesUseCaseFactory = ImportSubtitlesUseCaseImplFactory(
             supportedExtensions: settings.supportedSubtitlesExtensions,
-            subtitlesRepository: subtitlesRepository,
+            subtitlesRepositoryFactory: subtitlesRepositoryFactory,
             subtitlesParserFactory: subtitlesParserFactory,
             subtitlesFilesRepository: subtitlesFilesRepository
         )
@@ -273,15 +270,15 @@ public class Application {
             importAudioFileUseCaseFactory: imporAudioFileUseCaseFactory
         )
         
-        let manageSubtitlesUseCase = ManageSubtitlesUseCaseImpl(
-            subtitlesRepository: subtitlesRepository,
+        let manageSubtitlesUseCaseFactory = ManageSubtitlesUseCaseImplFactory(
+            subtitlesRepositoryFactory: subtitlesRepositoryFactory,
             subtitlesFilesRepository: subtitlesFilesRepository
         )
         
         let editMediaLibraryListUseCaseFactory = EditMediaLibraryListUseCaseImplFactory(
             mediaLibraryRepository: mediaLibraryRepository,
             mediaFilesRepository: audioFilesRepository,
-            manageSubtitlesUseCase: manageSubtitlesUseCase,
+            manageSubtitlesUseCaseFactory: manageSubtitlesUseCaseFactory,
             imagesRepository: imagesRepository
         )
         

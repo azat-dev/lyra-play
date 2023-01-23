@@ -430,6 +430,8 @@
 		AA8BF75928567A1F0010FA1E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA8BF75728567A1F0010FA1E /* LaunchScreen.storyboard */; };
 		AA8BF76E28567A1F0010FA1E /* LyraPlayUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF76D28567A1F0010FA1E /* LyraPlayUITests.swift */; };
 		AA8BF77028567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BF76F28567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift */; };
+		AA92F3CB297F1F9F00E62E01 /* SubtitlesRepositoryFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA92F3CA297F1F9F00E62E01 /* SubtitlesRepositoryFactory.swift */; };
+		AA92F3CD297F1FE100E62E01 /* CoreDataSubtitlesRepositoryFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA92F3CC297F1FE100E62E01 /* CoreDataSubtitlesRepositoryFactory.swift */; };
 		AA94065028C5E48E00AEAA56 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA94064F28C5E48E00AEAA56 /* Application.swift */; };
 		AA976F9B28CE27DE00BC608A /* LoadDictionaryItemUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA976F9A28CE27DE00BC608A /* LoadDictionaryItemUseCaseTests.swift */; };
 		AA9A64BA2975A67E00198120 /* ExportedDictionaryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9A64B92975A67E00198120 /* ExportedDictionaryItem.swift */; };
@@ -1058,6 +1060,8 @@
 		AA8BF76928567A1F0010FA1E /* LyraPlayUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LyraPlayUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA8BF76D28567A1F0010FA1E /* LyraPlayUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyraPlayUITests.swift; sourceTree = "<group>"; };
 		AA8BF76F28567A1F0010FA1E /* LyraPlayUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyraPlayUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		AA92F3CA297F1F9F00E62E01 /* SubtitlesRepositoryFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesRepositoryFactory.swift; sourceTree = "<group>"; };
+		AA92F3CC297F1FE100E62E01 /* CoreDataSubtitlesRepositoryFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataSubtitlesRepositoryFactory.swift; sourceTree = "<group>"; };
 		AA94064F28C5E48E00AEAA56 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		AA976F9A28CE27DE00BC608A /* LoadDictionaryItemUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadDictionaryItemUseCaseTests.swift; sourceTree = "<group>"; };
 		AA9A64B92975A67E00198120 /* ExportedDictionaryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportedDictionaryItem.swift; sourceTree = "<group>"; };
@@ -2188,6 +2192,7 @@
 				AA598D1D2868D403001F3DE1 /* ManagedObjects */,
 				AA2BE88C2866EF35005C1AAD /* CoreDataStore.swift */,
 				AAF2CFE72876CC650003FCF7 /* CoreDataSubtitlesRepository.swift */,
+				AA92F3CC297F1FE100E62E01 /* CoreDataSubtitlesRepositoryFactory.swift */,
 				AA2895A72876EAA100B168C4 /* LyraPlay.xcdatamodeld */,
 			);
 			path = CoreData;
@@ -2674,6 +2679,15 @@
 			path = SupportFiles;
 			sourceTree = "<group>";
 		};
+		AA92F3C9297F1F9000E62E01 /* SubtitlesRepository */ = {
+			isa = PBXGroup;
+			children = (
+				AA0D3F8228762698006717B9 /* SubtitlesRepository.swift */,
+				AA92F3CA297F1F9F00E62E01 /* SubtitlesRepositoryFactory.swift */,
+			);
+			path = SubtitlesRepository;
+			sourceTree = "<group>";
+		};
 		AA9BEAF92865BF310028DF8E /* UseCases */ = {
 			isa = PBXGroup;
 			children = (
@@ -2761,7 +2775,7 @@
 				E5B37847F13FD3B2E4D25B1C /* DictionaryRepository */,
 				AA35E581286AA3D90086DB28 /* FilesRepository.swift */,
 				AA3BAB1C286C728B005EE01E /* PlayerStateRepository.swift */,
-				AA0D3F8228762698006717B9 /* SubtitlesRepository.swift */,
+				AA92F3C9297F1F9000E62E01 /* SubtitlesRepository */,
 			);
 			path = Repositories;
 			sourceTree = "<group>";
@@ -3624,6 +3638,7 @@
 				AA8BF74C28567A1C0010FA1E /* SceneDelegate.swift in Sources */,
 				AAC5FFB228BFFF8A00D402FF /* SchedulerFactory.swift in Sources */,
 				AAF76BB028C0CBE20067FE91 /* String+Utils.swift in Sources */,
+				AA92F3CB297F1F9F00E62E01 /* SubtitlesRepositoryFactory.swift in Sources */,
 				AA3C532B28BE5AAA00CBE3C6 /* BrowseDictionaryUseCaseFactory.swift in Sources */,
 				AA4148F928DAF574002FFDD4 /* PromptDialogViewController+Styles.swift in Sources */,
 				AA3C534828BE61CC00CBE3C6 /* LoadSubtitlesUseCaseFactory.swift in Sources */,
@@ -3841,6 +3856,7 @@
 				2BC4AE551E22584656FC59D7 /* EditDictionaryItemViewModelImpl.swift in Sources */,
 				6E378DC36DAF7EFD71CB7744 /* EditDictionaryItemViewModelImplFactory.swift in Sources */,
 				AA889EB628D760B900F8131F /* MediaLibraryItem.swift in Sources */,
+				AA92F3CD297F1FE100E62E01 /* CoreDataSubtitlesRepositoryFactory.swift in Sources */,
 				DDDF63E0B8BA5AFF191E31C9 /* EditDictionaryItemPresentationData.swift in Sources */,
 				3C49CF45F60823CE731E9998 /* AddDictionaryItemFlowModel.swift in Sources */,
 				3B4AAC96D2C6D223607E57F1 /* AddDictionaryItemFlowModelFactory.swift in Sources */,
