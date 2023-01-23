@@ -379,6 +379,7 @@
 		AA6774F428CBCF1600023392 /* FilesPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6774F328CBCF1600023392 /* FilesPickerViewController.swift */; };
 		AA6774F728CBD14B00023392 /* FilesPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6774F628CBD14B00023392 /* FilesPickerViewModel.swift */; };
 		AA719EE2297BB03E00C5ED93 /* DictionaryArchiveParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA719EE1297BB03E00C5ED93 /* DictionaryArchiveParserTests.swift */; };
+		AA729D09297E1D89000BED87 /* Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA729D08297E1D89000BED87 /* Factory.swift */; };
 		AA731CBD2870395B0044412F /* NowPlayingInfoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA731CBC2870395B0044412F /* NowPlayingInfoService.swift */; };
 		AA731CC328706CBB0044412F /* ShowMediaInfoUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA731CC228706CBB0044412F /* ShowMediaInfoUseCaseTests.swift */; };
 		AA731CC828707EE50044412F /* Result+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA731CC728707EE50044412F /* Result+Utils.swift */; };
@@ -997,6 +998,7 @@
 		AA6774F328CBCF1600023392 /* FilesPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesPickerViewController.swift; sourceTree = "<group>"; };
 		AA6774F628CBD14B00023392 /* FilesPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesPickerViewModel.swift; sourceTree = "<group>"; };
 		AA719EE1297BB03E00C5ED93 /* DictionaryArchiveParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryArchiveParserTests.swift; sourceTree = "<group>"; };
+		AA729D08297E1D89000BED87 /* Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Factory.swift; sourceTree = "<group>"; };
 		AA731CBC2870395B0044412F /* NowPlayingInfoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingInfoService.swift; sourceTree = "<group>"; };
 		AA731CC228706CBB0044412F /* ShowMediaInfoUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowMediaInfoUseCaseTests.swift; sourceTree = "<group>"; };
 		AA731CC728707EE50044412F /* Result+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Utils.swift"; sourceTree = "<group>"; };
@@ -2630,6 +2632,7 @@
 				AA7B0D5E28721A3F0067DDB5 /* fonts */,
 				AA8BF75728567A1F0010FA1E /* LaunchScreen.storyboard */,
 				AA7B0D7C28721A5E0067DDB5 /* Fonts.swift */,
+				AA729D08297E1D89000BED87 /* Factory.swift */,
 			);
 			path = SupportFiles;
 			sourceTree = "<group>";
@@ -3760,6 +3763,7 @@
 				A00B95782939A01A91C76867 /* AttachSubtitlesFlowModelImpl.swift in Sources */,
 				54443C99DED4C5AD1DCCEBEC /* AttachSubtitlesFlowModelImplFactory.swift in Sources */,
 				5782D579C8D2BCE84FDA5E1F /* AttachSubtitlesFlowPresenter.swift in Sources */,
+				AA729D09297E1D89000BED87 /* Factory.swift in Sources */,
 				B26F8CAB0B77D6AFBF100B8E /* AttachSubtitlesFlowPresenterFactory.swift in Sources */,
 				21C776DB59DD80210A248F99 /* AttachSubtitlesFlowPresenterImpl.swift in Sources */,
 				BFE7B8F35FF468F46DEDEE3A /* AttachSubtitlesFlowPresenterImplFactory.swift in Sources */,

@@ -23,7 +23,9 @@ public class Application {
     
     private lazy var coreDataStore: CoreDataStore = {
         
-        let url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent(settings.dbFileName)
+        let url = NSPersistentContainer.defaultDirectoryURL()
+            .appendingPathComponent(settings.dbFileName)
+        
         return try! CoreDataStore(storeURL: url)
     } ()
     
@@ -177,15 +179,6 @@ public class Application {
         )
     } ()
     
-    private lazy var pronounceTranslationsUseCase: PronounceTranslationsUseCase = {
-        
-        return PronounceTranslationsUseCaseImpl(
-            textToSpeechConverter: TextToSpeechConverterImpl(),
-            audioPlayer: AudioPlayerImpl(audioSession: audioSession)
-        )
-    } ()
-    
-    
     // MARK: - Initializers
     
     public init(settings: ApplicationSettings) {
@@ -201,6 +194,15 @@ public class Application {
     }
     
     func makeFlow() -> MainFlowModel {
+        
+        let textToSpeechConverterFactory = TextToSpeechConverterImplFactory();
+        
+        let pronounceTranslationsUseCaseFactory = PronounceTranslationsUseCaseImplFactory(
+            textToSpeechConverterFactory: textToSpeechConverterFactory,
+            audioPlayer: audioPlayer
+        )
+        
+        let pronounceTranslationsUseCase = pronounceTranslationsUseCaseFactory.create()
         
         let playMediaWithTranslationsUseCaseFactory = PlayMediaWithTranslationsUseCaseImplFactory(
             playMediaWithSubtitlesUseCase: playMediaWithSubtitlesUseCase,
@@ -265,7 +267,6 @@ public class Application {
         )
         
         let audioPlayerFactory = AudioPlayerImplFactory(audioSession: audioSession)
-        let textToSpeechConverterFactory = TextToSpeechConverterImplFactory()
         
         let pronounceTextUseCaseFactory = PronounceTextUseCaseImplFactory(
             textToSpeechConverterFactory: textToSpeechConverterFactory,
