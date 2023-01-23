@@ -7,12 +7,18 @@
 
 import Foundation
 
+public enum AudioSessionMode {
+    
+    case mainAudio
+    case promptAudio
+}
+
 public enum AudioSessionError: Error {
 
     case internalError(Error?)
 }
 
-public protocol AudioSessionInput {
+public protocol AudioSessionInput: AnyObject {
 
     @discardableResult
     func activate() -> Result<Void, AudioSessionError>
@@ -21,7 +27,7 @@ public protocol AudioSessionInput {
     func deactivate() -> Result<Void, AudioSessionError>
 }
 
-public protocol AudioSessionOutput {}
+public protocol AudioSessionOutput: AnyObject {}
 
 public protocol AudioSession: AudioSessionOutput, AudioSessionInput {
 

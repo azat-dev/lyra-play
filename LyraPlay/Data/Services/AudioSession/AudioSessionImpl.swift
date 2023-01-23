@@ -18,16 +18,15 @@ public final class AudioSessionImpl: AudioSession {
     
     // MARK: - Initializers
     
-    public init() {
+    public init(mode: AudioSessionMode) {
         
         do {
             // Set the audio session category, mode, and options.
             try audioSession.setCategory(
                 .playback,
-                mode: .spokenAudio,
-                policy: .longFormAudio,
-                options: [
-                ]
+                mode: mode.avMode,
+                policy: mode.avPolicy,
+                options: []
             )
         } catch {
             print("Failed to set audio session category.")
@@ -61,4 +60,34 @@ extension AudioSessionImpl {
         }
         
         return .success(())
-    }}
+    }
+}
+
+// MARK: - Helpers
+
+extension AudioSessionMode {
+    
+    var avMode: AVAudioSession.Mode {
+        
+        switch self {
+            
+        case .mainAudio:
+            return .spokenAudio
+            
+        case .promptAudio:
+            return .voicePrompt
+        }
+    }
+    
+    var avPolicy: AVAudioSession.RouteSharingPolicy {
+        
+        switch self {
+            
+        case .mainAudio:
+            return .longFormAudio
+            
+        case .promptAudio:
+            return .independent
+        }
+    }
+}

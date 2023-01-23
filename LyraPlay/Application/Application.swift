@@ -29,12 +29,6 @@ public class Application {
         return try! CoreDataStore(storeURL: url)
     } ()
     
-    private lazy var audioSession: AudioSessionImpl = {
-
-        return AudioSessionImpl()
-    } ()
-    
-    
     private lazy var mediaLibraryRepository: MediaLibraryRepository = {
         
         return CoreDataMediaLibraryRepository(coreDataStore: coreDataStore)
@@ -76,11 +70,6 @@ public class Application {
     } ()
     
     
-    private lazy var audioPlayer: AudioPlayer = {
-
-        return AudioPlayerImpl(audioSession: audioSession)
-    } ()
-
     private lazy var showMediaInfoUseCase: ShowMediaInfoUseCase = {
         
         return ShowMediaInfoUseCaseImpl(
@@ -125,13 +114,19 @@ public class Application {
     
     func makeFlow() -> MainFlowModel {
         
+        let mainAudioSessionFactory = AudioSessionImplSingleInstanceFactory(mode: .mainAudio)
+        let secondaryAudioSessionFactory = AudioSessionImplSingleInstanceFactory(mode: .promptAudio)
+        
+        let mainAudioPlayerFactory = AudioPlayerImplSingleInstanceFactory(audioSessionFactory: mainAudioSessionFactory)
+        let secondaryAudioPlayerFactory = AudioPlayerImplSingleInstanceFactory(audioSessionFactory: secondaryAudioSessionFactory)
+        
         let loadTrackUseCaseFactory = LoadTrackUseCaseImplFactory(
             mediaLibraryRepository: mediaLibraryRepository,
             audioFilesRepository: audioFilesRepository
         )
         
         let playMediaUseCaseFactory = PlayMediaUseCaseImplFactory(
-            audioPlayer: audioPlayer,
+            audioPlayerFactory: mainAudioPlayerFactory,
             loadTrackUseCaseFactory: loadTrackUseCaseFactory
         )
         
@@ -178,7 +173,7 @@ public class Application {
         
         let pronounceTranslationsUseCaseFactory = PronounceTranslationsUseCaseImplFactory(
             textToSpeechConverterFactory: textToSpeechConverterFactory,
-            audioPlayer: audioPlayer
+            audioPlayerFactory: mainAudioPlayerFactory
         )
         
         let pronounceTranslationsUseCase = pronounceTranslationsUseCaseFactory.create()
@@ -245,11 +240,9 @@ public class Application {
             dictionaryRepository: dictionaryRepository
         )
         
-        let audioPlayerFactory = AudioPlayerImplFactory(audioSession: audioSession)
-        
         let pronounceTextUseCaseFactory = PronounceTextUseCaseImplFactory(
             textToSpeechConverterFactory: textToSpeechConverterFactory,
-            audioPlayerFactory: audioPlayerFactory
+            audioPlayerFactory: secondaryAudioPlayerFactory
         )
         
         let dictionaryViewModelFactory = DictionaryListBrowserViewModelImplFactory(
