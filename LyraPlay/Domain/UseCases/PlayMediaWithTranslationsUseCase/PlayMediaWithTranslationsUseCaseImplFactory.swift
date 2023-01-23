@@ -11,7 +11,7 @@ public final class PlayMediaWithTranslationsUseCaseImplFactory: PlayMediaWithTra
 
     // MARK: - Properties
 
-    private let playMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCase
+    private let playMediaWithSubtitlesUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactory
     private let playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory
     private let provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory
     private let pronounceTranslationsUseCase: PronounceTranslationsUseCase
@@ -19,13 +19,13 @@ public final class PlayMediaWithTranslationsUseCaseImplFactory: PlayMediaWithTra
     // MARK: - Initializers
 
     public init(
-        playMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCase,
+        playMediaWithSubtitlesUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactory,
         playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory,
         provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory,
         pronounceTranslationsUseCase: PronounceTranslationsUseCase
     ) {
 
-        self.playMediaWithSubtitlesUseCase = playMediaWithSubtitlesUseCase
+        self.playMediaWithSubtitlesUseCaseFactory = playMediaWithSubtitlesUseCaseFactory
         self.playSubtitlesUseCaseFactory = playSubtitlesUseCaseFactory
         self.provideTranslationsToPlayUseCaseFactory = provideTranslationsToPlayUseCaseFactory
         self.pronounceTranslationsUseCase = pronounceTranslationsUseCase
@@ -35,6 +35,7 @@ public final class PlayMediaWithTranslationsUseCaseImplFactory: PlayMediaWithTra
 
     public func create() -> PlayMediaWithTranslationsUseCase {
 
+        let playMediaWithSubtitlesUseCase = playMediaWithSubtitlesUseCaseFactory.create()
         let provideTranslationsToPlayUseCase = provideTranslationsToPlayUseCaseFactory.create()
         
         return PlayMediaWithTranslationsUseCaseImpl(

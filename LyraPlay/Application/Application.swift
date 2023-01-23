@@ -145,24 +145,7 @@ public class Application {
             ".lrc": lyricsParser
         ])
     } ()
-    
-    private lazy var playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory = {
-
-        return PlaySubtitlesUseCaseImplFactory(
-            subtitlesIteratorFactory: SubtitlesIteratorFactoryImpl(),
-            schedulerFactory: SchedulerImplFactory(actionTimerFactory: ActionTimerFactoryImpl())
-        )
-    } ()
         
-    private lazy var playMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCase = {
-        
-        return PlayMediaWithSubtitlesUseCaseImpl(
-            playMediaUseCase: playMediaUseCase,
-            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
-            loadSubtitlesUseCase: loadSubtitlesUseCase
-        )
-    } ()
-    
     // MARK: - Initializers
     
     public init(settings: ApplicationSettings) {
@@ -178,6 +161,17 @@ public class Application {
     }
     
     func makeFlow() -> MainFlowModel {
+        
+        let playSubtitlesUseCaseFactory = PlaySubtitlesUseCaseImplFactory(
+            subtitlesIteratorFactory: SubtitlesIteratorFactoryImpl(),
+            schedulerFactory: SchedulerImplFactory(actionTimerFactory: ActionTimerFactoryImpl())
+        )
+        
+        let playMediaWithSubtitlesUseCaseFactory = PlayMediaWithSubtitlesUseCaseImplFactory(
+            playMediaUseCase: playMediaUseCase,
+            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
+            loadSubtitlesUseCase: loadSubtitlesUseCase
+        )
         
         let lemmatizerFactory = LemmatizerImplFactory()
         
@@ -203,7 +197,7 @@ public class Application {
         let pronounceTranslationsUseCase = pronounceTranslationsUseCaseFactory.create()
         
         let playMediaWithTranslationsUseCaseFactory = PlayMediaWithTranslationsUseCaseImplFactory(
-            playMediaWithSubtitlesUseCase: playMediaWithSubtitlesUseCase,
+            playMediaWithSubtitlesUseCaseFactory: playMediaWithSubtitlesUseCaseFactory,
             playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
             provideTranslationsToPlayUseCaseFactory: provideTranslationsToPlayUseCaseFactory,
             pronounceTranslationsUseCase: pronounceTranslationsUseCase
