@@ -95,14 +95,6 @@ public class Application {
         return CoreDataSubtitlesRepository(coreDataStore: coreDataStore)
     } ()
     
-    private lazy var loadSubtitlesUseCase: LoadSubtitlesUseCase = {
-        return LoadSubtitlesUseCaseImpl(
-            subtitlesRepository: subtitlesRepository,
-            subtitlesFiles: subtitlesFilesRepository,
-            subtitlesParser: subtitlesParser
-        )
-    } ()
-    
     private lazy var subtitlesFilesRepository: FilesRepository = {
         
         let url = try! FileManager.default.url(
@@ -133,19 +125,6 @@ public class Application {
         )
     } ()
     
-    private lazy var subtitlesParser: SubtitlesParser = {
-        
-        let textSplitter = TextSplitterImpl()
-        let lyricsParser = LyricsParser(textSplitter: textSplitter)
-        
-        let subRipParser = SubRipFileFormatParser(textSplitter: textSplitter)
-        
-        return SubtitlesParserImpl(parsers: [
-            ".srt": subRipParser,
-            ".lrc": lyricsParser
-        ])
-    } ()
-        
     // MARK: - Initializers
     
     public init(settings: ApplicationSettings) {
@@ -162,6 +141,21 @@ public class Application {
     
     func makeFlow() -> MainFlowModel {
         
+        let textSplitterFactory = TextSplitterImplFactory()
+        
+        let subtitlesParserFactory = SubtitlesParserImplFactory(
+            parsers: [
+                ".srt": SubRipFileFormatParserFactory(textSplitterFactory: textSplitterFactory),
+                ".lrc": LyricsParserFactory(textSplitterFactory: textSplitterFactory)
+            ]
+        )
+        
+        let loadSubtitlesUseCaseFactory = LoadSubtitlesUseCaseImplFactory(
+            subtitlesRepository: subtitlesRepository,
+            subtitlesFiles: subtitlesFilesRepository,
+            subtitlesParserFactory: subtitlesParserFactory
+        )
+        
         let playSubtitlesUseCaseFactory = PlaySubtitlesUseCaseImplFactory(
             subtitlesIteratorFactory: SubtitlesIteratorFactoryImpl(),
             schedulerFactory: SchedulerImplFactory(actionTimerFactory: ActionTimerFactoryImpl())
@@ -170,12 +164,11 @@ public class Application {
         let playMediaWithSubtitlesUseCaseFactory = PlayMediaWithSubtitlesUseCaseImplFactory(
             playMediaUseCase: playMediaUseCase,
             playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
-            loadSubtitlesUseCase: loadSubtitlesUseCase
+            loadSubtitlesUseCaseFactory: loadSubtitlesUseCaseFactory
         )
         
         let lemmatizerFactory = LemmatizerImplFactory()
         
-        let textSplitterFactory = TextSplitterImplFactory()
         
         let provideTranslationsForSubtitlesUseCaseFactory = ProvideTranslationsForSubtitlesUseCaseImplFactory(
             dictionaryRepository: dictionaryRepository,
@@ -240,7 +233,7 @@ public class Application {
         let importSubtitlesUseCaseFactory = ImportSubtitlesUseCaseImplFactory(
             supportedExtensions: settings.supportedSubtitlesExtensions,
             subtitlesRepository: subtitlesRepository,
-            subtitlesParser: subtitlesParser,
+            subtitlesParserFactory: subtitlesParserFactory,
             subtitlesFilesRepository: subtitlesFilesRepository
         )
 

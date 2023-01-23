@@ -8,7 +8,7 @@
 import Foundation
 import LyraPlay
 
-final class SubtitlesParserMock: SubtitlesParser {
+final class SubtitlesParserMockDeprecated: SubtitlesParser {
 
     typealias ParseCallback = (_ text: String, _ fileName: String) async -> Result<Subtitles, SubtitlesParserError>
     

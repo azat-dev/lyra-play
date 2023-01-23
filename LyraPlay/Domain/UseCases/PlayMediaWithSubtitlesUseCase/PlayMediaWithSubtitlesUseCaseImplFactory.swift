@@ -13,24 +13,26 @@ public final class PlayMediaWithSubtitlesUseCaseImplFactory: PlayMediaWithSubtit
 
     private let playMediaUseCase: PlayMediaUseCase
     private let playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory
-    private let loadSubtitlesUseCase: LoadSubtitlesUseCase
+    private let loadSubtitlesUseCaseFactory: LoadSubtitlesUseCaseFactory
 
     // MARK: - Initializers
 
     public init(
         playMediaUseCase: PlayMediaUseCase,
         playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory,
-        loadSubtitlesUseCase: LoadSubtitlesUseCase
+        loadSubtitlesUseCaseFactory: LoadSubtitlesUseCaseFactory
     ) {
 
         self.playMediaUseCase = playMediaUseCase
         self.playSubtitlesUseCaseFactory = playSubtitlesUseCaseFactory
-        self.loadSubtitlesUseCase = loadSubtitlesUseCase
+        self.loadSubtitlesUseCaseFactory = loadSubtitlesUseCaseFactory
     }
 
     // MARK: - Methods
 
     public func create() -> PlayMediaWithSubtitlesUseCase {
+        
+        let loadSubtitlesUseCase = loadSubtitlesUseCaseFactory.create()
 
         return PlayMediaWithSubtitlesUseCaseImpl(
             playMediaUseCase: playMediaUseCase,

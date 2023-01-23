@@ -366,7 +366,7 @@
 		AA64C81A286F170C0089F165 /* PlayerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA64C819286F170C0089F165 /* PlayerViewModelTests.swift */; };
 		AA64C81D286F181F0089F165 /* AudioPlayerUseCaseMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA64C81C286F181F0089F165 /* AudioPlayerUseCaseMock.swift */; };
 		AA66FD26287A02F9005AD524 /* LoadSubtitlesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA66FD25287A02F9005AD524 /* LoadSubtitlesUseCaseTests.swift */; };
-		AA66FD28287A0795005AD524 /* SubtitlesParserMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA66FD27287A0795005AD524 /* SubtitlesParserMock.swift */; };
+		AA66FD28287A0795005AD524 /* SubtitlesParserMockDeprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA66FD27287A0795005AD524 /* SubtitlesParserMockDeprecated.swift */; };
 		AA66FD2A287A089F005AD524 /* SubtitlesRepositoryMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA66FD29287A089F005AD524 /* SubtitlesRepositoryMock.swift */; };
 		AA6774D728CB086A00023392 /* LibraryFileFlowModelImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6774D628CB086A00023392 /* LibraryFileFlowModelImplFactory.swift */; };
 		AA6774D928CB15CA00023392 /* LibraryFileFlowPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6774D828CB15CA00023392 /* LibraryFileFlowPresenter.swift */; };
@@ -992,7 +992,7 @@
 		AA64C819286F170C0089F165 /* PlayerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModelTests.swift; sourceTree = "<group>"; };
 		AA64C81C286F181F0089F165 /* AudioPlayerUseCaseMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerUseCaseMock.swift; sourceTree = "<group>"; };
 		AA66FD25287A02F9005AD524 /* LoadSubtitlesUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadSubtitlesUseCaseTests.swift; sourceTree = "<group>"; };
-		AA66FD27287A0795005AD524 /* SubtitlesParserMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesParserMock.swift; sourceTree = "<group>"; };
+		AA66FD27287A0795005AD524 /* SubtitlesParserMockDeprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesParserMockDeprecated.swift; sourceTree = "<group>"; };
 		AA66FD29287A089F005AD524 /* SubtitlesRepositoryMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesRepositoryMock.swift; sourceTree = "<group>"; };
 		AA6774D628CB086A00023392 /* LibraryFileFlowModelImplFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryFileFlowModelImplFactory.swift; sourceTree = "<group>"; };
 		AA6774D828CB15CA00023392 /* LibraryFileFlowPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryFileFlowPresenter.swift; sourceTree = "<group>"; };
@@ -2833,7 +2833,7 @@
 				AA415089286B2ECA004549F4 /* FilesRepositoryMock.swift */,
 				AA252C9628744481001B7AEE /* LoadTrackUseCaseMock.swift */,
 				AA0930C928739BD900E62DB3 /* ShowMediaInfoUseCaseMockDeprecated.swift */,
-				AA66FD27287A0795005AD524 /* SubtitlesParserMock.swift */,
+				AA66FD27287A0795005AD524 /* SubtitlesParserMockDeprecated.swift */,
 				AA66FD29287A089F005AD524 /* SubtitlesRepositoryMock.swift */,
 			);
 			path = Mocks;
@@ -4033,7 +4033,7 @@
 				AA731CCA2870BE890044412F /* LoadTrackUseCaseTests.swift in Sources */,
 				AAC8E0F0288B10AF001A274A /* LemmatizerTests.swift in Sources */,
 				AA0DADF928A14FB900B11B95 /* TextToSpeechConverterTests.swift in Sources */,
-				AA66FD28287A0795005AD524 /* SubtitlesParserMock.swift in Sources */,
+				AA66FD28287A0795005AD524 /* SubtitlesParserMockDeprecated.swift in Sources */,
 				AA415084286B0987004549F4 /* AssertResult.swift in Sources */,
 				AA0D3F812876244D006717B9 /* CoreDataSubtitlesRepositoryTests.swift in Sources */,
 				AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */,

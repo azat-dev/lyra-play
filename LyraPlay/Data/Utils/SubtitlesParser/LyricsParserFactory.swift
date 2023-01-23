@@ -11,19 +11,20 @@ public final class LyricsParserFactory: SubtitlesParserFactory {
 
     // MARK: - Properties
 
-    private let textSplitter: TextSplitter
+    private let textSplitterFactory: TextSplitterFactory
 
     // MARK: - Initializers
 
-    public init(textSplitter: TextSplitter) {
+    public init(textSplitterFactory: TextSplitterFactory) {
 
-        self.textSplitter = textSplitter
+        self.textSplitterFactory = textSplitterFactory
     }
 
     // MARK: - Methods
 
     public func create() -> SubtitlesParser {
 
+        let textSplitter = textSplitterFactory.create()
         return LyricsParser(textSplitter: textSplitter)
     }
 }

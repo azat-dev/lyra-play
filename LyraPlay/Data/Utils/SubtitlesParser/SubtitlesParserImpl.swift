@@ -13,11 +13,11 @@ public final class SubtitlesParserImpl: SubtitlesParser {
 
     // MARK: - Properties
 
-    private let parsers: [FileExtension: SubtitlesParser]
+    private let parsers: [FileExtension: SubtitlesParserFactory]
 
     // MARK: - Initializers
 
-    public init(parsers: [FileExtension: SubtitlesParser]) {
+    public init(parsers: [FileExtension: SubtitlesParserFactory]) {
 
         self.parsers = parsers
     }
@@ -31,10 +31,11 @@ extension SubtitlesParserImpl {
         
         let fileExtension = URL(fileURLWithPath: fileName).pathExtension.lowercased()
         
-        guard let parser = parsers[".\(fileExtension)"] else {
+        guard let parserFactory = parsers[".\(fileExtension)"] else {
             return .failure(.internalError(nil))
         }
         
+        let parser = parserFactory.create()
         return await parser.parse(text, fileName: fileName)
     }
 }

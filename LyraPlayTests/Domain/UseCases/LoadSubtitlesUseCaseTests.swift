@@ -14,14 +14,14 @@ class LoadSubtitlesUseCaseTests: XCTestCase {
         useCase: LoadSubtitlesUseCase,
         subtitlesRepository: SubtitlesRepositoryMockDeprecated,
         subtitlesFiles: FilesRepositoryMockDeprecated,
-        subtitlesParser: SubtitlesParserMock
+        subtitlesParser: SubtitlesParserMockDeprecated
     )
 
     func createSUT() -> SUT {
         
         let subtitlesRepository = SubtitlesRepositoryMockDeprecated()
         let subtitlesFiles = FilesRepositoryMockDeprecated()
-        let subtitlesParser = SubtitlesParserMock()
+        let subtitlesParser = SubtitlesParserMockDeprecated()
         
         let useCase = LoadSubtitlesUseCaseImpl(
             subtitlesRepository: subtitlesRepository,
