@@ -163,22 +163,6 @@ public class Application {
         )
     } ()
     
-    private lazy var provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase = {
-        
-        return ProvideTranslationsForSubtitlesUseCaseImpl(
-            dictionaryRepository: dictionaryRepository,
-            textSplitter: TextSplitterImpl(),
-            lemmatizer: LemmatizerImpl()
-        )
-    } ()
-    
-    private lazy var provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase = {
-        
-        return ProvideTranslationsToPlayUseCaseImpl(
-            provideTranslationsForSubtitlesUseCase: provideTranslationsForSubtitlesUseCase
-        )
-    } ()
-    
     // MARK: - Initializers
     
     public init(settings: ApplicationSettings) {
@@ -195,6 +179,20 @@ public class Application {
     
     func makeFlow() -> MainFlowModel {
         
+        let lemmatizerFactory = LemmatizerImplFactory()
+        
+        let textSplitterFactory = TextSplitterImplFactory()
+        
+        let provideTranslationsForSubtitlesUseCaseFactory = ProvideTranslationsForSubtitlesUseCaseImplFactory(
+            dictionaryRepository: dictionaryRepository,
+            textSplitterFactory: textSplitterFactory,
+            lemmatizerFactory: lemmatizerFactory
+        )
+        
+        let provideTranslationsToPlayUseCaseFactory = ProvideTranslationsToPlayUseCaseImplFactory(
+            provideTranslationsForSubtitlesUseCaseFactory: provideTranslationsForSubtitlesUseCaseFactory
+        )
+        
         let textToSpeechConverterFactory = TextToSpeechConverterImplFactory();
         
         let pronounceTranslationsUseCaseFactory = PronounceTranslationsUseCaseImplFactory(
@@ -207,7 +205,7 @@ public class Application {
         let playMediaWithTranslationsUseCaseFactory = PlayMediaWithTranslationsUseCaseImplFactory(
             playMediaWithSubtitlesUseCase: playMediaWithSubtitlesUseCase,
             playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
-            provideTranslationsToPlayUseCase: provideTranslationsToPlayUseCase,
+            provideTranslationsToPlayUseCaseFactory: provideTranslationsToPlayUseCaseFactory,
             pronounceTranslationsUseCase: pronounceTranslationsUseCase
         )
         

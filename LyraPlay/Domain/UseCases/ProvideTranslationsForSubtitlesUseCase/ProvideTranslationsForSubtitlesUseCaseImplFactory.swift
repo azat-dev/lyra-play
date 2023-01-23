@@ -12,26 +12,29 @@ public final class ProvideTranslationsForSubtitlesUseCaseImplFactory: ProvideTra
     // MARK: - Properties
 
     private let dictionaryRepository: DictionaryRepository
-    private let textSplitter: TextSplitter
-    private let lemmatizer: Lemmatizer
+    private let textSplitterFactory: TextSplitterFactory
+    private let lemmatizerFactory: LemmatizerFactory
 
     // MARK: - Initializers
 
     public init(
         dictionaryRepository: DictionaryRepository,
-        textSplitter: TextSplitter,
-        lemmatizer: Lemmatizer
+        textSplitterFactory: TextSplitterFactory,
+        lemmatizerFactory: LemmatizerFactory
     ) {
 
         self.dictionaryRepository = dictionaryRepository
-        self.textSplitter = textSplitter
-        self.lemmatizer = lemmatizer
+        self.textSplitterFactory = textSplitterFactory
+        self.lemmatizerFactory = lemmatizerFactory
     }
 
     // MARK: - Methods
 
     public func create() -> ProvideTranslationsForSubtitlesUseCase {
 
+        let textSplitter = textSplitterFactory.create()
+        let lemmatizer = lemmatizerFactory.create()
+        
         return ProvideTranslationsForSubtitlesUseCaseImpl(
             dictionaryRepository: dictionaryRepository,
             textSplitter: textSplitter,
