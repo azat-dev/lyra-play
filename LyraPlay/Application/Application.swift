@@ -108,23 +108,7 @@ public class Application {
         
         return try! LocalFilesRepository(baseDirectory: subtitlesDirectory)
     } ()
-    
-    private lazy var loadTrackUseCase: LoadTrackUseCase = {
         
-        return LoadTrackUseCaseImpl(
-            mediaLibraryRepository: mediaLibraryRepository,
-            audioFilesRepository: audioFilesRepository
-        )
-    } ()
-
-    private lazy var playMediaUseCase: PlayMediaUseCase = {
-        
-        return PlayMediaUseCaseImpl(
-            audioPlayer: audioPlayer,
-            loadTrackUseCase: loadTrackUseCase
-        )
-    } ()
-    
     // MARK: - Initializers
     
     public init(settings: ApplicationSettings) {
@@ -140,6 +124,16 @@ public class Application {
     }
     
     func makeFlow() -> MainFlowModel {
+        
+        let loadTrackUseCaseFactory = LoadTrackUseCaseImplFactory(
+            mediaLibraryRepository: mediaLibraryRepository,
+            audioFilesRepository: audioFilesRepository
+        )
+        
+        let playMediaUseCaseFactory = PlayMediaUseCaseImplFactory(
+            audioPlayer: audioPlayer,
+            loadTrackUseCaseFactory: loadTrackUseCaseFactory
+        )
         
         let textSplitterFactory = TextSplitterImplFactory()
         
@@ -162,7 +156,7 @@ public class Application {
         )
         
         let playMediaWithSubtitlesUseCaseFactory = PlayMediaWithSubtitlesUseCaseImplFactory(
-            playMediaUseCase: playMediaUseCase,
+            playMediaUseCaseFactory: playMediaUseCaseFactory,
             playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
             loadSubtitlesUseCaseFactory: loadSubtitlesUseCaseFactory
         )

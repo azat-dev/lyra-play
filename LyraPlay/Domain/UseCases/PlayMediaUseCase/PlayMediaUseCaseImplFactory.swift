@@ -12,23 +12,25 @@ public final class PlayMediaUseCaseImplFactory: PlayMediaUseCaseFactory {
     // MARK: - Properties
 
     private let audioPlayer: AudioPlayer
-    private let loadTrackUseCase: LoadTrackUseCase
+    private let loadTrackUseCaseFactory: LoadTrackUseCaseFactory
 
     // MARK: - Initializers
 
     public init(
         audioPlayer: AudioPlayer,
-        loadTrackUseCase: LoadTrackUseCase
+        loadTrackUseCaseFactory: LoadTrackUseCaseFactory
     ) {
 
         self.audioPlayer = audioPlayer
-        self.loadTrackUseCase = loadTrackUseCase
+        self.loadTrackUseCaseFactory = loadTrackUseCaseFactory
     }
 
     // MARK: - Methods
 
     public func create() -> PlayMediaUseCase {
 
+        let loadTrackUseCase = loadTrackUseCaseFactory.create()
+        
         return PlayMediaUseCaseImpl(
             audioPlayer: audioPlayer,
             loadTrackUseCase: loadTrackUseCase
