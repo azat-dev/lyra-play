@@ -43,7 +43,7 @@ public enum PlayMediaWithInfoUseCaseState: Equatable {
 
 // MARK: - Protocols
 
-public protocol PlayMediaWithInfoUseCaseInput {
+public protocol PlayMediaWithInfoUseCaseInput: AnyObject {
     
     func prepare(session: PlayMediaWithInfoSession) async -> Result<Void, PlayMediaWithInfoUseCaseError>
     
@@ -58,7 +58,7 @@ public protocol PlayMediaWithInfoUseCaseInput {
     func togglePlay() -> Result<Void, PlayMediaWithInfoUseCaseError>
 }
 
-public protocol PlayMediaWithInfoUseCaseOutput {
+public protocol PlayMediaWithInfoUseCaseOutput: AnyObject {
     
     var state: PublisherWithSession<PlayMediaWithInfoUseCaseState, Never> { get }
 }

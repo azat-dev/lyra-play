@@ -12,17 +12,17 @@ public final class LibraryItemViewModelImplFactory: LibraryItemViewModelFactory 
     // MARK: - Properties
 
     private let showMediaInfoUseCase: ShowMediaInfoUseCase
-    private let playMediaUseCase: PlayMediaWithInfoUseCase
+    private let playMediaUseCaseFactory: PlayMediaWithInfoUseCaseFactory
 
     // MARK: - Initializers
 
     public init(
         showMediaInfoUseCase: ShowMediaInfoUseCase,
-        playMediaUseCase: PlayMediaWithInfoUseCase
+        playMediaUseCaseFactory: PlayMediaWithInfoUseCaseFactory
     ) {
 
         self.showMediaInfoUseCase = showMediaInfoUseCase
-        self.playMediaUseCase = playMediaUseCase
+        self.playMediaUseCaseFactory = playMediaUseCaseFactory
     }
 
     // MARK: - Methods
@@ -31,6 +31,8 @@ public final class LibraryItemViewModelImplFactory: LibraryItemViewModelFactory 
         mediaId: UUID,
         delegate: LibraryItemViewModelDelegate
     ) -> LibraryItemViewModel {
+        
+        let playMediaUseCase = playMediaUseCaseFactory.create()
 
         return LibraryItemViewModelImpl(
             trackId: mediaId,

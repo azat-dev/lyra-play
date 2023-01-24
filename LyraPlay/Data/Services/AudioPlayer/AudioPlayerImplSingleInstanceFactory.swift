@@ -38,6 +38,7 @@ public final class AudioPlayerImplSingleInstanceFactory: AudioPlayerFactory {
         
         let audioSession = audioSessionFactory.create()
         let newInstance = AudioPlayerImpl(audioSession: audioSession)
+        instance = newInstance
         
         return newInstance
     }

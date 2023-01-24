@@ -7,9 +7,13 @@
 
 import Foundation
 
-public final class PlayMediaWithInfoUseCaseImplFactory: PlayMediaWithInfoUseCaseFactory {
+public final class PlayMediaWithInfoUseCaseImplSingleInstanceFactory: PlayMediaWithInfoUseCaseFactory {
     
     // MARK: - Properties
+    
+    private let semaphore = DispatchSemaphore(value: 1)
+    
+    private weak var instance: PlayMediaWithInfoUseCase?
     
     private let playMediaWithTranslationsUseCaseFactory: PlayMediaWithTranslationsUseCaseFactory
     private let showMediaInfoUseCaseFactory: ShowMediaInfoUseCaseFactory
@@ -29,9 +33,21 @@ public final class PlayMediaWithInfoUseCaseImplFactory: PlayMediaWithInfoUseCase
     
     public func create() -> PlayMediaWithInfoUseCase {
         
-        return PlayMediaWithInfoUseCaseImpl(
+        defer { semaphore.signal() }
+        
+        semaphore.wait()
+        
+        if let instance = instance {
+            return instance
+        }
+        
+        let newInstance = PlayMediaWithInfoUseCaseImpl(
             playMediaWithTranslationsUseCaseFactory: playMediaWithTranslationsUseCaseFactory,
             showMediaInfoUseCaseFactory: showMediaInfoUseCaseFactory
         )
+        
+        instance = newInstance
+        
+        return newInstance
     }
 }

@@ -188,13 +188,13 @@ public class Application {
             defaultImage: UIImage(named: settings.coverPlaceholderName)!.pngData()!
         )
         
-        let playMediaWithInfoUseCase = PlayMediaWithInfoUseCaseImpl(
+        let playMediaWithInfoUseCaseFactory = PlayMediaWithInfoUseCaseImplSingleInstanceFactory(
             playMediaWithTranslationsUseCaseFactory: playMediaWithTranslationsUseCaseFactory,
             showMediaInfoUseCaseFactory: showMediaInfoUseCaseFactory
         )
         
         let currentPlayerStateViewModelFactory = CurrentPlayerStateViewModelImplFactory(
-            playMediaUseCase: playMediaWithInfoUseCase
+            playMediaUseCaseFactory: playMediaWithInfoUseCaseFactory
         )
         
         let mainTabBarViewModelFactory = MainTabBarViewModelImplFactory(
@@ -206,13 +206,13 @@ public class Application {
             imagesRepository: imagesRepository
         )
         
-        let tagsParser = TagsParserImpl()
+        let tagsParserFactory = TagsParserFactoryImpl()
         
         let imporAudioFileUseCaseFactory = ImportAudioFileUseCaseImplFactory(
             mediaLibraryRepository: mediaLibraryRepository,
             audioFilesRepository: audioFilesRepository,
             imagesRepository: imagesRepository,
-            tagsParser: tagsParser,
+            tagsParserFactory: tagsParserFactory,
             fileNameGenerator: ImportAudioFileUseCaseFileNameGeneratorImpl()
         )
         
@@ -230,7 +230,7 @@ public class Application {
         
         let libraryFileViewModelFactory = LibraryItemViewModelImplFactory(
             showMediaInfoUseCase: showMediaInfoUseCase,
-            playMediaUseCase: playMediaWithInfoUseCase
+            playMediaUseCaseFactory: playMediaWithInfoUseCaseFactory
         )
         
         let browseDictionaryUseCase = BrowseDictionaryUseCaseImpl(
@@ -345,11 +345,11 @@ public class Application {
             exportDictionaryUseCaseFactory: exportDictionaryUseCaseFactory
         )
         
-        let tempURLProvider = TempURLProviderImpl(fileManager: FileManager.default)
+        let tempURLProviderFactory = TempURLProviderImplFactory(fileManager: FileManager.default)
         
         let fileSharingViewModelFactory = FileSharingViewModelImplFactory(
             provideFileForSharingUseCaseFactory: provideFileForSharingUseCaseFactory,
-            tempURLProvider: tempURLProvider
+            tempURLProviderFactory: tempURLProviderFactory
         )
         
         let exportDictionaryFlowModelFactory = ExportDictionaryFlowModelImplFactory(
@@ -367,7 +367,7 @@ public class Application {
         let subtitlesPresenterViewModelFactory = SubtitlesPresenterViewModelImplFactory()
         
         let currentPlayerStateDetailsViewModelFactory = CurrentPlayerStateDetailsViewModelImplFactory(
-            playMediaUseCase: playMediaWithInfoUseCase,
+            playMediaUseCaseFactory: playMediaWithInfoUseCaseFactory,
             subtitlesPresenterViewModelFactory: subtitlesPresenterViewModelFactory
         )
         

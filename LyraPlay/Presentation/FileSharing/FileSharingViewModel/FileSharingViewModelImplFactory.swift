@@ -13,17 +13,17 @@ public final class FileSharingViewModelImplFactory: FileSharingViewModelFactory 
 
     private let provideFileForSharingUseCaseFactory: ProvideFileForSharingUseCaseFactory
 
-    private let tempURLProvider: TempURLProvider
+    private let tempURLProviderFactory: TempURLProviderFactory
     
     // MARK: - Initializers
 
     public init(
         provideFileForSharingUseCaseFactory: ProvideFileForSharingUseCaseFactory,
-        tempURLProvider: TempURLProvider
+        tempURLProviderFactory: TempURLProviderFactory
     ) {
         
         self.provideFileForSharingUseCaseFactory = provideFileForSharingUseCaseFactory
-        self.tempURLProvider = tempURLProvider
+        self.tempURLProviderFactory = tempURLProviderFactory
     }
 
     // MARK: - Methods
@@ -32,6 +32,8 @@ public final class FileSharingViewModelImplFactory: FileSharingViewModelFactory 
         fileName: String,
         delegate: FileSharingViewModelDelegate
     ) -> FileSharingViewModel {
+        
+        let tempURLProvider = tempURLProviderFactory.create()
 
         return FileSharingViewModelImpl(
             fileName: fileName,

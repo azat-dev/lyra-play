@@ -248,7 +248,7 @@
 		AA1571F428C681BF0059854C /* LibraryItemInfoPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1571F328C681BF0059854C /* LibraryItemInfoPresentation.swift */; };
 		AA180D4028E6E55500023C7A /* PlayMediaWithInfoUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA180D3F28E6E55500023C7A /* PlayMediaWithInfoUseCaseTests.swift */; };
 		AA180D4228E6F07000023C7A /* PlayMediaWithInfoUseCaseFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA180D4128E6F07000023C7A /* PlayMediaWithInfoUseCaseFactory.swift */; };
-		AA180D4428E6F0AA00023C7A /* PlayMediaWithInfoUseCaseImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA180D4328E6F0AA00023C7A /* PlayMediaWithInfoUseCaseImplFactory.swift */; };
+		AA180D4428E6F0AA00023C7A /* PlayMediaWithInfoUseCaseImplSingleInstanceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA180D4328E6F0AA00023C7A /* PlayMediaWithInfoUseCaseImplSingleInstanceFactory.swift */; };
 		AA180D4628E7253C00023C7A /* CurrentPlayerStateDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA180D4528E7253C00023C7A /* CurrentPlayerStateDetailsViewController.swift */; };
 		AA180D4828E7254500023C7A /* CurrentPlayerStateDetailsViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA180D4728E7254500023C7A /* CurrentPlayerStateDetailsViewController+Styles.swift */; };
 		AA180D4A28E7254C00023C7A /* CurrentPlayerStateDetailsViewController+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA180D4928E7254C00023C7A /* CurrentPlayerStateDetailsViewController+Layout.swift */; };
@@ -876,7 +876,7 @@
 		AA1571F328C681BF0059854C /* LibraryItemInfoPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemInfoPresentation.swift; sourceTree = "<group>"; };
 		AA180D3F28E6E55500023C7A /* PlayMediaWithInfoUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithInfoUseCaseTests.swift; sourceTree = "<group>"; };
 		AA180D4128E6F07000023C7A /* PlayMediaWithInfoUseCaseFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithInfoUseCaseFactory.swift; sourceTree = "<group>"; };
-		AA180D4328E6F0AA00023C7A /* PlayMediaWithInfoUseCaseImplFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithInfoUseCaseImplFactory.swift; sourceTree = "<group>"; };
+		AA180D4328E6F0AA00023C7A /* PlayMediaWithInfoUseCaseImplSingleInstanceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithInfoUseCaseImplSingleInstanceFactory.swift; sourceTree = "<group>"; };
 		AA180D4528E7253C00023C7A /* CurrentPlayerStateDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPlayerStateDetailsViewController.swift; sourceTree = "<group>"; };
 		AA180D4728E7254500023C7A /* CurrentPlayerStateDetailsViewController+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CurrentPlayerStateDetailsViewController+Styles.swift"; sourceTree = "<group>"; };
 		AA180D4928E7254C00023C7A /* CurrentPlayerStateDetailsViewController+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CurrentPlayerStateDetailsViewController+Layout.swift"; sourceTree = "<group>"; };
@@ -2935,7 +2935,7 @@
 				AADB434828E4F26F00C0A9A0 /* PlayMediaWithInfoUseCase.swift */,
 				AA180D4128E6F07000023C7A /* PlayMediaWithInfoUseCaseFactory.swift */,
 				AADB434C28E4F44200C0A9A0 /* PlayMediaWithInfoUseCaseImpl.swift */,
-				AA180D4328E6F0AA00023C7A /* PlayMediaWithInfoUseCaseImplFactory.swift */,
+				AA180D4328E6F0AA00023C7A /* PlayMediaWithInfoUseCaseImplSingleInstanceFactory.swift */,
 			);
 			path = PlayMediaWithInfoUseCase;
 			sourceTree = "<group>";
@@ -3547,7 +3547,7 @@
 				AA3C534628BE61C600CBE3C6 /* LoadSubtitlesUseCase.swift in Sources */,
 				AA0D3F8328762698006717B9 /* SubtitlesRepository.swift in Sources */,
 				AA0F69BC287F4F0D00BD13DB /* SubtitlesPresenterView.swift in Sources */,
-				AA180D4428E6F0AA00023C7A /* PlayMediaWithInfoUseCaseImplFactory.swift in Sources */,
+				AA180D4428E6F0AA00023C7A /* PlayMediaWithInfoUseCaseImplSingleInstanceFactory.swift in Sources */,
 				AA08838428B960D3006315B9 /* TabBarPresentationContainer.swift in Sources */,
 				AABB49F328B02C390088484B /* DictionaryListBrowserViewController+Styles.swift in Sources */,
 				AA3C534A28BE61D400CBE3C6 /* LoadSubtitlesUseCaseImpl.swift in Sources */,
