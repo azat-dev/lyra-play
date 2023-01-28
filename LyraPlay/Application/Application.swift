@@ -11,6 +11,8 @@ import UIKit
 
 public class Application {
     
+    // MARK: - Properties
+    
     private let settings: ApplicationSettings
     
     private lazy var appPresenter: MainFlowPresenter = {
@@ -18,8 +20,6 @@ public class Application {
         let appFlow = makeFlow()
         return makePresenter(flow: appFlow)
     } ()
-
-    // MARK: - Properties
     
     private lazy var coreDataStore: CoreDataStore = {
         
@@ -375,12 +375,14 @@ public class Application {
             currentPlayerStateDetailsViewModelFactory: currentPlayerStateDetailsViewModelFactory
         )
         
-        return MainFlowModelImpl(
+        let mainFlowModel = MainFlowModelImpl(
             mainTabBarViewModelFactory: mainTabBarViewModelFactory,
             libraryFlowModelFactory: libraryFolderFlowModelFactory,
             dictionaryFlowModelFactory: dictionaryFlowModelFactory,
             currentPlayerStateDetailsFlowModelFactory: currentPlayerStateDetailsFlowModelFactory
         )
+        
+        return mainFlowModel
     }
     
     func makePresenter(flow: MainFlowModel) -> MainFlowPresenter {
