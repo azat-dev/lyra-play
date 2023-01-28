@@ -18,9 +18,17 @@ public protocol ActionTimer {
 
 public final class ActionTimerImpl: ActionTimer {
     
+    // MARK: - Properties
+    
     private let queue = DispatchQueue(label: "lyraplay.timer", qos: .userInteractive)
+    
     private var workItem: DispatchWorkItem?
+    
+    // MARK: - Initializers
+    
     public init() {}
+    
+    // MARK: - Methods
     
     public func executeAfter(_ interval: TimeInterval, block: @escaping () async -> Void) {
         
