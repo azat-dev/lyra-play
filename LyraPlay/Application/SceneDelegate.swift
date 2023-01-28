@@ -34,7 +34,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             defaultDictionaryArchiveName: "dictionary.lyraplay"
         )
         
-        application = Application(settings: settings)
+        application = Application(
+           settings: settings,
+           flowModelFactory: ApplicationFlowModelImplFactory(settings: settings),
+           flowPresenterFactory: ApplicationFlowPresenterImplFactory()
+        )
         application.start(container: window)
 
         window.makeKeyAndVisible()
