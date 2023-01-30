@@ -80,7 +80,6 @@ extension SubtitlesPresenterViewModelImpl {
         let toggleWord: ToggleWordCallback = { index, range in
 
             // FIXME: Add implementation
-            fatalError("Add implementations")
         }
         
         return sentences.indices.map { sentenceIndex in

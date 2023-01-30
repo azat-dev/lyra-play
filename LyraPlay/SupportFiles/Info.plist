@@ -96,6 +96,7 @@
 				<array>
 					<string>srt</string>
 					<string>lrc</string>
+					<string>vtt</string>
 				</array>
 				<key>public.mime-type</key>
 				<array/>
