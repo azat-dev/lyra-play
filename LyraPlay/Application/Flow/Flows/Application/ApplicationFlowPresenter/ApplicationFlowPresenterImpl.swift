@@ -15,6 +15,8 @@ public final class ApplicationFlowPresenterImpl: ApplicationFlowPresenter {
     private let flowModel: ApplicationFlowModel
     
     private let mainFlowPresenterFactory: MainFlowPresenterFactory
+    
+    private var mainPresenter: MainFlowPresenter?
 
     // MARK: - Initializers
 
@@ -36,6 +38,7 @@ extension ApplicationFlowPresenterImpl {
         
         let mainPresenter = mainFlowPresenterFactory.create(flowModel: flowModel.mainFlowModel)
         
+        self.mainPresenter = mainPresenter
         mainPresenter.present(at: container)
     }
 

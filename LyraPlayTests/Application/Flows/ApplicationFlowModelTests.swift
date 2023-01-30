@@ -12,7 +12,7 @@ import LyraPlay
 
 class ApplicationFlowModelTests: XCTestCase {
 
-    typealias SUT = (flowModel: ApplicationFlowModel)
+    typealias SUT = ApplicationFlowModel
 
     // MARK: - Methods
 
@@ -22,6 +22,6 @@ class ApplicationFlowModelTests: XCTestCase {
 
         detectMemoryLeak(instance: flowModel)
 
-        return (flowModel: flowModel)
+        return flowModel
     }
 }

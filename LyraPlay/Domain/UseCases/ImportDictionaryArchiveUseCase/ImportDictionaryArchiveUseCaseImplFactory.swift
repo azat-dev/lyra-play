@@ -9,17 +9,29 @@ import Foundation
 
 public final class ImportDictionaryArchiveUseCaseImplFactory: ImportDictionaryArchiveUseCaseFactory {
 
+    // MARK: - Properties
+    
+    let dictionaryRepository: DictionaryRepository
+    let dictionaryArchiveParserFactory: DictionaryArchiveParserFactory
+    
     // MARK: - Initializers
 
-    public init() {}
+    public init(
+        dictionaryRepository: DictionaryRepository,
+        dictionaryArchiveParserFactory: DictionaryArchiveParserFactory
+        
+    ) {
+        
+        self.dictionaryRepository = dictionaryRepository
+        self.dictionaryArchiveParserFactory = dictionaryArchiveParserFactory
+    }
 
     // MARK: - Methods
 
-    public func create(
-        dictionaryRepository: DictionaryRepository,
-        dictionaryArchiveParser: DictionaryArchiveParser
-    ) -> ImportDictionaryArchiveUseCase {
+    public func create() -> ImportDictionaryArchiveUseCase {
 
+        let dictionaryArchiveParser = dictionaryArchiveParserFactory.create()
+        
         return ImportDictionaryArchiveUseCaseImpl(
             dictionaryRepository: dictionaryRepository,
             dictionaryArchiveParser: dictionaryArchiveParser

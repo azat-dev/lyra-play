@@ -8,14 +8,7 @@
 import Foundation
 import Combine
 
-public typealias DeepLink = Void
-
-public protocol MainFlowModelInput {
-
-    func openDeepLink(link: DeepLink)
-}
-
-public protocol MainFlowModelOutput {
+public protocol MainFlowModelOutput: AnyObject {
 
     var mainTabBarViewModel: MainTabBarViewModel { get }
 
@@ -24,6 +17,11 @@ public protocol MainFlowModelOutput {
     var dictionaryFlow: CurrentValueSubject<DictionaryFlowModel?, Never> { get }
     
     var currentPlayerStateDetailsFlow: CurrentValueSubject<CurrentPlayerStateDetailsFlowModel?, Never> { get }
+}
+
+public protocol MainFlowModelInput: AnyObject {
+    
+    func runDictionaryFlow()
 }
 
 public protocol MainFlowModel: MainFlowModelOutput, MainFlowModelInput {

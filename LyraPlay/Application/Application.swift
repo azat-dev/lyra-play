@@ -17,31 +17,41 @@ public class Application {
     
     private let flowModelFactory: ApplicationFlowModelFactory
     private let flowPresenterFactory: ApplicationFlowPresenterFactory
+    private let deepLinksModelFactory: DeepLinksHandlerFlowModelFactory
     
     private var presenter: ApplicationFlowPresenter?
+    private var deepLinksFlowModel: DeepLinksHandlerFlowModel?
     
     // MARK: - Initializers
     
     public init(
         settings: ApplicationSettings,
         flowModelFactory: ApplicationFlowModelFactory,
-        flowPresenterFactory: ApplicationFlowPresenterFactory
+        flowPresenterFactory: ApplicationFlowPresenterFactory,
+        deepLinksModelFactory: DeepLinksHandlerFlowModelFactory
     ) {
         
         self.settings = settings
         self.flowModelFactory = flowModelFactory
         self.flowPresenterFactory = flowPresenterFactory
+        self.deepLinksModelFactory = deepLinksModelFactory
     }
     
     // MARK: - Methods
     
     public func start(container: UIWindow) {
         
-        let model = flowModelFactory.create()
-        let presenter = flowPresenterFactory.create(for: model)
+        let applicationModel = flowModelFactory.create()
+        deepLinksFlowModel = deepLinksModelFactory.create(applicationFlowModel: applicationModel)
         
+        let presenter = flowPresenterFactory.create(for: applicationModel)
         self.presenter = presenter
         
         presenter.present(at: container)
+    }
+    
+    public func openDeepLink(url: URL) {
+
+        deepLinksFlowModel?.handle(url: url)
     }
 }

@@ -87,7 +87,7 @@ extension AudioSessionMode {
             return .longFormAudio
             
         case .promptAudio:
-            return .independent
+            return .default
         }
     }
 }

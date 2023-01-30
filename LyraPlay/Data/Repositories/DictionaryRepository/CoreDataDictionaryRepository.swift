@@ -155,6 +155,8 @@ extension CoreDataDictionaryRepository {
             value = originalText
         }
         
+        print("KEY: \(key)")
+        
         return NSComparisonPredicate(
             leftExpression: .init(forKeyPath: key),
             rightExpression: .init(forConstantValue: value),

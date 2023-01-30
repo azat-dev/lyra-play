@@ -8,6 +8,12 @@
 import Foundation
 import Combine
 
+public enum MainTabBarViewModelTab: Int, Hashable, CaseIterable {
+    
+    case library
+    case dictionary
+}
+
 public protocol MainTabBarViewModelDelegate: AnyObject {
     
     func runDictionaryFlow()
@@ -25,6 +31,8 @@ public protocol MainTabBarViewModelInput: AnyObject {
 }
 
 public protocol MainTabBarViewModelOutput: AnyObject {
+    
+    var activeTabIndex: CurrentValueSubject<Int, Never> { get }
     
     var currentPlayerStateViewModel: CurrentValueSubject<CurrentPlayerStateViewModel?, Never> { get }
 }

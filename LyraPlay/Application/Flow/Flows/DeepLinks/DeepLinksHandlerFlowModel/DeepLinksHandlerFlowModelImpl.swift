@@ -11,13 +11,18 @@ public final class DeepLinksHandlerFlowModelImpl: DeepLinksHandlerFlowModel {
 
     // MARK: - Properties
 
-    private let mainFlowModel: MainFlowModel
-
+    private let applicationFlowModel: ApplicationFlowModel
+    private let router: DeepLinksRouter
+    
     // MARK: - Initializers
 
-    public init(mainFlowModel: MainFlowModel) {
+    public init(
+        applcationFlowModel: ApplicationFlowModel,
+        router: DeepLinksRouter
+    ) {
 
-        self.mainFlowModel = mainFlowModel
+        self.applicationFlowModel = applcationFlowModel
+        self.router = router
     }
 }
 
@@ -27,12 +32,6 @@ extension DeepLinksHandlerFlowModelImpl {
 
     public func handle(url: URL) {
 
-        fatalError()
+        router.route(deepLink: url)
     }
-}
-
-// MARK: - Output Methods
-
-extension DeepLinksHandlerFlowModelImpl {
-
 }

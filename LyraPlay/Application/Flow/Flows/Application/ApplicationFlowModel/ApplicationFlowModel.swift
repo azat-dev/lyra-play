@@ -10,11 +10,14 @@ import Combine
 
 public protocol ApplicationFlowModelInput: AnyObject {
 
+    func runImportDictionaryArchiveFlow(url: URL)
 }
 
 public protocol ApplicationFlowModelOutput: AnyObject {
 
     var mainFlowModel: MainFlowModel { get }
+    
+    var importDictionaryArchiveFlowModel: CurrentValueSubject<ImportDictionaryArchiveFlowModel?, Never> { get }
 }
 
 public protocol ApplicationFlowModel: ApplicationFlowModelOutput, ApplicationFlowModelInput {

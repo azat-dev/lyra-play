@@ -18,5 +18,5 @@ public struct ApplicationSettings {
     let allowedSubtitlesDocumentTypes: [String]
     let allowedMediaDocumentTypes: [String]
     let defaultDictionaryArchiveName: String
-    
+    let dictionaryArchiveExtension: String
 }
