@@ -14,20 +14,24 @@ class ImportDictionaryArchiveFlowModelTests: XCTestCase {
 
     typealias SUT = (
         flowModel: ImportDictionaryArchiveFlowModel,
-        mainTabBarViewModel: MainTabBarViewModelMock,
+        mainFlowModel: MainFlowModelMock,
         importDictionaryArchiveUseCaseFactory: ImportDictionaryArchiveUseCaseFactoryMock
     )
 
     // MARK: - Methods
 
-    func createSUT() -> SUT {
+    func createSUT(url: URL) -> SUT {
 
-        let mainTabBarViewModel = mock(MainTabBarViewModel.self)
+        let mainFlowModel = mock(MainFlowModel.self)
 
         let importDictionaryArchiveUseCaseFactory = mock(ImportDictionaryArchiveUseCaseFactory.self)
+        
+        let delegate = mock(ImportDictionaryArchiveFlowModelDelegate.self)
 
         let flowModel = ImportDictionaryArchiveFlowModelImpl(
-            mainTabBarViewModel: mainTabBarViewModel,
+            url: url,
+            mainFlowModel: mainFlowModel,
+            delegate: delegate,
             importDictionaryArchiveUseCaseFactory: importDictionaryArchiveUseCaseFactory
         )
 
@@ -35,7 +39,7 @@ class ImportDictionaryArchiveFlowModelTests: XCTestCase {
 
         return (
             flowModel: flowModel,
-            mainTabBarViewModel: mainTabBarViewModel,
+            mainFlowModel: mainFlowModel,
             importDictionaryArchiveUseCaseFactory: importDictionaryArchiveUseCaseFactory
         )
     }

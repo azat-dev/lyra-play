@@ -17,8 +17,15 @@ class ApplicationFlowModelTests: XCTestCase {
     // MARK: - Methods
 
     func createSUT() -> SUT {
+        
+        let mainFlowModel = mock(MainFlowModel.self)
+        
+        let importDictionaryArchiveFlowModelFactory = mock(ImportDictionaryArchiveFlowModelFactory.self)
 
-        let flowModel = ApplicationFlowModelImpl()
+        let flowModel = ApplicationFlowModelImpl(
+            mainFlowModel: mainFlowModel,
+            importDictionaryArchiveFlowModelFactory: importDictionaryArchiveFlowModelFactory
+        )
 
         detectMemoryLeak(instance: flowModel)
 
