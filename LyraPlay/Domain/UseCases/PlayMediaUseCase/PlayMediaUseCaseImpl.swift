@@ -159,7 +159,7 @@ extension PlayMediaUseCaseImpl {
 
 // MARK: - Error Mapping
 
-fileprivate extension AudioPlayerError {
+extension AudioPlayerError {
     
     func map() -> PlayMediaUseCaseError {
         
@@ -177,7 +177,7 @@ fileprivate extension AudioPlayerError {
     }
 }
 
-fileprivate extension LoadTrackUseCaseError {
+extension LoadTrackUseCaseError {
     
     func map() -> PlayMediaUseCaseError {
         
@@ -194,7 +194,7 @@ fileprivate extension LoadTrackUseCaseError {
 
 // MARK: - Result Mapping
 
-fileprivate extension Result where Failure == AudioPlayerError  {
+extension Result where Failure == AudioPlayerError  {
     
     func mapResult() -> Result<Success, PlayMediaUseCaseError> {
         
