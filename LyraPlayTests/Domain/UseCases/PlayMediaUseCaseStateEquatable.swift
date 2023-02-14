@@ -15,14 +15,14 @@ class PlayMediaUseCaseStateEquatable: XCTestCase {
     
     typealias SUT = (
         useCase: PlayMediaUseCase,
-        audioPlayer: AudioPlayerMock,
-        loadTrackUseCase: LoadTrackUseCaseMock
+        audioPlayer: AudioPlayerMockDeprecated,
+        loadTrackUseCase: LoadTrackUseCaseMockDeprecated
     )
     
     func createSUT() -> SUT {
         
-        let audioPlayer = AudioPlayerMock()
-        let loadTrackUseCase = LoadTrackUseCaseMock()
+        let audioPlayer = AudioPlayerMockDeprecated()
+        let loadTrackUseCase = LoadTrackUseCaseMockDeprecated()
         
         let useCase = PlayMediaUseCaseImpl(
             audioPlayer: audioPlayer,

@@ -8,7 +8,7 @@
 import Foundation
 import LyraPlay
 
-class LoadTrackUseCaseMock: LoadTrackUseCase {
+class LoadTrackUseCaseMockDeprecated: LoadTrackUseCase {
     
     public var tracks = [UUID: Data]()
     

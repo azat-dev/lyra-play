@@ -10,7 +10,7 @@ import Combine
 
 import LyraPlay
 
-class AudioPlayerMock: AudioPlayer {
+class AudioPlayerMockDeprecated: AudioPlayer {
     
     public var state: CurrentValueSubject<AudioPlayerState, Never> = .init(.initial)
     

@@ -7,9 +7,9 @@
 
 import Foundation
 
-public typealias LoadingPlayMediaUseCaseStateControllerFactories =
-    LoadingPlayMediaUseCaseStateControllerFactory &
-    LoadedPlayMediaUseCaseStateControllerFactory
+public protocol LoadingPlayMediaUseCaseStateControllerFactories:
+    LoadingPlayMediaUseCaseStateControllerFactory,
+    LoadedPlayMediaUseCaseStateControllerFactory {}
 
 public protocol LoadingPlayMediaUseCaseStateControllerFactory {
     
