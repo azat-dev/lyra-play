@@ -20,6 +20,7 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
         initialState: PlayMediaUseCaseStateControllerMock,
         loadingState: PlayMediaUseCaseStateControllerMock,
         playingState: PlayMediaUseCaseStateControllerMock,
+        pausedState: PlayMediaUseCaseStateControllerMock,
         audioPlayer: AudioPlayerMock
     )
     
@@ -30,6 +31,7 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
         let loadingState = mock(PlayMediaUseCaseStateController.self)
         let playingState = mock(PlayMediaUseCaseStateController.self)
         let initialState = mock(PlayMediaUseCaseStateController.self)
+        let pausedState = mock(PlayMediaUseCaseStateController.self)
 
         let factories = mock(LoadedPlayMediaUseCaseStateControllerFactories.self)
         
@@ -41,6 +43,9 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
         
         given(factories.makePlaying(mediaId: any(), audioPlayer: any(), context: any()))
             .willReturn(playingState)
+        
+        given(factories.makePaused(mediaId: any(), audioPlayer: any(), context: any()))
+            .willReturn(pausedState)
         
         let context = mock(PlayMediaUseCaseStateControllerContext.self)
         
@@ -60,6 +65,7 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
             initialState,
             loadingState,
             playingState,
+            pausedState,
             audioPlayer
         )
     }
@@ -128,6 +134,29 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
         ).wasCalled(1)
         
         verify(sut.context.set(newState: sut.initialState))
+            .wasCalled(1)
+    }
+    
+    func test_pause() async throws {
+
+        // Given
+        let loadedMediaId = UUID()
+        
+        let sut = createSUT(mediaId: loadedMediaId)
+
+        // When
+        sut.controller.stop()
+
+        // Then
+        verify(
+            sut.factories.makePaused(
+                mediaId: loadedMediaId,
+                audioPlayer: sut.audioPlayer,
+                context: sut.context
+            )
+        ).wasCalled(1)
+        
+        verify(sut.context.set(newState: sut.pausedState))
             .wasCalled(1)
     }
 }

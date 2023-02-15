@@ -476,6 +476,7 @@
 		AA9EDB88299D033800AAF9FB /* FailedLoadPlayMediaUseCaseStateControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDB87299D033800AAF9FB /* FailedLoadPlayMediaUseCaseStateControllerFactory.swift */; };
 		AA9EDB8A299D1A7300AAF9FB /* LoadedPlayMediaUseCaseStateControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDB89299D1A7300AAF9FB /* LoadedPlayMediaUseCaseStateControllerTests.swift */; };
 		AA9EDB8D299D1D4600AAF9FB /* PlayingPlayMediaUseCaseStateControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDB8C299D1D4600AAF9FB /* PlayingPlayMediaUseCaseStateControllerFactory.swift */; };
+		AA9EDB91299D225D00AAF9FB /* PausedPlayMediaUseCaseStateControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDB90299D225D00AAF9FB /* PausedPlayMediaUseCaseStateControllerFactory.swift */; };
 		AAA87987289E643100E04CA9 /* TranslationItemPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA87986289E643100E04CA9 /* TranslationItemPosition.swift */; };
 		AAA87989289E947800E04CA9 /* Range+TextRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA87988289E947800E04CA9 /* Range+TextRange.swift */; };
 		AAA8798B289EB45500E04CA9 /* AdvancedPlayerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA8798A289EB45500E04CA9 /* AdvancedPlayerSession.swift */; };
@@ -1158,6 +1159,7 @@
 		AA9EDB87299D033800AAF9FB /* FailedLoadPlayMediaUseCaseStateControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailedLoadPlayMediaUseCaseStateControllerFactory.swift; sourceTree = "<group>"; };
 		AA9EDB89299D1A7300AAF9FB /* LoadedPlayMediaUseCaseStateControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadedPlayMediaUseCaseStateControllerTests.swift; sourceTree = "<group>"; };
 		AA9EDB8C299D1D4600AAF9FB /* PlayingPlayMediaUseCaseStateControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayingPlayMediaUseCaseStateControllerFactory.swift; sourceTree = "<group>"; };
+		AA9EDB90299D225D00AAF9FB /* PausedPlayMediaUseCaseStateControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PausedPlayMediaUseCaseStateControllerFactory.swift; sourceTree = "<group>"; };
 		AAA87986289E643100E04CA9 /* TranslationItemPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranslationItemPosition.swift; sourceTree = "<group>"; };
 		AAA87988289E947800E04CA9 /* Range+TextRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Range+TextRange.swift"; sourceTree = "<group>"; };
 		AAA8798A289EB45500E04CA9 /* AdvancedPlayerSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedPlayerSession.swift; sourceTree = "<group>"; };
@@ -3055,6 +3057,14 @@
 			path = Playing;
 			sourceTree = "<group>";
 		};
+		AA9EDB8F299D224500AAF9FB /* Paused */ = {
+			isa = PBXGroup;
+			children = (
+				AA9EDB90299D225D00AAF9FB /* PausedPlayMediaUseCaseStateControllerFactory.swift */,
+			);
+			path = Paused;
+			sourceTree = "<group>";
+		};
 		AABB49EB28AFFB180088484B /* DictionaryListBrowser */ = {
 			isa = PBXGroup;
 			children = (
@@ -3199,6 +3209,7 @@
 		AAEE5AC52994C70000E85A39 /* States */ = {
 			isa = PBXGroup;
 			children = (
+				AA9EDB8F299D224500AAF9FB /* Paused */,
 				AA9EDB8B299D1D2800AAF9FB /* Playing */,
 				AA9EDB86299D031600AAF9FB /* FailedLoad */,
 				AA8B0326299B64A10019F7A8 /* Loading */,
@@ -4357,6 +4368,7 @@
 				3C3127DF1F7471BD43816861 /* DictionaryArchiveParser.swift in Sources */,
 				EA43E08C0335D7665B84B090 /* DictionaryArchiveParserFactory.swift in Sources */,
 				07F2C30DDD5FA631531095DB /* DictionaryArchiveParserImpl.swift in Sources */,
+				AA9EDB91299D225D00AAF9FB /* PausedPlayMediaUseCaseStateControllerFactory.swift in Sources */,
 				1262D63F425BDEEDDE1DD532 /* DictionaryArchiveParserImplFactory.swift in Sources */,
 				D880525CA1B9E09481A85CAA /* ImportDictionaryArchiveUseCase.swift in Sources */,
 				D496A4110B1CA5C7E6ABD68C /* ImportDictionaryArchiveUseCaseFactory.swift in Sources */,
