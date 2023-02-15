@@ -475,6 +475,7 @@
 		AA9BEB0B28661DCE0028DF8E /* CoreDataMediaLibraryRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB0A28661DCE0028DF8E /* CoreDataMediaLibraryRepositoryTests.swift */; };
 		AA9EDB88299D033800AAF9FB /* FailedLoadPlayMediaUseCaseStateControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDB87299D033800AAF9FB /* FailedLoadPlayMediaUseCaseStateControllerFactory.swift */; };
 		AA9EDB8A299D1A7300AAF9FB /* LoadedPlayMediaUseCaseStateControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDB89299D1A7300AAF9FB /* LoadedPlayMediaUseCaseStateControllerTests.swift */; };
+		AA9EDB8D299D1D4600AAF9FB /* PlayingPlayMediaUseCaseStateControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDB8C299D1D4600AAF9FB /* PlayingPlayMediaUseCaseStateControllerFactory.swift */; };
 		AAA87987289E643100E04CA9 /* TranslationItemPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA87986289E643100E04CA9 /* TranslationItemPosition.swift */; };
 		AAA87989289E947800E04CA9 /* Range+TextRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA87988289E947800E04CA9 /* Range+TextRange.swift */; };
 		AAA8798B289EB45500E04CA9 /* AdvancedPlayerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA8798A289EB45500E04CA9 /* AdvancedPlayerSession.swift */; };
@@ -1156,6 +1157,7 @@
 		AA9BEB0A28661DCE0028DF8E /* CoreDataMediaLibraryRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMediaLibraryRepositoryTests.swift; sourceTree = "<group>"; };
 		AA9EDB87299D033800AAF9FB /* FailedLoadPlayMediaUseCaseStateControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailedLoadPlayMediaUseCaseStateControllerFactory.swift; sourceTree = "<group>"; };
 		AA9EDB89299D1A7300AAF9FB /* LoadedPlayMediaUseCaseStateControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadedPlayMediaUseCaseStateControllerTests.swift; sourceTree = "<group>"; };
+		AA9EDB8C299D1D4600AAF9FB /* PlayingPlayMediaUseCaseStateControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayingPlayMediaUseCaseStateControllerFactory.swift; sourceTree = "<group>"; };
 		AAA87986289E643100E04CA9 /* TranslationItemPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranslationItemPosition.swift; sourceTree = "<group>"; };
 		AAA87988289E947800E04CA9 /* Range+TextRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Range+TextRange.swift"; sourceTree = "<group>"; };
 		AAA8798A289EB45500E04CA9 /* AdvancedPlayerSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedPlayerSession.swift; sourceTree = "<group>"; };
@@ -3045,6 +3047,14 @@
 			path = FailedLoad;
 			sourceTree = "<group>";
 		};
+		AA9EDB8B299D1D2800AAF9FB /* Playing */ = {
+			isa = PBXGroup;
+			children = (
+				AA9EDB8C299D1D4600AAF9FB /* PlayingPlayMediaUseCaseStateControllerFactory.swift */,
+			);
+			path = Playing;
+			sourceTree = "<group>";
+		};
 		AABB49EB28AFFB180088484B /* DictionaryListBrowser */ = {
 			isa = PBXGroup;
 			children = (
@@ -3189,6 +3199,7 @@
 		AAEE5AC52994C70000E85A39 /* States */ = {
 			isa = PBXGroup;
 			children = (
+				AA9EDB8B299D1D2800AAF9FB /* Playing */,
 				AA9EDB86299D031600AAF9FB /* FailedLoad */,
 				AA8B0326299B64A10019F7A8 /* Loading */,
 				AA8B0321299B5DCE0019F7A8 /* Loaded */,
@@ -3917,6 +3928,7 @@
 				AA3C534C28BE61DB00CBE3C6 /* LoadSubtitlesUseCaseImplFactory.swift in Sources */,
 				AA0F69C3287F5E8600BD13DB /* RowCell+Styles.swift in Sources */,
 				AA08838228B960D3006315B9 /* StackPresentationContainer.swift in Sources */,
+				AA9EDB8D299D1D4600AAF9FB /* PlayingPlayMediaUseCaseStateControllerFactory.swift in Sources */,
 				AAF2CFE42876CA370003FCF7 /* ManagedSubtitles+Mapping.swift in Sources */,
 				AA5DD6FC28B962BE00929906 /* Presentable.swift in Sources */,
 				AA598D1F2868D435001F3DE1 /* ManagedAudioFile+Mapping.swift in Sources */,

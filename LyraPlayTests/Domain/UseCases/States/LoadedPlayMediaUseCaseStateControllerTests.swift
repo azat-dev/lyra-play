@@ -18,6 +18,7 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
         context: PlayMediaUseCaseStateControllerContextMock,
         factories: LoadedPlayMediaUseCaseStateControllerFactoriesMock,
         loadingState: PlayMediaUseCaseStateControllerMock,
+        playingState: PlayMediaUseCaseStateControllerMock,
         audioPlayer: AudioPlayerMock
     )
     
@@ -26,12 +27,14 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
         let audioPlayer = mock(AudioPlayer.self)
         
         let loadingState = mock(PlayMediaUseCaseStateController.self)
-        let loadedState = mock(PlayMediaUseCaseStateController.self)
-        let failedLoadState = mock(PlayMediaUseCaseStateController.self)
+        let playingState = mock(PlayMediaUseCaseStateController.self)
 
         let factories = mock(LoadedPlayMediaUseCaseStateControllerFactories.self)
         
         given(factories.makeLoading(mediaId: any(), context: any()))
+            .willReturn(loadingState)
+        
+        given(factories.makePlaying(mediaId: any(), audioPlayer: any(), context: any()))
             .willReturn(loadingState)
         
         let context = mock(PlayMediaUseCaseStateControllerContext.self)
@@ -50,6 +53,7 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
             context,
             factories,
             loadingState,
+            playingState,
             audioPlayer
         )
     }
@@ -76,6 +80,29 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
         ).wasCalled(1)
         
         verify(sut.context.set(newState: sut.loadingState))
+            .wasCalled(1)
+    }
+    
+    func test_play() async throws {
+
+        // Given
+        let loadedMediaId = UUID()
+        
+        let sut = createSUT(mediaId: loadedMediaId)
+
+        // When
+        sut.controller.play()
+
+        // Then
+        verify(
+            sut.factories.makePlaying(
+                mediaId: loadedMediaId,
+                audioPlayer: sut.audioPlayer,
+                context: sut.context
+            )
+        ).wasCalled(1)
+        
+        verify(sut.context.set(newState: sut.playingState))
             .wasCalled(1)
     }
 }
