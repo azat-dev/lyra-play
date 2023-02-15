@@ -62,7 +62,11 @@ public class LoadedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
     
     public func pause() {}
     
-    public func stop() {}
+    public func stop() {
+        
+        let newState = statesFactories.makeInitial(context: context)
+        context.set(newState: newState)
+    }
     
     public func togglePlay() {
         play()

@@ -120,7 +120,7 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
         let sut = createSUT(mediaId: loadedMediaId)
 
         // When
-        sut.controller.play()
+        sut.controller.stop()
 
         // Then
         verify(
