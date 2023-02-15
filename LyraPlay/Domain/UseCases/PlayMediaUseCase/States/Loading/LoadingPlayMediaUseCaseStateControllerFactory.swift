@@ -9,7 +9,9 @@ import Foundation
 
 public protocol LoadingPlayMediaUseCaseStateControllerFactories:
     LoadingPlayMediaUseCaseStateControllerFactory,
-    LoadedPlayMediaUseCaseStateControllerFactory {}
+    LoadedPlayMediaUseCaseStateControllerFactory,
+    FailedLoadPlayMediaUseCaseStateControllerFactory
+    {}
 
 public protocol LoadingPlayMediaUseCaseStateControllerFactory {
     

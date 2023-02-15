@@ -473,6 +473,7 @@
 		AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEAFD2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift */; };
 		AA9BEB022865D5BB0028DF8E /* MediaLibraryAudioFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB012865D5BB0028DF8E /* MediaLibraryAudioFile.swift */; };
 		AA9BEB0B28661DCE0028DF8E /* CoreDataMediaLibraryRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB0A28661DCE0028DF8E /* CoreDataMediaLibraryRepositoryTests.swift */; };
+		AA9EDB88299D033800AAF9FB /* FailedLoadPlayMediaUseCaseStateControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDB87299D033800AAF9FB /* FailedLoadPlayMediaUseCaseStateControllerFactory.swift */; };
 		AAA87987289E643100E04CA9 /* TranslationItemPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA87986289E643100E04CA9 /* TranslationItemPosition.swift */; };
 		AAA87989289E947800E04CA9 /* Range+TextRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA87988289E947800E04CA9 /* Range+TextRange.swift */; };
 		AAA8798B289EB45500E04CA9 /* AdvancedPlayerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA8798A289EB45500E04CA9 /* AdvancedPlayerSession.swift */; };
@@ -1152,6 +1153,7 @@
 		AA9BEAFD2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportAudioFileUseCaseTests.swift; sourceTree = "<group>"; };
 		AA9BEB012865D5BB0028DF8E /* MediaLibraryAudioFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaLibraryAudioFile.swift; sourceTree = "<group>"; };
 		AA9BEB0A28661DCE0028DF8E /* CoreDataMediaLibraryRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMediaLibraryRepositoryTests.swift; sourceTree = "<group>"; };
+		AA9EDB87299D033800AAF9FB /* FailedLoadPlayMediaUseCaseStateControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailedLoadPlayMediaUseCaseStateControllerFactory.swift; sourceTree = "<group>"; };
 		AAA87986289E643100E04CA9 /* TranslationItemPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranslationItemPosition.swift; sourceTree = "<group>"; };
 		AAA87988289E947800E04CA9 /* Range+TextRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Range+TextRange.swift"; sourceTree = "<group>"; };
 		AAA8798A289EB45500E04CA9 /* AdvancedPlayerSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedPlayerSession.swift; sourceTree = "<group>"; };
@@ -3032,6 +3034,14 @@
 			path = Repositories;
 			sourceTree = "<group>";
 		};
+		AA9EDB86299D031600AAF9FB /* FailedLoad */ = {
+			isa = PBXGroup;
+			children = (
+				AA9EDB87299D033800AAF9FB /* FailedLoadPlayMediaUseCaseStateControllerFactory.swift */,
+			);
+			path = FailedLoad;
+			sourceTree = "<group>";
+		};
 		AABB49EB28AFFB180088484B /* DictionaryListBrowser */ = {
 			isa = PBXGroup;
 			children = (
@@ -3176,6 +3186,7 @@
 		AAEE5AC52994C70000E85A39 /* States */ = {
 			isa = PBXGroup;
 			children = (
+				AA9EDB86299D031600AAF9FB /* FailedLoad */,
 				AA8B0326299B64A10019F7A8 /* Loading */,
 				AA8B0321299B5DCE0019F7A8 /* Loaded */,
 				AA8B031A299B585E0019F7A8 /* Initial */,
@@ -4335,6 +4346,7 @@
 				D880525CA1B9E09481A85CAA /* ImportDictionaryArchiveUseCase.swift in Sources */,
 				D496A4110B1CA5C7E6ABD68C /* ImportDictionaryArchiveUseCaseFactory.swift in Sources */,
 				253421BCC403CCB8C79F73AB /* ImportDictionaryArchiveUseCaseImpl.swift in Sources */,
+				AA9EDB88299D033800AAF9FB /* FailedLoadPlayMediaUseCaseStateControllerFactory.swift in Sources */,
 				7AA2097AAA450120BEF733AD /* ImportDictionaryArchiveUseCaseImplFactory.swift in Sources */,
 				86F4F056A72E239BF78E4939 /* DeepLinksHandlerFlowModelFactory.swift in Sources */,
 				8D12F610C5A487591BB5AB75 /* DeepLinksHandlerFlowModelImpl.swift in Sources */,

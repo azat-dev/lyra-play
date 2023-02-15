@@ -18,29 +18,48 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
         loadTrackUseCase: LoadTrackUseCaseMock,
         context: PlayMediaUseCaseStateControllerContextMock,
         factories: LoadingPlayMediaUseCaseStateControllerFactoriesMock,
-        loadingState: PlayMediaUseCaseStateController,
+        loadingState: PlayMediaUseCaseStateControllerMock,
+        loadedState: PlayMediaUseCaseStateControllerMock,
+        failedLoadState: PlayMediaUseCaseStateControllerMock,
         audioPlayer: AudioPlayerMock
     )
     
-    func createSUT(mediaId: UUID) -> SUT {
+    func createSUT(
+        mediaId: UUID,
+        loadTrackUseCase: LoadTrackUseCaseMock,
+        audioPlayer: AudioPlayerMock
+    ) -> SUT {
 
-        let audioPlayer = mock(AudioPlayer.self)
+        let loadTrackUseCaseFactory = mock(LoadTrackUseCaseFactory.self)
         
-        let loadTrackUseCase = mock(LoadTrackUseCase.self)
+        given(loadTrackUseCaseFactory.create()).willReturn(loadTrackUseCase)
         
         let loadingState = mock(PlayMediaUseCaseStateController.self)
+        let loadedState = mock(PlayMediaUseCaseStateController.self)
+        let failedLoadState = mock(PlayMediaUseCaseStateController.self)
 
         let factories = mock(LoadingPlayMediaUseCaseStateControllerFactories.self)
         
+        let audioPlayerFactory = mock(AudioPlayerFactory.self)
+        
+        given(audioPlayerFactory.create()).willReturn(audioPlayer)
+        
         given(factories.makeLoading(mediaId: any(), context: any()))
             .willReturn(loadingState)
+        
+        given(factories.makeLoaded(mediaId: any(), audioPlayer: any(), context: any()))
+            .willReturn(loadedState)
+        
+        given(factories.makeFailedLoad(mediaId: any(), context: any()))
+            .willReturn(failedLoadState)
         
         let context = mock(PlayMediaUseCaseStateControllerContext.self)
         
         let controller = LoadingPlayMediaUseCaseStateController(
             mediaId: mediaId,
             context: context,
-            loadTrackUseCase: loadTrackUseCase,
+            loadTrackUseCaseFactory: loadTrackUseCaseFactory,
+            audioPlayerFactory: audioPlayerFactory,
             statesFactories: factories
         )
         
@@ -52,35 +71,50 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
             context,
             factories,
             loadingState,
+            loadedState,
+            failedLoadState,
             audioPlayer
         )
     }
     
     // MARK: - Test Methods
     
-    func test_loading__success() async throws {
+    func test_prepare() async throws {
 
         // Given
-        let mediaId = UUID()
-        let sut = createSUT(mediaId: mediaId)
+        let mediaId1 = UUID()
+        let mediaId2 = UUID()
         
-        given(await sut.loadTrackUseCase.load(trackId: mediaId))
-            .willReturn(.failure(.internalError(nil)))
+        let loadTrackUseCase = mock(LoadTrackUseCase.self)
         
+        given(await loadTrackUseCase.load(trackId: mediaId1))
+            .willReturn(.success("success".data(using: .utf8)!))
+        
+        let audioPlayer = mock(AudioPlayer.self)
+        
+        given(audioPlayer.prepare(fileId: any(), data: any()))
+            .willReturn(.success(()))
+        
+        let sut = createSUT(
+            mediaId: mediaId1,
+            loadTrackUseCase: loadTrackUseCase,
+            audioPlayer: audioPlayer
+        )
+
         // When
-        // Creation
-        
+        sut.controller.prepare(mediaId: mediaId2)
+
         // Then
-        verify(await sut.loadTrackUseCase.load(trackId: mediaId))
-            .wasCalled(1)
         
         verify(
-            sut.factories.makeLoaded(
-                mediaId: mediaId,
-                audioPlayer: sut.audioPlayer,
+            sut.factories.makeLoading(
+                mediaId: mediaId2,
                 context: sut.context
             )
         ).wasCalled(1)
+        
+        verify(sut.context.set(newState: sut.loadingState))
+            .wasCalled(1)
     }
 }
 
