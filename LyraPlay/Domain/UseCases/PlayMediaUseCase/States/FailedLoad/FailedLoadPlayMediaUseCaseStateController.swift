@@ -1,5 +1,5 @@
 //
-//  PlayingPlayMediaUseCaseStateController.swift
+//  FailedLoadPlayMediaUseCaseStateController.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 15.02.23.
@@ -7,31 +7,27 @@
 
 import Foundation
 
-public class PausedPlayMediaUseCaseStateController: PlayMediaUseCaseStateController {
+public class FailedLoadPlayMediaUseCaseStateController: PlayMediaUseCaseStateController {
     
     // MARK: - Properties
     
     public var state: PlayMediaUseCaseState
-
+    
     private let mediaId: UUID
-    private let audioPlayer: AudioPlayer
     private unowned let context: PlayMediaUseCaseStateControllerContext
-    private let statesFactories: PausedPlayMediaUseCaseStateControllerFactories
+    private let statesFactories: FailedLoadPlayMediaUseCaseStateControllerFactories
     
     // MARK: - Initializers
-    
+
     public init(
         mediaId: UUID,
-        audioPlayer: AudioPlayer,
         context: PlayMediaUseCaseStateControllerContext,
-        statesFactories: PausedPlayMediaUseCaseStateControllerFactories
+        statesFactories: FailedLoadPlayMediaUseCaseStateControllerFactories
     ) {
         
-        let _ = audioPlayer.pause()
-        self.state = .paused(mediaId: mediaId, time: 0)
-
+        self.state = .failedLoad(mediaId: mediaId)
+        
         self.mediaId = mediaId
-        self.audioPlayer = audioPlayer
         self.context = context
         self.statesFactories = statesFactories
     }
@@ -47,15 +43,7 @@ public class PausedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
         context.set(newState: newState)
     }
     
-    public func play() {
-        
-        let newState = statesFactories.makePlaying(
-            mediaId: mediaId,
-            audioPlayer: audioPlayer,
-            context: context
-        )
-        context.set(newState: newState)
-    }
+    public func play() {}
     
     public func play(atTime: TimeInterval) {}
     
@@ -63,15 +51,11 @@ public class PausedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
     
     public func stop() {
         
-        let _ = audioPlayer.stop()
-
         let newState = statesFactories.makeInitial(
             context: context
         )
         context.set(newState: newState)
     }
     
-    public func togglePlay() {
-        play()
-    }
+    public func togglePlay() {}
 }

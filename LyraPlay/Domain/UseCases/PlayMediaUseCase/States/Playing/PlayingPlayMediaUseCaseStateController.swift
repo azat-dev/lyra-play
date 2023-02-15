@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 public class PlayingPlayMediaUseCaseStateController: PlayMediaUseCaseStateController {
     
@@ -17,6 +18,8 @@ public class PlayingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
     private let audioPlayer: AudioPlayer
     private unowned let context: PlayMediaUseCaseStateControllerContext
     private let statesFactories: PlayingPlayMediaUseCaseStateControllerFactories
+    
+    private var observers = Set<AnyCancellable>()
     
     // MARK: - Initializers
     
@@ -33,6 +36,28 @@ public class PlayingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
         self.audioPlayer = audioPlayer
         self.context = context
         self.statesFactories = statesFactories
+        
+        audioPlayer.state.sink { [weak self] state in
+        
+            guard let self = self else {
+                return
+            }
+            
+            guard case .finished = state else {
+                return
+            }
+            
+            let newState = self.statesFactories.makeFinished(
+                mediaId: self.mediaId,
+                audioPlayer: self.audioPlayer,
+                context: self.context
+            )
+            
+            self.context.set(newState: newState)
+            
+        }.store(in: &observers)
+        
+        let _ = audioPlayer.play()
     }
     
     // MARK: - Methods
