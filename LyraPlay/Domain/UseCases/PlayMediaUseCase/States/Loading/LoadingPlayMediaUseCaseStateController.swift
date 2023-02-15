@@ -9,7 +9,6 @@ import Foundation
 
 public class LoadingPlayMediaUseCaseStateController: PlayMediaUseCaseStateController {
     
-    
     // MARK: - Properties
     
     public var state: PlayMediaUseCaseState

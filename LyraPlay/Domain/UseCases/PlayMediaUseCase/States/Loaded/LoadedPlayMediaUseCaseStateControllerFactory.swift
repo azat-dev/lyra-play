@@ -7,6 +7,9 @@
 
 import Foundation
 
+public protocol LoadedPlayMediaUseCaseStateControllerFactories:
+    LoadingPlayMediaUseCaseStateControllerFactory {}
+
 public protocol LoadedPlayMediaUseCaseStateControllerFactory {
     
     func makeLoaded(
