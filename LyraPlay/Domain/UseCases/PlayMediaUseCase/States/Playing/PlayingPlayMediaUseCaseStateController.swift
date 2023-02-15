@@ -1,34 +1,34 @@
 //
-//  LoadedPlayMediaUseCaseStateController.swift
+//  PlayingPlayMediaUseCaseStateController.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 14.02.23.
+//  Created by Azat Kaiumov on 15.02.23.
 //
 
 import Foundation
 
-public class LoadedPlayMediaUseCaseStateController: PlayMediaUseCaseStateController {
+public class PlayingPlayMediaUseCaseStateController: PlayMediaUseCaseStateController {
     
     // MARK: - Properties
     
     public var state: PlayMediaUseCaseState
-    
+
     private let mediaId: UUID
-    private unowned let context: PlayMediaUseCaseStateControllerContext
     private let audioPlayer: AudioPlayer
-    private let statesFactories: LoadedPlayMediaUseCaseStateControllerFactories
+    private unowned let context: PlayMediaUseCaseStateControllerContext
+    private let statesFactories: PlayingPlayMediaUseCaseStateControllerFactories
     
     // MARK: - Initializers
-
+    
     public init(
         mediaId: UUID,
         audioPlayer: AudioPlayer,
         context: PlayMediaUseCaseStateControllerContext,
-        statesFactories: LoadedPlayMediaUseCaseStateControllerFactories
+        statesFactories: PlayingPlayMediaUseCaseStateControllerFactories
     ) {
         
-        self.state = .loaded(mediaId: mediaId)
-        
+        self.state = .playing(mediaId: mediaId)
+
         self.mediaId = mediaId
         self.audioPlayer = audioPlayer
         self.context = context
@@ -43,20 +43,10 @@ public class LoadedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
             mediaId: mediaId,
             context: context
         )
-        
         context.set(newState: newState)
     }
     
-    public func play() {
-        
-        let newState = statesFactories.makePlaying(
-            mediaId: mediaId,
-            audioPlayer: audioPlayer,
-            context: context
-        )
-        
-        context.set(newState: newState)
-    }
+    public func play() {}
     
     public func play(atTime: TimeInterval) {}
     
@@ -67,19 +57,20 @@ public class LoadedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
             audioPlayer: audioPlayer,
             context: context
         )
-        
         context.set(newState: newState)
     }
     
     public func stop() {
         
         let _ = audioPlayer.stop()
-        
-        let newState = statesFactories.makeInitial(context: context)
+
+        let newState = statesFactories.makeInitial(
+            context: context
+        )
         context.set(newState: newState)
     }
     
     public func togglePlay() {
-        play()
+        pause()
     }
 }

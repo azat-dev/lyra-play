@@ -105,7 +105,6 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
         sut.controller.prepare(mediaId: mediaId2)
 
         // Then
-        
         verify(
             sut.factories.makeLoading(
                 mediaId: mediaId2,

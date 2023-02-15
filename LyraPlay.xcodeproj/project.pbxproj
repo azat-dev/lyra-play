@@ -477,6 +477,8 @@
 		AA9EDB8A299D1A7300AAF9FB /* LoadedPlayMediaUseCaseStateControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDB89299D1A7300AAF9FB /* LoadedPlayMediaUseCaseStateControllerTests.swift */; };
 		AA9EDB8D299D1D4600AAF9FB /* PlayingPlayMediaUseCaseStateControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDB8C299D1D4600AAF9FB /* PlayingPlayMediaUseCaseStateControllerFactory.swift */; };
 		AA9EDB91299D225D00AAF9FB /* PausedPlayMediaUseCaseStateControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDB90299D225D00AAF9FB /* PausedPlayMediaUseCaseStateControllerFactory.swift */; };
+		AA9EDB93299D24AB00AAF9FB /* PlayingPlayMediaUseCaseStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDB92299D24AB00AAF9FB /* PlayingPlayMediaUseCaseStateController.swift */; };
+		AA9EDB95299D260D00AAF9FB /* PlayingPlayMediaUseCaseStateControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDB94299D260D00AAF9FB /* PlayingPlayMediaUseCaseStateControllerTests.swift */; };
 		AAA87987289E643100E04CA9 /* TranslationItemPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA87986289E643100E04CA9 /* TranslationItemPosition.swift */; };
 		AAA87989289E947800E04CA9 /* Range+TextRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA87988289E947800E04CA9 /* Range+TextRange.swift */; };
 		AAA8798B289EB45500E04CA9 /* AdvancedPlayerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA8798A289EB45500E04CA9 /* AdvancedPlayerSession.swift */; };
@@ -1160,6 +1162,8 @@
 		AA9EDB89299D1A7300AAF9FB /* LoadedPlayMediaUseCaseStateControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadedPlayMediaUseCaseStateControllerTests.swift; sourceTree = "<group>"; };
 		AA9EDB8C299D1D4600AAF9FB /* PlayingPlayMediaUseCaseStateControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayingPlayMediaUseCaseStateControllerFactory.swift; sourceTree = "<group>"; };
 		AA9EDB90299D225D00AAF9FB /* PausedPlayMediaUseCaseStateControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PausedPlayMediaUseCaseStateControllerFactory.swift; sourceTree = "<group>"; };
+		AA9EDB92299D24AB00AAF9FB /* PlayingPlayMediaUseCaseStateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayingPlayMediaUseCaseStateController.swift; sourceTree = "<group>"; };
+		AA9EDB94299D260D00AAF9FB /* PlayingPlayMediaUseCaseStateControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayingPlayMediaUseCaseStateControllerTests.swift; sourceTree = "<group>"; };
 		AAA87986289E643100E04CA9 /* TranslationItemPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranslationItemPosition.swift; sourceTree = "<group>"; };
 		AAA87988289E947800E04CA9 /* Range+TextRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Range+TextRange.swift"; sourceTree = "<group>"; };
 		AAA8798A289EB45500E04CA9 /* AdvancedPlayerSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedPlayerSession.swift; sourceTree = "<group>"; };
@@ -2782,6 +2786,7 @@
 				AA8B031F299B59500019F7A8 /* InitialPlayMediaUseCaseStateControllerTests.swift */,
 				AA8B032C299B6CAB0019F7A8 /* LoadingPlayMediaUseCaseStateControllerTests.swift */,
 				AA9EDB89299D1A7300AAF9FB /* LoadedPlayMediaUseCaseStateControllerTests.swift */,
+				AA9EDB94299D260D00AAF9FB /* PlayingPlayMediaUseCaseStateControllerTests.swift */,
 			);
 			path = States;
 			sourceTree = "<group>";
@@ -3052,6 +3057,7 @@
 		AA9EDB8B299D1D2800AAF9FB /* Playing */ = {
 			isa = PBXGroup;
 			children = (
+				AA9EDB92299D24AB00AAF9FB /* PlayingPlayMediaUseCaseStateController.swift */,
 				AA9EDB8C299D1D4600AAF9FB /* PlayingPlayMediaUseCaseStateControllerFactory.swift */,
 			);
 			path = Playing;
@@ -3942,6 +3948,7 @@
 				AA9EDB8D299D1D4600AAF9FB /* PlayingPlayMediaUseCaseStateControllerFactory.swift in Sources */,
 				AAF2CFE42876CA370003FCF7 /* ManagedSubtitles+Mapping.swift in Sources */,
 				AA5DD6FC28B962BE00929906 /* Presentable.swift in Sources */,
+				AA9EDB93299D24AB00AAF9FB /* PlayingPlayMediaUseCaseStateController.swift in Sources */,
 				AA598D1F2868D435001F3DE1 /* ManagedAudioFile+Mapping.swift in Sources */,
 				AA369E9F2884291500FDAD27 /* UITextView+Utils.swift in Sources */,
 				AA5DD71528B974A900929906 /* TagsParserFactoryImpl.swift in Sources */,
@@ -4455,6 +4462,7 @@
 				AA2DD32628A2F5B20053A17A /* PlayMediaWithTranslationsUseCaseTests.swift in Sources */,
 				AA5B6D0128C8CBBF0025E00F /* LibraryFolderFlowModelTests.swift in Sources */,
 				AA0930C828739B8500E62DB3 /* AudioPlayerMockDeprecated.swift in Sources */,
+				AA9EDB95299D260D00AAF9FB /* PlayingPlayMediaUseCaseStateControllerTests.swift in Sources */,
 				AA3B59C82886EA0700F68AF8 /* CoreDataDictionaryRepositoryTests.swift in Sources */,
 				AA64C81A286F170C0089F165 /* PlayerViewModelTests.swift in Sources */,
 				AA9BEB0B28661DCE0028DF8E /* CoreDataMediaLibraryRepositoryTests.swift in Sources */,

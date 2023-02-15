@@ -1,5 +1,5 @@
 //
-//  LoadedPlayMediaUseCaseStateControllerTests.swift
+//  PlayingPlayMediaUseCaseStateControllerTests.swift
 //  LyraPlayTests
 //
 //  Created by Azat Kaiumov on 15.02.23.
@@ -11,15 +11,14 @@ import Mockingbird
 
 import LyraPlay
 
-class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
+class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
     
     typealias SUT = (
         controller: PlayMediaUseCaseStateController,
         context: PlayMediaUseCaseStateControllerContextMock,
-        factories: LoadedPlayMediaUseCaseStateControllerFactoriesMock,
+        factories: PlayingPlayMediaUseCaseStateControllerFactoriesMock,
         initialState: PlayMediaUseCaseStateControllerMock,
         loadingState: PlayMediaUseCaseStateControllerMock,
-        playingState: PlayMediaUseCaseStateControllerMock,
         pausedState: PlayMediaUseCaseStateControllerMock,
         audioPlayer: AudioPlayerMock
     )
@@ -29,11 +28,10 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
         let audioPlayer = mock(AudioPlayer.self)
         
         let loadingState = mock(PlayMediaUseCaseStateController.self)
-        let playingState = mock(PlayMediaUseCaseStateController.self)
         let initialState = mock(PlayMediaUseCaseStateController.self)
         let pausedState = mock(PlayMediaUseCaseStateController.self)
 
-        let factories = mock(LoadedPlayMediaUseCaseStateControllerFactories.self)
+        let factories = mock(PlayingPlayMediaUseCaseStateControllerFactories.self)
         
         given(factories.makeInitial(context: any()))
             .willReturn(initialState)
@@ -41,15 +39,12 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
         given(factories.makeLoading(mediaId: any(), context: any()))
             .willReturn(loadingState)
         
-        given(factories.makePlaying(mediaId: any(), audioPlayer: any(), context: any()))
-            .willReturn(playingState)
-        
         given(factories.makePaused(mediaId: any(), audioPlayer: any(), context: any()))
             .willReturn(pausedState)
         
         let context = mock(PlayMediaUseCaseStateControllerContext.self)
         
-        let controller = LoadedPlayMediaUseCaseStateController(
+        let controller = PlayingPlayMediaUseCaseStateController(
             mediaId: mediaId,
             audioPlayer: audioPlayer,
             context: context,
@@ -64,7 +59,6 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
             factories,
             initialState,
             loadingState,
-            playingState,
             pausedState,
             audioPlayer
         )
@@ -77,7 +71,7 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
         // Given
         let loadedMediaId = UUID()
         let preparingMediaId = UUID()
-        
+
         let sut = createSUT(mediaId: loadedMediaId)
 
         // When
@@ -90,31 +84,8 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
                 context: sut.context
             )
         ).wasCalled(1)
-        
+
         verify(sut.context.set(newState: sut.loadingState))
-            .wasCalled(1)
-    }
-    
-    func test_play() async throws {
-
-        // Given
-        let loadedMediaId = UUID()
-        
-        let sut = createSUT(mediaId: loadedMediaId)
-
-        // When
-        sut.controller.play()
-
-        // Then
-        verify(
-            sut.factories.makePlaying(
-                mediaId: loadedMediaId,
-                audioPlayer: sut.audioPlayer,
-                context: sut.context
-            )
-        ).wasCalled(1)
-        
-        verify(sut.context.set(newState: sut.playingState))
             .wasCalled(1)
     }
     
@@ -165,3 +136,4 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
             .wasCalled(1)
     }
 }
+
