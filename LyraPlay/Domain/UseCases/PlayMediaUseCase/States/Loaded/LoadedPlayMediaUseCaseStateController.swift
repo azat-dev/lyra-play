@@ -60,7 +60,16 @@ public class LoadedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
     
     public func play(atTime: TimeInterval) {}
     
-    public func pause() {}
+    public func pause() {
+        
+        let newState = statesFactories.makePaused(
+            mediaId: mediaId,
+            audioPlayer: audioPlayer,
+            context: context
+        )
+        
+        context.set(newState: newState)
+    }
     
     public func stop() {
         
