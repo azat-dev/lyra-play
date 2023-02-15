@@ -38,6 +38,13 @@ public class LoadedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
     // MARK: - Methods
     
     public func prepare(mediaId: UUID) {
+        
+        let newState = statesFactories.makeLoading(
+            mediaId: mediaId,
+            context: context
+        )
+        
+        context.set(newState: newState)
     }
     
     public func play() {}
