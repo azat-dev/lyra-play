@@ -47,7 +47,16 @@ public class LoadedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
         context.set(newState: newState)
     }
     
-    public func play() {}
+    public func play() {
+        
+        let newState = statesFactories.makePlaying(
+            mediaId: mediaId,
+            audioPlayer: audioPlayer,
+            context: context
+        )
+        
+        context.set(newState: newState)
+    }
     
     public func play(atTime: TimeInterval) {}
     

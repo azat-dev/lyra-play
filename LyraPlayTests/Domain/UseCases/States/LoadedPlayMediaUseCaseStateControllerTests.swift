@@ -35,7 +35,7 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
             .willReturn(loadingState)
         
         given(factories.makePlaying(mediaId: any(), audioPlayer: any(), context: any()))
-            .willReturn(loadingState)
+            .willReturn(playingState)
         
         let context = mock(PlayMediaUseCaseStateControllerContext.self)
         
