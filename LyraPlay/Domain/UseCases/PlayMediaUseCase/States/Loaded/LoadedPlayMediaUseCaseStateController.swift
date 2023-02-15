@@ -64,5 +64,7 @@ public class LoadedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
     
     public func stop() {}
     
-    public func togglePlay() {}
+    public func togglePlay() {
+        play()
+    }
 }

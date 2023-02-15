@@ -17,6 +17,7 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
         controller: PlayMediaUseCaseStateController,
         context: PlayMediaUseCaseStateControllerContextMock,
         factories: LoadedPlayMediaUseCaseStateControllerFactoriesMock,
+        initialState: PlayMediaUseCaseStateControllerMock,
         loadingState: PlayMediaUseCaseStateControllerMock,
         playingState: PlayMediaUseCaseStateControllerMock,
         audioPlayer: AudioPlayerMock
@@ -28,8 +29,12 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
         
         let loadingState = mock(PlayMediaUseCaseStateController.self)
         let playingState = mock(PlayMediaUseCaseStateController.self)
+        let initialState = mock(PlayMediaUseCaseStateController.self)
 
         let factories = mock(LoadedPlayMediaUseCaseStateControllerFactories.self)
+        
+        given(factories.makeInitial(context: any()))
+            .willReturn(initialState)
         
         given(factories.makeLoading(mediaId: any(), context: any()))
             .willReturn(loadingState)
@@ -52,6 +57,7 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
             controller,
             context,
             factories,
+            initialState,
             loadingState,
             playingState,
             audioPlayer
@@ -103,6 +109,25 @@ class LoadedPlayMediaUseCaseStateControllerTests: XCTestCase {
         ).wasCalled(1)
         
         verify(sut.context.set(newState: sut.playingState))
+            .wasCalled(1)
+    }
+    
+    func test_stop() async throws {
+
+        // Given
+        let loadedMediaId = UUID()
+        
+        let sut = createSUT(mediaId: loadedMediaId)
+
+        // When
+        sut.controller.play()
+
+        // Then
+        verify(
+            sut.factories.makeInitial(context: sut.context)
+        ).wasCalled(1)
+        
+        verify(sut.context.set(newState: sut.initialState))
             .wasCalled(1)
     }
 }

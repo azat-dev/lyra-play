@@ -8,6 +8,7 @@
 import Foundation
 
 public protocol LoadedPlayMediaUseCaseStateControllerFactories:
+    InitialPlayMediaUseCaseStateControllerFactory,
     LoadingPlayMediaUseCaseStateControllerFactory,
     PlayingPlayMediaUseCaseStateControllerFactory {}
 
