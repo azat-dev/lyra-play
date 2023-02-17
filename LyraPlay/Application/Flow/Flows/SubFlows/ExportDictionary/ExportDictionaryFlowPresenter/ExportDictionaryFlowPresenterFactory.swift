@@ -7,5 +7,5 @@
 
 public protocol ExportDictionaryFlowPresenterFactory {
 
-    func create(for flowModel: ExportDictionaryFlowModel) -> ExportDictionaryFlowPresenter
+    func make(for flowModel: ExportDictionaryFlowModel) -> ExportDictionaryFlowPresenter
 }

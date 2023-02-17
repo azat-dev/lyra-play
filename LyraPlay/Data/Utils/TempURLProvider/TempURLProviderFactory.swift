@@ -9,5 +9,5 @@ import Foundation
 
 public protocol TempURLProviderFactory {
     
-    func create() -> TempURLProvider
+    func make() -> TempURLProvider
 }

@@ -95,7 +95,7 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
 
     // MARK: - Methods
 
-    public func create() -> ApplicationFlowModel {
+    public func make() -> ApplicationFlowModel {
         
         let subtitlesRepositoryFactory = CoreDataSubtitlesRepositoryFactory(coreDataStore: coreDataStore)
         
@@ -161,7 +161,7 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
             audioPlayerFactory: mainAudioPlayerFactory
         )
         
-        let pronounceTranslationsUseCase = pronounceTranslationsUseCaseFactory.create()
+        let pronounceTranslationsUseCase = pronounceTranslationsUseCaseFactory.make()
         
         let playMediaWithTranslationsUseCaseFactory = PlayMediaWithTranslationsUseCaseImplFactory(
             playMediaWithSubtitlesUseCaseFactory: playMediaWithSubtitlesUseCaseFactory,

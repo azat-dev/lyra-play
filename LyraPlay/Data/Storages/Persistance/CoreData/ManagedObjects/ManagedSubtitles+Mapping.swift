@@ -25,7 +25,7 @@ extension ManagedSubtitles {
         self.file = source.file
     }
     
-    static func create(_ context: NSManagedObjectContext, from domain: SubtitlesInfo) -> ManagedSubtitles {
+    static func make(_ context: NSManagedObjectContext, from domain: SubtitlesInfo) -> ManagedSubtitles {
 
         let item = ManagedSubtitles(context: context)
         item.fillFields(from: domain)

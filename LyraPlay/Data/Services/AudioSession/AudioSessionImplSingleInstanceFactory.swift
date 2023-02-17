@@ -26,7 +26,7 @@ public final class AudioSessionImplSingleInstanceFactory: AudioSessionFactory {
 
     // MARK: - Methods
 
-    public func create() -> AudioSession {
+    public func make() -> AudioSession {
 
         defer { semaphore.signal() }
         

@@ -33,9 +33,9 @@ public final class EditMediaLibraryListUseCaseImplFactory: EditMediaLibraryListU
     
     // MARK: - Methods
     
-    public func create() -> EditMediaLibraryListUseCase {
+    public func make() -> EditMediaLibraryListUseCase {
         
-        let manageSubtitlesUseCase = manageSubtitlesUseCaseFactory.create()
+        let manageSubtitlesUseCase = manageSubtitlesUseCaseFactory.make()
         
         return EditMediaLibraryListUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,

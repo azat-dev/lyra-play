@@ -9,5 +9,5 @@ import Foundation
 
 public protocol DictionaryFlowPresenterFactory {
     
-    func create(for flowModel: DictionaryFlowModel) -> DictionaryFlowPresenter
+    func make(for flowModel: DictionaryFlowModel) -> DictionaryFlowPresenter
 }

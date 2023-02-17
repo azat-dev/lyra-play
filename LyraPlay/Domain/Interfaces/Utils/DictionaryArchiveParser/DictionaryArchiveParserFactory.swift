@@ -7,5 +7,5 @@
 
 public protocol DictionaryArchiveParserFactory {
 
-    func create() -> DictionaryArchiveParser
+    func make() -> DictionaryArchiveParser
 }

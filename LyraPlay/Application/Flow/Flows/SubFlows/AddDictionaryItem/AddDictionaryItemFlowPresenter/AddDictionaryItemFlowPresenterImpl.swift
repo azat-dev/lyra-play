@@ -56,7 +56,7 @@ extension AddDictionaryItemFlowPresenterImpl {
                     return
                 }
                 
-                let view = self.editDictionaryItemViewFactory.create(viewModel: editItemViewModel)
+                let view = self.editDictionaryItemViewFactory.make(viewModel: editItemViewModel)
                 let navigationController = UINavigationController(rootViewController: view)
                 self.activeView = navigationController
                 

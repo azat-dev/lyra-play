@@ -26,7 +26,7 @@ public final class AudioPlayerImplSingleInstanceFactory: AudioPlayerFactory {
     
     // MARK: - Methods
     
-    public func create() -> AudioPlayer {
+    public func make() -> AudioPlayer {
         
         defer { semaphore.signal() }
         
@@ -36,7 +36,7 @@ public final class AudioPlayerImplSingleInstanceFactory: AudioPlayerFactory {
             return instance
         }
         
-        let audioSession = audioSessionFactory.create()
+        let audioSession = audioSessionFactory.make()
         let newInstance = AudioPlayerImpl(audioSession: audioSession)
         instance = newInstance
         

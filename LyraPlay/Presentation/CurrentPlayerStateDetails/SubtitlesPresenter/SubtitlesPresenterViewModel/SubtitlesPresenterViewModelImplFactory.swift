@@ -10,7 +10,7 @@ import Combine
 
 public final class SubtitlesPresenterViewModelImplFactory: SubtitlesPresenterViewModelFactory {
     
-    public func create(subtitles: Subtitles) -> SubtitlesPresenterViewModel {
+    public func make(subtitles: Subtitles) -> SubtitlesPresenterViewModel {
         
         return SubtitlesPresenterViewModelImpl(subtitles: subtitles)
     }

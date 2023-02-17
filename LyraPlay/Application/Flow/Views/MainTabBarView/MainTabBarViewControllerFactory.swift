@@ -15,7 +15,7 @@ public final class MainTabBarViewControllerFactory: MainTabBarViewFactory {
 
     // MARK: - Methods
 
-    public func create(viewModel: MainTabBarViewModel) -> MainTabBarViewController {
+    public func make(viewModel: MainTabBarViewModel) -> MainTabBarViewController {
 
         return MainTabBarViewController(viewModel: viewModel)
     }

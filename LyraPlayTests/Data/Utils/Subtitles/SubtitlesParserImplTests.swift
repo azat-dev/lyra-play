@@ -62,7 +62,7 @@ class SubtitlesParserImplTests: XCTestCase {
         let parser1Factory = mock(SubtitlesParserFactory.self)
         let parser1 = mock(SubtitlesParser.self)
         
-        given(parser1Factory.create())
+        given(parser1Factory.make())
             .willReturn(parser1)
         
         given(await parser1.parse(any(), fileName: any()))
@@ -72,7 +72,7 @@ class SubtitlesParserImplTests: XCTestCase {
         
         let parser2 = mock(SubtitlesParser.self)
         
-        given(parser2Factory.create())
+        given(parser2Factory.make())
             .willReturn(parser2)
         
         given(await parser2.parse(any(), fileName: any()))

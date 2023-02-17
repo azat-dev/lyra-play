@@ -27,10 +27,10 @@ public final class PlayMediaUseCaseImplFactory: PlayMediaUseCaseFactory {
 
     // MARK: - Methods
 
-    public func create() -> PlayMediaUseCase {
+    public func make() -> PlayMediaUseCase {
 
-        let audioPlayer = audioPlayerFactory.create()
-        let loadTrackUseCase = loadTrackUseCaseFactory.create()
+        let audioPlayer = audioPlayerFactory.make()
+        let loadTrackUseCase = loadTrackUseCaseFactory.make()
         
         return PlayMediaUseCaseImpl(
             audioPlayer: audioPlayer,

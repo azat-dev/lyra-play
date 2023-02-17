@@ -27,7 +27,7 @@ public final class LibraryFileFlowPresenterImplFactory: LibraryFileFlowPresenter
     
     // MARK: - Methods
     
-    public func create(for flowModel: LibraryFileFlowModel) -> LibraryFileFlowPresenter {
+    public func make(for flowModel: LibraryFileFlowModel) -> LibraryFileFlowPresenter {
         
         return LibraryFileFlowPresenterImpl(
             flowModel: flowModel,

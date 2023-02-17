@@ -7,5 +7,5 @@
 
 public protocol ImportMediaFilesFlowPresenterFactory {
 
-    func create(for flowModel: ImportMediaFilesFlowModel) -> ImportMediaFilesFlowPresenter
+    func make(for flowModel: ImportMediaFilesFlowModel) -> ImportMediaFilesFlowPresenter
 }

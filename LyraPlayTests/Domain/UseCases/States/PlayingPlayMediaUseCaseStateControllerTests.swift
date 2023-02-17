@@ -10,57 +10,43 @@ import XCTest
 import Mockingbird
 
 import LyraPlay
+import Combine
 
 class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
     
     typealias SUT = (
         controller: PlayMediaUseCaseStateController,
-        context: PlayMediaUseCaseStateControllerContextMock,
-        factories: PlayingPlayMediaUseCaseStateControllerFactoriesMock,
-        initialState: PlayMediaUseCaseStateControllerMock,
-        loadingState: PlayMediaUseCaseStateControllerMock,
-        pausedState: PlayMediaUseCaseStateControllerMock,
-        audioPlayer: AudioPlayerMock
+        delegate: PlayMediaUseCaseStateControllerDelegateMock,
+        audioPlayer: AudioPlayerMock,
+        audioPlayerState: CurrentValueSubject<AudioPlayerState, Never>
     )
     
     func createSUT(mediaId: UUID) -> SUT {
 
         let audioPlayer = mock(AudioPlayer.self)
+        let audioPlayeState = CurrentValueSubject<AudioPlayerState, Never>(.initial)
         
-        let loadingState = mock(PlayMediaUseCaseStateController.self)
-        let initialState = mock(PlayMediaUseCaseStateController.self)
-        let pausedState = mock(PlayMediaUseCaseStateController.self)
-
-        let factories = mock(PlayingPlayMediaUseCaseStateControllerFactories.self)
+        given(audioPlayer.state)
+            .willReturn(audioPlayeState)
         
-        given(factories.makeInitial(context: any()))
-            .willReturn(initialState)
+        given(audioPlayer.play())
+            .willReturn(.success(()))
         
-        given(factories.makeLoading(mediaId: any(), context: any()))
-            .willReturn(loadingState)
-        
-        given(factories.makePaused(mediaId: any(), audioPlayer: any(), context: any()))
-            .willReturn(pausedState)
-        
-        let context = mock(PlayMediaUseCaseStateControllerContext.self)
+        let delegate = mock(PlayMediaUseCaseStateControllerDelegate.self)
         
         let controller = PlayingPlayMediaUseCaseStateController(
             mediaId: mediaId,
             audioPlayer: audioPlayer,
-            context: context,
-            statesFactories: factories
+            delegate: delegate
         )
         
         detectMemoryLeak(instance: controller)
         
         return (
             controller,
-            context,
-            factories,
-            initialState,
-            loadingState,
-            pausedState,
-            audioPlayer
+            delegate,
+            audioPlayer,
+            audioPlayeState
         )
     }
     
@@ -79,14 +65,8 @@ class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
 
         // Then
         verify(
-            sut.factories.makeLoading(
-                mediaId: preparingMediaId,
-                context: sut.context
-            )
+            sut.delegate.didStartLoading(mediaId: preparingMediaId)
         ).wasCalled(1)
-
-        verify(sut.context.set(newState: sut.loadingState))
-            .wasCalled(1)
     }
     
     func test_stop() async throws {
@@ -105,11 +85,8 @@ class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
         // Then
         verify(sut.audioPlayer.stop())
             .wasCalled(1)
-        verify(
-            sut.factories.makeInitial(context: sut.context)
-        ).wasCalled(1)
         
-        verify(sut.context.set(newState: sut.initialState))
+        verify(sut.delegate.didStop())
             .wasCalled(1)
     }
     
@@ -125,15 +102,30 @@ class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
 
         // Then
         verify(
-            sut.factories.makePaused(
+            sut.delegate.didPause(
                 mediaId: loadedMediaId,
-                audioPlayer: sut.audioPlayer,
-                context: sut.context
+                audioPlayer: sut.audioPlayer
             )
         ).wasCalled(1)
+    }
+    
+    func test_finish() async throws {
+
+        // Given
+        let loadedMediaId = UUID()
         
-        verify(sut.context.set(newState: sut.pausedState))
-            .wasCalled(1)
+        let sut = createSUT(mediaId: loadedMediaId)
+
+        // When
+        sut.audioPlayerState.value = .finished(session: .init(fileId: loadedMediaId.uuidString))
+
+        // Then
+        verify(
+            sut.delegate.didFinish(
+                mediaId: loadedMediaId,
+                audioPlayer: sut.audioPlayer
+            )
+        ).wasCalled(1)
     }
 }
 

@@ -31,7 +31,7 @@ public final class DeleteMediaLibraryItemFlowModelImpl: DeleteMediaLibraryItemFl
         self.delegate = delegate
         self.editMediaLibraryListUseCaseFactory = editMediaLibraryListUseCaseFactory
         
-        self.confirmDialogViewModel.value = confirmDialogViewModelFactory.create(
+        self.confirmDialogViewModel.value = confirmDialogViewModelFactory.make(
             messageText: "Do you want to delete library item?",
             confirmText: "Delete",
             cancelText: "Cancel",
@@ -47,7 +47,7 @@ extension DeleteMediaLibraryItemFlowModelImpl: ConfirmDialogViewModelDelegate {
     
     private func delete() async {
         
-        let editMediaLibraryListUseCase = editMediaLibraryListUseCaseFactory.create()
+        let editMediaLibraryListUseCase = editMediaLibraryListUseCaseFactory.make()
         let result = await editMediaLibraryListUseCase.deleteItem(id: itemId)
         
         guard case .success = result else {

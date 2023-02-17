@@ -12,15 +12,13 @@ public class FinishedPlayMediaUseCaseStateController: PausedPlayMediaUseCaseStat
     public override init(
         mediaId: UUID,
         audioPlayer: AudioPlayer,
-        context: PlayMediaUseCaseStateControllerContext,
-        statesFactories: PausedPlayMediaUseCaseStateControllerFactories
+        delegate: PlayMediaUseCaseStateControllerDelegate
     ) {
         
         super.init(
             mediaId: mediaId,
             audioPlayer: audioPlayer,
-            context: context,
-            statesFactories: statesFactories
+            delegate: delegate
         )
         
         state = .finished(mediaId: mediaId)

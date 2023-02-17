@@ -16,8 +16,7 @@ public class PlayingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
 
     private let mediaId: UUID
     private let audioPlayer: AudioPlayer
-    private unowned let context: PlayMediaUseCaseStateControllerContext
-    private let statesFactories: PlayingPlayMediaUseCaseStateControllerFactories
+    private weak var delegate: PlayMediaUseCaseStateControllerDelegate?
     
     private var observers = Set<AnyCancellable>()
     
@@ -26,16 +25,14 @@ public class PlayingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
     public init(
         mediaId: UUID,
         audioPlayer: AudioPlayer,
-        context: PlayMediaUseCaseStateControllerContext,
-        statesFactories: PlayingPlayMediaUseCaseStateControllerFactories
+        delegate: PlayMediaUseCaseStateControllerDelegate
     ) {
         
         self.state = .playing(mediaId: mediaId)
 
         self.mediaId = mediaId
         self.audioPlayer = audioPlayer
-        self.context = context
-        self.statesFactories = statesFactories
+        self.delegate = delegate
         
         audioPlayer.state.sink { [weak self] state in
         
@@ -47,13 +44,10 @@ public class PlayingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
                 return
             }
             
-            let newState = self.statesFactories.makeFinished(
+            delegate.didFinish(
                 mediaId: self.mediaId,
-                audioPlayer: self.audioPlayer,
-                context: self.context
+                audioPlayer: self.audioPlayer
             )
-            
-            self.context.set(newState: newState)
             
         }.store(in: &observers)
         
@@ -64,11 +58,7 @@ public class PlayingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
     
     public func prepare(mediaId: UUID) {
         
-        let newState = statesFactories.makeLoading(
-            mediaId: mediaId,
-            context: context
-        )
-        context.set(newState: newState)
+        delegate?.didStartLoading(mediaId: mediaId)
     }
     
     public func play() {}
@@ -77,22 +67,17 @@ public class PlayingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
     
     public func pause() {
         
-        let newState = statesFactories.makePaused(
+        delegate?.didPause(
             mediaId: mediaId,
-            audioPlayer: audioPlayer,
-            context: context
+            audioPlayer: audioPlayer
         )
-        context.set(newState: newState)
     }
     
     public func stop() {
         
         let _ = audioPlayer.stop()
 
-        let newState = statesFactories.makeInitial(
-            context: context
-        )
-        context.set(newState: newState)
+        delegate?.didStop()
     }
     
     public func togglePlay() {

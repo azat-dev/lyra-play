@@ -7,5 +7,5 @@
 
 public protocol MediaLibraryBrowserViewFactory {
     
-    func create(viewModel: MediaLibraryBrowserViewModel) -> MediaLibraryBrowserViewController
+    func make(viewModel: MediaLibraryBrowserViewModel) -> MediaLibraryBrowserViewController
 }

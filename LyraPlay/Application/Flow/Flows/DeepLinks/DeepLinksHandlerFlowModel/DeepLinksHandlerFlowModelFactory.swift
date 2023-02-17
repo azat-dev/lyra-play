@@ -7,5 +7,5 @@
 
 public protocol DeepLinksHandlerFlowModelFactory {
 
-    func create(applicationFlowModel: ApplicationFlowModel) -> DeepLinksHandlerFlowModel
+    func make(applicationFlowModel: ApplicationFlowModel) -> DeepLinksHandlerFlowModel
 }

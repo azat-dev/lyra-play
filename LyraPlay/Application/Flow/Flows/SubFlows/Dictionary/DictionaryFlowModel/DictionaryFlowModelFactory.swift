@@ -7,5 +7,5 @@
 
 public protocol DictionaryFlowModelFactory {
 
-    func create() -> DictionaryFlowModel
+    func make() -> DictionaryFlowModel
 }

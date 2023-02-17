@@ -107,7 +107,7 @@ extension PlayMediaWithSubtitlesUseCaseImpl {
             return .success(())
         }
         
-        playSubtitlesUseCase = playSubtitlesUseCaseFactory.create(subtitles: subtitles)
+        playSubtitlesUseCase = playSubtitlesUseCaseFactory.make(subtitles: subtitles)
         
         self.state.value = .activeSession(
             session,

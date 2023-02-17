@@ -27,7 +27,7 @@ public final class LibraryFolderFlowPresenterImplFactory: LibraryFolderFlowPrese
         self.deleteMediaLibraryItemFlowPresenterFactory = deleteMediaLibraryItemFlowPresenterFactory
     }
     
-    public func create(for flowModel: LibraryFolderFlowModel) -> LibraryFolderFlowPresenter {
+    public func make(for flowModel: LibraryFolderFlowModel) -> LibraryFolderFlowPresenter {
         
         return LibraryFolderFlowPresenterImpl(
             flowModel: flowModel,

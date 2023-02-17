@@ -22,7 +22,7 @@ public final class SubtitlesParserImplFactory: SubtitlesParserFactory {
     
     // MARK: - Methods
     
-    public func create() -> SubtitlesParser {
+    public func make() -> SubtitlesParser {
         
         return SubtitlesParserImpl(parsers: parsers)
     }

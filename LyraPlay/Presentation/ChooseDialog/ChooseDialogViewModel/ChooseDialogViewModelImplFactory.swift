@@ -15,7 +15,7 @@ public final class ChooseDialogViewModelImplFactory: ChooseDialogViewModelFactor
 
     // MARK: - Methods
 
-    public func create(
+    public func make(
         title: String,
         items: [ChooseDialogViewModelItem],
         delegate: ChooseDialogViewModelDelegate

@@ -61,7 +61,7 @@ extension MainFlowPresenterImpl {
         let rootNavigationContainer = UINavigationController()
         rootNavigationContainer.navigationBar.isHidden = true
         
-        let mainTabBarView = mainTabBarViewFactory.create(viewModel: mainFlowModel.mainTabBarViewModel)
+        let mainTabBarView = mainTabBarViewFactory.make(viewModel: mainFlowModel.mainTabBarViewModel)
         
         mainFlowModel.libraryFlow
             .receive(on: RunLoop.main)
@@ -78,7 +78,7 @@ extension MainFlowPresenterImpl {
                     return
                 }
                 
-                let presenter = self.libraryFlowPresenterFactory.create(for: libraryFlow)
+                let presenter = self.libraryFlowPresenterFactory.make(for: libraryFlow)
                 presenter.present(at: mainTabBarView.libraryContainer)
                 
                 self.libraryFlowPresenter = presenter
@@ -100,7 +100,7 @@ extension MainFlowPresenterImpl {
                     return
                 }
                 
-                let presenter = self.dictionaryFlowPresenterFactory.create(for: dictionaryFlow)
+                let presenter = self.dictionaryFlowPresenterFactory.make(for: dictionaryFlow)
                 presenter.present(at: mainTabBarView.dictionaryContainer)
                 
                 self.dictionaryFlowPresenter = presenter
@@ -121,7 +121,7 @@ extension MainFlowPresenterImpl {
                     return
                 }
                 
-                let presenter = self.currentPlayerStateDetailsFlowPresenterFactory.create(for: flow)
+                let presenter = self.currentPlayerStateDetailsFlowPresenterFactory.make(for: flow)
                 
                 self.currentPlayerStateDetailsPresenter = presenter
                 presenter.present(at: rootNavigationContainer)

@@ -36,7 +36,7 @@ extension ApplicationFlowPresenterImpl {
 
     public func present(at container: UIWindow) {
         
-        let mainPresenter = mainFlowPresenterFactory.create(flowModel: flowModel.mainFlowModel)
+        let mainPresenter = mainFlowPresenterFactory.make(flowModel: flowModel.mainFlowModel)
         
         self.mainPresenter = mainPresenter
         mainPresenter.present(at: container)

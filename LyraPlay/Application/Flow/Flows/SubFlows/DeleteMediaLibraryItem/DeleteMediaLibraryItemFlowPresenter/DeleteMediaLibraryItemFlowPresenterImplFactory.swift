@@ -22,7 +22,7 @@ public final class DeleteMediaLibraryItemFlowPresenterImplFactory: DeleteMediaLi
 
     // MARK: - Methods
 
-    public func create(for flowModel: DeleteMediaLibraryItemFlowModel) -> DeleteMediaLibraryItemFlowPresenter {
+    public func make(for flowModel: DeleteMediaLibraryItemFlowModel) -> DeleteMediaLibraryItemFlowPresenter {
 
         return DeleteMediaLibraryItemFlowPresenterImpl(
             flowModel: flowModel,

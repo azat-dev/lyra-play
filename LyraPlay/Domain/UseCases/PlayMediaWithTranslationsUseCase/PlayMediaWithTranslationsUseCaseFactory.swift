@@ -7,5 +7,5 @@
 
 public protocol PlayMediaWithTranslationsUseCaseFactory {
 
-    func create() -> PlayMediaWithTranslationsUseCase
+    func make() -> PlayMediaWithTranslationsUseCase
 }

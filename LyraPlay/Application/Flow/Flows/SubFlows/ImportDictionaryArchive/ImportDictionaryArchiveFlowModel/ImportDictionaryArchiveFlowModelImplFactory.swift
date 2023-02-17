@@ -24,7 +24,7 @@ public final class ImportDictionaryArchiveFlowModelImplFactory: ImportDictionary
     
     // MARK: - Methods
     
-    public func create(
+    public func make(
         url: URL,
         mainFlowModel: MainFlowModel,
         delegate: ImportDictionaryArchiveFlowModelDelegate

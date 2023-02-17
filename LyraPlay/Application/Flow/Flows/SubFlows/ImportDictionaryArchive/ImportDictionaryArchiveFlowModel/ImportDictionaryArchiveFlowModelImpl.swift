@@ -53,7 +53,7 @@ extension ImportDictionaryArchiveFlowModelImpl {
                 return
             }
             
-            let importDictionaryArchiveUseCase = self.importDictionaryArchiveUseCaseFactory.create()
+            let importDictionaryArchiveUseCase = self.importDictionaryArchiveUseCaseFactory.make()
             
             let result = await importDictionaryArchiveUseCase.importArchive(data: data)
             print(result)

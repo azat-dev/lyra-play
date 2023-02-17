@@ -22,7 +22,7 @@ public final class ExportDictionaryFlowPresenterImplFactory: ExportDictionaryFlo
 
     // MARK: - Methods
 
-    public func create(for flowModel: ExportDictionaryFlowModel) -> ExportDictionaryFlowPresenter {
+    public func make(for flowModel: ExportDictionaryFlowModel) -> ExportDictionaryFlowPresenter {
 
         return ExportDictionaryFlowPresenterImpl(
             flowModel: flowModel,

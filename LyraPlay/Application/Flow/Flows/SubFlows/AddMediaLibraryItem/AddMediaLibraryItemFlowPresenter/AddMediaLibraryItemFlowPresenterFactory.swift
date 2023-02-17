@@ -7,5 +7,5 @@
 
 public protocol AddMediaLibraryItemFlowPresenterFactory {
 
-    func create(for flowModel: AddMediaLibraryItemFlowModel) -> AddMediaLibraryItemFlowPresenter
+    func make(for flowModel: AddMediaLibraryItemFlowModel) -> AddMediaLibraryItemFlowPresenter
 }

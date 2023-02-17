@@ -7,5 +7,5 @@
 
 public protocol DictionaryRepositoryFactory {
 
-    func create() -> DictionaryRepository
+    func make() -> DictionaryRepository
 }

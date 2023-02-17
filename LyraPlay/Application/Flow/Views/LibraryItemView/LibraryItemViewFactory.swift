@@ -7,5 +7,5 @@
 
 public protocol LibraryItemViewFactory {
 
-    func create(viewModel: LibraryItemViewModel) -> LibraryItemViewController
+    func make(viewModel: LibraryItemViewModel) -> LibraryItemViewController
 }

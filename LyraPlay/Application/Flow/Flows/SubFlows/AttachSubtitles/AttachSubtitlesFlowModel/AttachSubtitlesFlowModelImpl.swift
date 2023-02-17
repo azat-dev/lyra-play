@@ -22,7 +22,7 @@ public final class AttachSubtitlesFlowModelImpl: AttachSubtitlesFlowModel {
     
     public lazy var subtitlesPickerViewModel: FilesPickerViewModel = {
         
-        subtitlesPickerViewModelFactory.create(
+        subtitlesPickerViewModelFactory.make(
             documentTypes: allowedDocumentTypes,
             allowsMultipleSelection: false,
             delegate: self
@@ -72,7 +72,7 @@ extension AttachSubtitlesFlowModelImpl: FilesPickerViewModelDelegate {
     
     private func attachSubtitles(url: URL) async {
         
-        let progressViewModel = attachingSubtitlesProgressViewModelFactory.create(delegate: self)
+        let progressViewModel = attachingSubtitlesProgressViewModelFactory.make(delegate: self)
         progressViewModel.state.value = .processing
         
         self.progressViewModel.value = progressViewModel
@@ -84,7 +84,7 @@ extension AttachSubtitlesFlowModelImpl: FilesPickerViewModelDelegate {
         }
 
         let fileName = url.lastPathComponent
-        let importSubtitlesUseCase = importSubtitlesUseCaseFactory.create()
+        let importSubtitlesUseCase = importSubtitlesUseCaseFactory.make()
 
         let importResult = await importSubtitlesUseCase.importFile(
             trackId: mediaId,

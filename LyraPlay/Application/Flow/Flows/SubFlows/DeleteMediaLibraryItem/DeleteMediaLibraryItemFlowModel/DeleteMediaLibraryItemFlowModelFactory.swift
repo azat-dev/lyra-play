@@ -9,7 +9,7 @@ import Foundation
 
 public protocol DeleteMediaLibraryItemFlowModelFactory {
 
-    func create(
+    func make(
         itemId: UUID,
         delegate: DeleteMediaLibraryItemFlowDelegate
     ) -> DeleteMediaLibraryItemFlowModel

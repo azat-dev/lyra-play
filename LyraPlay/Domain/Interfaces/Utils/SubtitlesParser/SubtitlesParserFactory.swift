@@ -7,5 +7,5 @@
 
 public protocol SubtitlesParserFactory {
 
-    func create() -> SubtitlesParser
+    func make() -> SubtitlesParser
 }

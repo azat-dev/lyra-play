@@ -7,5 +7,5 @@
 
 public protocol CurrentPlayerStateDetailsViewModelFactory {
 
-    func create(delegate: CurrentPlayerStateDetailsViewModelDelegate) -> CurrentPlayerStateDetailsViewModel
+    func make(delegate: CurrentPlayerStateDetailsViewModelDelegate) -> CurrentPlayerStateDetailsViewModel
 }

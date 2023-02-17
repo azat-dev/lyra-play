@@ -9,6 +9,6 @@ import Foundation
 
 public protocol SubtitlesRepositoryFactory {
     
-    func create() -> SubtitlesRepository
+    func make() -> SubtitlesRepository
 }
 

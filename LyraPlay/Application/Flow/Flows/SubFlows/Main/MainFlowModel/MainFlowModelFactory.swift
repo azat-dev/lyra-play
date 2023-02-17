@@ -7,5 +7,5 @@
 
 public protocol MainFlowModelFactory {
 
-    func create() -> MainFlowModel
+    func make() -> MainFlowModel
 }

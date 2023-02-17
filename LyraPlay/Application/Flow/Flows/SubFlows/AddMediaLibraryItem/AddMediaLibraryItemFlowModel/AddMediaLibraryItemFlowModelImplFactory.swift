@@ -30,7 +30,7 @@ public final class AddMediaLibraryItemFlowModelImplFactory: AddMediaLibraryItemF
 
     // MARK: - Methods
 
-    public func create(
+    public func make(
         targetFolderId: UUID?,
         delegate: AddMediaLibraryItemFlowModelDelegate
     ) -> AddMediaLibraryItemFlowModel {

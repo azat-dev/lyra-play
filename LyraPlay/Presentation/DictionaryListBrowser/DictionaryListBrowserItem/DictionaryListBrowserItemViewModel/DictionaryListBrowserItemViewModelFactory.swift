@@ -7,7 +7,7 @@
 
 public protocol DictionaryListBrowserItemViewModelFactory {
 
-    func create(
+    func make(
         for item: BrowseListDictionaryItem,
         isPlaying: Bool,
         delegate: DictionaryListBrowserItemViewModelDelegate

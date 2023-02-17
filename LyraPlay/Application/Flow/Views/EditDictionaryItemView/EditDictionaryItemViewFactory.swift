@@ -7,5 +7,5 @@
 
 public protocol EditDictionaryItemViewFactory {
 
-    func create(viewModel: EditDictionaryItemViewModel) -> EditDictionaryItemViewController
+    func make(viewModel: EditDictionaryItemViewModel) -> EditDictionaryItemViewController
 }

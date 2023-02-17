@@ -31,7 +31,7 @@ public final class MainTabBarViewModelImpl: MainTabBarViewModel {
         self.currentPlayerStateViewModelFactory = currentPlayerStateViewModelFactory
         self.activeTabIndex = .init(MainTabBarViewModelTab.library.rawValue)
         
-        currentPlayerStateViewModel.value = currentPlayerStateViewModelFactory.create(delegate: self)
+        currentPlayerStateViewModel.value = currentPlayerStateViewModelFactory.make(delegate: self)
     }
 }
 

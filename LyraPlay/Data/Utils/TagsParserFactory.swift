@@ -9,6 +9,6 @@ import Foundation
 
 public protocol TagsParserFactory {
     
-    func create() -> TagsParser
+    func make() -> TagsParser
 }
 

@@ -58,7 +58,7 @@ extension LibraryFolderFlowPresenterImpl {
     
     private func presentFile(flowModel: LibraryFileFlowModel, container: UINavigationController) {
      
-        let presenter = self.libraryItemFlowPresenterFactory.create(for: flowModel)
+        let presenter = self.libraryItemFlowPresenterFactory.make(for: flowModel)
         presenter.present(at: container)
         self.itemFlowPresenter = presenter
     }
@@ -101,7 +101,7 @@ extension LibraryFolderFlowPresenterImpl {
                     return
                 }
                 
-                let presenter = self.addMediaLibraryItemFlowPresenterFactory.create(for: flow)
+                let presenter = self.addMediaLibraryItemFlowPresenterFactory.make(for: flow)
                 
                 self.addMediaLibraryItemFlowPresenter = presenter
                 presenter.present(at: container)
@@ -123,13 +123,13 @@ extension LibraryFolderFlowPresenterImpl {
                     return
                 }
                 
-                let presenter = self.deleteMediaLibraryItemFlowPresenterFactory.create(for: deleteLibraryItemFlow)
+                let presenter = self.deleteMediaLibraryItemFlowPresenterFactory.make(for: deleteLibraryItemFlow)
                 presenter.present(at: container)
                 
                 self.deleteMediaLibraryItemFlowPresenter = presenter
             }.store(in: &observers)
         
-        let view = listViewFactory.create(viewModel: flowModel.listViewModel)
+        let view = listViewFactory.make(viewModel: flowModel.listViewModel)
         container.pushViewController(view, animated: true)
     }
 }

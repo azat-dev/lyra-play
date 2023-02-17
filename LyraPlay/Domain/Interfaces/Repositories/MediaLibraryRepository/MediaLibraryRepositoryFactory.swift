@@ -7,5 +7,5 @@
 
 public protocol MediaLibraryRepositoryFactory {
     
-    func create() -> MediaLibraryRepository
+    func make() -> MediaLibraryRepository
 }

@@ -27,7 +27,7 @@ public final class ExportDictionaryFlowModelImplFactory: ExportDictionaryFlowMod
 
     // MARK: - Methods
 
-    public func create(
+    public func make(
         delegate: ExportDictionaryFlowModelDelegate
     ) -> ExportDictionaryFlowModel {
 

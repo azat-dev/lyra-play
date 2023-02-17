@@ -15,7 +15,7 @@ public class TextSplitterImplFactory: TextSplitterFactory {
     
     // MARK: - Methods
     
-    public func create() -> TextSplitter {
+    public func make() -> TextSplitter {
         
         return TextSplitterImpl()
     }

@@ -27,9 +27,9 @@ public final class CurrentPlayerStateDetailsViewModelImplFactory: CurrentPlayerS
     
     // MARK: - Methods
     
-    public func create(delegate: CurrentPlayerStateDetailsViewModelDelegate) -> CurrentPlayerStateDetailsViewModel {
+    public func make(delegate: CurrentPlayerStateDetailsViewModelDelegate) -> CurrentPlayerStateDetailsViewModel {
         
-        let playMediaUseCase = playMediaUseCaseFactory.create()
+        let playMediaUseCase = playMediaUseCaseFactory.make()
         
         return CurrentPlayerStateDetailsViewModelImpl(
             delegate: delegate,

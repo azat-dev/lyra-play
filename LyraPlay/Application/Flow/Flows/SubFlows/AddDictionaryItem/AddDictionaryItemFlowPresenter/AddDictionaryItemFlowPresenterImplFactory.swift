@@ -22,7 +22,7 @@ public final class AddDictionaryItemFlowPresenterImplFactory: AddDictionaryItemF
 
     // MARK: - Methods
 
-    public func create(for flowModel: AddDictionaryItemFlowModel) -> AddDictionaryItemFlowPresenter {
+    public func make(for flowModel: AddDictionaryItemFlowModel) -> AddDictionaryItemFlowPresenter {
 
         return AddDictionaryItemFlowPresenterImpl(
             flowModel: flowModel,

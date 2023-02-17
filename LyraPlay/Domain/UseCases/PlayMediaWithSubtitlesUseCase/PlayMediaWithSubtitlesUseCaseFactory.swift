@@ -7,5 +7,5 @@
 
 public protocol PlayMediaWithSubtitlesUseCaseFactory {
 
-    func create() -> PlayMediaWithSubtitlesUseCase
+    func make() -> PlayMediaWithSubtitlesUseCase
 }

@@ -22,9 +22,9 @@ public final class SchedulerImplFactory: SchedulerFactory {
     
     // MARK: - Methods
     
-    public func create() -> Scheduler {
+    public func make() -> Scheduler {
         
-        let actionTimer = actionTimerFactory.create()
+        let actionTimer = actionTimerFactory.make()
         
         return SchedulerImpl(timer: actionTimer)
     }

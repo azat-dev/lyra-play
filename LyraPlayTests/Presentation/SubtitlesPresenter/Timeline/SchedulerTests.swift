@@ -471,7 +471,7 @@ final class ActionTimerFactoryMock: ActionTimerFactory {
     
     var timers = [ActionTimerMock]()
     
-    func create() -> ActionTimer {
+    func make() -> ActionTimer {
         
         let timer = ActionTimerMock()
         timers.append(timer)

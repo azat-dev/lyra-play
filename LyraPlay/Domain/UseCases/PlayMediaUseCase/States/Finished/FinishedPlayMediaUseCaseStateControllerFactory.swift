@@ -7,13 +7,11 @@
 
 import Foundation
 
-public protocol FinishedPlayMediaUseCaseStateControllerFactories: PausedPlayMediaUseCaseStateControllerFactories {}
-
 public protocol FinishedPlayMediaUseCaseStateControllerFactory {
     
-    func makeFinished(
+    func make(
         mediaId: UUID,
         audioPlayer: AudioPlayer,
-        context: PlayMediaUseCaseStateControllerContext
+        delegate: PlayMediaUseCaseStateControllerDelegate
     ) -> PlayMediaUseCaseStateController
 }

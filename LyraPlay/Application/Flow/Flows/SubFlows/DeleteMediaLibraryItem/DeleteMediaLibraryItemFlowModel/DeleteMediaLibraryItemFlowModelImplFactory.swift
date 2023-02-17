@@ -27,7 +27,7 @@ public final class DeleteMediaLibraryItemFlowModelImplFactory: DeleteMediaLibrar
 
     // MARK: - Methods
 
-    public func create(
+    public func make(
         itemId: UUID,
         delegate: DeleteMediaLibraryItemFlowDelegate
     ) -> DeleteMediaLibraryItemFlowModel {

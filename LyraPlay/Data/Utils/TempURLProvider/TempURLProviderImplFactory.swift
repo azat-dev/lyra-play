@@ -22,7 +22,7 @@ public class TempURLProviderImplFactory: TempURLProviderFactory {
     
     // MARK: - Methods
     
-    public func create() -> TempURLProvider {
+    public func make() -> TempURLProvider {
         
         return TempURLProviderImpl(fileManager: fileManager)
     }

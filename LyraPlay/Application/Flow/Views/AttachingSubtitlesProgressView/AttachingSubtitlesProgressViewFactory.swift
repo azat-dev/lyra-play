@@ -7,5 +7,5 @@
 
 public protocol AttachingSubtitlesProgressViewFactory {
 
-    func create(viewModel: AttachingSubtitlesProgressViewModel) -> AttachingSubtitlesProgressViewController
+    func make(viewModel: AttachingSubtitlesProgressViewModel) -> AttachingSubtitlesProgressViewController
 }

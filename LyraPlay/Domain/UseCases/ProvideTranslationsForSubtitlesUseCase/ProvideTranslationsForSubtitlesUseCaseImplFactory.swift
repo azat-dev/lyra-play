@@ -30,10 +30,10 @@ public final class ProvideTranslationsForSubtitlesUseCaseImplFactory: ProvideTra
 
     // MARK: - Methods
 
-    public func create() -> ProvideTranslationsForSubtitlesUseCase {
+    public func make() -> ProvideTranslationsForSubtitlesUseCase {
 
-        let textSplitter = textSplitterFactory.create()
-        let lemmatizer = lemmatizerFactory.create()
+        let textSplitter = textSplitterFactory.make()
+        let lemmatizer = lemmatizerFactory.make()
         
         return ProvideTranslationsForSubtitlesUseCaseImpl(
             dictionaryRepository: dictionaryRepository,

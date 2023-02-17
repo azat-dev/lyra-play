@@ -22,9 +22,9 @@ public final class LyricsParserFactory: SubtitlesParserFactory {
 
     // MARK: - Methods
 
-    public func create() -> SubtitlesParser {
+    public func make() -> SubtitlesParser {
 
-        let textSplitter = textSplitterFactory.create()
+        let textSplitter = textSplitterFactory.make()
         return LyricsParser(textSplitter: textSplitter)
     }
 }

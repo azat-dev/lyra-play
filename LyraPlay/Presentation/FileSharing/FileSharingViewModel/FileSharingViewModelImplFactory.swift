@@ -28,12 +28,12 @@ public final class FileSharingViewModelImplFactory: FileSharingViewModelFactory 
 
     // MARK: - Methods
 
-    public func create(
+    public func make(
         fileName: String,
         delegate: FileSharingViewModelDelegate
     ) -> FileSharingViewModel {
         
-        let tempURLProvider = tempURLProviderFactory.create()
+        let tempURLProvider = tempURLProviderFactory.make()
 
         return FileSharingViewModelImpl(
             fileName: fileName,

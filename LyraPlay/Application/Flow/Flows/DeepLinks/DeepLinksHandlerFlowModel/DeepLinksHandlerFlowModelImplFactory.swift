@@ -24,7 +24,7 @@ public final class DeepLinksHandlerFlowModelImplFactory: DeepLinksHandlerFlowMod
 
     // MARK: - Methods
 
-    public func create(applicationFlowModel: ApplicationFlowModel) -> DeepLinksHandlerFlowModel {
+    public func make(applicationFlowModel: ApplicationFlowModel) -> DeepLinksHandlerFlowModel {
         
         let router = DeepLinkRouterImpl(
             routes: [

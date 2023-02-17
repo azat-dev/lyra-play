@@ -39,7 +39,7 @@ extension ApplicationFlowModelImpl {
             return
         }
         
-        let importDictionaryArchiveFlowModel = importDictionaryArchiveFlowModelFactory.create(
+        let importDictionaryArchiveFlowModel = importDictionaryArchiveFlowModelFactory.make(
             url: url,
             mainFlowModel: mainFlowModel,
             delegate: self

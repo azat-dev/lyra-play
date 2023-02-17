@@ -28,9 +28,9 @@ public final class ImportDictionaryArchiveUseCaseImplFactory: ImportDictionaryAr
 
     // MARK: - Methods
 
-    public func create() -> ImportDictionaryArchiveUseCase {
+    public func make() -> ImportDictionaryArchiveUseCase {
 
-        let dictionaryArchiveParser = dictionaryArchiveParserFactory.create()
+        let dictionaryArchiveParser = dictionaryArchiveParserFactory.make()
         
         return ImportDictionaryArchiveUseCaseImpl(
             dictionaryRepository: dictionaryRepository,

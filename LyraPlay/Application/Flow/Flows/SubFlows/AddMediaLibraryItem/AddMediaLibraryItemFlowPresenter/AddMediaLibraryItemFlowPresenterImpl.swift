@@ -67,7 +67,7 @@ extension AddMediaLibraryItemFlowPresenterImpl {
                     return
                 }
                 
-                let view = self.chooseDialogViewFactory.create(viewModel: chooseItemTypeViewModel)
+                let view = self.chooseDialogViewFactory.make(viewModel: chooseItemTypeViewModel)
                 self.activeChooseItemTypeView = view
                 
                 container.present(view, animated: true)
@@ -89,7 +89,7 @@ extension AddMediaLibraryItemFlowPresenterImpl {
                     return
                 }
                 
-                let presenter = self.importMediaFilesFlowPresenterFactory.create(for: flow)
+                let presenter = self.importMediaFilesFlowPresenterFactory.make(for: flow)
                 
                 self.importMediaFilesPresenter = presenter
                 presenter.present(at: container)
@@ -111,7 +111,7 @@ extension AddMediaLibraryItemFlowPresenterImpl {
                     return
                 }
                 
-                let presenter = self.addMediaLibraryFolderFlowPresenterFactory.create(for: flow)
+                let presenter = self.addMediaLibraryFolderFlowPresenterFactory.make(for: flow)
                 
                 self.addMediaLibraryFolderPresenter = presenter
                 presenter.present(at: container)

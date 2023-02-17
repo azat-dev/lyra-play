@@ -9,5 +9,5 @@ import Foundation
 
 public protocol AttachSubtitlesFlowModelFactory {
 
-    func create(mediaId: UUID, delegate: AttachSubtitlesFlowModelDelegate) -> AttachSubtitlesFlowModel
+    func make(mediaId: UUID, delegate: AttachSubtitlesFlowModelDelegate) -> AttachSubtitlesFlowModel
 }

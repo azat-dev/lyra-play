@@ -14,33 +14,26 @@ public class FailedLoadPlayMediaUseCaseStateController: PlayMediaUseCaseStateCon
     public var state: PlayMediaUseCaseState
     
     private let mediaId: UUID
-    private unowned let context: PlayMediaUseCaseStateControllerContext
-    private let statesFactories: FailedLoadPlayMediaUseCaseStateControllerFactories
+    private weak var delegate: PlayMediaUseCaseStateControllerDelegate?
     
     // MARK: - Initializers
 
     public init(
         mediaId: UUID,
-        context: PlayMediaUseCaseStateControllerContext,
-        statesFactories: FailedLoadPlayMediaUseCaseStateControllerFactories
+        context: PlayMediaUseCaseStateControllerDelegate
     ) {
         
         self.state = .failedLoad(mediaId: mediaId)
         
         self.mediaId = mediaId
-        self.context = context
-        self.statesFactories = statesFactories
+        self.delegate = context
     }
     
     // MARK: - Methods
     
     public func prepare(mediaId: UUID) {
         
-        let newState = statesFactories.makeLoading(
-            mediaId: mediaId,
-            context: context
-        )
-        context.set(newState: newState)
+        delegate?.didStartLoading(mediaId: mediaId)
     }
     
     public func play() {}
@@ -51,10 +44,7 @@ public class FailedLoadPlayMediaUseCaseStateController: PlayMediaUseCaseStateCon
     
     public func stop() {
         
-        let newState = statesFactories.makeInitial(
-            context: context
-        )
-        context.set(newState: newState)
+        delegate?.didStop()
     }
     
     public func togglePlay() {}

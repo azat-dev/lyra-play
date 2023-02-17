@@ -14,32 +14,23 @@ public class InitialPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
     
     public var state: PlayMediaUseCaseState
     
-    private unowned let context: PlayMediaUseCaseStateControllerContext
-    
-    private let statesFactories: InitialPlayMediaUseCaseStateControllerFactories
+    private weak var delegate: PlayMediaUseCaseStateControllerDelegate?
     
     // MARK: - Initializers
 
     public init(
-        context: PlayMediaUseCaseStateControllerContext,
-        statesFactories: InitialPlayMediaUseCaseStateControllerFactories
+        delegate: PlayMediaUseCaseStateControllerDelegate
     ) {
         
         self.state = .initial
-        self.context = context
-        self.statesFactories = statesFactories
+        self.delegate = delegate
     }
     
     // MARK: - Methods
     
     public func prepare(mediaId: UUID) {
         
-        let newState = statesFactories.makeLoading(
-            mediaId: mediaId,
-            context: context
-        )
-        
-        context.set(newState: newState)
+        delegate?.didStartLoading(mediaId: mediaId)
     }
     
     public func play() {}

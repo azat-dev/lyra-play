@@ -7,5 +7,5 @@
 
 public protocol AudioSessionFactory {
 
-    func create() -> AudioSession
+    func make() -> AudioSession
 }

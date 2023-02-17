@@ -7,5 +7,5 @@
 
 public protocol DeleteMediaLibraryItemFlowPresenterFactory {
 
-    func create(for flowModel: DeleteMediaLibraryItemFlowModel) -> DeleteMediaLibraryItemFlowPresenter
+    func make(for flowModel: DeleteMediaLibraryItemFlowModel) -> DeleteMediaLibraryItemFlowPresenter
 }

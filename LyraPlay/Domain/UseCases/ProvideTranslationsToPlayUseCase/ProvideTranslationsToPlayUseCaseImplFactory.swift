@@ -22,9 +22,9 @@ public final class ProvideTranslationsToPlayUseCaseImplFactory: ProvideTranslati
     
     // MARK: - Methods
     
-    public func create() -> ProvideTranslationsToPlayUseCase {
+    public func make() -> ProvideTranslationsToPlayUseCase {
         
-        let provideTranslationsForSubtitlesUseCase = provideTranslationsForSubtitlesUseCaseFactory.create()
+        let provideTranslationsForSubtitlesUseCase = provideTranslationsForSubtitlesUseCaseFactory.make()
         
         return ProvideTranslationsToPlayUseCaseImpl(provideTranslationsForSubtitlesUseCase: provideTranslationsForSubtitlesUseCase)
     }

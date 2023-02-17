@@ -30,7 +30,7 @@ public final class AddMediaLibraryItemFlowPresenterImplFactory: AddMediaLibraryI
 
     // MARK: - Methods
 
-    public func create(for flowModel: AddMediaLibraryItemFlowModel) -> AddMediaLibraryItemFlowPresenter {
+    public func make(for flowModel: AddMediaLibraryItemFlowModel) -> AddMediaLibraryItemFlowPresenter {
 
         return AddMediaLibraryItemFlowPresenterImpl(
             flowModel: flowModel,

@@ -9,5 +9,5 @@ import Foundation
 
 public protocol LibraryItemViewModelFactory {
 
-    func create(mediaId: UUID, delegate: LibraryItemViewModelDelegate) -> LibraryItemViewModel
+    func make(mediaId: UUID, delegate: LibraryItemViewModelDelegate) -> LibraryItemViewModel
 }

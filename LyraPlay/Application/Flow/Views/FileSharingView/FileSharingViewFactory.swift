@@ -7,5 +7,5 @@
 
 public protocol FileSharingViewFactory {
 
-    func create(viewModel: FileSharingViewModel) -> FileSharingViewController
+    func make(viewModel: FileSharingViewModel) -> FileSharingViewController
 }

@@ -15,7 +15,7 @@ public final class FilesPickerViewControllerFactory: FilesPickerViewFactory {
 
     // MARK: - Methods
 
-    public func create(viewModel: FilesPickerViewModel) -> FilesPickerViewController {
+    public func make(viewModel: FilesPickerViewModel) -> FilesPickerViewController {
 
         return FilesPickerViewController(viewModel: viewModel)
     }

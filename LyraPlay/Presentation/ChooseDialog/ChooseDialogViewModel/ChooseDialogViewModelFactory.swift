@@ -7,7 +7,7 @@
 
 public protocol ChooseDialogViewModelFactory {
 
-    func create(
+    func make(
         title: String,
         items: [ChooseDialogViewModelItem],
         delegate: ChooseDialogViewModelDelegate

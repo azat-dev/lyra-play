@@ -30,7 +30,7 @@ public final class AddDictionaryItemFlowModelImpl: AddDictionaryItemFlowModel {
         self.delegate = delegate
         self.editDictionaryItemViewModelFactory = editDictionaryItemViewModelFactory
         
-        editDictionaryItemViewModel.value = editDictionaryItemViewModelFactory.create(
+        editDictionaryItemViewModel.value = editDictionaryItemViewModelFactory.make(
             with: .newItem(originalText: originalText ?? ""),
             delegate: self
         )

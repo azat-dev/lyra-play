@@ -14,53 +14,46 @@ public class LoadingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
     public var state: PlayMediaUseCaseState
     
     private let mediaId: UUID
-    private unowned let context: PlayMediaUseCaseStateControllerContext
-    private let statesFactories: LoadingPlayMediaUseCaseStateControllerFactories
+    private weak var delegate: PlayMediaUseCaseStateControllerDelegate?
     
     // MARK: - Initializers
 
     public init(
         mediaId: UUID,
-        context: PlayMediaUseCaseStateControllerContext,
+        delegate: PlayMediaUseCaseStateControllerDelegate,
         loadTrackUseCaseFactory: LoadTrackUseCaseFactory,
-        audioPlayerFactory: AudioPlayerFactory,
-        statesFactories: LoadingPlayMediaUseCaseStateControllerFactories
+        audioPlayerFactory: AudioPlayerFactory
     ) {
         
         self.state = .loading(mediaId: mediaId)
         
         self.mediaId = mediaId
-        self.context = context
-        self.statesFactories = statesFactories
+        self.delegate = delegate
         
         Task {
             
-            let loadTrackUseCase = loadTrackUseCaseFactory.create()
+            let loadTrackUseCase = loadTrackUseCaseFactory.make()
             let loadResult = await loadTrackUseCase.load(trackId: mediaId)
             
             guard case .success(let trackData) = loadResult else {
                 
-                let newState = statesFactories.makeFailedLoad(mediaId: mediaId, context: context)
-                context.set(newState: newState)
+                delegate.didFailedLoad(mediaId: mediaId)
                 return
             }
             
-            let audioPlayer = audioPlayerFactory.create()
+            let audioPlayer = audioPlayerFactory.make()
             let prepareResult = audioPlayer.prepare(fileId: mediaId.uuidString, data: trackData)
             
             guard case .success = prepareResult else {
                 
-                let newState = statesFactories.makeFailedLoad(mediaId: mediaId, context: context)
-                context.set(newState: newState)
+                delegate.didFailedLoad(mediaId: mediaId)
                 return
             }
             
-            let newState = statesFactories.makeLoaded(
+            delegate.didLoaded(
                 mediaId: mediaId,
-                audioPlayer: audioPlayer,
-                context: context
+                audioPlayer: audioPlayer
             )
-            context.set(newState: newState)
         }
     }
     
@@ -68,11 +61,7 @@ public class LoadingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
     
     public func prepare(mediaId: UUID) {
         
-        let newState = statesFactories.makeLoading(
-            mediaId: mediaId,
-            context: context
-        )
-        context.set(newState: newState)
+        delegate?.didStartLoading(mediaId: mediaId)
     }
     
     public func play() {}

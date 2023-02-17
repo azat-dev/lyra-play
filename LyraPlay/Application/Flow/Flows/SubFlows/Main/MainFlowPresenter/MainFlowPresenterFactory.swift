@@ -9,5 +9,5 @@ import Foundation
 
 public protocol MainFlowPresenterFactory {
  
-    func create(flowModel: MainFlowModel) -> MainFlowPresenter
+    func make(flowModel: MainFlowModel) -> MainFlowPresenter
 }

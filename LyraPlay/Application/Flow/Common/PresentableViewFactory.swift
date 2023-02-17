@@ -13,5 +13,5 @@ public protocol PresentableViewFactory {
     
     associatedtype ViewModel
     
-    func create(viewModel: ViewModel) -> View
+    func make(viewModel: ViewModel) -> View
 }

@@ -17,7 +17,7 @@ public final class TextToSpeechConverterImplFactory: TextToSpeechConverterFactor
 
     // MARK: - Methods
 
-    public func create() -> TextToSpeechConverter {
+    public func make() -> TextToSpeechConverter {
 
         return TextToSpeechConverterImpl()
     }

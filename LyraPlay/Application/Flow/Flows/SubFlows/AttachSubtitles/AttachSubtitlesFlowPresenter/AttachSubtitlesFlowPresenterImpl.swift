@@ -64,7 +64,7 @@ extension AttachSubtitlesFlowPresenterImpl {
                     return
                 }
                 
-                let view = self.attachingSubtitlesProgressViewFactory.create(viewModel: progressViewModel)
+                let view = self.attachingSubtitlesProgressViewFactory.make(viewModel: progressViewModel)
                 
                 self.progressView = view
                 container.modalPresentationStyle = .overCurrentContext
@@ -74,7 +74,7 @@ extension AttachSubtitlesFlowPresenterImpl {
             }
             .store(in: &observers)
         
-        let view = subtitlesPickerViewFactory.create(viewModel: flowModel.subtitlesPickerViewModel)
+        let view = subtitlesPickerViewFactory.make(viewModel: flowModel.subtitlesPickerViewModel)
         activeSubtitlesPickerView = view
         
         container.present(view, animated: true)

@@ -36,7 +36,7 @@ extension ManagedAudioFile {
         self.duration = source.duration
     }
     
-    static func create(_ context: NSManagedObjectContext, from domain: MediaLibraryAudioFile) -> ManagedAudioFile {
+    static func make(_ context: NSManagedObjectContext, from domain: MediaLibraryAudioFile) -> ManagedAudioFile {
 
         let item = ManagedAudioFile(context: context)
         

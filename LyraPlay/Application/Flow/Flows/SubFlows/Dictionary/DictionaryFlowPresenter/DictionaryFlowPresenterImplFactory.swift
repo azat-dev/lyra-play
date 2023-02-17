@@ -30,7 +30,7 @@ public final class DictionaryFlowPresenterImplFactory: DictionaryFlowPresenterFa
     
     // MARK: - Methods
     
-    public func create(for flowModel: DictionaryFlowModel) -> DictionaryFlowPresenter {
+    public func make(for flowModel: DictionaryFlowModel) -> DictionaryFlowPresenter {
         
         return DictionaryFlowPresenterImpl(
             flowModel: flowModel,

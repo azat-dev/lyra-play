@@ -11,6 +11,6 @@ public protocol Factory {
     
     associatedtype T
     
-    func create() -> T
+    func make() -> T
 }
 

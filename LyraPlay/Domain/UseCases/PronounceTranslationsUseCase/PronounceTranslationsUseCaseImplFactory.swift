@@ -27,10 +27,10 @@ public final class PronounceTranslationsUseCaseImplFactory: PronounceTranslation
 
     // MARK: - Methods
 
-    public func create() -> PronounceTranslationsUseCase {
+    public func make() -> PronounceTranslationsUseCase {
 
-        let audioPlayer = audioPlayerFactory.create()
-        let textToSpeechConverter = textToSpeechConverterFactory.create()
+        let audioPlayer = audioPlayerFactory.make()
+        let textToSpeechConverter = textToSpeechConverterFactory.make()
         
         return PronounceTranslationsUseCaseImpl(
             textToSpeechConverter: textToSpeechConverter,

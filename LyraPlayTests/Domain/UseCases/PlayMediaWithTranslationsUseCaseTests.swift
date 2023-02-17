@@ -41,7 +41,7 @@ class PlayMediaWithTranslationsUseCaseTests: XCTestCase {
         
         let subtitlesScheduler = SchedulerImpl(timer: subtitlesTimer)
         let schedulerFactory = mock(SchedulerFactory.self)
-        given(schedulerFactory.create()).willReturn(subtitlesScheduler)
+        given(schedulerFactory.make()).willReturn(subtitlesScheduler)
         
         let subtitlesIteratorFactory = SubtitlesIteratorFactoryImpl()
         let playSubtitlesUseCaseFactory = PlaySubtitlesUseCaseImplFactory(

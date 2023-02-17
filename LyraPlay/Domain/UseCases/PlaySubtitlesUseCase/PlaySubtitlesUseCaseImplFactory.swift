@@ -27,10 +27,10 @@ public final class PlaySubtitlesUseCaseImplFactory: PlaySubtitlesUseCaseFactory 
 
     // MARK: - Methods
 
-    public func create(subtitles: Subtitles) -> PlaySubtitlesUseCase {
+    public func make(subtitles: Subtitles) -> PlaySubtitlesUseCase {
 
-        let subtitlesIterator = subtitlesIteratorFactory.create(for: subtitles)
-        let scheduler = schedulerFactory.create()
+        let subtitlesIterator = subtitlesIteratorFactory.make(for: subtitles)
+        let scheduler = schedulerFactory.make()
 
         return PlaySubtitlesUseCaseImpl(
             subtitlesIterator: subtitlesIterator,

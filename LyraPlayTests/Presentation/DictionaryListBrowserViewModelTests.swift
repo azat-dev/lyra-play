@@ -30,7 +30,7 @@ class DictionaryListBrowserViewModelTests: XCTestCase {
         let dictionaryListBrowserItemViewModelFactory = mock(DictionaryListBrowserItemViewModelFactory.self)
         
         given(
-            dictionaryListBrowserItemViewModelFactory.create(
+            dictionaryListBrowserItemViewModelFactory.make(
                 for: any(),
                 isPlaying: any(),
                 delegate: any()

@@ -29,7 +29,7 @@ class ExportDictionaryFlowModelTests: XCTestCase {
         
         let fileSharingViewModelDelegateStore = ValueStore<FileSharingViewModelDelegate>()
         
-        given(fileSharingViewModelFactory.create(fileName: any(), delegate: any()))
+        given(fileSharingViewModelFactory.make(fileName: any(), delegate: any()))
             .will { _, delegate in
                 fileSharingViewModelDelegateStore.value = delegate
                 return fileSharingViewModel

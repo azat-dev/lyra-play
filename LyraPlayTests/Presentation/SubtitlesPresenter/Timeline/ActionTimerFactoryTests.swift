@@ -25,7 +25,7 @@ class ActionTimerFactoryTests: XCTestCase {
         
         let sut = createSUT()
         
-        XCTAssertNotNil(sut.create())
+        XCTAssertNotNil(sut.make())
     }
 }
 

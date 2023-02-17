@@ -22,7 +22,7 @@ public final class AddMediaLibraryFolderFlowPresenterImplFactory: AddMediaLibrar
 
     // MARK: - Methods
 
-    public func create(for flowModel: AddMediaLibraryFolderFlowModel) -> AddMediaLibraryFolderFlowPresenter {
+    public func make(for flowModel: AddMediaLibraryFolderFlowModel) -> AddMediaLibraryFolderFlowPresenter {
 
         return AddMediaLibraryFolderFlowPresenterImpl(
             flowModel: flowModel,

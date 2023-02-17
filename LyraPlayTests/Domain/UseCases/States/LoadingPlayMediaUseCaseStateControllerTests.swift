@@ -16,11 +16,7 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
     typealias SUT = (
         controller: PlayMediaUseCaseStateController,
         loadTrackUseCase: LoadTrackUseCaseMock,
-        context: PlayMediaUseCaseStateControllerContextMock,
-        factories: LoadingPlayMediaUseCaseStateControllerFactoriesMock,
-        loadingState: PlayMediaUseCaseStateControllerMock,
-        loadedState: PlayMediaUseCaseStateControllerMock,
-        failedLoadState: PlayMediaUseCaseStateControllerMock,
+        delegate: PlayMediaUseCaseStateControllerDelegateMock,
         audioPlayer: AudioPlayerMock
     )
     
@@ -32,35 +28,21 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
 
         let loadTrackUseCaseFactory = mock(LoadTrackUseCaseFactory.self)
         
-        given(loadTrackUseCaseFactory.create()).willReturn(loadTrackUseCase)
-        
-        let loadingState = mock(PlayMediaUseCaseStateController.self)
-        let loadedState = mock(PlayMediaUseCaseStateController.self)
-        let failedLoadState = mock(PlayMediaUseCaseStateController.self)
-
-        let factories = mock(LoadingPlayMediaUseCaseStateControllerFactories.self)
+        given(loadTrackUseCaseFactory.make())
+            .willReturn(loadTrackUseCase)
         
         let audioPlayerFactory = mock(AudioPlayerFactory.self)
         
-        given(audioPlayerFactory.create()).willReturn(audioPlayer)
+        given(audioPlayerFactory.make())
+            .willReturn(audioPlayer)
         
-        given(factories.makeLoading(mediaId: any(), context: any()))
-            .willReturn(loadingState)
-        
-        given(factories.makeLoaded(mediaId: any(), audioPlayer: any(), context: any()))
-            .willReturn(loadedState)
-        
-        given(factories.makeFailedLoad(mediaId: any(), context: any()))
-            .willReturn(failedLoadState)
-        
-        let context = mock(PlayMediaUseCaseStateControllerContext.self)
+        let delegate = mock(PlayMediaUseCaseStateControllerDelegate.self)
         
         let controller = LoadingPlayMediaUseCaseStateController(
             mediaId: mediaId,
-            context: context,
+            delegate: delegate,
             loadTrackUseCaseFactory: loadTrackUseCaseFactory,
-            audioPlayerFactory: audioPlayerFactory,
-            statesFactories: factories
+            audioPlayerFactory: audioPlayerFactory
         )
         
         detectMemoryLeak(instance: controller)
@@ -68,11 +50,7 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
         return (
             controller,
             loadTrackUseCase,
-            context,
-            factories,
-            loadingState,
-            loadedState,
-            failedLoadState,
+            delegate,
             audioPlayer
         )
     }
@@ -106,14 +84,8 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
 
         // Then
         verify(
-            sut.factories.makeLoading(
-                mediaId: mediaId2,
-                context: sut.context
-            )
+            sut.delegate.didStartLoading(mediaId: mediaId2)
         ).wasCalled(1)
-        
-        verify(sut.context.set(newState: sut.loadingState))
-            .wasCalled(1)
     }
 }
 

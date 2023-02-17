@@ -9,5 +9,5 @@ import Foundation
 
 public protocol LemmatizerFactory {
     
-    func create() -> Lemmatizer
+    func make() -> Lemmatizer
 }

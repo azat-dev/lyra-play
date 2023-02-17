@@ -62,14 +62,14 @@ extension LibraryFileFlowPresenterImpl {
                     return
                 }
                 
-                let presenter = self.attachSubtitlesFlowPresenterFactory.create(for: attachSubtitlesFlow)
+                let presenter = self.attachSubtitlesFlowPresenterFactory.make(for: attachSubtitlesFlow)
                 self.attachSubtitlesPresenter = presenter
                 presenter.present(at: container)
                 
             }.store(in: &observers)
         
         
-        let view = libraryItemViewFactory.create(viewModel: flow.viewModel)
+        let view = libraryItemViewFactory.make(viewModel: flow.viewModel)
         activeLibraryItemView = view
         
         container.pushViewController(view, animated: true)

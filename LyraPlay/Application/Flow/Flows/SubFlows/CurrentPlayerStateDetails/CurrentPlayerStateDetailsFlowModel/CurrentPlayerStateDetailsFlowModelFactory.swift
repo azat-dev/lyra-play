@@ -7,5 +7,5 @@
 
 public protocol CurrentPlayerStateDetailsFlowModelFactory {
 
-    func create(delegate: CurrentPlayerStateDetailsFlowModelDelegate) -> CurrentPlayerStateDetailsFlowModel
+    func make(delegate: CurrentPlayerStateDetailsFlowModelDelegate) -> CurrentPlayerStateDetailsFlowModel
 }

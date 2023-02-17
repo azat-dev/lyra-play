@@ -9,7 +9,7 @@ import Foundation
 
 public protocol AddMediaLibraryFolderFlowModelFactory {
 
-    func create(
+    func make(
         targetFolderId: UUID?,
         delegate: AddMediaLibraryFolderFlowModelDelegate
     ) -> AddMediaLibraryFolderFlowModel

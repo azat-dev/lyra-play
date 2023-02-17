@@ -36,9 +36,9 @@ public final class ImportAudioFileUseCaseImplFactory: ImportAudioFileUseCaseFact
 
     // MARK: - Methods
 
-    public func create() -> ImportAudioFileUseCase {
+    public func make() -> ImportAudioFileUseCase {
         
-        let tagsParser = tagsParserFactory.create()
+        let tagsParser = tagsParserFactory.make()
 
         return ImportAudioFileUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,

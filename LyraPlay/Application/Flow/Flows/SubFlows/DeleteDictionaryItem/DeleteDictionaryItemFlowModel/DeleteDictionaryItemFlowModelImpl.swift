@@ -30,7 +30,7 @@ public final class DeleteDictionaryItemFlowModelImpl: DeleteDictionaryItemFlowMo
         
         Task {
             
-            let editDictionaryListUseCase = editDictionaryListUseCaseFactory.create()
+            let editDictionaryListUseCase = editDictionaryListUseCaseFactory.make()
             let result = await editDictionaryListUseCase.deleteItem(itemId: itemId)
             
             guard case .success = result else {

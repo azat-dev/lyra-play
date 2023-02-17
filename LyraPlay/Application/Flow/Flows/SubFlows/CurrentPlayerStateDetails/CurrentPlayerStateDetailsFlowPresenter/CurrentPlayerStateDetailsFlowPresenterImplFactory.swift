@@ -22,7 +22,7 @@ public final class CurrentPlayerStateDetailsFlowPresenterImplFactory: CurrentPla
 
     // MARK: - Methods
 
-    public func create(for flowModel: CurrentPlayerStateDetailsFlowModel) -> CurrentPlayerStateDetailsFlowPresenter {
+    public func make(for flowModel: CurrentPlayerStateDetailsFlowModel) -> CurrentPlayerStateDetailsFlowPresenter {
 
         return CurrentPlayerStateDetailsFlowPresenterImpl(
             flowModel: flowModel,

@@ -61,7 +61,7 @@ extension CoreDataDictionaryRepository {
                 return existingItem
             }
             
-            let newItem = ManagedDictionaryItem.create(context, from: item)
+            let newItem = ManagedDictionaryItem.make(context, from: item)
             newItem.createdAt = .now
             try context.save()
             

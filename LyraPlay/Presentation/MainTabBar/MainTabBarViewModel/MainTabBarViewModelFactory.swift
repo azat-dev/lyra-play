@@ -7,5 +7,5 @@
 
 public protocol MainTabBarViewModelFactory {
 
-    func create(delegate: MainTabBarViewModelDelegate) -> MainTabBarViewModel
+    func make(delegate: MainTabBarViewModelDelegate) -> MainTabBarViewModel
 }

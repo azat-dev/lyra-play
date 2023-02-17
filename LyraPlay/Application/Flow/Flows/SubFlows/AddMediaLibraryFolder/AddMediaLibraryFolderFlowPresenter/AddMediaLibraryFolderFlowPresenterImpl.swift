@@ -58,7 +58,7 @@ extension AddMediaLibraryFolderFlowPresenterImpl {
                     return
                 }
                 
-                let view = self.promptFolderNameViewFactory.create(viewModel: promptFolderNameViewModel)
+                let view = self.promptFolderNameViewFactory.make(viewModel: promptFolderNameViewModel)
                 self.activePromptFolderNameView = view
                 view.modalTransitionStyle = .crossDissolve
                 view.modalPresentationStyle = .custom

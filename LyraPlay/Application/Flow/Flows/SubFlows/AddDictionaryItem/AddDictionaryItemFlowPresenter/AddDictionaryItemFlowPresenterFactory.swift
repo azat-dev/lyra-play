@@ -7,5 +7,5 @@
 
 public protocol AddDictionaryItemFlowPresenterFactory {
 
-    func create(for flowModel: AddDictionaryItemFlowModel) -> AddDictionaryItemFlowPresenter
+    func make(for flowModel: AddDictionaryItemFlowModel) -> AddDictionaryItemFlowPresenter
 }

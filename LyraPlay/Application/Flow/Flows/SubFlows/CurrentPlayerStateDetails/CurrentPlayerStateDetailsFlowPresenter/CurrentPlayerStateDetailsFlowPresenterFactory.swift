@@ -7,5 +7,5 @@
 
 public protocol CurrentPlayerStateDetailsFlowPresenterFactory {
 
-    func create(for flowModel: CurrentPlayerStateDetailsFlowModel) -> CurrentPlayerStateDetailsFlowPresenter
+    func make(for flowModel: CurrentPlayerStateDetailsFlowModel) -> CurrentPlayerStateDetailsFlowPresenter
 }

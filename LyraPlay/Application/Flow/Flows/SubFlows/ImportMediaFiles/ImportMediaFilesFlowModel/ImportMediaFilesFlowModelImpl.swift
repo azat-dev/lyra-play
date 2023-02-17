@@ -37,7 +37,7 @@ public final class ImportMediaFilesFlowModelImpl: ImportMediaFilesFlowModel {
         self.filesPickerViewModelFactory = filesPickerViewModelFactory
         self.importAudioFileUseCaseFactory = importAudioFileUseCaseFactory
         
-        self.filesPickerViewModel.value = filesPickerViewModelFactory.create(
+        self.filesPickerViewModel.value = filesPickerViewModelFactory.make(
             documentTypes: allowedDocumentTypes,
             allowsMultipleSelection: true,
             delegate: self
@@ -75,7 +75,7 @@ extension ImportMediaFilesFlowModelImpl {
     
     private func importAudioFiles(urls: [URL]) async {
         
-        let importFileUseCase = importAudioFileUseCaseFactory.create()
+        let importFileUseCase = importAudioFileUseCaseFactory.make()
         
         let numberOfFiles = urls.count
         

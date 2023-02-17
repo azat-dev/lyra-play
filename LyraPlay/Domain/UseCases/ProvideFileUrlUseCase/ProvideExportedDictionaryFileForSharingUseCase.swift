@@ -29,7 +29,7 @@ extension ProvideExportedDictionaryFileForSharingUseCase {
 
     public func provideFile() -> Data? {
         
-        let exportDictionaryUseCase = exportDictionaryUseCaseFactory.create()
+        let exportDictionaryUseCase = exportDictionaryUseCaseFactory.make()
         
         let exportedDictionaryResult = exportDictionaryUseCase.export()
         

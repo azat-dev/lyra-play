@@ -9,5 +9,5 @@ import Foundation
 
 public protocol TextSplitterFactory {
     
-    func create() -> TextSplitter
+    func make() -> TextSplitter
 }

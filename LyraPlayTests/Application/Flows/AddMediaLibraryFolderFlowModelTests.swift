@@ -30,14 +30,14 @@ class AddMediaLibraryFolderFlowModelTests: XCTestCase {
         let editMediaLibraryListUse = mock(EditMediaLibraryListUseCase.self)
         
         let editMediaLibraryListUseCaseFactory = mock(EditMediaLibraryListUseCaseFactory.self)
-        given(editMediaLibraryListUseCaseFactory.create())
+        given(editMediaLibraryListUseCaseFactory.make())
             .willReturn(editMediaLibraryListUse)
 
         let promptDialogViewModel = mock(PromptDialogViewModel.self)
         
         let promptDialogViewModelFactory = mock(PromptDialogViewModelFactory.self)
         given(
-            promptDialogViewModelFactory.create(
+            promptDialogViewModelFactory.make(
                 messageText: any(),
                 submitText: any(),
                 cancelText: any(),

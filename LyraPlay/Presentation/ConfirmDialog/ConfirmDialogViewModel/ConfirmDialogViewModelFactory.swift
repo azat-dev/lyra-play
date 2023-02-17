@@ -7,7 +7,7 @@
 
 public protocol ConfirmDialogViewModelFactory {
 
-    func create(
+    func make(
         messageText: String,
         confirmText: String,
         cancelText: String,

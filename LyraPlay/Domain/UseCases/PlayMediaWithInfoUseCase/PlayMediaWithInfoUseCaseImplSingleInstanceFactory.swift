@@ -31,7 +31,7 @@ public final class PlayMediaWithInfoUseCaseImplSingleInstanceFactory: PlayMediaW
     
     // MARK: - Methods
     
-    public func create() -> PlayMediaWithInfoUseCase {
+    public func make() -> PlayMediaWithInfoUseCase {
         
         defer { semaphore.signal() }
         

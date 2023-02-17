@@ -22,7 +22,7 @@ public final class AddDictionaryItemFlowModelImplFactory: AddDictionaryItemFlowM
 
     // MARK: - Methods
 
-    public func create(
+    public func make(
         originalText: String?,
         delegate: AddDictionaryItemFlowModelDelegate
     ) -> AddDictionaryItemFlowModel {

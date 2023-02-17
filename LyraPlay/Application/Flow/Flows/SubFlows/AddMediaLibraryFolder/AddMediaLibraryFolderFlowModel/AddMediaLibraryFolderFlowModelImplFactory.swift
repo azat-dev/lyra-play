@@ -27,7 +27,7 @@ public final class AddMediaLibraryFolderFlowModelImplFactory: AddMediaLibraryFol
 
     // MARK: - Methods
 
-    public func create(
+    public func make(
         targetFolderId: UUID?,
         delegate: AddMediaLibraryFolderFlowModelDelegate
     ) -> AddMediaLibraryFolderFlowModel {

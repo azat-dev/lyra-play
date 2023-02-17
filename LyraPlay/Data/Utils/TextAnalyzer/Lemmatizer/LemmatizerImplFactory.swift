@@ -15,7 +15,7 @@ public class LemmatizerImplFactory: LemmatizerFactory {
     
     // MARK: - Methods
     
-    public func create() -> Lemmatizer {
+    public func make() -> Lemmatizer {
         
         return LemmatizerImpl()
     }

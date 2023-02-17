@@ -56,7 +56,7 @@ extension ImportMediaFilesFlowPresenterImpl {
                     return
                 }
                 
-                let view = self.filesPickerViewFactory.create(viewModel: filesPickerViewModel)
+                let view = self.filesPickerViewFactory.make(viewModel: filesPickerViewModel)
                 self.activePickerView = view
                 container.present(view, animated: true)
             }.store(in: &observers)

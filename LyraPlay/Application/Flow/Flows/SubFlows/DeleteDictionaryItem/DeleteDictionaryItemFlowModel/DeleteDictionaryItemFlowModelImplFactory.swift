@@ -22,7 +22,7 @@ public final class DeleteDictionaryItemFlowModelImplFactory: DeleteDictionaryIte
 
     // MARK: - Methods
 
-    public func create(
+    public func make(
         itemId: UUID,
         delegate: DeleteDictionaryItemFlowDelegate
     ) -> DeleteDictionaryItemFlowModel {

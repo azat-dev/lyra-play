@@ -41,10 +41,10 @@ public class Application {
     
     public func start(container: UIWindow) {
         
-        let applicationModel = flowModelFactory.create()
-        deepLinksFlowModel = deepLinksModelFactory.create(applicationFlowModel: applicationModel)
+        let applicationModel = flowModelFactory.make()
+        deepLinksFlowModel = deepLinksModelFactory.make(applicationFlowModel: applicationModel)
         
-        let presenter = flowPresenterFactory.create(for: applicationModel)
+        let presenter = flowPresenterFactory.make(for: applicationModel)
         self.presenter = presenter
         
         presenter.present(at: container)

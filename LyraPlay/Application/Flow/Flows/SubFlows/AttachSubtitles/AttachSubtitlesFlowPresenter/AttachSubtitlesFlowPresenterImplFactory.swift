@@ -27,7 +27,7 @@ public final class AttachSubtitlesFlowPresenterImplFactory: AttachSubtitlesFlowP
 
     // MARK: - Methods
 
-    public func create(for flowModel: AttachSubtitlesFlowModel) -> AttachSubtitlesFlowPresenter {
+    public func make(for flowModel: AttachSubtitlesFlowModel) -> AttachSubtitlesFlowPresenter {
 
         return AttachSubtitlesFlowPresenterImpl(
             flowModel: flowModel,

@@ -57,7 +57,7 @@ extension DeleteMediaLibraryItemFlowPresenterImpl {
                     return
                 }
                 
-                let view = self.confirmDialogViewFactory.create(viewModel: viewModel)
+                let view = self.confirmDialogViewFactory.make(viewModel: viewModel)
                 container.present(view, animated: true)
                 self.activeConfirmView = view
                 

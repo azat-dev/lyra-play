@@ -19,7 +19,7 @@ public final class LibraryFileFlowModelImpl: LibraryFileFlowModel {
     public weak var delegate: LibraryFileFlowModelDelegate?
     
     public lazy var viewModel: LibraryItemViewModel = {
-        viewModelFactory.create(mediaId: mediaId, delegate: self)
+        viewModelFactory.make(mediaId: mediaId, delegate: self)
     } ()
     
     public var attachSubtitlesFlow = CurrentValueSubject<AttachSubtitlesFlowModel?, Never>(nil)
@@ -50,7 +50,7 @@ extension LibraryFileFlowModelImpl: LibraryItemViewModelDelegate {
             return
         }
         
-        self.attachSubtitlesFlow.value = attachSubtitlesFlowModelFactory.create(
+        self.attachSubtitlesFlow.value = attachSubtitlesFlowModelFactory.make(
             mediaId: mediaId,
             delegate: self
         )

@@ -9,5 +9,5 @@ import Foundation
 
 public protocol LibraryFileFlowPresenterFactory {
     
-    func create(for: LibraryFileFlowModel) -> LibraryFileFlowPresenter
+    func make(for: LibraryFileFlowModel) -> LibraryFileFlowPresenter
 }

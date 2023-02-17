@@ -22,7 +22,7 @@ public final class ChooseDialogViewController: UIAlertController, ChooseDialogVi
         viewModel.dispose()
     }
     
-    public static func create(viewModel: ViewModel) -> ChooseDialogViewController {
+    public static func make(viewModel: ViewModel) -> ChooseDialogViewController {
         
         let alert = ChooseDialogViewController(
             title: nil,

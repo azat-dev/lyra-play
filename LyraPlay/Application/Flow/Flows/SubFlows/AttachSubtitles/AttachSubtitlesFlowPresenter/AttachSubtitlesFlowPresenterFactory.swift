@@ -7,5 +7,5 @@
 
 public protocol AttachSubtitlesFlowPresenterFactory {
 
-    func create(for flowModel: AttachSubtitlesFlowModel) -> AttachSubtitlesFlowPresenter
+    func make(for flowModel: AttachSubtitlesFlowModel) -> AttachSubtitlesFlowPresenter
 }

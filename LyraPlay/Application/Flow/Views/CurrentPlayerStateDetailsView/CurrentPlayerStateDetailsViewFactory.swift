@@ -7,5 +7,5 @@
 
 public protocol CurrentPlayerStateDetailsViewFactory {
 
-    func create(viewModel: CurrentPlayerStateDetailsViewModel) -> CurrentPlayerStateDetailsViewController
+    func make(viewModel: CurrentPlayerStateDetailsViewModel) -> CurrentPlayerStateDetailsViewController
 }

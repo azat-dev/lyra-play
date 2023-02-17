@@ -17,7 +17,7 @@ public final class CurrentPlayerStateDetailsFlowModelImpl: CurrentPlayerStateDet
     
     public lazy var currentPlayerStateDetailsViewModel: CurrentPlayerStateDetailsViewModel = {
         
-        return self.currentPlayerStateDetailsViewModelFactory.create(delegate: self)
+        return self.currentPlayerStateDetailsViewModelFactory.make(delegate: self)
     } ()
     
     // MARK: - Initializers

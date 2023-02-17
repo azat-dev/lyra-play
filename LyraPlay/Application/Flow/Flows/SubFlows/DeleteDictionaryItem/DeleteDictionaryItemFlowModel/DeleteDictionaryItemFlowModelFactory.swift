@@ -9,7 +9,7 @@ import Foundation
 
 public protocol DeleteDictionaryItemFlowModelFactory {
 
-    func create(
+    func make(
         itemId: UUID,
         delegate: DeleteDictionaryItemFlowDelegate
     ) -> DeleteDictionaryItemFlowModel

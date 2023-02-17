@@ -29,7 +29,7 @@ class PlayMediaWithInfoUseCaseTests: XCTestCase {
         let playMediaWithTranslationsUseCase = mock(PlayMediaWithTranslationsUseCase.self)
         let playMediaWithTranslationsUseCaseFactory = mock(PlayMediaWithTranslationsUseCaseFactory.self)
         
-        given(playMediaWithTranslationsUseCaseFactory.create())
+        given(playMediaWithTranslationsUseCaseFactory.make())
             .willReturn(playMediaWithTranslationsUseCase)
         
         given(playMediaWithTranslationsUseCase.state)
@@ -38,7 +38,7 @@ class PlayMediaWithInfoUseCaseTests: XCTestCase {
         let showMediaInfoUseCase = mock(ShowMediaInfoUseCase.self)
         let showMediaInfoUseCaseFactory = mock(ShowMediaInfoUseCaseFactory.self)
         
-        given(showMediaInfoUseCaseFactory.create())
+        given(showMediaInfoUseCaseFactory.make())
             .willReturn(showMediaInfoUseCase)
         
         let useCase = PlayMediaWithInfoUseCaseImpl(

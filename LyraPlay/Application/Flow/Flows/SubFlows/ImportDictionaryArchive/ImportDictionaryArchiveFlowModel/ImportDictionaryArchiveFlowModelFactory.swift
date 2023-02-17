@@ -9,7 +9,7 @@ import Foundation
 
 public protocol ImportDictionaryArchiveFlowModelFactory {
     
-    func create(
+    func make(
         url: URL,
         mainFlowModel: MainFlowModel,
         delegate: ImportDictionaryArchiveFlowModelDelegate

@@ -7,5 +7,5 @@
 
 public protocol ShowMediaInfoUseCaseFactory {
 
-    func create() -> ShowMediaInfoUseCase
+    func make() -> ShowMediaInfoUseCase
 }

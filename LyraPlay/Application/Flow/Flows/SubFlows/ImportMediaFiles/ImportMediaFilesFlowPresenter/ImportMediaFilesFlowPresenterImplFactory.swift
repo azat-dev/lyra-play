@@ -22,7 +22,7 @@ public final class ImportMediaFilesFlowPresenterImplFactory: ImportMediaFilesFlo
 
     // MARK: - Methods
 
-    public func create(for flowModel: ImportMediaFilesFlowModel) -> ImportMediaFilesFlowPresenter {
+    public func make(for flowModel: ImportMediaFilesFlowModel) -> ImportMediaFilesFlowPresenter {
 
         return ImportMediaFilesFlowPresenterImpl(
             flowModel: flowModel,

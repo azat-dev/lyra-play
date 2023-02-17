@@ -33,10 +33,10 @@ public final class PlayMediaWithTranslationsUseCaseImplFactory: PlayMediaWithTra
 
     // MARK: - Methods
 
-    public func create() -> PlayMediaWithTranslationsUseCase {
+    public func make() -> PlayMediaWithTranslationsUseCase {
 
-        let playMediaWithSubtitlesUseCase = playMediaWithSubtitlesUseCaseFactory.create()
-        let provideTranslationsToPlayUseCase = provideTranslationsToPlayUseCaseFactory.create()
+        let playMediaWithSubtitlesUseCase = playMediaWithSubtitlesUseCaseFactory.make()
+        let provideTranslationsToPlayUseCase = provideTranslationsToPlayUseCaseFactory.make()
         
         return PlayMediaWithTranslationsUseCaseImpl(
             playMediaWithSubtitlesUseCase: playMediaWithSubtitlesUseCase,

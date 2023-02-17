@@ -22,7 +22,7 @@ public final class CoreDataDictionaryRepositoryFactory: DictionaryRepositoryFact
 
     // MARK: - Methods
 
-    public func create() -> DictionaryRepository {
+    public func make() -> DictionaryRepository {
 
         return CoreDataDictionaryRepository(coreDataStore: coreDataStore)
     }

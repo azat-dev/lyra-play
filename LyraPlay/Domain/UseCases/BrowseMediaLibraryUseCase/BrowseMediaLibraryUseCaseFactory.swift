@@ -7,5 +7,5 @@
 
 public protocol BrowseMediaLibraryUseCaseFactory {
 
-    func create() -> BrowseMediaLibraryUseCase
+    func make() -> BrowseMediaLibraryUseCase
 }

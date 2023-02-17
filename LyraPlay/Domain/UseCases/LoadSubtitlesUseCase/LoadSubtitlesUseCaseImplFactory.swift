@@ -30,10 +30,10 @@ public final class LoadSubtitlesUseCaseImplFactory: LoadSubtitlesUseCaseFactory 
 
     // MARK: - Methods
 
-    public func create() -> LoadSubtitlesUseCase {
+    public func make() -> LoadSubtitlesUseCase {
 
-        let subtitlesRepository = subtitlesRepositoryFactory.create()
-        let subtitlesParser = subtitlesParserFactory.create()
+        let subtitlesRepository = subtitlesRepositoryFactory.make()
+        let subtitlesParser = subtitlesParserFactory.make()
         
         return LoadSubtitlesUseCaseImpl(
             subtitlesRepository: subtitlesRepository,

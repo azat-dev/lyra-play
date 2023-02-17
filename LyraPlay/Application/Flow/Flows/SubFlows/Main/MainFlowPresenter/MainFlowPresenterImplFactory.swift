@@ -33,7 +33,7 @@ public class MainFlowPresenterImplFactory: MainFlowPresenterFactory {
     
     // MARK: - Methods
     
-    public func create(flowModel: MainFlowModel) -> MainFlowPresenter {
+    public func make(flowModel: MainFlowModel) -> MainFlowPresenter {
         
         return MainFlowPresenterImpl(
             mainFlowModel: flowModel,

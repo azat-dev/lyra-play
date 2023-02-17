@@ -15,16 +15,14 @@ public class PausedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
 
     private let mediaId: UUID
     private let audioPlayer: AudioPlayer
-    private unowned let context: PlayMediaUseCaseStateControllerContext
-    private let statesFactories: PausedPlayMediaUseCaseStateControllerFactories
+    private weak var delegate: PlayMediaUseCaseStateControllerDelegate?
     
     // MARK: - Initializers
     
     public init(
         mediaId: UUID,
         audioPlayer: AudioPlayer,
-        context: PlayMediaUseCaseStateControllerContext,
-        statesFactories: PausedPlayMediaUseCaseStateControllerFactories
+        delegate: PlayMediaUseCaseStateControllerDelegate
     ) {
         
         let _ = audioPlayer.pause()
@@ -32,29 +30,22 @@ public class PausedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
 
         self.mediaId = mediaId
         self.audioPlayer = audioPlayer
-        self.context = context
-        self.statesFactories = statesFactories
+        self.delegate = delegate
     }
     
     // MARK: - Methods
     
     public func prepare(mediaId: UUID) {
         
-        let newState = statesFactories.makeLoading(
-            mediaId: mediaId,
-            context: context
-        )
-        context.set(newState: newState)
+        delegate?.didStartLoading(mediaId: mediaId)
     }
     
     public func play() {
         
-        let newState = statesFactories.makePlaying(
+        delegate?.didStartPlaying(
             mediaId: mediaId,
-            audioPlayer: audioPlayer,
-            context: context
+            audioPlayer: audioPlayer
         )
-        context.set(newState: newState)
     }
     
     public func play(atTime: TimeInterval) {}
@@ -65,10 +56,7 @@ public class PausedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
         
         let _ = audioPlayer.stop()
 
-        let newState = statesFactories.makeInitial(
-            context: context
-        )
-        context.set(newState: newState)
+        delegate?.didStop()
     }
     
     public func togglePlay() {

@@ -7,7 +7,7 @@
 
 public protocol ExportDictionaryFlowModelFactory {
 
-    func create(
+    func make(
         delegate: ExportDictionaryFlowModelDelegate
     ) -> ExportDictionaryFlowModel
 }

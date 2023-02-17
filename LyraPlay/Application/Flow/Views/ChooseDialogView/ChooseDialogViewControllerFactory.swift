@@ -15,8 +15,8 @@ public final class ChooseDialogViewControllerFactory: ChooseDialogViewFactory {
 
     // MARK: - Methods
 
-    public func create(viewModel: ChooseDialogViewModel) -> ChooseDialogViewController {
+    public func make(viewModel: ChooseDialogViewModel) -> ChooseDialogViewController {
 
-        return ChooseDialogViewController.create(viewModel: viewModel)
+        return ChooseDialogViewController.make(viewModel: viewModel)
     }
 }

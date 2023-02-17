@@ -7,5 +7,5 @@
 
 public protocol ImportAudioFileUseCaseFactory {
 
-    func create() -> ImportAudioFileUseCase
+    func make() -> ImportAudioFileUseCase
 }

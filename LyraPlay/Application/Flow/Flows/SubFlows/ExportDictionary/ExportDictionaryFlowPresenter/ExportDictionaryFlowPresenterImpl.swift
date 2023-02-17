@@ -55,7 +55,7 @@ extension ExportDictionaryFlowPresenterImpl {
                     return
                 }
                 
-                let view = self.fileSharingViewControllerFactory.create(viewModel: fileSharingViewModel)
+                let view = self.fileSharingViewControllerFactory.make(viewModel: fileSharingViewModel)
                 self.activeFileSharingView = view
                 
                 view.popoverPresentationController?.barButtonItem = popoverElement

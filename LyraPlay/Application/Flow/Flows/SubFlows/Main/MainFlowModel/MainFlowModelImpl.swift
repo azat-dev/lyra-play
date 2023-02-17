@@ -23,7 +23,7 @@ public final class MainFlowModelImpl: MainFlowModel {
 
     public lazy var mainTabBarViewModel: MainTabBarViewModel = {
         
-        return mainTabBarViewModelFactory.create(delegate: self)
+        return mainTabBarViewModelFactory.make(delegate: self)
     } ()
 
     // MARK: - Initializers
@@ -64,7 +64,7 @@ extension MainFlowModelImpl: MainTabBarViewModelDelegate {
             return
         }
         
-        libraryFlow.value = libraryFlowModelFactory.create(folderId: nil)
+        libraryFlow.value = libraryFlowModelFactory.make(folderId: nil)
     }
     
     public func runDictionaryFlow() {
@@ -73,7 +73,7 @@ extension MainFlowModelImpl: MainTabBarViewModelDelegate {
             return
         }
         
-        dictionaryFlow.value = dictionaryFlowModelFactory.create()
+        dictionaryFlow.value = dictionaryFlowModelFactory.make()
     }
     
     public func runOpenCurrentPlayerStateDetailsFlow() {
@@ -82,7 +82,7 @@ extension MainFlowModelImpl: MainTabBarViewModelDelegate {
             return
         }
         
-        currentPlayerStateDetailsFlow.value = currentPlayerStateDetailsFlowModelFactory.create(delegate: self)
+        currentPlayerStateDetailsFlow.value = currentPlayerStateDetailsFlowModelFactory.make(delegate: self)
     }
 }
 

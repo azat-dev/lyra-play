@@ -45,7 +45,7 @@
 //        
 //        let mainTabBarViewFactory = mock(MainTabBarViewFactory.self)
 //        
-//        given(mainTabBarViewFactory.create(viewModel: viewModel))
+//        given(mainTabBarViewFactory.make(viewModel: viewModel))
 //            .willReturn(mainTabBarView)
 //        
 //        let flow = mock(MainFlowModel.self)
@@ -62,7 +62,7 @@
 //        let libraryFlowPresenter = mock(LibraryFlowPresenter.self)
 //        
 //        let libraryFlowPresenterFactory = mock(LibraryFlowPresenterFactory.self)
-//        given(libraryFlowPresenterFactory.create(for: any()))
+//        given(libraryFlowPresenterFactory.make(for: any()))
 //            .willReturn(libraryFlowPresenter)
 //        
 //
@@ -74,7 +74,7 @@
 //        let dictionaryFlowPresenter = mock(DictionaryFlowPresenter.self)
 //        
 //        let dictionaryFlowPresenterFactory = mock(DictionaryFlowPresenterFactory.self)
-//        given(dictionaryFlowPresenterFactory.create(for: any()))
+//        given(dictionaryFlowPresenterFactory.make(for: any()))
 //            .willReturn(dictionaryFlowPresenter)
 //
 //        let presenter = MainFlowPresenterImpl(

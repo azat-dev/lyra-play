@@ -50,7 +50,7 @@ public final class AddMediaLibraryItemFlowModelImpl: AddMediaLibraryItemFlowMode
     
     private func showChooseTypeDialog() {
         
-        let viewModel = chooseDialogViewModelFactory.create(
+        let viewModel = chooseDialogViewModelFactory.make(
             title: "Add library item",
             items: [
                 .init(id: Variants.importMediaFiles.rawValue, title: "Import Files"),
@@ -106,7 +106,7 @@ extension AddMediaLibraryItemFlowModelImpl: ChooseDialogViewModelDelegate {
             return
         }
         
-        let addMediaLibraryFolderFlow = addMediaLibraryFolderFlowModelFactory.create(
+        let addMediaLibraryFolderFlow = addMediaLibraryFolderFlowModelFactory.make(
             targetFolderId: targetFolderId,
             delegate: self
         )
@@ -120,7 +120,7 @@ extension AddMediaLibraryItemFlowModelImpl: ChooseDialogViewModelDelegate {
             return
         }
         
-        let importMediaFilesFlow = importMediaFilesFlowModelFactory.create(
+        let importMediaFilesFlow = importMediaFilesFlowModelFactory.make(
             targetFolderId: targetFolderId,
             delegate: self
         )

@@ -7,14 +7,10 @@
 
 import Foundation
 
-public protocol FailedLoadPlayMediaUseCaseStateControllerFactories:
-    InitialPlayMediaUseCaseStateControllerFactory,
-    LoadingPlayMediaUseCaseStateControllerFactory {}
-
 public protocol FailedLoadPlayMediaUseCaseStateControllerFactory {
     
-    func makeFailedLoad(
+    func make(
         mediaId: UUID,
-        context: PlayMediaUseCaseStateControllerContext
+        delegate: PlayMediaUseCaseStateControllerDelegate
     ) -> PlayMediaUseCaseStateController
 }

@@ -27,9 +27,9 @@ public final class ManageSubtitlesUseCaseImplFactory: ManageSubtitlesUseCaseFact
     
     // MARK: - Methods
     
-    public func create() -> ManageSubtitlesUseCase {
+    public func make() -> ManageSubtitlesUseCase {
         
-        let subtitlesRepository = subtitlesRepositoryFactory.create()
+        let subtitlesRepository = subtitlesRepositoryFactory.make()
         
         return ManageSubtitlesUseCaseImpl(
             subtitlesRepository: subtitlesRepository,

@@ -22,7 +22,7 @@ public final class BrowseDictionaryUseCaseImplFactory: BrowseDictionaryUseCaseFa
 
     // MARK: - Methods
 
-    public func create() -> BrowseDictionaryUseCase {
+    public func make() -> BrowseDictionaryUseCase {
 
         return BrowseDictionaryUseCaseImpl(dictionaryRepository: dictionaryRepository)
     }

@@ -33,10 +33,10 @@ public final class ImportSubtitlesUseCaseImplFactory: ImportSubtitlesUseCaseFact
     
     // MARK: - Methods
     
-    public func create() -> ImportSubtitlesUseCase {
+    public func make() -> ImportSubtitlesUseCase {
         
-        let subtitlesRepository = subtitlesRepositoryFactory.create()
-        let subtitlesParser = subtitlesParserFactory.create()
+        let subtitlesRepository = subtitlesRepositoryFactory.make()
+        let subtitlesParser = subtitlesParserFactory.make()
         
         return ImportSubtitlesUseCaseImpl(
             supportedExtensions: supportedExtensions,

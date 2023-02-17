@@ -7,5 +7,5 @@
 
 public protocol BrowseDictionaryUseCaseFactory {
 
-    func create() -> BrowseDictionaryUseCase
+    func make() -> BrowseDictionaryUseCase
 }

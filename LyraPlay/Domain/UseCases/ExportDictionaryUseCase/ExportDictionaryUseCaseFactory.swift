@@ -7,5 +7,5 @@
 
 public protocol ExportDictionaryUseCaseFactory {
 
-    func create() -> ExportDictionaryUseCase
+    func make() -> ExportDictionaryUseCase
 }

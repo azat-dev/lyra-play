@@ -33,7 +33,7 @@ public final class LibraryFolderFlowModelImplFactory: LibraryFolderFlowModelFact
 
     // MARK: - Methods
 
-    public func create(folderId: UUID?) -> LibraryFolderFlowModel {
+    public func make(folderId: UUID?) -> LibraryFolderFlowModel {
 
         return LibraryFolderFlowModelImpl(
             folderId: folderId,

@@ -23,26 +23,26 @@ class MainFlowModelTests: XCTestCase {
         let libraryFlowModel = mock(LibraryFolderFlowModel.self)
         let libraryFlowModelFactory = mock(LibraryFolderFlowModelFactory.self)
         
-        given(libraryFlowModelFactory.create(folderId: folderId))
+        given(libraryFlowModelFactory.make(folderId: folderId))
             .willReturn(libraryFlowModel)
         
         let dictionaryFlowModel = mock(DictionaryFlowModel.self)
         let dictionaryFlowModelFactory = mock(DictionaryFlowModelFactory.self)
         
-        given(dictionaryFlowModelFactory.create())
+        given(dictionaryFlowModelFactory.make())
             .willReturn(dictionaryFlowModel)
         
         
         let currentPlayerStateDetailsFlowModel = mock(CurrentPlayerStateDetailsFlowModel.self)
         let currentPlayerStateDetailsFlowModelFactory = mock(CurrentPlayerStateDetailsFlowModelFactory.self)
         
-        given(currentPlayerStateDetailsFlowModelFactory.create(delegate: any()))
+        given(currentPlayerStateDetailsFlowModelFactory.make(delegate: any()))
             .willReturn(currentPlayerStateDetailsFlowModel)
         
         let mainTabBarViewModel = mock(MainTabBarViewModel.self)
         let mainTabBarViewModelFactory = mock(MainTabBarViewModelFactory.self)
         
-        given(mainTabBarViewModelFactory.create(delegate: any()))
+        given(mainTabBarViewModelFactory.make(delegate: any()))
             .willReturn(mainTabBarViewModel)
         
         let flow = MainFlowModelImpl(

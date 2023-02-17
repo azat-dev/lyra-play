@@ -30,7 +30,7 @@ public final class DictionaryListBrowserViewModelImplFactory: DictionaryListBrow
 
     // MARK: - Methods
 
-    public func create(delegate: DictionaryListBrowserViewModelDelegate) -> DictionaryListBrowserViewModel {
+    public func make(delegate: DictionaryListBrowserViewModelDelegate) -> DictionaryListBrowserViewModel {
 
         return DictionaryListBrowserViewModelImpl(
             delegate: delegate,

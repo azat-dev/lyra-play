@@ -22,9 +22,9 @@ public final class CurrentPlayerStateViewModelImplFactory: CurrentPlayerStateVie
     
     // MARK: - Methods
     
-    public func create(delegate: CurrentPlayerStateViewModelDelegate) -> CurrentPlayerStateViewModel {
+    public func make(delegate: CurrentPlayerStateViewModelDelegate) -> CurrentPlayerStateViewModel {
         
-        let playMediaUseCase = playMediaUseCaseFactory.create()
+        let playMediaUseCase = playMediaUseCaseFactory.make()
         
         return CurrentPlayerStateViewModelImpl(
             delegate: delegate,

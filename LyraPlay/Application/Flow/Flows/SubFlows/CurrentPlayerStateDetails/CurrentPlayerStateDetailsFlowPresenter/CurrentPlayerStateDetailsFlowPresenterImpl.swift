@@ -36,7 +36,7 @@ extension CurrentPlayerStateDetailsFlowPresenterImpl {
 
     public func present(at container: UINavigationController) {
 
-        let view = currentPlayerStateDetailsViewControllerFactory.create(viewModel: flowModel.currentPlayerStateDetailsViewModel)
+        let view = currentPlayerStateDetailsViewControllerFactory.make(viewModel: flowModel.currentPlayerStateDetailsViewModel)
         activeView = view
 
         view.modalPresentationStyle = .overFullScreen

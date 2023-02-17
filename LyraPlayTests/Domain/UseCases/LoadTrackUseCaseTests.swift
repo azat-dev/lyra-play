@@ -44,7 +44,7 @@ class LoadTrackUseCaseTests: XCTestCase {
 //        let testData = "testdata".data(using: .utf8)!
 //        let testName = "test.mp3"
 //
-//        let testFileInfo = MediaLibraryAudioFile.create(name: "test", duration: 10, audioFile: testName)
+//        let testFileInfo = MediaLibraryAudioFile.make(name: "test", duration: 10, audioFile: testName)
 //
 //        let _ = await audioFilesRepository.putFile(name: testName, data: testData)
 //

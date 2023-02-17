@@ -18,7 +18,7 @@ public final class DictionaryFlowModelImpl: DictionaryFlowModel {
     private let exportDictionaryFlowModelFactory: ExportDictionaryFlowModelFactory
     
     public lazy var listViewModel: DictionaryListBrowserViewModel  = {
-        return viewModelFactory.create(delegate: self)
+        return viewModelFactory.make(delegate: self)
     } ()
     
     public var addDictionaryItemFlow = CurrentValueSubject<AddDictionaryItemFlowModel?, Never>(nil)
@@ -100,7 +100,7 @@ extension DictionaryFlowModelImpl: DictionaryListBrowserViewModelDelegate {
             return
         }
         
-        addDictionaryItemFlow.value = addDictionaryItemFlowModelFactory.create(
+        addDictionaryItemFlow.value = addDictionaryItemFlowModelFactory.make(
             originalText: "",
             delegate: self
         )
@@ -112,7 +112,7 @@ extension DictionaryFlowModelImpl: DictionaryListBrowserViewModelDelegate {
             return
         }
         
-        deleteDictionaryItemFlow.value = deleteDictionaryItemFlowModelFactory.create(
+        deleteDictionaryItemFlow.value = deleteDictionaryItemFlowModelFactory.make(
             itemId: itemId,
             delegate: self
         )
@@ -129,7 +129,7 @@ extension DictionaryFlowModelImpl: ExportDictionaryFlowModelDelegate {
             return
         }
         
-        exportDictionaryFlow.value = exportDictionaryFlowModelFactory.create(
+        exportDictionaryFlow.value = exportDictionaryFlowModelFactory.make(
             delegate: self
         )
     }

@@ -33,7 +33,7 @@ public final class AttachSubtitlesFlowModelImplFactory: AttachSubtitlesFlowModel
 
     // MARK: - Methods
 
-    public func create(mediaId: UUID, delegate: AttachSubtitlesFlowModelDelegate) -> AttachSubtitlesFlowModel {
+    public func make(mediaId: UUID, delegate: AttachSubtitlesFlowModelDelegate) -> AttachSubtitlesFlowModel {
 
         return AttachSubtitlesFlowModelImpl(
             mediaId: mediaId,

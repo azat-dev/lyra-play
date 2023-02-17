@@ -15,34 +15,19 @@ class InitialPlayMediaUseCaseStateControllerTests: XCTestCase {
     
     typealias SUT = (
         controller: PlayMediaUseCaseStateController,
-        context: PlayMediaUseCaseStateControllerContext,
-        factories: InitialPlayMediaUseCaseStateControllerFactories,
-        loadingState: PlayMediaUseCaseStateController
+        delegate: PlayMediaUseCaseStateControllerDelegateMock
     )
     
     func createSUT() -> SUT {
         
-        let loadingState = mock(PlayMediaUseCaseStateController.self)
-
-        let factories = mock(InitialPlayMediaUseCaseStateControllerFactories.self)
-        
-        given(factories.makeLoading(mediaId: any(), context: any()))
-            .willReturn(loadingState)
-        
-        let context = mock(PlayMediaUseCaseStateControllerContext.self)
-        
-        let controller = InitialPlayMediaUseCaseStateController(
-            context: context,
-            statesFactories: factories
-        )
+        let delegate = mock(PlayMediaUseCaseStateControllerDelegate.self)
+        let controller = InitialPlayMediaUseCaseStateController(delegate: delegate)
         
         detectMemoryLeak(instance: controller)
         
         return (
             controller,
-            context,
-            factories,
-            loadingState
+            delegate
         )
     }
     
@@ -56,14 +41,10 @@ class InitialPlayMediaUseCaseStateControllerTests: XCTestCase {
         let mediaId = UUID()
         
         // When
-        await sut.controller.prepare(mediaId: mediaId)
+        sut.controller.prepare(mediaId: mediaId)
         
         // Then
-        verify(sut.factories.makeLoading(mediaId: mediaId, context: sut.context))
-            .wasCalled(1)
-        
-        verify(sut.context.set(newState: sut.loadingState))
+        verify(sut.delegate.didStartLoading(mediaId: mediaId))
             .wasCalled(1)
     }
 }
-

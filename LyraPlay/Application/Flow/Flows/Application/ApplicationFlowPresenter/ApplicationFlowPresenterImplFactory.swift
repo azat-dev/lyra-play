@@ -15,7 +15,7 @@ public final class ApplicationFlowPresenterImplFactory: ApplicationFlowPresenter
 
     // MARK: - Methods
 
-    public func create(for flowModel: ApplicationFlowModel) -> ApplicationFlowPresenter {
+    public func make(for flowModel: ApplicationFlowModel) -> ApplicationFlowPresenter {
 
         
         let filesPickerViewFactory = FilesPickerViewControllerFactory()

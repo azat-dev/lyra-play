@@ -7,7 +7,7 @@
 
 public protocol AddDictionaryItemFlowModelFactory {
 
-    func create(
+    func make(
         originalText: String?,
         delegate: AddDictionaryItemFlowModelDelegate
     ) -> AddDictionaryItemFlowModel

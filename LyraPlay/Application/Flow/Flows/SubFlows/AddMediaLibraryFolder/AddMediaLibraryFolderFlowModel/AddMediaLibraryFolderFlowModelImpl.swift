@@ -39,7 +39,7 @@ public final class AddMediaLibraryFolderFlowModelImpl: AddMediaLibraryFolderFlow
     
     private func showPromptDialog() {
         
-        let promptViewModel = promptDialogViewModelFactory.create(
+        let promptViewModel = promptDialogViewModelFactory.make(
             messageText: "Create a new folder",
             submitText: "Create",
             cancelText: "Cancel",
@@ -70,7 +70,7 @@ extension AddMediaLibraryFolderFlowModelImpl: PromptDialogViewModelDelegate {
             return
         }
         
-        let editMediaLibraryListUseCase = editMediaLibraryListUseCaseFactory.create()
+        let editMediaLibraryListUseCase = editMediaLibraryListUseCaseFactory.make()
         
         let folderData = NewMediaLibraryFolderData(
             parentId: targetFolderId,

@@ -9,5 +9,5 @@ import Foundation
 
 public protocol LibraryFolderFlowModelFactory {
     
-    func create(folderId: UUID?) -> LibraryFolderFlowModel
+    func make(folderId: UUID?) -> LibraryFolderFlowModel
 }

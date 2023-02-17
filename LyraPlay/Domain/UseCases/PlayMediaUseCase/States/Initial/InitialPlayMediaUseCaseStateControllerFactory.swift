@@ -7,9 +7,7 @@
 
 import Foundation
 
-public protocol InitialPlayMediaUseCaseStateControllerFactories: LoadingPlayMediaUseCaseStateControllerFactory {}
-
 public protocol InitialPlayMediaUseCaseStateControllerFactory: AnyObject {
     
-    func makeInitial(context: PlayMediaUseCaseStateControllerContext) -> PlayMediaUseCaseStateController
+    func make(delegate: PlayMediaUseCaseStateControllerDelegate) -> PlayMediaUseCaseStateController
 }

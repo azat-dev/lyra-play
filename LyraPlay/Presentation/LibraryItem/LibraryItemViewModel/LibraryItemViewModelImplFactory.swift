@@ -27,12 +27,12 @@ public final class LibraryItemViewModelImplFactory: LibraryItemViewModelFactory 
 
     // MARK: - Methods
 
-    public func create(
+    public func make(
         mediaId: UUID,
         delegate: LibraryItemViewModelDelegate
     ) -> LibraryItemViewModel {
         
-        let playMediaUseCase = playMediaUseCaseFactory.create()
+        let playMediaUseCase = playMediaUseCaseFactory.make()
 
         return LibraryItemViewModelImpl(
             trackId: mediaId,

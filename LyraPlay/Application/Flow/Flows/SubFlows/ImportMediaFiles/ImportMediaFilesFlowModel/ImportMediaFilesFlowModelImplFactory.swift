@@ -30,7 +30,7 @@ public final class ImportMediaFilesFlowModelImplFactory: ImportMediaFilesFlowMod
 
     // MARK: - Methods
 
-    public func create(
+    public func make(
         targetFolderId: UUID?,
         delegate: ImportMediaFilesFlowModelDelegate
     ) -> ImportMediaFilesFlowModel {

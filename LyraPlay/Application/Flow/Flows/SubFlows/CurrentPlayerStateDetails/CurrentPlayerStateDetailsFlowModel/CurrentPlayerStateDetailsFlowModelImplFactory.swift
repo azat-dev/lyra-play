@@ -22,7 +22,7 @@ public final class CurrentPlayerStateDetailsFlowModelImplFactory: CurrentPlayerS
 
     // MARK: - Methods
 
-    public func create(delegate: CurrentPlayerStateDetailsFlowModelDelegate) -> CurrentPlayerStateDetailsFlowModel {
+    public func make(delegate: CurrentPlayerStateDetailsFlowModelDelegate) -> CurrentPlayerStateDetailsFlowModel {
 
         return CurrentPlayerStateDetailsFlowModelImpl(
             delegate: delegate,

@@ -33,7 +33,7 @@ public final class DictionaryFlowModelImplFactory: DictionaryFlowModelFactory {
 
     // MARK: - Methods
 
-    public func create() -> DictionaryFlowModel {
+    public func make() -> DictionaryFlowModel {
 
         return DictionaryFlowModelImpl(
             viewModelFactory: viewModelFactory,

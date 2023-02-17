@@ -7,5 +7,5 @@
 
 public protocol ImportDictionaryArchiveUseCaseFactory {
 
-    func create() -> ImportDictionaryArchiveUseCase
+    func make() -> ImportDictionaryArchiveUseCase
 }

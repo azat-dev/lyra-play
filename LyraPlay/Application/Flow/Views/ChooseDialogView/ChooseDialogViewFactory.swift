@@ -7,5 +7,5 @@
 
 public protocol ChooseDialogViewFactory {
 
-    func create(viewModel: ChooseDialogViewModel) -> ChooseDialogViewController
+    func make(viewModel: ChooseDialogViewModel) -> ChooseDialogViewController
 }

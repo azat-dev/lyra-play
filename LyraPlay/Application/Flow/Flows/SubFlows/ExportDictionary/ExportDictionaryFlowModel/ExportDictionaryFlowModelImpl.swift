@@ -20,7 +20,7 @@ public final class ExportDictionaryFlowModelImpl: ExportDictionaryFlowModel {
 
     public lazy var fileSharingViewModel: CurrentValueSubject<FileSharingViewModel?, Never> = {
         
-        let fileSharingViewModel = fileSharingViewModelFactory.create(
+        let fileSharingViewModel = fileSharingViewModelFactory.make(
             fileName: self.outputFilename,
             delegate: self
         )

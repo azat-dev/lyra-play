@@ -35,7 +35,7 @@ extension SubtitlesParserImpl {
             return .failure(.internalError(nil))
         }
         
-        let parser = parserFactory.create()
+        let parser = parserFactory.make()
         return await parser.parse(text, fileName: fileName)
     }
 }

@@ -33,7 +33,7 @@ public final class MainFlowModelImplFactory: MainFlowModelFactory {
 
     // MARK: - Methods
 
-    public func create() -> MainFlowModel {
+    public func make() -> MainFlowModel {
 
         return MainFlowModelImpl(
             mainTabBarViewModelFactory: mainTabBarViewModelFactory,

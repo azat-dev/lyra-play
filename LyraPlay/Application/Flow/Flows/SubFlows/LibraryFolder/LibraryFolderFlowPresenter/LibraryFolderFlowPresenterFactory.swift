@@ -9,6 +9,6 @@ import Foundation
 
 public protocol LibraryFolderFlowPresenterFactory {
     
-    func create(for flowModel: LibraryFolderFlowModel) -> LibraryFolderFlowPresenter
+    func make(for flowModel: LibraryFolderFlowModel) -> LibraryFolderFlowPresenter
 }
 

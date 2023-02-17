@@ -14,69 +14,54 @@ public class LoadedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
     public var state: PlayMediaUseCaseState
     
     private let mediaId: UUID
-    private unowned let context: PlayMediaUseCaseStateControllerContext
+    private weak var delegate: PlayMediaUseCaseStateControllerDelegate?
     private let audioPlayer: AudioPlayer
-    private let statesFactories: LoadedPlayMediaUseCaseStateControllerFactories
     
     // MARK: - Initializers
 
     public init(
         mediaId: UUID,
         audioPlayer: AudioPlayer,
-        context: PlayMediaUseCaseStateControllerContext,
-        statesFactories: LoadedPlayMediaUseCaseStateControllerFactories
+        delegate: PlayMediaUseCaseStateControllerDelegate
     ) {
         
         self.state = .loaded(mediaId: mediaId)
         
         self.mediaId = mediaId
         self.audioPlayer = audioPlayer
-        self.context = context
-        self.statesFactories = statesFactories
+        self.delegate = delegate
     }
     
     // MARK: - Methods
     
     public func prepare(mediaId: UUID) {
         
-        let newState = statesFactories.makeLoading(
-            mediaId: mediaId,
-            context: context
-        )
-        
-        context.set(newState: newState)
+        delegate?.didStartLoading(mediaId: mediaId)
     }
     
     public func play() {
         
-        let newState = statesFactories.makePlaying(
+        delegate?.didStartPlaying(
             mediaId: mediaId,
-            audioPlayer: audioPlayer,
-            context: context
+            audioPlayer: audioPlayer
         )
-        
-        context.set(newState: newState)
     }
     
     public func play(atTime: TimeInterval) {}
     
     public func pause() {
         
-        let newState = statesFactories.makePaused(
+        delegate?.didPause(
             mediaId: mediaId,
-            audioPlayer: audioPlayer,
-            context: context
+            audioPlayer: audioPlayer
         )
-        
-        context.set(newState: newState)
     }
     
     public func stop() {
         
         let _ = audioPlayer.stop()
         
-        let newState = statesFactories.makeInitial(context: context)
-        context.set(newState: newState)
+        delegate?.didStop()
     }
     
     public func togglePlay() {

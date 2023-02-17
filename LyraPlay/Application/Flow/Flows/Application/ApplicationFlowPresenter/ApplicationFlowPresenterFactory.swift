@@ -7,5 +7,5 @@
 
 public protocol ApplicationFlowPresenterFactory {
 
-    func create(for flowModel: ApplicationFlowModel) -> ApplicationFlowPresenter
+    func make(for flowModel: ApplicationFlowModel) -> ApplicationFlowPresenter
 }

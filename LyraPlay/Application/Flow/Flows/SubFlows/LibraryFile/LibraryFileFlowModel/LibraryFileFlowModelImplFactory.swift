@@ -27,7 +27,7 @@ public final class LibraryFileFlowModelImplFactory: LibraryFileFlowModelFactory 
     
     // MARK: - Methods
     
-    public func create(for mediaId: UUID, delegate: LibraryFileFlowModelDelegate) -> LibraryFileFlowModel {
+    public func make(for mediaId: UUID, delegate: LibraryFileFlowModelDelegate) -> LibraryFileFlowModel {
 
         return LibraryFileFlowModelImpl(
             mediaId: mediaId,

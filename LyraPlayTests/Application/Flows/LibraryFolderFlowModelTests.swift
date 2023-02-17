@@ -25,7 +25,7 @@ class LibraryFolderFlowModelTests: XCTestCase {
         let viewModel = mock(MediaLibraryBrowserViewModel.self)
         let viewModelFactory = mock(MediaLibraryBrowserViewModelFactory.self)
         
-        given(viewModelFactory.create(folderId: folderId, delegate: any()))
+        given(viewModelFactory.make(folderId: folderId, delegate: any()))
             .willReturn(viewModel)
         
         let libraryFileFlow = mock(LibraryFileFlowModel.self)
@@ -33,7 +33,7 @@ class LibraryFolderFlowModelTests: XCTestCase {
         
         let addMediaLibraryItemFlowModelFactory = mock(AddMediaLibraryItemFlowModelFactory.self)
         
-        given(libraryFileFlowModelFactory.create(for: any(), delegate: any()))
+        given(libraryFileFlowModelFactory.make(for: any(), delegate: any()))
             .willReturn(libraryFileFlow)
         
         let deleteMediaLibraryItemFlowModelFactory = mock(DeleteMediaLibraryItemFlowModelFactory.self)
@@ -72,7 +72,7 @@ class LibraryFolderFlowModelTests: XCTestCase {
         let sut = createSUT(folderId: nil)
         let libraryItemFlowSequence = expectSequence([false, true])
         
-        given(sut.libraryFileFlowModelFactory.create(for: itemId, delegate: any()))
+        given(sut.libraryFileFlowModelFactory.make(for: itemId, delegate: any()))
             .willReturn(sut.libraryFileFlow)
         
         let observer = sut.flow.libraryItemFlow.sink { value in

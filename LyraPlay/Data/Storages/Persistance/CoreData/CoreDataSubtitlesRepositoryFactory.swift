@@ -26,7 +26,7 @@ public class CoreDataSubtitlesRepositoryFactory: SubtitlesRepositoryFactory {
     
     // MARK: - Methods
     
-    public func create() -> SubtitlesRepository {
+    public func make() -> SubtitlesRepository {
         defer { semaphore.signal() }
         
         semaphore.wait()
