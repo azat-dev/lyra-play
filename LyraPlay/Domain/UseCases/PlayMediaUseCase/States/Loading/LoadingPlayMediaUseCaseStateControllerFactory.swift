@@ -12,5 +12,5 @@ public protocol LoadingPlayMediaUseCaseStateControllerFactory {
     func make(
         mediaId: UUID,
         delegate: PlayMediaUseCaseStateControllerDelegate
-    ) -> PlayMediaUseCaseStateController
+    ) -> LoadingPlayMediaUseCaseStateController
 }

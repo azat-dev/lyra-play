@@ -13,5 +13,5 @@ public protocol PlayingPlayMediaUseCaseStateControllerFactory {
         mediaId: UUID,
         audioPlayer: AudioPlayer,
         delegate: PlayMediaUseCaseStateControllerDelegate
-    ) -> PlayMediaUseCaseStateController
+    ) -> PlayingPlayMediaUseCaseStateController
 }

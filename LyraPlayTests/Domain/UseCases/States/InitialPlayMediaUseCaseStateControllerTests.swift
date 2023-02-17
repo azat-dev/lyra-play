@@ -21,7 +21,7 @@ class InitialPlayMediaUseCaseStateControllerTests: XCTestCase {
     func createSUT() -> SUT {
         
         let delegate = mock(PlayMediaUseCaseStateControllerDelegate.self)
-        let controller = InitialPlayMediaUseCaseStateController(delegate: delegate)
+        let controller = InitialPlayMediaUseCaseStateControllerImpl(delegate: delegate)
         
         detectMemoryLeak(instance: controller)
         

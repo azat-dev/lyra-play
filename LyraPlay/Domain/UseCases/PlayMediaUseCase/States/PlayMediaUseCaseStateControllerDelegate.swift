@@ -13,15 +13,13 @@ public protocol PlayMediaUseCaseStateControllerDelegate: AnyObject {
     
     func didStartLoading(mediaId: UUID)
     
-    func didFailedLoad(mediaId: UUID)
+    func didFailLoad(mediaId: UUID)
     
-    func didLoaded(mediaId: UUID, audioPlayer: AudioPlayer)
+    func didLoad(mediaId: UUID, audioPlayer: AudioPlayer)
     
     func didFinish(mediaId: UUID, audioPlayer: AudioPlayer)
     
     func didPause(mediaId: UUID, audioPlayer: AudioPlayer)
     
     func didStartPlaying(mediaId: UUID, audioPlayer: AudioPlayer)
-    
-    func set(newState: PlayMediaUseCaseStateController)
 }

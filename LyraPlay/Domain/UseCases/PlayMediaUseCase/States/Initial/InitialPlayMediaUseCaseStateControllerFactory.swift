@@ -9,5 +9,5 @@ import Foundation
 
 public protocol InitialPlayMediaUseCaseStateControllerFactory: AnyObject {
     
-    func make(delegate: PlayMediaUseCaseStateControllerDelegate) -> PlayMediaUseCaseStateController
+    func make(delegate: PlayMediaUseCaseStateControllerDelegate) -> InitialPlayMediaUseCaseStateController
 }

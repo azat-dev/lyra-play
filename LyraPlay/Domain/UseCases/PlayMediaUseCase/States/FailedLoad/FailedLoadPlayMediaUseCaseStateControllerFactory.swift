@@ -12,5 +12,5 @@ public protocol FailedLoadPlayMediaUseCaseStateControllerFactory {
     func make(
         mediaId: UUID,
         delegate: PlayMediaUseCaseStateControllerDelegate
-    ) -> PlayMediaUseCaseStateController
+    ) -> FailedLoadPlayMediaUseCaseStateController
 }

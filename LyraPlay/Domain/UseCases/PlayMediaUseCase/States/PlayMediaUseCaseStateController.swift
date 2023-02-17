@@ -9,8 +9,6 @@ import Foundation
 
 public protocol PlayMediaUseCaseStateController {
     
-    var state: PlayMediaUseCaseState { get }
-    
     func prepare(mediaId: UUID)
     
     func play()
@@ -22,4 +20,6 @@ public protocol PlayMediaUseCaseStateController {
     func stop()
     
     func togglePlay()
+    
+    func execute()
 }

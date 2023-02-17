@@ -34,7 +34,7 @@ class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
         
         let delegate = mock(PlayMediaUseCaseStateControllerDelegate.self)
         
-        let controller = PlayingPlayMediaUseCaseStateController(
+        let controller = PlayingPlayMediaUseCaseStateControllerImpl(
             mediaId: mediaId,
             audioPlayer: audioPlayer,
             delegate: delegate
