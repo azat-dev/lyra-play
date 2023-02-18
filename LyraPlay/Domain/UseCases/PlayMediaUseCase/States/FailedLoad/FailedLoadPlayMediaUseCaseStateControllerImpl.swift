@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class FailedLoadPlayMediaUseCaseStateControllerImpl: FailedLoadPlayMediaUseCaseStateController {
+public class FailedLoadPlayMediaUseCaseStateControllerImpl: InitialPlayMediaUseCaseStateControllerImpl, FailedLoadPlayMediaUseCaseStateController {
     
     // MARK: - Properties
     
@@ -18,32 +18,12 @@ public class FailedLoadPlayMediaUseCaseStateControllerImpl: FailedLoadPlayMediaU
 
     public init(
         mediaId: UUID,
-        context: PlayMediaUseCaseStateControllerDelegate
+        delegate: PlayMediaUseCaseStateControllerDelegate
     ) {
         
         self.mediaId = mediaId
-        self.delegate = context
-    }
-    
-    // MARK: - Methods
-    
-    public func prepare(mediaId: UUID) {
+        self.delegate = delegate
         
-        delegate?.didStartLoading(mediaId: mediaId)
+        super.init(delegate: delegate)
     }
-    
-    public func play() {}
-    
-    public func play(atTime: TimeInterval) {}
-    
-    public func pause() {}
-    
-    public func stop() {
-        
-        delegate?.didStop()
-    }
-    
-    public func togglePlay() {}
-    
-    public func execute() {}
 }

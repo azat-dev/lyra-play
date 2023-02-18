@@ -11,9 +11,9 @@ public class LoadedPlayMediaUseCaseStateControllerImpl: LoadedPlayMediaUseCaseSt
     
     // MARK: - Properties
     
-    private let mediaId: UUID
-    private weak var delegate: PlayMediaUseCaseStateControllerDelegate?
-    private let audioPlayer: AudioPlayer
+    public let mediaId: UUID
+    public let audioPlayer: AudioPlayer
+    public weak var delegate: PlayMediaUseCaseStateControllerDelegate?
     
     // MARK: - Initializers
 
@@ -30,39 +30,48 @@ public class LoadedPlayMediaUseCaseStateControllerImpl: LoadedPlayMediaUseCaseSt
     
     // MARK: - Methods
     
-    public func prepare(mediaId: UUID) {
+    public func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError> {
         
-        delegate?.didStartLoading(mediaId: mediaId)
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return await delegate.load(mediaId: mediaId)
     }
     
-    public func play() {
+    public func play() -> Result<Void, PlayMediaUseCaseError> {
         
-        delegate?.didStartPlaying(
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.play(
             mediaId: mediaId,
             audioPlayer: audioPlayer
         )
     }
     
-    public func play(atTime: TimeInterval) {}
+    public func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError> {
+        fatalError()
+    }
     
-    public func pause() {
+    public func pause() -> Result<Void, PlayMediaUseCaseError> {
+        return .failure(.noActiveTrack)
+    }
+    
+    public func stop() -> Result<Void, PlayMediaUseCaseError> {
         
-        delegate?.didPause(
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.stop(
             mediaId: mediaId,
             audioPlayer: audioPlayer
         )
     }
     
-    public func stop() {
-        
-        let _ = audioPlayer.stop()
-        
-        delegate?.didStop()
+    public func togglePlay() -> Result<Void, PlayMediaUseCaseError> {
+        return play()
     }
-    
-    public func togglePlay() {
-        play()
-    }
-    
-    public func execute() {}
 }

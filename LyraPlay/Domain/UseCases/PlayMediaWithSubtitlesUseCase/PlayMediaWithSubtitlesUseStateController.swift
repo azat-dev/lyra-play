@@ -9,4 +9,5 @@ import Foundation
 
 public protocol PlayMediaWithSubtitlesUseStateController: PlayMediaWithSubtitlesUseCaseInput {
     
+    func execute()
 }

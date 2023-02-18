@@ -7,11 +7,7 @@
 
 import Foundation
 
-
-public protocol PlayMediaWithSubtitlesUseStateControllerDelegateLoading: AnyObject {
+public protocol PlayMediaWithSubtitlesUseStateControllerDelegate: AnyObject {
     
-    func loading(params: PlayMediaWithSubtitlesSessionParams)
+    func didStartLoading(params: PlayMediaWithSubtitlesSessionParams)
 }
-
-public protocol PlayMediaWithSubtitlesUseStateControllerDelegate:
-    PlayMediaWithSubtitlesUseStateControllerDelegateLoading {}

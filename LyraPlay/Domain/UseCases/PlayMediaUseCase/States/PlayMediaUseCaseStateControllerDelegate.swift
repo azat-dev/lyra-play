@@ -9,9 +9,11 @@ import Foundation
 
 public protocol PlayMediaUseCaseStateControllerDelegate: AnyObject {
     
+    func stop(mediaId: UUID, audioPlayer: AudioPlayer) -> Result<Void, PlayMediaUseCaseError>
+    
     func didStop()
     
-    func didStartLoading(mediaId: UUID)
+    func load(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError>
     
     func didFailLoad(mediaId: UUID)
     
@@ -19,7 +21,11 @@ public protocol PlayMediaUseCaseStateControllerDelegate: AnyObject {
     
     func didFinish(mediaId: UUID, audioPlayer: AudioPlayer)
     
+    func pause(mediaId: UUID, audioPlayer: AudioPlayer) -> Result<Void, PlayMediaUseCaseError>
+    
     func didPause(mediaId: UUID, audioPlayer: AudioPlayer)
     
-    func didStartPlaying(mediaId: UUID, audioPlayer: AudioPlayer)
+    func play(mediaId: UUID, audioPlayer: AudioPlayer) -> Result<Void, PlayMediaUseCaseError>
+    
+    func didStartPlay(mediaId: UUID, audioPlayer: AudioPlayer)
 }

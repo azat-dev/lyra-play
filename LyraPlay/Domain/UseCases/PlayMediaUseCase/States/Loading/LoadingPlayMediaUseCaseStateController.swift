@@ -8,4 +8,6 @@
 import Foundation
 
 public protocol LoadingPlayMediaUseCaseStateController: PlayMediaUseCaseStateController {
+    
+    func load() async -> Result<Void, PlayMediaUseCaseError>
 }

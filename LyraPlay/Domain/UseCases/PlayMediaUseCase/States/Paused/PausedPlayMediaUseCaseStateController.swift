@@ -8,6 +8,7 @@
 import Foundation
 
 public protocol PausedPlayMediaUseCaseStateController: PlayMediaUseCaseStateController {
-    
+ 
+    func run() -> Result<Void, PlayMediaUseCaseError>
 }
 

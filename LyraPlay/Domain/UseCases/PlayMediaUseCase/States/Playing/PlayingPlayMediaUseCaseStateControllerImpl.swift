@@ -8,27 +8,25 @@
 import Foundation
 import Combine
 
-public class PlayingPlayMediaUseCaseStateControllerImpl: PlayingPlayMediaUseCaseStateController {
+public class PlayingPlayMediaUseCaseStateControllerImpl: LoadedPlayMediaUseCaseStateControllerImpl, PlayingPlayMediaUseCaseStateController {
 
     // MARK: - Properties
-    
-    private let mediaId: UUID
-    private let audioPlayer: AudioPlayer
-    private weak var delegate: PlayMediaUseCaseStateControllerDelegate?
     
     private var observers = Set<AnyCancellable>()
     
     // MARK: - Initializers
     
-    public init(
+    public override init(
         mediaId: UUID,
         audioPlayer: AudioPlayer,
         delegate: PlayMediaUseCaseStateControllerDelegate
     ) {
         
-        self.mediaId = mediaId
-        self.audioPlayer = audioPlayer
-        self.delegate = delegate
+        super.init(
+            mediaId: mediaId,
+            audioPlayer: audioPlayer,
+            delegate: delegate
+        )
         
         audioPlayer.state.sink { [weak self] state in
         
@@ -50,36 +48,44 @@ public class PlayingPlayMediaUseCaseStateControllerImpl: PlayingPlayMediaUseCase
     
     // MARK: - Methods
     
-    public func prepare(mediaId: UUID) {
+    public override func play() -> Result<Void, PlayMediaUseCaseError> {
         
-        delegate?.didStartLoading(mediaId: mediaId)
+        return .success(())
     }
     
-    public func play() {}
+    public override func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError> {
+        fatalError()
+    }
     
-    public func play(atTime: TimeInterval) {}
-    
-    public func pause() {
+    public override func pause() -> Result<Void, PlayMediaUseCaseError> {
         
-        delegate?.didPause(
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.pause(
             mediaId: mediaId,
             audioPlayer: audioPlayer
         )
     }
     
-    public func stop() {
-        
-        let _ = audioPlayer.stop()
-
-        delegate?.didStop()
+    public override func togglePlay() -> Result<Void, PlayMediaUseCaseError> {
+        return pause()
     }
     
-    public func togglePlay() {
-        pause()
-    }
-    
-    public func execute() {
+    public func run() -> Result<Void, PlayMediaUseCaseError> {
         
-        let _ = audioPlayer.play()
+        let result = audioPlayer.play()
+        
+        guard case .success = result else {
+            return result.mapResult()
+        }
+        
+        delegate?.didStartPlay(
+            mediaId: mediaId,
+            audioPlayer: audioPlayer
+        )
+        
+        return .success(())
     }
 }

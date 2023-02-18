@@ -9,7 +9,7 @@ import Foundation
 
 public class FinishedPlayMediaUseCaseStateControllerImpl: PausedPlayMediaUseCaseStateControllerImpl, FinishedPlayMediaUseCaseStateController {
     
-    public override func play(atTime: TimeInterval) {
-        super.play(atTime: 0)
+    public override func play() -> Result<Void, PlayMediaUseCaseError> {
+        return super.play(atTime: 0)
     }
 }

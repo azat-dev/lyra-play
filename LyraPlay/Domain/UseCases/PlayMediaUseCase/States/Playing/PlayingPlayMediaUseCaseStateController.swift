@@ -9,4 +9,5 @@ import Foundation
 
 public protocol PlayingPlayMediaUseCaseStateController: PlayMediaUseCaseStateController {
     
+    func run() -> Result<Void, PlayMediaUseCaseError>
 }

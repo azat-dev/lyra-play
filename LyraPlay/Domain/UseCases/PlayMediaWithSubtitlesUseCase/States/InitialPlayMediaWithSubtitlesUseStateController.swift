@@ -23,7 +23,7 @@ public class InitialPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubti
     
     public func prepare(params: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
-        delegate?.loading(params: params)
+        delegate?.didStartLoading(params: params)
         return .success(())
     }
     
@@ -45,5 +45,8 @@ public class InitialPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubti
     
     public func togglePlay() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         return .success(())
+    }
+    
+    public func execute() {
     }
 }

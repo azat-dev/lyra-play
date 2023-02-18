@@ -18,7 +18,7 @@ public class LoadingPlayMediaUseCaseStateControllerImpl: LoadingPlayMediaUseCase
     private let audioPlayerFactory: AudioPlayerFactory
     
     // MARK: - Initializers
-
+    
     public init(
         mediaId: UUID,
         delegate: PlayMediaUseCaseStateControllerDelegate,
@@ -35,46 +35,65 @@ public class LoadingPlayMediaUseCaseStateControllerImpl: LoadingPlayMediaUseCase
     
     // MARK: - Methods
     
-    public func prepare(mediaId: UUID) {
+    public func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError> {
         
-        delegate?.didStartLoading(mediaId: mediaId)
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return await delegate.load(mediaId: mediaId)
     }
     
-    public func play() {}
-    
-    public func play(atTime: TimeInterval) {}
-    
-    public func pause() {}
-    
-    public func stop() {}
-    
-    public func togglePlay() {}
-    
-    public func execute() {
+    public func play() -> Result<Void, PlayMediaUseCaseError> {
         
-        Task {
-            let loadTrackUseCase = loadTrackUseCaseFactory.make()
-            let loadResult = await loadTrackUseCase.load(trackId: mediaId)
+        return .failure(.noActiveTrack)
+    }
+    
+    public func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError> {
+        
+        return .failure(.noActiveTrack)
+    }
+    
+    public func pause() -> Result<Void, PlayMediaUseCaseError> {
+        
+        return .failure(.noActiveTrack)
+    }
+    
+    public func stop() -> Result<Void, PlayMediaUseCaseError> {
+        
+        return .failure(.noActiveTrack)
+    }
+    
+    public func togglePlay() -> Result<Void, PlayMediaUseCaseError> {
+        
+        return .failure(.noActiveTrack)
+    }
+    
+    public func load() async -> Result<Void, PlayMediaUseCaseError> {
+    
+        let loadTrackUseCase = loadTrackUseCaseFactory.make()
+        let loadResult = await loadTrackUseCase.load(trackId: mediaId)
+        
+        guard case .success(let trackData) = loadResult else {
             
-            guard case .success(let trackData) = loadResult else {
-                
-                delegate?.didFailLoad(mediaId: mediaId)
-                return
-            }
-            
-            let audioPlayer = audioPlayerFactory.make()
-            let prepareResult = audioPlayer.prepare(fileId: mediaId.uuidString, data: trackData)
-            
-            guard case .success = prepareResult else {
-                
-                delegate?.didFailLoad(mediaId: mediaId)
-                return
-            }
-            
-            delegate?.didLoad(
-                mediaId: mediaId,
-                audioPlayer: audioPlayer
-            )
+            delegate?.didFailLoad(mediaId: mediaId)
+            return .success(())
         }
+        
+        let audioPlayer = audioPlayerFactory.make()
+        let prepareResult = audioPlayer.prepare(fileId: mediaId.uuidString, data: trackData)
+        
+        guard case .success = prepareResult else {
+            
+            delegate?.didFailLoad(mediaId: mediaId)
+            return .success(())
+        }
+        
+        delegate?.didLoad(
+            mediaId: mediaId,
+            audioPlayer: audioPlayer
+        )
+        
+        return .success(())
     }
 }

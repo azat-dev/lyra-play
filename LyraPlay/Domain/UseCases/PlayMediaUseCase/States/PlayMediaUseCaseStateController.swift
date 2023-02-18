@@ -7,19 +7,6 @@
 
 import Foundation
 
-public protocol PlayMediaUseCaseStateController {
+public protocol PlayMediaUseCaseStateController: PlayMediaUseCaseInput {
     
-    func prepare(mediaId: UUID)
-    
-    func play()
-    
-    func play(atTime: TimeInterval)
-    
-    func pause()
-    
-    func stop()
-    
-    func togglePlay()
-    
-    func execute()
 }

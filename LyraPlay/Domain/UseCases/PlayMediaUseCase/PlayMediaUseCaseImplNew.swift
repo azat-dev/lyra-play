@@ -57,7 +57,6 @@ public class PlayMediaUseCaseImplNew: PlayMediaUseCase, PlayMediaUseCaseStateCon
         self.pausedStateFactory = pausedStateFactory
         self.finishedStateFactory = finishedStateFactory
     }
-    
 }
 
 // MARK: - Methods
@@ -66,38 +65,32 @@ extension PlayMediaUseCaseImplNew {
     
     public func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError> {
         
-        currentStateController.prepare(mediaId: mediaId)
-        return .success(())
+        return await currentStateController.prepare(mediaId: mediaId)
     }
     
     public func play() -> Result<Void, PlayMediaUseCaseError> {
         
-        currentStateController.play()
-        return .success(())
+        return currentStateController.play()
     }
     
     public func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError> {
         
-        currentStateController.play(atTime: atTime)
-        return .success(())
+        return currentStateController.play(atTime: atTime)
     }
     
     public func togglePlay() -> Result<Void, PlayMediaUseCaseError> {
         
-        currentStateController.togglePlay()
-        return .success(())
+        return currentStateController.togglePlay()
     }
     
     public func pause() -> Result<Void, PlayMediaUseCaseError> {
         
-        currentStateController.pause()
-        return .success(())
+        return currentStateController.pause()
     }
     
     public func stop() -> Result<Void, PlayMediaUseCaseError> {
         
-        currentStateController.stop()
-        return .success(())
+        return currentStateController.stop()
     }
 }
 
@@ -105,90 +98,111 @@ extension PlayMediaUseCaseImplNew {
 
 extension PlayMediaUseCaseImplNew {
     
-    private func set(newState: PlayMediaUseCaseState, controller: PlayMediaUseCaseStateController) {
-        
-        currentStateController = controller
-        state.value = newState
-        currentStateController.execute()
-    }
-    
-    public func didStartLoading(mediaId: UUID) {
+    public func load(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError> {
 
-        let newController = loadingStateFactory.make(
+        state.value = .loading(mediaId: mediaId)
+        
+        let controller = loadingStateFactory.make(
             mediaId: mediaId,
             delegate: self
         )
         
-        set(
-            newState: .loading(mediaId: mediaId),
-            controller: newController
-        )
+        currentStateController = controller
+        return await controller.load()
     }
     
-    public func didLoad(mediaId: UUID, audioPlayer: AudioPlayer) {
+    public func didLoad(
+        mediaId: UUID,
+        audioPlayer: AudioPlayer
+    ) {
         
-        let newController = loadedStateFactory.make(
+        let controller = loadedStateFactory.make(
             mediaId: mediaId,
             audioPlayer: audioPlayer,
             delegate: self
         )
         
-        set(
-            newState: .loaded(mediaId: mediaId),
-            controller: newController
-        )
+        currentStateController = controller
+        state.value = .loaded(mediaId: mediaId)
+    }
+    
+    public func stop(
+        mediaId: UUID,
+        audioPlayer: AudioPlayer
+    ) -> Result<Void, PlayMediaUseCaseError> {
+        
+        return currentStateController.stop()
     }
     
     public func didStop() {
         
-        set(
-            newState: .initial,
-            controller: initialStateFactory.make(delegate: self)
-        )
+        currentStateController = initialStateFactory.make(delegate: self)
+        state.value = .initial
     }
     
     public func didFailLoad(mediaId: UUID) {
         
-        let newController = failedLoadStateFactory.make(
+        currentStateController = failedLoadStateFactory.make(
             mediaId: mediaId,
             delegate: self
         )
         
-        set(
-            newState: .failedLoad(mediaId: mediaId),
-            controller: newController
-        )
+        state.value = .failedLoad(mediaId: mediaId)
     }
     
-    public func didFinish(mediaId: UUID, audioPlayer: AudioPlayer) {
+    public func didFinish(
+        mediaId: UUID,
+        audioPlayer: AudioPlayer
+    ) {
         
-        let newController = finishedStateFactory.make(
-            mediaId: mediaId,
-            audioPlayer: audioPlayer,
-            delegate: self
-        )
-        
-        set(
-            newState: .finished(mediaId: mediaId),
-            controller: newController
-        )
-    }
-    
-    public func didPause(mediaId: UUID, audioPlayer: AudioPlayer) {
-        
-        let newController = pausedStateFactory.make(
+        currentStateController = finishedStateFactory.make(
             mediaId: mediaId,
             audioPlayer: audioPlayer,
             delegate: self
         )
         
-        set(
-            newState: .paused(mediaId: mediaId, time: 0),
-            controller: newController
-        )
+        state.value = .finished(mediaId: mediaId)
     }
     
-    public func didStartPlaying(mediaId: UUID, audioPlayer: AudioPlayer) {
+    public func pause(
+        mediaId: UUID,
+        audioPlayer: AudioPlayer
+    ) -> Result<Void, PlayMediaUseCaseError> {
+
+        let result = audioPlayer.pause()
+        
+        guard case .success = result else {
+            return .failure(.internalError(nil))
+        }
+        
+        let controller = pausedStateFactory.make(
+            mediaId: mediaId,
+            audioPlayer: audioPlayer,
+            delegate: self
+        )
+
+        return controller.run()
+    }
+    
+    public func didPause(
+        mediaId: UUID,
+        audioPlayer: AudioPlayer
+    ) {
+        
+        let controller = pausedStateFactory.make(
+            mediaId: mediaId,
+            audioPlayer: audioPlayer,
+            delegate: self
+        )
+        
+        currentStateController = controller
+        state.value = .paused(mediaId: mediaId, time: 0)
+    }
+    
+    public func play(
+        mediaId: UUID,
+        audioPlayer: AudioPlayer
+    ) -> Result<Void, PlayMediaUseCaseError> {
         
         let newController = playingStateFactory.make(
             mediaId: mediaId,
@@ -196,9 +210,21 @@ extension PlayMediaUseCaseImplNew {
             delegate: self
         )
         
-        set(
-            newState: .playing(mediaId: mediaId),
-            controller: newController
+        return newController.run()
+    }
+    
+    public func didStartPlay(
+        mediaId: UUID,
+        audioPlayer: AudioPlayer
+    ) {
+        
+        let newController = playingStateFactory.make(
+            mediaId: mediaId,
+            audioPlayer: audioPlayer,
+            delegate: self
         )
+        
+        currentStateController = newController
+        state.value = .playing(mediaId: mediaId)
     }
 }
