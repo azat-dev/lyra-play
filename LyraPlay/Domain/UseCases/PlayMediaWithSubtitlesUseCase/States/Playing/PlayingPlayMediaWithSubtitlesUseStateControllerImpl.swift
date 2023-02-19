@@ -36,7 +36,12 @@ public class PlayingPlayMediaWithSubtitlesUseStateControllerImpl: LoadedPlayMedi
     }
     
     public override func pause() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        return .success(())
+        
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.pause(session: session)
     }
     
     public override func togglePlay() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
