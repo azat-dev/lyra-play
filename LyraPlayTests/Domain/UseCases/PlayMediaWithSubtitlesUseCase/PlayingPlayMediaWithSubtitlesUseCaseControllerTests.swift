@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 import XCTest
 import Mockingbird
 
@@ -17,7 +18,9 @@ class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         controller: PlayingPlayMediaWithSubtitlesUseStateController,
         delegate: PlayMediaWithSubtitlesUseStateControllerDelegateMock,
         playMediaUseCase: PlayMediaUseCaseMock,
-        playSubtitlesUseCase: PlaySubtitlesUseCaseMock
+        playSubtitlesUseCase: PlaySubtitlesUseCaseMock,
+        playSubtitlesState: CurrentValueSubject<PlaySubtitlesUseCaseState, Never>,
+        playMediaState: CurrentValueSubject<PlayMediaUseCaseState, Never>
     )
     
     func createSUT(params: PlayMediaWithSubtitlesSessionParams) -> SUT {
@@ -26,6 +29,16 @@ class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         
         let playMediaUseCase = mock(PlayMediaUseCase.self)
         let playSubtitlesUseCase = mock(PlaySubtitlesUseCase.self)
+        
+        let playSubtitlesState = CurrentValueSubject<PlaySubtitlesUseCaseState, Never>(.initial)
+        
+        given(playSubtitlesUseCase.state)
+            .willReturn(playSubtitlesState)
+        
+        let playMediaState = CurrentValueSubject<PlayMediaUseCaseState, Never>(.playing(mediaId: params.mediaId))
+        
+        given(playMediaUseCase.state)
+            .willReturn(playMediaState)
         
         let session = PlayMediaWithSubtitlesUseStateControllerActiveSession(
             params: params,
@@ -50,7 +63,9 @@ class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
             controller,
             delegate,
             playMediaUseCase,
-            playSubtitlesUseCase
+            playSubtitlesUseCase,
+            playSubtitlesState,
+            playMediaState
         )
     }
     
@@ -133,5 +148,57 @@ class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
                 )
             )
         ).wasCalled(1)
+    }
+    
+    func test_finish__subtitles_finished_first() async throws {
+
+        // Given
+        let mediaId = UUID()
+        
+        let params = PlayMediaWithSubtitlesSessionParams(
+            mediaId: mediaId,
+            subtitlesLanguage: "English"
+        )
+        
+        let sut = createSUT(params: params)
+        
+        given(sut.delegate.pause(session: any()))
+            .willReturn(.success(()))
+        
+        // When
+        sut.playSubtitlesState.value = .finished
+        
+        // Then
+        verify(sut.delegate.didFinish(session: any()))
+            .wasNeverCalled()
+    }
+    
+    func test_finish__media_finished_first() async throws {
+
+        // Given
+        let mediaId = UUID()
+        
+        let params = PlayMediaWithSubtitlesSessionParams(
+            mediaId: mediaId,
+            subtitlesLanguage: "English"
+        )
+        
+        let sut = createSUT(params: params)
+        
+        given(sut.delegate.pause(session: any()))
+            .willReturn(.success(()))
+        
+        given(sut.playSubtitlesUseCase.pause())
+            .willReturn(())
+        
+        // When
+        sut.playMediaState.value = .finished(mediaId: mediaId)
+        
+        // Then
+        verify(sut.delegate.didFinish(session: any()))
+            .wasCalled(1)
+        
+        verify(sut.playSubtitlesUseCase.pause())
+            .wasCalled(1)
     }
 }
