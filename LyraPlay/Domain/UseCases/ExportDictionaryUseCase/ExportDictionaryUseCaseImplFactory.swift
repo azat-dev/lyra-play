@@ -27,7 +27,7 @@ public final class ExportDictionaryUseCaseImplFactory: ExportDictionaryUseCaseFa
 
     // MARK: - Methods
 
-    public func create() -> ExportDictionaryUseCase {
+    public func make() -> ExportDictionaryUseCase {
 
         return ExportDictionaryUseCaseImpl(
             dictionaryRepository: dictionaryRepository,

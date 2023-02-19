@@ -70,7 +70,7 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
                     
                     if subtitlesPresenterViewModel == nil || currentSubtitles != subtitlesState.subtitles {
                         
-                        subtitlesPresenterViewModel = subtitlesPresenterViewModelFactory.create(subtitles: subtitlesState.subtitles)
+                        subtitlesPresenterViewModel = subtitlesPresenterViewModelFactory.make(subtitles: subtitlesState.subtitles)
                         currentSubtitles = subtitlesState.subtitles
                     }
                     

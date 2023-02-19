@@ -9,5 +9,5 @@ import Foundation
 
 public protocol MediaLibraryBrowserViewModelFactory {
 
-    func create(folderId: UUID?, delegate: MediaLibraryBrowserViewModelDelegate) -> MediaLibraryBrowserViewModel
+    func make(folderId: UUID?, delegate: MediaLibraryBrowserViewModelDelegate) -> MediaLibraryBrowserViewModel
 }

@@ -24,7 +24,7 @@ public final class MainTabBarViewModelImplFactory: MainTabBarViewModelFactory {
 
     // MARK: - Methods
 
-    public func create(delegate: MainTabBarViewModelDelegate) -> MainTabBarViewModel {
+    public func make(delegate: MainTabBarViewModelDelegate) -> MainTabBarViewModel {
 
         return MainTabBarViewModelImpl(
             delegate: delegate,

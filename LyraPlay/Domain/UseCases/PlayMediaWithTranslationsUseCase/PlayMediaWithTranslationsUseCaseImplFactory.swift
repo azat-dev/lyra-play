@@ -11,30 +11,33 @@ public final class PlayMediaWithTranslationsUseCaseImplFactory: PlayMediaWithTra
 
     // MARK: - Properties
 
-    private let playMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCase
+    private let playMediaWithSubtitlesUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactory
     private let playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory
-    private let provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase
+    private let provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory
     private let pronounceTranslationsUseCase: PronounceTranslationsUseCase
 
     // MARK: - Initializers
 
     public init(
-        playMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCase,
+        playMediaWithSubtitlesUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactory,
         playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory,
-        provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase,
+        provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory,
         pronounceTranslationsUseCase: PronounceTranslationsUseCase
     ) {
 
-        self.playMediaWithSubtitlesUseCase = playMediaWithSubtitlesUseCase
+        self.playMediaWithSubtitlesUseCaseFactory = playMediaWithSubtitlesUseCaseFactory
         self.playSubtitlesUseCaseFactory = playSubtitlesUseCaseFactory
-        self.provideTranslationsToPlayUseCase = provideTranslationsToPlayUseCase
+        self.provideTranslationsToPlayUseCaseFactory = provideTranslationsToPlayUseCaseFactory
         self.pronounceTranslationsUseCase = pronounceTranslationsUseCase
     }
 
     // MARK: - Methods
 
-    public func create() -> PlayMediaWithTranslationsUseCase {
+    public func make() -> PlayMediaWithTranslationsUseCase {
 
+        let playMediaWithSubtitlesUseCase = playMediaWithSubtitlesUseCaseFactory.make()
+        let provideTranslationsToPlayUseCase = provideTranslationsToPlayUseCaseFactory.make()
+        
         return PlayMediaWithTranslationsUseCaseImpl(
             playMediaWithSubtitlesUseCase: playMediaWithSubtitlesUseCase,
             playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,

@@ -10,13 +10,6 @@ import Combine
 import UIKit
 
 public final class MainTabBarViewController: UITabBarController, MainTabBarView {
-    
-    private enum Tab: Int, Hashable, CaseIterable {
-        
-        case library
-        case dictionary
-    }
-    
     // MARK: - Properties
     
     private var observers = Set<AnyCancellable>()
@@ -25,7 +18,7 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
     private let tabBarBackgroundView = UIVisualEffectView()
     public var currentPlayerStateView: CurrentPlayerStateView?
     
-    private lazy var tabControllers: [Tab: UINavigationController] = {
+    private lazy var tabControllers: [MainTabBarViewModelTab: UINavigationController] = {
         
         let libraryView = UINavigationController()
         libraryView.navigationBar.prefersLargeTitles = true
@@ -97,6 +90,18 @@ public final class MainTabBarViewController: UITabBarController, MainTabBarView 
 extension MainTabBarViewController {
     
     private func bind(to viewModel: MainTabBarViewModel) {
+
+        viewModel.activeTabIndex
+            .receive(on: RunLoop.main)
+            .sink { [weak self] activeTabIndex in
+
+                guard let self = self else {
+                    return
+                }
+
+                self.selectedIndex = activeTabIndex
+
+            }.store(in: &observers)
         
         viewModel.currentPlayerStateViewModel
             .receive(on: RunLoop.main)
@@ -139,7 +144,7 @@ extension MainTabBarViewController {
             return
         }
         
-        switch Tab.allCases[selecteTabIndex] {
+        switch MainTabBarViewModelTab.allCases[selecteTabIndex] {
             
         case .dictionary:
             viewModel.selectDictionaryTab()
@@ -157,7 +162,7 @@ extension MainTabBarViewController {
     private func setupViews() {
 
         view.insertSubview(tabBarBackgroundView, belowSubview: tabBar)
-        viewControllers = Tab.allCases.compactMap { tabControllers[$0] }
+        viewControllers = MainTabBarViewModelTab.allCases.compactMap { tabControllers[$0] }        
     }
 }
 

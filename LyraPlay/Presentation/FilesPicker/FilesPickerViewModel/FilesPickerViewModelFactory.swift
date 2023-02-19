@@ -7,7 +7,7 @@
 
 public protocol FilesPickerViewModelFactory {
 
-    func create(
+    func make(
         documentTypes: [String],
         allowsMultipleSelection: Bool,
         delegate: FilesPickerViewModelDelegate

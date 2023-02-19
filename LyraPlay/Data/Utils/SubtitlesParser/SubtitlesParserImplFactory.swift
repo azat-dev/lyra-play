@@ -11,18 +11,18 @@ public final class SubtitlesParserImplFactory: SubtitlesParserFactory {
     
     // MARK: - Properties
     
-    private let parsers: [SubtitlesParserImpl.FileExtension: SubtitlesParser]
+    private let parsers: [SubtitlesParserImpl.FileExtension: SubtitlesParserFactory]
     
     // MARK: - Initializers
     
-    public init(parsers: [SubtitlesParserImpl.FileExtension: SubtitlesParser]) {
+    public init(parsers: [SubtitlesParserImpl.FileExtension: SubtitlesParserFactory]) {
         
         self.parsers = parsers
     }
     
     // MARK: - Methods
     
-    public func create() -> SubtitlesParser {
+    public func make() -> SubtitlesParser {
         
         return SubtitlesParserImpl(parsers: parsers)
     }

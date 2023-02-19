@@ -56,7 +56,7 @@ extension FileSharingViewModelImpl {
     
     public func putFile(at url: URL) {
         
-        let provideFileForSharingUseCase = provideFileForSharingUseCaseFactory.create()
+        let provideFileForSharingUseCase = provideFileForSharingUseCaseFactory.make()
         let data = provideFileForSharingUseCase.provideFile()
         
         try? data?.write(to: url, options: .atomic)

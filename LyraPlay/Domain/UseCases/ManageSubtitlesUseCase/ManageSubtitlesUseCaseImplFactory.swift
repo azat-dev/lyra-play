@@ -8,27 +8,29 @@
 import Foundation
 
 public final class ManageSubtitlesUseCaseImplFactory: ManageSubtitlesUseCaseFactory {
-
+    
     // MARK: - Properties
-
-    private let subtitlesRepository: SubtitlesRepository
+    
+    private let subtitlesRepositoryFactory: SubtitlesRepositoryFactory
     private let subtitlesFilesRepository: FilesRepository
-
+    
     // MARK: - Initializers
-
+    
     public init(
-        subtitlesRepository: SubtitlesRepository,
+        subtitlesRepositoryFactory: SubtitlesRepositoryFactory,
         subtitlesFilesRepository: FilesRepository
     ) {
-
-        self.subtitlesRepository = subtitlesRepository
+        
+        self.subtitlesRepositoryFactory = subtitlesRepositoryFactory
         self.subtitlesFilesRepository = subtitlesFilesRepository
     }
-
+    
     // MARK: - Methods
-
-    public func create() -> ManageSubtitlesUseCase {
-
+    
+    public func make() -> ManageSubtitlesUseCase {
+        
+        let subtitlesRepository = subtitlesRepositoryFactory.make()
+        
         return ManageSubtitlesUseCaseImpl(
             subtitlesRepository: subtitlesRepository,
             subtitlesFilesRepository: subtitlesFilesRepository

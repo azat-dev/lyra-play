@@ -15,7 +15,7 @@ public final class AttachingSubtitlesProgressViewModelImplFactory: AttachingSubt
 
     // MARK: - Methods
 
-    public func create(delegate: AttachingSubtitlesProgressViewModelDelegate) -> AttachingSubtitlesProgressViewModel {
+    public func make(delegate: AttachingSubtitlesProgressViewModelDelegate) -> AttachingSubtitlesProgressViewModel {
 
         return AttachingSubtitlesProgressViewModelImpl(delegate: delegate)
     }

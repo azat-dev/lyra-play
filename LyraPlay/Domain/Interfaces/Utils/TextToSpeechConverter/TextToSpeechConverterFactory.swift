@@ -7,5 +7,5 @@
 
 public protocol TextToSpeechConverterFactory {
 
-    func create() -> TextToSpeechConverter
+    func make() -> TextToSpeechConverter
 }

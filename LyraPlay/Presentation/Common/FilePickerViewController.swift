@@ -17,7 +17,7 @@ public class FilePickerViewController: UIDocumentPickerViewController, UIDocumen
     private var onCancel: CancelCallback!
     private var onSelect: SelectCallback!
     
-    static func create(
+    static func make(
         allowMultipleSelection: Bool,
         documentTypes: [String],
         onSelect: @escaping SelectCallback,

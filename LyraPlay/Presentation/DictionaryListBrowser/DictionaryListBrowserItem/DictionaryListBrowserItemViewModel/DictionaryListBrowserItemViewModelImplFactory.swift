@@ -15,7 +15,7 @@ public final class DictionaryListBrowserItemViewModelImplFactory: DictionaryList
 
     // MARK: - Methods
 
-    public func create(
+    public func make(
         for item: BrowseListDictionaryItem,
         isPlaying: Bool,
         delegate: DictionaryListBrowserItemViewModelDelegate

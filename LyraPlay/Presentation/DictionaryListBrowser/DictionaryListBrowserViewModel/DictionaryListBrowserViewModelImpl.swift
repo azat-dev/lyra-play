@@ -73,7 +73,7 @@ extension DictionaryListBrowserViewModelImpl: DictionaryListBrowserItemViewModel
             return
         }
         
-        let pronounceUseCase = pronounceTextUseCaseFactory.create()
+        let pronounceUseCase = pronounceTextUseCaseFactory.make()
         
         let observer = pronounceUseCase.state
             .receive(on: RunLoop.main)
@@ -144,7 +144,7 @@ extension DictionaryListBrowserViewModelImpl {
                 let itemId = item.id
                 
                 ids.append(itemId)
-                self.itemsById[itemId] = self.dictionaryListBrowserItemViewModelFactory.create(
+                self.itemsById[itemId] = self.dictionaryListBrowserItemViewModelFactory.make(
                     for: item,
                     isPlaying: self.playingItems[itemId] != nil,
                     delegate: self

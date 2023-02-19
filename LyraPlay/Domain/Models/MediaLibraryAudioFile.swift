@@ -45,7 +45,7 @@ public struct MediaLibraryAudioFile {
 
 public extension MediaLibraryAudioFile {
     
-    static func create(name: String, duration: Double, audioFile: String) -> MediaLibraryAudioFile {
+    static func make(name: String, duration: Double, audioFile: String) -> MediaLibraryAudioFile {
         
         return MediaLibraryAudioFile(
             id: nil,

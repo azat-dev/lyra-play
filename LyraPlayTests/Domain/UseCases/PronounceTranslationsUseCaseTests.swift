@@ -13,13 +13,13 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
     typealias SUT = (
         useCase: PronounceTranslationsUseCase,
         textToSpeechConverter: TextToSpeechConverter,
-        audioPlayer: AudioPlayerMock
+        audioPlayer: AudioPlayerMockDeprecated
     )
     
     func createSUT() -> SUT {
         
         let textToSpeechConverter = TextToSpeechConverterMock()
-        let audioPlayer = AudioPlayerMock()
+        let audioPlayer = AudioPlayerMockDeprecated()
         
         let useCase = PronounceTranslationsUseCaseImpl(
             textToSpeechConverter: textToSpeechConverter,

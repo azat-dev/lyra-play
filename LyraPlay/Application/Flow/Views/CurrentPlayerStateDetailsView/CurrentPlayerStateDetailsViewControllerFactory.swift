@@ -15,7 +15,7 @@ public final class CurrentPlayerStateDetailsViewControllerFactory: CurrentPlayer
 
     // MARK: - Methods
 
-    public func create(viewModel: CurrentPlayerStateDetailsViewModel) -> CurrentPlayerStateDetailsViewController {
+    public func make(viewModel: CurrentPlayerStateDetailsViewModel) -> CurrentPlayerStateDetailsViewController {
 
         return CurrentPlayerStateDetailsViewController(viewModel: viewModel)
     }

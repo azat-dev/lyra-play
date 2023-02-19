@@ -15,7 +15,7 @@ public final class FilesPickerViewModelImplFactory: FilesPickerViewModelFactory 
 
     // MARK: - Methods
 
-    public func create(
+    public func make(
         documentTypes: [String],
         allowsMultipleSelection: Bool,
         delegate: FilesPickerViewModelDelegate

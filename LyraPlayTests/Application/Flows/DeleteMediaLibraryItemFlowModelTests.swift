@@ -27,7 +27,7 @@ class DeleteMediaLibraryItemFlowModelTests: XCTestCase {
         let editMediaLibraryListUseCase = mock(EditMediaLibraryListUseCase.self)
         let editMediaLibraryListUseCaseFactory = mock(EditMediaLibraryListUseCaseFactory.self)
         
-        given(editMediaLibraryListUseCaseFactory.create())
+        given(editMediaLibraryListUseCaseFactory.make())
             .willReturn(editMediaLibraryListUseCase)
         
         

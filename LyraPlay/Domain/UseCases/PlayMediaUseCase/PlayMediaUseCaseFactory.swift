@@ -7,5 +7,5 @@
 
 public protocol PlayMediaUseCaseFactory {
 
-    func create() -> PlayMediaUseCase
+    func make() -> PlayMediaUseCase
 }

@@ -10,5 +10,5 @@ import Combine
 
 public protocol SubtitlesPresenterViewModelFactory {
     
-    func create(subtitles: Subtitles) -> SubtitlesPresenterViewModel
+    func make(subtitles: Subtitles) -> SubtitlesPresenterViewModel
 }

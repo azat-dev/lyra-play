@@ -8,6 +8,7 @@
 import Foundation
 import XCTest
 import LyraPlay
+import Mockingbird
 
 class SubtitlesParserImplTests: XCTestCase {
 
@@ -16,10 +17,11 @@ class SubtitlesParserImplTests: XCTestCase {
         textSplitter: TextSplitterMock
     )
     
-    func createSUT(parsers: [SubtitlesParserImpl.FileExtension: SubtitlesParser]) -> SUT {
+    func createSUT(parsers: [SubtitlesParserImpl.FileExtension: SubtitlesParserFactory]) -> SUT {
         
         let textSplitter = TextSplitterMock()
         let parser = SubtitlesParserImpl(parsers: parsers)
+        
         detectMemoryLeak(instance: parser)
         
         return (
@@ -46,21 +48,39 @@ class SubtitlesParserImplTests: XCTestCase {
         }
     }
     
+    private func anySubtitles() -> Subtitles {
+        
+        return .init(duration: 0, sentences: [])
+    }
+    
     func test_parse__select_parser_by_extension() async throws {
         
         // Given not empty file
         
         let text = ""
         
-        let parser1 = SubtitlesParserMock()
-        parser1.resolve = { _, _ in .success(.init(duration: 0, sentences: [])) }
+        let parser1Factory = mock(SubtitlesParserFactory.self)
+        let parser1 = mock(SubtitlesParser.self)
         
-        let parser2 = SubtitlesParserMock()
-        parser2.resolve = { _, _ in .failure(.internalError(nil))}
+        given(parser1Factory.make())
+            .willReturn(parser1)
+        
+        given(await parser1.parse(any(), fileName: any()))
+            .willReturn(.success(anySubtitles()))
+        
+        let parser2Factory = mock(SubtitlesParserFactory.self)
+        
+        let parser2 = mock(SubtitlesParser.self)
+        
+        given(parser2Factory.make())
+            .willReturn(parser2)
+        
+        given(await parser2.parse(any(), fileName: any()))
+            .willReturn(.failure(.internalError(nil)))
         
         let sut = createSUT(parsers: [
-            ".test1": parser1,
-            ".test2": parser2,
+            ".test1": parser1Factory,
+            ".test2": parser2Factory,
         ])
 
         // When

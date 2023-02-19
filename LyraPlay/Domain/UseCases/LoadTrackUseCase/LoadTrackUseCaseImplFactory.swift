@@ -27,7 +27,7 @@ public final class LoadTrackUseCaseImplFactory: LoadTrackUseCaseFactory {
 
     // MARK: - Methods
 
-    public func create() -> LoadTrackUseCase {
+    public func make() -> LoadTrackUseCase {
 
         return LoadTrackUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,

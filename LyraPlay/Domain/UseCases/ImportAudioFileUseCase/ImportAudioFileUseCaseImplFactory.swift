@@ -14,7 +14,7 @@ public final class ImportAudioFileUseCaseImplFactory: ImportAudioFileUseCaseFact
     private let mediaLibraryRepository: MediaLibraryRepository
     private let audioFilesRepository: FilesRepository
     private let imagesRepository: FilesRepository
-    private let tagsParser: TagsParser
+    private let tagsParserFactory: TagsParserFactory
     private let fileNameGenerator: ImportAudioFileUseCaseFileNameGenerator
 
     // MARK: - Initializers
@@ -23,20 +23,22 @@ public final class ImportAudioFileUseCaseImplFactory: ImportAudioFileUseCaseFact
         mediaLibraryRepository: MediaLibraryRepository,
         audioFilesRepository: FilesRepository,
         imagesRepository: FilesRepository,
-        tagsParser: TagsParser,
+        tagsParserFactory: TagsParserFactory,
         fileNameGenerator: ImportAudioFileUseCaseFileNameGenerator
     ) {
 
         self.mediaLibraryRepository = mediaLibraryRepository
         self.audioFilesRepository = audioFilesRepository
         self.imagesRepository = imagesRepository
-        self.tagsParser = tagsParser
+        self.tagsParserFactory = tagsParserFactory
         self.fileNameGenerator = fileNameGenerator
     }
 
     // MARK: - Methods
 
-    public func create() -> ImportAudioFileUseCase {
+    public func make() -> ImportAudioFileUseCase {
+        
+        let tagsParser = tagsParserFactory.make()
 
         return ImportAudioFileUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,

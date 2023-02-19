@@ -27,7 +27,7 @@ class LibraryFileFlowPresenterTests: XCTestCase {
         
         let viewFactory = mock(LibraryItemViewFactory.self)
         
-        given(viewFactory.create(viewModel: any()))
+        given(viewFactory.make(viewModel: any()))
             .willReturn(view)
         
         let flow = mock(LibraryFileFlowModel.self)

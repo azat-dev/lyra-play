@@ -7,5 +7,5 @@
 
 public protocol PronounceTranslationsUseCaseFactory {
 
-    func create() -> PronounceTranslationsUseCase
+    func make() -> PronounceTranslationsUseCase
 }

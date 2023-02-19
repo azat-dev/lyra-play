@@ -22,7 +22,7 @@ public final class ProvideExportedDictionaryFileForSharingUseCaseFactory: Provid
 
     // MARK: - Methods
 
-    public func create() -> ProvideFileForSharingUseCase {
+    public func make() -> ProvideFileForSharingUseCase {
 
         return ProvideExportedDictionaryFileForSharingUseCase(exportDictionaryUseCaseFactory: exportDictionaryUseCaseFactory)
     }

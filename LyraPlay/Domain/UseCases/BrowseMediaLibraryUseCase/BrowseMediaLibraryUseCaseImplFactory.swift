@@ -27,7 +27,7 @@ public final class BrowseMediaLibraryUseCaseImplFactory: BrowseMediaLibraryUseCa
 
     // MARK: - Methods
 
-    public func create() -> BrowseMediaLibraryUseCase {
+    public func make() -> BrowseMediaLibraryUseCase {
 
         return BrowseMediaLibraryUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,

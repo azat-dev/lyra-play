@@ -15,7 +15,7 @@ public final class PromptDialogViewModelImplFactory: PromptDialogViewModelFactor
 
     // MARK: - Methods
 
-    public func create(
+    public func make(
         messageText: String,
         submitText: String,
         cancelText: String,

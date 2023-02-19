@@ -7,5 +7,5 @@
 
 public protocol ConfirmDialogViewFactory {
 
-    func create(viewModel: ConfirmDialogViewModel) -> ConfirmDialogViewController
+    func make(viewModel: ConfirmDialogViewModel) -> ConfirmDialogViewController
 }

@@ -22,7 +22,7 @@ public final class LoadDictionaryItemUseCaseImplFactory: LoadDictionaryItemUseCa
 
     // MARK: - Methods
 
-    public func create() -> LoadDictionaryItemUseCase {
+    public func make() -> LoadDictionaryItemUseCase {
 
         return LoadDictionaryItemUseCaseImpl(dictionaryRepository: dictionaryRepository)
     }

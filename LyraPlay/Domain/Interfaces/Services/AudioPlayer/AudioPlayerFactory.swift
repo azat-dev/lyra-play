@@ -7,5 +7,5 @@
 
 public protocol AudioPlayerFactory {
 
-    func create() -> AudioPlayer
+    func make() -> AudioPlayer
 }

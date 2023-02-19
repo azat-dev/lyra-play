@@ -15,7 +15,7 @@ public final class DictionaryArchiveParserImplFactory: DictionaryArchiveParserFa
 
     // MARK: - Methods
 
-    public func create() -> DictionaryArchiveParser {
+    public func make() -> DictionaryArchiveParser {
 
         return DictionaryArchiveParserImpl()
     }

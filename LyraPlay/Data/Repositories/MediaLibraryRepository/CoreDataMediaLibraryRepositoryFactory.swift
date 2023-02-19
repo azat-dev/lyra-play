@@ -22,7 +22,7 @@ public final class CoreDataMediaLibraryRepositoryFactory: MediaLibraryRepository
 
     // MARK: - Methods
 
-    public func create() -> MediaLibraryRepository {
+    public func make() -> MediaLibraryRepository {
 
         return CoreDataMediaLibraryRepository(coreDataStore: coreDataStore)
     }

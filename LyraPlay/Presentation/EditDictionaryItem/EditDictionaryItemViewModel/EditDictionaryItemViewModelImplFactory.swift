@@ -27,7 +27,7 @@ public final class EditDictionaryItemViewModelImplFactory: EditDictionaryItemVie
 
     // MARK: - Methods
 
-    public func create(
+    public func make(
         with params: EditDictionaryItemParams,
         delegate: EditDictionaryItemViewModelDelegate
     ) -> EditDictionaryItemViewModel {
@@ -35,8 +35,8 @@ public final class EditDictionaryItemViewModelImplFactory: EditDictionaryItemVie
         return EditDictionaryItemViewModelImpl(
             params: params,
             delegate: delegate,
-            loadDictionaryItemUseCase: loadDictionaryItemUseCaseFactory.create(),
-            editDictionaryItemUseCase: editDictionaryItemUseCaseFactory.create()
+            loadDictionaryItemUseCase: loadDictionaryItemUseCaseFactory.make(),
+            editDictionaryItemUseCase: editDictionaryItemUseCaseFactory.make()
         )
     }
 }

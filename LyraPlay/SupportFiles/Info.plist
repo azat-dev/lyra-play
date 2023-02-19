@@ -2,6 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>LyraPlay Dictionary Archive</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.azatkaiumov.lyraplay.lyraplay</string>
+			</array>
+		</dict>
+	</array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>RedHatDisplay-Black.ttf</string>
@@ -60,10 +73,6 @@
 				<array>
 					<string>lyraplay</string>
 				</array>
-				<key>public.mime-type</key>
-				<array>
-					<string>application/lyraplay</string>
-				</array>
 			</dict>
 		</dict>
 	</array>
@@ -87,9 +96,32 @@
 				<array>
 					<string>srt</string>
 					<string>lrc</string>
+					<string>vtt</string>
 				</array>
 				<key>public.mime-type</key>
 				<array/>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.content</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>LyraPlay Dictionary Archive</string>
+			<key>UTTypeIconFiles</key>
+			<array/>
+			<key>UTTypeIdentifier</key>
+			<string>com.azatkaiumov.lyraplay.lyraplay</string>
+			<key>UTTypeReferenceURL</key>
+			<string></string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>lyraplay</string>
+				</array>
 			</dict>
 		</dict>
 	</array>

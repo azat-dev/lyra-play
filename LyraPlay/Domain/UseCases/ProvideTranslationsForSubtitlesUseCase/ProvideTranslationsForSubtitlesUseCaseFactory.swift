@@ -7,5 +7,5 @@
 
 public protocol ProvideTranslationsForSubtitlesUseCaseFactory {
 
-    func create() -> ProvideTranslationsForSubtitlesUseCase
+    func make() -> ProvideTranslationsForSubtitlesUseCase
 }

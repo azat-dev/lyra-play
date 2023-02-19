@@ -27,7 +27,7 @@ public final class EditDictionaryItemUseCaseImplFactory: EditDictionaryItemUseCa
 
     // MARK: - Methods
 
-    public func create() -> EditDictionaryItemUseCase {
+    public func make() -> EditDictionaryItemUseCase {
 
         return EditDictionaryItemUseCaseImpl(
             dictionaryRepository: dictionaryRepository,

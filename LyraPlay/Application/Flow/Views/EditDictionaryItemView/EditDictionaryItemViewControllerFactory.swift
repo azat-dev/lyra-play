@@ -15,7 +15,7 @@ public final class EditDictionaryItemViewControllerFactory: EditDictionaryItemVi
 
     // MARK: - Methods
 
-    public func create(viewModel: EditDictionaryItemViewModel) -> EditDictionaryItemViewController {
+    public func make(viewModel: EditDictionaryItemViewModel) -> EditDictionaryItemViewController {
 
         return EditDictionaryItemViewController(viewModel: viewModel)
     }

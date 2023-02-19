@@ -15,7 +15,7 @@ public final class AttachingSubtitlesProgressViewControllerFactory: AttachingSub
 
     // MARK: - Methods
 
-    public func create(viewModel: AttachingSubtitlesProgressViewModel) -> AttachingSubtitlesProgressViewController {
+    public func make(viewModel: AttachingSubtitlesProgressViewModel) -> AttachingSubtitlesProgressViewController {
 
         return AttachingSubtitlesProgressViewController(viewModel: viewModel)
     }

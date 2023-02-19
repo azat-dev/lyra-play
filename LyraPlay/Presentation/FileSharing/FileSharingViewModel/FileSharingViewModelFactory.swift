@@ -7,7 +7,7 @@
 
 public protocol FileSharingViewModelFactory {
 
-    func create(
+    func make(
         fileName: String,
         delegate: FileSharingViewModelDelegate
     ) -> FileSharingViewModel

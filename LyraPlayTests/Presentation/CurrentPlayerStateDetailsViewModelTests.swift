@@ -36,7 +36,7 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
         let subtitlesPresenterViewModelFactory = mock(SubtitlesPresenterViewModelFactory.self)
         let subtitlesPresenterViewModel = mock(SubtitlesPresenterViewModel.self)
         
-        given(subtitlesPresenterViewModelFactory.create(subtitles: any()))
+        given(subtitlesPresenterViewModelFactory.make(subtitles: any()))
             .willReturn(subtitlesPresenterViewModel)
 
         let viewModel = CurrentPlayerStateDetailsViewModelImpl(

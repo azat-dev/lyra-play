@@ -7,5 +7,5 @@
 
 public protocol FilesPickerViewFactory {
 
-    func create(viewModel: FilesPickerViewModel) -> FilesPickerViewController
+    func make(viewModel: FilesPickerViewModel) -> FilesPickerViewController
 }

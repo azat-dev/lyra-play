@@ -15,7 +15,7 @@ public final class MediaLibraryBrowserViewControllerFactory: MediaLibraryBrowser
     
     // MARK: - Methods
     
-    public func create(viewModel: MediaLibraryBrowserViewModel) -> MediaLibraryBrowserViewController {
+    public func make(viewModel: MediaLibraryBrowserViewModel) -> MediaLibraryBrowserViewController {
         
         return MediaLibraryBrowserViewController(viewModel: viewModel)
     }

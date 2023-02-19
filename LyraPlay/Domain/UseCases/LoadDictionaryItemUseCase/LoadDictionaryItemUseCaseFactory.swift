@@ -7,5 +7,5 @@
 
 public protocol LoadDictionaryItemUseCaseFactory {
 
-    func create() -> LoadDictionaryItemUseCase
+    func make() -> LoadDictionaryItemUseCase
 }

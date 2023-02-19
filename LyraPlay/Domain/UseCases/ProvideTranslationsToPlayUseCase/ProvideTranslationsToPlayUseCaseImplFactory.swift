@@ -8,22 +8,24 @@
 import Foundation
 
 public final class ProvideTranslationsToPlayUseCaseImplFactory: ProvideTranslationsToPlayUseCaseFactory {
-
+    
     // MARK: - Properties
-
-    private let provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase
-
+    
+    private let provideTranslationsForSubtitlesUseCaseFactory: ProvideTranslationsForSubtitlesUseCaseFactory
+    
     // MARK: - Initializers
-
-    public init(provideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCase) {
-
-        self.provideTranslationsForSubtitlesUseCase = provideTranslationsForSubtitlesUseCase
+    
+    public init(provideTranslationsForSubtitlesUseCaseFactory: ProvideTranslationsForSubtitlesUseCaseFactory) {
+        
+        self.provideTranslationsForSubtitlesUseCaseFactory = provideTranslationsForSubtitlesUseCaseFactory
     }
-
+    
     // MARK: - Methods
-
-    public func create() -> ProvideTranslationsToPlayUseCase {
-
+    
+    public func make() -> ProvideTranslationsToPlayUseCase {
+        
+        let provideTranslationsForSubtitlesUseCase = provideTranslationsForSubtitlesUseCaseFactory.make()
+        
         return ProvideTranslationsToPlayUseCaseImpl(provideTranslationsForSubtitlesUseCase: provideTranslationsForSubtitlesUseCase)
     }
 }

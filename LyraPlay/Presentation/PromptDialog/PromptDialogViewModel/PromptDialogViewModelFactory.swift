@@ -7,7 +7,7 @@
 
 public protocol PromptDialogViewModelFactory {
 
-    func create(
+    func make(
         messageText: String,
         submitText: String,
         cancelText: String,

@@ -11,27 +11,30 @@ public final class LoadSubtitlesUseCaseImplFactory: LoadSubtitlesUseCaseFactory 
 
     // MARK: - Properties
 
-    private let subtitlesRepository: SubtitlesRepository
+    private let subtitlesRepositoryFactory: SubtitlesRepositoryFactory
     private let subtitlesFiles: FilesRepository
-    private let subtitlesParser: SubtitlesParser
+    private let subtitlesParserFactory: SubtitlesParserFactory
 
     // MARK: - Initializers
 
     public init(
-        subtitlesRepository: SubtitlesRepository,
+        subtitlesRepositoryFactory: SubtitlesRepositoryFactory,
         subtitlesFiles: FilesRepository,
-        subtitlesParser: SubtitlesParser
+        subtitlesParserFactory: SubtitlesParserFactory
     ) {
 
-        self.subtitlesRepository = subtitlesRepository
+        self.subtitlesRepositoryFactory = subtitlesRepositoryFactory
         self.subtitlesFiles = subtitlesFiles
-        self.subtitlesParser = subtitlesParser
+        self.subtitlesParserFactory = subtitlesParserFactory
     }
 
     // MARK: - Methods
 
-    public func create() -> LoadSubtitlesUseCase {
+    public func make() -> LoadSubtitlesUseCase {
 
+        let subtitlesRepository = subtitlesRepositoryFactory.make()
+        let subtitlesParser = subtitlesParserFactory.make()
+        
         return LoadSubtitlesUseCaseImpl(
             subtitlesRepository: subtitlesRepository,
             subtitlesFiles: subtitlesFiles,

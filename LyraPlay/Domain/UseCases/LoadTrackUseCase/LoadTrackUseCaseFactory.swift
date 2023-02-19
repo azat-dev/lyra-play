@@ -7,5 +7,5 @@
 
 public protocol LoadTrackUseCaseFactory {
 
-    func create() -> LoadTrackUseCase
+    func make() -> LoadTrackUseCase
 }

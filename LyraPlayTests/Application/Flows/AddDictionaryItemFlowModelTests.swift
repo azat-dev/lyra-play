@@ -29,7 +29,7 @@ class AddDictionaryItemFlowModelTests: XCTestCase {
         
         let editDelegate = mock(EditDictionaryItemViewModelDelegate.self)
         
-        given(editDictionaryItemViewModelFactory.create(with: any(), delegate: editDelegate))
+        given(editDictionaryItemViewModelFactory.make(with: any(), delegate: editDelegate))
             .willReturn(editDictionaryItemViewModel)
 
         let flowModel = AddDictionaryItemFlowModelImpl(

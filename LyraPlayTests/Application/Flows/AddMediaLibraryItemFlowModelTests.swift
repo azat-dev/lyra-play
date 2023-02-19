@@ -28,14 +28,14 @@ class AddMediaLibraryItemFlowModelTests: XCTestCase {
         let chooseDialogViewModel = mock(ChooseDialogViewModel.self)
         let chooseDialogViewModelFactory = mock(ChooseDialogViewModelFactory.self)
         
-        given(chooseDialogViewModelFactory.create(title: any(), items: any(), delegate: any()))
+        given(chooseDialogViewModelFactory.make(title: any(), items: any(), delegate: any()))
             .willReturn(chooseDialogViewModel)
 
         let importMediaFilesFlowModel = mock(ImportMediaFilesFlowModel.self)
         
         let importMediaFilesFlowModelFactory = mock(ImportMediaFilesFlowModelFactory.self)
         
-        given(importMediaFilesFlowModelFactory.create(targetFolderId: any(), delegate: any()))
+        given(importMediaFilesFlowModelFactory.make(targetFolderId: any(), delegate: any()))
             .willReturn(importMediaFilesFlowModel)
         
         let addMediaLibraryFolderFlowModelFactory = mock(AddMediaLibraryFolderFlowModelFactory.self)

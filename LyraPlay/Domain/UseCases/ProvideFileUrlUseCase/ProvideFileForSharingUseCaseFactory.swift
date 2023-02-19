@@ -11,5 +11,5 @@ public typealias ProvideFileForSharingUseCaseCallback = () -> URL
 
 public protocol ProvideFileForSharingUseCaseFactory {
 
-    func create() -> ProvideFileForSharingUseCase
+    func make() -> ProvideFileForSharingUseCase
 }

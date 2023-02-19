@@ -30,7 +30,7 @@ public final class ShowMediaInfoUseCaseImplFactory: ShowMediaInfoUseCaseFactory 
 
     // MARK: - Methods
 
-    public func create() -> ShowMediaInfoUseCase {
+    public func make() -> ShowMediaInfoUseCase {
 
         return ShowMediaInfoUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,

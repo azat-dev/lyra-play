@@ -54,7 +54,7 @@ extension ImportDictionaryArchiveUseCaseImpl {
             
             var itemToSave: DictionaryItem
             let translations = item.translations.map {
-                TranslationItem(id: nil, text: $0)
+                TranslationItem(id: UUID(), text: $0)
             }
             
             if let foundItem = foundItemsByOriginalText[item.original.lowercased()] {

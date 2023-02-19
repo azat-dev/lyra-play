@@ -7,5 +7,5 @@
 
 public protocol EditDictionaryListUseCaseFactory {
 
-    func create() -> EditDictionaryListUseCase
+    func make() -> EditDictionaryListUseCase
 }

@@ -64,7 +64,7 @@ public final class CoreDataSubtitlesRepository: SubtitlesRepository {
             }
             
             
-            let newItem = ManagedSubtitles.create(context, from: item)
+            let newItem = ManagedSubtitles.make(context, from: item)
             try context.save()
             return newItem
         }

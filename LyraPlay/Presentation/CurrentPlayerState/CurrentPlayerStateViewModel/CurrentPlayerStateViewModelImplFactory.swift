@@ -8,22 +8,24 @@
 import Foundation
 
 public final class CurrentPlayerStateViewModelImplFactory: CurrentPlayerStateViewModelFactory {
-
+    
     // MARK: - Properties
-
-    private let playMediaUseCase: PlayMediaWithInfoUseCase
-
+    
+    private let playMediaUseCaseFactory: PlayMediaWithInfoUseCaseFactory
+    
     // MARK: - Initializers
-
-    public init(playMediaUseCase: PlayMediaWithInfoUseCase) {
-
-        self.playMediaUseCase = playMediaUseCase
+    
+    public init(playMediaUseCaseFactory: PlayMediaWithInfoUseCaseFactory) {
+        
+        self.playMediaUseCaseFactory = playMediaUseCaseFactory
     }
-
+    
     // MARK: - Methods
-
-    public func create(delegate: CurrentPlayerStateViewModelDelegate) -> CurrentPlayerStateViewModel {
-
+    
+    public func make(delegate: CurrentPlayerStateViewModelDelegate) -> CurrentPlayerStateViewModel {
+        
+        let playMediaUseCase = playMediaUseCaseFactory.make()
+        
         return CurrentPlayerStateViewModelImpl(
             delegate: delegate,
             playMediaUseCase: playMediaUseCase

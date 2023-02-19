@@ -7,5 +7,5 @@
 
 public protocol ProvideTranslationsToPlayUseCaseFactory {
 
-    func create() -> ProvideTranslationsToPlayUseCase
+    func make() -> ProvideTranslationsToPlayUseCase
 }

@@ -22,7 +22,7 @@ public final class EditDictionaryListUseCaseImplFactory: EditDictionaryListUseCa
 
     // MARK: - Methods
 
-    public func create() -> EditDictionaryListUseCase {
+    public func make() -> EditDictionaryListUseCase {
 
         return EditDictionaryListUseCaseImpl(dictionaryRepository: dictionaryRepository)
     }

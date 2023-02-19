@@ -132,7 +132,7 @@ extension ManagedDictionaryItem {
         translations = TranslationItemDTO.encode(from: source.translations)
     }
     
-    static func create(_ context: NSManagedObjectContext, from domain: DictionaryItem) -> ManagedDictionaryItem {
+    static func make(_ context: NSManagedObjectContext, from domain: DictionaryItem) -> ManagedDictionaryItem {
 
         let item = ManagedDictionaryItem(context: context)
         

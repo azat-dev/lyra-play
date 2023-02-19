@@ -9,6 +9,6 @@ import Foundation
 
 public protocol PlayMediaWithInfoUseCaseFactory {
     
-    func create() -> PlayMediaWithInfoUseCase
+    func make() -> PlayMediaWithInfoUseCase
 }
 

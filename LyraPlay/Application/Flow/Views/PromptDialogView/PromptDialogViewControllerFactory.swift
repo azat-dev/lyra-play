@@ -15,7 +15,7 @@ public final class PromptDialogViewControllerFactory: PromptDialogViewFactory {
 
     // MARK: - Methods
 
-    public func create(viewModel: PromptDialogViewModel) -> PromptDialogViewController {
+    public func make(viewModel: PromptDialogViewModel) -> PromptDialogViewController {
 
         return PromptDialogViewController(viewModel: viewModel)
     }

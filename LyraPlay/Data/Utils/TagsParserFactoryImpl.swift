@@ -11,7 +11,7 @@ public final class TagsParserFactoryImpl: TagsParserFactory {
     
     public init() {}
     
-    public func create() -> TagsParser {
+    public func make() -> TagsParser {
         
         return TagsParserImpl()
     }

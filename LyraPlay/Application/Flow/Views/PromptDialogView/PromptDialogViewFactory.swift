@@ -7,5 +7,5 @@
 
 public protocol PromptDialogViewFactory {
 
-    func create(viewModel: PromptDialogViewModel) -> PromptDialogViewController
+    func make(viewModel: PromptDialogViewModel) -> PromptDialogViewController
 }

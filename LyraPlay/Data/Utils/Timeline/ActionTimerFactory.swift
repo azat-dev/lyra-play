@@ -11,7 +11,7 @@ import Foundation
 
 public protocol ActionTimerFactory {
     
-    func create() -> ActionTimer
+    func make() -> ActionTimer
 }
 
 // MARK: - Implementations
@@ -20,7 +20,7 @@ public final class ActionTimerFactoryImpl: ActionTimerFactory {
     
     public init() { }
     
-    public func create() -> ActionTimer {
+    public func make() -> ActionTimer {
         
         return ActionTimerImpl()
     }

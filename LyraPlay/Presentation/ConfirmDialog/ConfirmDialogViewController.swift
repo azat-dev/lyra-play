@@ -22,7 +22,7 @@ public final class ConfirmDialogViewController: UIAlertController, ConfirmDialog
         viewModel.dispose()
     }
     
-    public static func create(viewModel: ViewModel) -> ConfirmDialogViewController {
+    public static func make(viewModel: ViewModel) -> ConfirmDialogViewController {
         
         let alert = ConfirmDialogViewController(
             title: nil,

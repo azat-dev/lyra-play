@@ -29,7 +29,7 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         let showMediaInfoUseCase = mock(ShowMediaInfoUseCase.self)
         let showMediaInfoUseCaseFactory = mock(ShowMediaInfoUseCaseFactory.self)
         
-        given(showMediaInfoUseCaseFactory.create())
+        given(showMediaInfoUseCaseFactory.make())
             .willReturn(showMediaInfoUseCase)
         
         let playMediaUseCase = mock(PlayMediaWithInfoUseCase.self)

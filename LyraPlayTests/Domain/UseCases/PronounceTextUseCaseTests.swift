@@ -15,7 +15,7 @@ class PronounceTextUseCaseTests: XCTestCase {
     typealias SUT = (
         useCase: PronounceTextUseCase,
         textToSpeechConverter: TextToSpeechConverterMock,
-        audioPlayer: AudioPlayerMock
+        audioPlayer: AudioPlayerMockDeprecated
     )
 
     // MARK: - Methods
@@ -24,7 +24,7 @@ class PronounceTextUseCaseTests: XCTestCase {
 
         let textToSpeechConverter = TextToSpeechConverterMock()
 
-        let audioPlayer = AudioPlayerMock()
+        let audioPlayer = AudioPlayerMockDeprecated()
 
         let useCase = PronounceTextUseCaseImpl(
             textToSpeechConverter: textToSpeechConverter,

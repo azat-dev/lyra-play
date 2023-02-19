@@ -11,19 +11,21 @@ public final class SubRipFileFormatParserFactory: SubtitlesParserFactory {
 
     // MARK: - Properties
 
-    private let textSplitter: TextSplitter
+    private let textSplitterFactory: TextSplitterFactory
 
     // MARK: - Initializers
 
-    public init(textSplitter: TextSplitter) {
+    public init(textSplitterFactory: TextSplitterFactory) {
 
-        self.textSplitter = textSplitter
+        self.textSplitterFactory = textSplitterFactory
     }
 
     // MARK: - Methods
 
-    public func create() -> SubtitlesParser {
+    public func make() -> SubtitlesParser {
 
+        let textSplitter = textSplitterFactory.make()
+        
         return SubRipFileFormatParser(textSplitter: textSplitter)
     }
 }

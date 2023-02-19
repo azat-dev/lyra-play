@@ -61,7 +61,7 @@ extension CoreDataDictionaryRepository {
                 return existingItem
             }
             
-            let newItem = ManagedDictionaryItem.create(context, from: item)
+            let newItem = ManagedDictionaryItem.make(context, from: item)
             newItem.createdAt = .now
             try context.save()
             
@@ -154,6 +154,8 @@ extension CoreDataDictionaryRepository {
             key = #keyPath(ManagedDictionaryItem.originalText)
             value = originalText
         }
+        
+        print("KEY: \(key)")
         
         return NSComparisonPredicate(
             leftExpression: .init(forKeyPath: key),

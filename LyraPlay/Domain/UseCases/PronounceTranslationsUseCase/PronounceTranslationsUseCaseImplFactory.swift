@@ -11,24 +11,27 @@ public final class PronounceTranslationsUseCaseImplFactory: PronounceTranslation
 
     // MARK: - Properties
 
-    private let textToSpeechConverter: TextToSpeechConverter
-    private let audioPlayer: AudioPlayer
+    private let textToSpeechConverterFactory: TextToSpeechConverterFactory
+    private let audioPlayerFactory: AudioPlayerFactory
 
     // MARK: - Initializers
 
     public init(
-        textToSpeechConverter: TextToSpeechConverter,
-        audioPlayer: AudioPlayer
+        textToSpeechConverterFactory: TextToSpeechConverterFactory,
+        audioPlayerFactory: AudioPlayerFactory
     ) {
 
-        self.textToSpeechConverter = textToSpeechConverter
-        self.audioPlayer = audioPlayer
+        self.textToSpeechConverterFactory = textToSpeechConverterFactory
+        self.audioPlayerFactory = audioPlayerFactory
     }
 
     // MARK: - Methods
 
-    public func create() -> PronounceTranslationsUseCase {
+    public func make() -> PronounceTranslationsUseCase {
 
+        let audioPlayer = audioPlayerFactory.make()
+        let textToSpeechConverter = textToSpeechConverterFactory.make()
+        
         return PronounceTranslationsUseCaseImpl(
             textToSpeechConverter: textToSpeechConverter,
             audioPlayer: audioPlayer

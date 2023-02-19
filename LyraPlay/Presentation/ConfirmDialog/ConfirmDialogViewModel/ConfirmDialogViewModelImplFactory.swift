@@ -15,7 +15,7 @@ public final class ConfirmDialogViewModelImplFactory: ConfirmDialogViewModelFact
     
     // MARK: - Methods
     
-    public func create(
+    public func make(
         messageText: String,
         confirmText: String,
         cancelText: String,

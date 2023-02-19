@@ -7,5 +7,5 @@
 
 public protocol AttachingSubtitlesProgressViewModelFactory {
 
-    func create(delegate: AttachingSubtitlesProgressViewModelDelegate) -> AttachingSubtitlesProgressViewModel
+    func make(delegate: AttachingSubtitlesProgressViewModelDelegate) -> AttachingSubtitlesProgressViewModel
 }

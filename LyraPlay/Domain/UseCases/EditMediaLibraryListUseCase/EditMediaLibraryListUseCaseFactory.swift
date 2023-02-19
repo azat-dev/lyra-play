@@ -7,5 +7,5 @@
 
 public protocol EditMediaLibraryListUseCaseFactory {
 
-    func create() -> EditMediaLibraryListUseCase
+    func make() -> EditMediaLibraryListUseCase
 }

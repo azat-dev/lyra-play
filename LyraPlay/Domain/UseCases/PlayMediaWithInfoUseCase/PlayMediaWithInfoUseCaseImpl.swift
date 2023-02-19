@@ -29,7 +29,7 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
         showMediaInfoUseCaseFactory: ShowMediaInfoUseCaseFactory
     ) {
         
-        self.playMediaWithTranslationsUseCase = playMediaWithTranslationsUseCaseFactory.create()
+        self.playMediaWithTranslationsUseCase = playMediaWithTranslationsUseCaseFactory.make()
         self.showMediaInfoUseCaseFactory = showMediaInfoUseCaseFactory
     }
     
@@ -73,7 +73,7 @@ extension PlayMediaWithInfoUseCaseImpl {
                
         state.value = .activeSession(session, .loading)
 
-        let showMediaInfoUseCase = showMediaInfoUseCaseFactory.create()
+        let showMediaInfoUseCase = showMediaInfoUseCaseFactory.make()
         let fetchInfoResult = await showMediaInfoUseCase.fetchInfo(trackId: session.mediaId)
         
         guard case .success(let mediaInfo) = fetchInfoResult else {

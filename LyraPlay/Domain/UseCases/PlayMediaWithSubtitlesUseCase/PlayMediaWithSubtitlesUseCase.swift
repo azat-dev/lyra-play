@@ -39,7 +39,7 @@ public enum PlayMediaWithSubtitlesUseCaseState: Equatable {
 
 // MARK: - Protocols
 
-public protocol PlayMediaWithSubtitlesUseCaseInput {
+public protocol PlayMediaWithSubtitlesUseCaseInput: AnyObject {
 
     func prepare(params: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
 

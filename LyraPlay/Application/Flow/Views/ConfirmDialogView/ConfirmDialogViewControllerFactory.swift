@@ -15,8 +15,8 @@ public final class ConfirmDialogViewControllerFactory: ConfirmDialogViewFactory 
 
     // MARK: - Methods
 
-    public func create(viewModel: ConfirmDialogViewModel) -> ConfirmDialogViewController {
+    public func make(viewModel: ConfirmDialogViewModel) -> ConfirmDialogViewController {
 
-        return ConfirmDialogViewController.create(viewModel: viewModel)
+        return ConfirmDialogViewController.make(viewModel: viewModel)
     }
 }
