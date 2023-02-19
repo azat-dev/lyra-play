@@ -82,12 +82,6 @@ class LoadedPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         // Then
         try AssertResultSucceded(result)
         
-        verify(sut.playMediaUseCase.play())
-            .wasCalled(1)
-        
-        verify(sut.playSubtitlesUseCase.play())
-            .wasCalled(1)
-        
         let playSubtitlesUseCase = sut.playSubtitlesUseCase
         let playMediaUseCase = sut.playMediaUseCase
         
