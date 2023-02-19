@@ -139,37 +139,3 @@ extension PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesUseStateCo
         fatalError()
     }
 }
-
-// MARK: - Error Mapping
-
-fileprivate extension PlayMediaUseCaseError {
-    
-    func map() -> PlayMediaWithSubtitlesUseCaseError {
-        
-        switch self {
-            
-        case .noActiveTrack:
-            return .noActiveMedia
-            
-        case .trackNotFound:
-            return .mediaFileNotFound
-            
-        case .internalError(let error):
-            return .internalError(error)
-        }
-    }
-}
-
-// MARK: - Result Mapping
-
-fileprivate extension Result where Failure == PlayMediaUseCaseError  {
-    
-    func mapResult() -> Result<Success, PlayMediaWithSubtitlesUseCaseError> {
-        
-        guard case .success(let value) = self else {
-            return .failure(self.error!.map())
-        }
-        
-        return .success(value)
-    }
-}

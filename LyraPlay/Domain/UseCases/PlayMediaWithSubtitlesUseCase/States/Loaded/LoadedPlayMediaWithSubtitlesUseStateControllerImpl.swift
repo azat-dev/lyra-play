@@ -11,8 +11,8 @@ public class LoadedPlayMediaWithSubtitlesUseStateControllerImpl: LoadedPlayMedia
 
     // MARK: - Properties
     
-    private let session: PlayMediaWithSubtitlesUseStateControllerActiveSession
-    private weak var delegate: PlayMediaWithSubtitlesUseStateControllerDelegate?
+    public let session: PlayMediaWithSubtitlesUseStateControllerActiveSession
+    public weak var delegate: PlayMediaWithSubtitlesUseStateControllerDelegate?
     
     // MARK: - Initializers
     
