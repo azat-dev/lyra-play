@@ -6,10 +6,13 @@
 //
 
 import Foundation
+import Combine
 
 public class PlayingPlayMediaWithSubtitlesUseStateControllerImpl: LoadedPlayMediaWithSubtitlesUseStateControllerImpl, PlayingPlayMediaWithSubtitlesUseStateController {
 
     // MARK: - Properties
+    
+    private var observers = Set<AnyCancellable>()
     
     // MARK: - Initializers
     
@@ -22,6 +25,10 @@ public class PlayingPlayMediaWithSubtitlesUseStateControllerImpl: LoadedPlayMedi
             session: session,
             delegate: delegate
         )
+    }
+    
+    deinit {
+        observers.removeAll()
     }
     
     // MARK: - Methods
@@ -57,9 +64,24 @@ public class PlayingPlayMediaWithSubtitlesUseStateControllerImpl: LoadedPlayMedi
             return result.mapResult()
         }
         
-        session.playSubtitlesUseCase?.play()
+        session.playMediaUseCase.state
+            .sink { [weak self] newState in
+                
+                guard
+                    let self = self,
+                    case .finished = newState
+                else {
+                    return
+                }
+                
+                self.session.playSubtitlesUseCase?.pause()
+                self.delegate?.didFinish(session: self.session)
+                
+            }.store(in: &observers)
         
+        session.playSubtitlesUseCase?.play()
         delegate?.didStartPlay(session: session)
+        
         return .success(())
     }
 }
