@@ -8,7 +8,7 @@
 import Foundation
 import LyraPlay
 
-class LoadSubtitlesUseCaseMock: LoadSubtitlesUseCase {
+class LoadSubtitlesUseCaseMockDeprecated: LoadSubtitlesUseCase {
 
     typealias LoadSubtitlesCallback = (_ mediaFileId: UUID, _ language: String) async -> Result<Subtitles, LoadSubtitlesUseCaseError>
     

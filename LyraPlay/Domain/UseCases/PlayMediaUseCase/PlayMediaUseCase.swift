@@ -27,7 +27,7 @@ public enum PlayMediaUseCaseState: Equatable {
     case finished(mediaId: UUID)
 }
 
-public protocol PlayMediaUseCaseInput {
+public protocol PlayMediaUseCaseInput: AnyObject {
 
     func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError>
 
@@ -42,7 +42,7 @@ public protocol PlayMediaUseCaseInput {
     func togglePlay() -> Result<Void, PlayMediaUseCaseError>
 }
 
-public protocol PlayMediaUseCaseOutput {
+public protocol PlayMediaUseCaseOutput: AnyObject {
 
     var state: CurrentValueSubject<PlayMediaUseCaseState, Never> { get }
 }
