@@ -98,6 +98,12 @@ class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         let playSubtitlesUseCase = sut.playSubtitlesUseCase
         let playMediaUseCase = sut.playMediaUseCase
         
+        verify(playMediaUseCase.play())
+            .wasCalled(1)
+        
+        verify(playSubtitlesUseCase.play())
+            .wasCalled(1)
+        
         verify(
             sut.delegate.didStartPlay(
                 session: any(
