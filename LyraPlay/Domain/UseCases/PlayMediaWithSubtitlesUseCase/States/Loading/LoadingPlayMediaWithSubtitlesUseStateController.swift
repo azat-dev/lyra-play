@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol LoadingPlayMediaWithSubtitlesUseStateController {
+public protocol LoadingPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubtitlesUseStateController {
  
     func load() async -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
 }
