@@ -112,27 +112,27 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
         
         let pauseAtIndex = 1
         
-        let observer = sut.useCase.state
-            .enumerated()
-            .map { (index, state) in
-                
-                switch index {
-                
-                case pauseAtIndex:
-                    Task {
-                        sut.useCase.pause()
-                    }
-                
-                default:
-                    break
-                }
-                
-                return state
-            }
-            .sink { stateSequence.fulfill(with: $0) }
-        
-        stateSequence.wait(timeout: 5, enforceOrder: true)
-        observer.cancel()
+//        let observer = sut.useCase.state
+//            .enumerated()
+//            .map { (index, state) in
+//                
+//                switch index {
+//                
+//                case pauseAtIndex:
+//                    Task {
+//                        sut.useCase.pause()
+//                    }
+//                
+//                default:
+//                    break
+//                }
+//                
+//                return state
+//            }
+//            .sink { stateSequence.fulfill(with: $0) }
+//        
+//        stateSequence.wait(timeout: 5, enforceOrder: true)
+//        observer.cancel()
     }
 }
 

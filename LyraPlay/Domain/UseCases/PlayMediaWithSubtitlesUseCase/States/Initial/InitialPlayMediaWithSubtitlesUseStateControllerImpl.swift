@@ -1,5 +1,5 @@
 //
-//  InitialPlayMediaWithSubtitlesUseStateController.swift
+//  InitialPlayMediaWithSubtitlesUseStateControllerImpl.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 16.02.23.
@@ -7,11 +7,11 @@
 
 import Foundation
 
-public class InitialPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubtitlesUseStateController {
+public class InitialPlayMediaWithSubtitlesUseStateControllerImpl: InitialPlayMediaWithSubtitlesUseStateController {
     
     // MARK: - Properties
     
-    private weak var delegate: PlayMediaWithSubtitlesUseStateControllerDelegate?
+    public weak var delegate: PlayMediaWithSubtitlesUseStateControllerDelegate?
     
     // MARK: - Initializers
     
@@ -23,8 +23,11 @@ public class InitialPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubti
     
     public func prepare(params: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
-        delegate?.didStartLoading(params: params)
-        return .success(())
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return await delegate.load(params: params)
     }
     
     public func play() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
@@ -45,8 +48,5 @@ public class InitialPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubti
     
     public func togglePlay() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         return .success(())
-    }
-    
-    public func execute() {
     }
 }

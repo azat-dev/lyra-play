@@ -17,7 +17,7 @@ public enum PlaySubtitlesUseCaseState: Equatable {
     case finished
 }
 
-public protocol PlaySubtitlesUseCaseInput {
+public protocol PlaySubtitlesUseCaseInput: AnyObject {
 
     func play() -> Void
 
@@ -28,7 +28,7 @@ public protocol PlaySubtitlesUseCaseInput {
     func stop() -> Void
 }
 
-public protocol PlaySubtitlesUseCaseOutput {
+public protocol PlaySubtitlesUseCaseOutput: AnyObject {
 
     var state: CurrentValueSubject<PlaySubtitlesUseCaseState, Never> { get }
 
