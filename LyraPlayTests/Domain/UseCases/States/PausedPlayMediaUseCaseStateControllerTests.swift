@@ -52,13 +52,16 @@ class PausedPlayMediaUseCaseStateControllerTests: XCTestCase {
         let preparingMediaId = UUID()
 
         let sut = createSUT(mediaId: loadedMediaId)
+        
+        given(await sut.delegate.load(mediaId: any()))
+            .willReturn(.success(()))
 
         // When
-        sut.controller.prepare(mediaId: preparingMediaId)
+        await sut.controller.prepare(mediaId: preparingMediaId)
 
         // Then
         verify(
-            sut.delegate.didStartLoading(mediaId: preparingMediaId)
+            await sut.delegate.load(mediaId: preparingMediaId)
         ).wasCalled(1)
     }
     
@@ -69,19 +72,15 @@ class PausedPlayMediaUseCaseStateControllerTests: XCTestCase {
         
         let sut = createSUT(mediaId: loadedMediaId)
         
-        given(sut.audioPlayer.stop())
+        given(sut.delegate.stop(mediaId: any(), audioPlayer: any()))
             .willReturn(.success(()))
 
         // When
         sut.controller.stop()
 
         // Then
-        verify(sut.audioPlayer.stop())
+        verify(sut.delegate.stop(mediaId: loadedMediaId, audioPlayer: sut.audioPlayer))
             .wasCalled(1)
-        
-        verify(
-            sut.delegate.didStop()
-        ).wasCalled(1)
     }
     
     func test_play() async throws {
@@ -90,13 +89,15 @@ class PausedPlayMediaUseCaseStateControllerTests: XCTestCase {
         let loadedMediaId = UUID()
         
         let sut = createSUT(mediaId: loadedMediaId)
+        
+        given(sut.delegate.play(mediaId: any(), audioPlayer: any()))
 
         // When
         sut.controller.play()
 
         // Then
         verify(
-            sut.delegate.didStartPlaying(
+            sut.delegate.play(
                 mediaId: loadedMediaId,
                 audioPlayer: sut.audioPlayer
             )

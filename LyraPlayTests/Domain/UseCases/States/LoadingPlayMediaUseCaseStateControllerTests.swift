@@ -14,7 +14,7 @@ import LyraPlay
 class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
     
     typealias SUT = (
-        controller: PlayMediaUseCaseStateController,
+        controller: LoadingPlayMediaUseCaseStateController,
         loadTrackUseCase: LoadTrackUseCaseMock,
         delegate: PlayMediaUseCaseStateControllerDelegateMock,
         audioPlayer: AudioPlayerMock
@@ -57,7 +57,7 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
     
     // MARK: - Test Methods
     
-    func test_prepare() async throws {
+    func test_prepare__replace_existing_loading() async throws {
 
         // Given
         let mediaId1 = UUID()
@@ -78,14 +78,78 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
             loadTrackUseCase: loadTrackUseCase,
             audioPlayer: audioPlayer
         )
+        
+        given(await sut.delegate.load(mediaId: any()))
+            .willReturn(.success(()))
 
         // When
-        sut.controller.prepare(mediaId: mediaId2)
+        let result = await sut.controller.prepare(mediaId: mediaId2)
+        try AssertResultSucceded(result)
 
         // Then
-        verify(
-            sut.delegate.didStartLoading(mediaId: mediaId2)
-        ).wasCalled(1)
+        verify(await sut.delegate.load(mediaId: mediaId2))
+            .wasCalled(1)
+    }
+    
+    func test_load__success() async throws {
+
+        // Given
+        let mediaId = UUID()
+        
+        let loadTrackUseCase = mock(LoadTrackUseCase.self)
+        
+        given(await loadTrackUseCase.load(trackId: mediaId))
+            .willReturn(.success("success".data(using: .utf8)!))
+        
+        let audioPlayer = mock(AudioPlayer.self)
+        
+        given(audioPlayer.prepare(fileId: any(), data: any()))
+            .willReturn(.success(()))
+        
+        let sut = createSUT(
+            mediaId: mediaId,
+            loadTrackUseCase: loadTrackUseCase,
+            audioPlayer: audioPlayer
+        )
+        
+        // When
+        let result = await sut.controller.load()
+
+        // Then
+        try AssertResultSucceded(result)
+        
+        verify(sut.delegate.didLoad(mediaId: mediaId, audioPlayer: audioPlayer))
+            .wasCalled(1)
+    }
+    
+    func test_load__failed_load() async throws {
+
+        // Given
+        let mediaId = UUID()
+        
+        let loadTrackUseCase = mock(LoadTrackUseCase.self)
+        
+        given(await loadTrackUseCase.load(trackId: mediaId))
+            .willReturn(.failure(.internalError(nil)))
+        
+        let audioPlayer = mock(AudioPlayer.self)
+        
+        given(audioPlayer.prepare(fileId: any(), data: any()))
+            .willReturn(.success(()))
+        
+        let sut = createSUT(
+            mediaId: mediaId,
+            loadTrackUseCase: loadTrackUseCase,
+            audioPlayer: audioPlayer
+        )
+        
+        // When
+        let result = await sut.controller.load()
+
+        // Then
+        try AssertResultSucceded(result)
+        
+        verify(sut.delegate.didFailLoad(mediaId: mediaId))
+            .wasCalled(1)
     }
 }
-

@@ -40,11 +40,16 @@ class InitialPlayMediaUseCaseStateControllerTests: XCTestCase {
         // Given
         let mediaId = UUID()
         
+        given(await sut.delegate.load(mediaId: any()))
+            .willReturn(.success(()))
+        
         // When
-        sut.controller.prepare(mediaId: mediaId)
+        let result = await sut.controller.prepare(mediaId: mediaId)
         
         // Then
-        verify(sut.delegate.didStartLoading(mediaId: mediaId))
+        try AssertResultSucceded(result)
+        
+        verify(await sut.delegate.load(mediaId: mediaId))
             .wasCalled(1)
     }
 }

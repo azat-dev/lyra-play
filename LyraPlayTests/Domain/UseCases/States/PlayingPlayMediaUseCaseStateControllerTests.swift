@@ -15,7 +15,7 @@ import Combine
 class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
     
     typealias SUT = (
-        controller: PlayMediaUseCaseStateController,
+        controller: PlayingPlayMediaUseCaseStateController,
         delegate: PlayMediaUseCaseStateControllerDelegateMock,
         audioPlayer: AudioPlayerMock,
         audioPlayerState: CurrentValueSubject<AudioPlayerState, Never>
@@ -52,58 +52,24 @@ class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
     
     // MARK: - Test Methods
     
-    func test_prepare() async throws {
-
-        // Given
-        let loadedMediaId = UUID()
-        let preparingMediaId = UUID()
-
-        let sut = createSUT(mediaId: loadedMediaId)
-
-        // When
-        sut.controller.prepare(mediaId: preparingMediaId)
-
-        // Then
-        verify(
-            sut.delegate.didStartLoading(mediaId: preparingMediaId)
-        ).wasCalled(1)
-    }
-    
-    func test_stop() async throws {
-
-        // Given
-        let loadedMediaId = UUID()
-        
-        let sut = createSUT(mediaId: loadedMediaId)
-        
-        given(sut.audioPlayer.stop())
-            .willReturn(.success(()))
-
-        // When
-        sut.controller.stop()
-
-        // Then
-        verify(sut.audioPlayer.stop())
-            .wasCalled(1)
-        
-        verify(sut.delegate.didStop())
-            .wasCalled(1)
-    }
-    
     func test_pause() async throws {
 
         // Given
-        let loadedMediaId = UUID()
+        let mediaId = UUID()
         
-        let sut = createSUT(mediaId: loadedMediaId)
+        let sut = createSUT(mediaId: mediaId)
+        
+        given(sut.delegate.pause(mediaId: any(), audioPlayer: any()))
+            .willReturn(.success(()))
 
         // When
-        sut.controller.pause()
+        let result = sut.controller.pause()
+        try AssertResultSucceded(result)
 
         // Then
         verify(
-            sut.delegate.didPause(
-                mediaId: loadedMediaId,
+            sut.delegate.pause(
+                mediaId: mediaId,
                 audioPlayer: sut.audioPlayer
             )
         ).wasCalled(1)
@@ -126,6 +92,31 @@ class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
                 audioPlayer: sut.audioPlayer
             )
         ).wasCalled(1)
+    }
+    
+    func test_run_playing() async throws {
+
+        // Given
+        let loadedMediaId = UUID()
+        let sut = createSUT(mediaId: loadedMediaId)
+        
+        given(sut.audioPlayer.play())
+            .willReturn(.success(()))
+        
+        // When
+        let result = sut.controller.run()
+
+        // Then
+        try AssertResultSucceded(result)
+        verify(
+            sut.delegate.didStartPlay(
+                mediaId: loadedMediaId,
+                audioPlayer: sut.audioPlayer
+            )
+        ).wasCalled(1)
+        
+        verify(sut.audioPlayer.play())
+            .wasCalled(1)
     }
 }
 
