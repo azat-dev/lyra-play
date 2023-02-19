@@ -184,6 +184,9 @@ class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         )
         
         let sut = createSUT(params: params)
+       
+        given(sut.playMediaUseCase.play())
+            .willReturn(.success(()))
         
         given(sut.delegate.pause(session: any()))
             .willReturn(.success(()))
@@ -192,13 +195,19 @@ class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
             .willReturn(())
         
         // When
+        let _ = sut.controller.run()
         sut.playMediaState.value = .finished(mediaId: mediaId)
         
         // Then
-        verify(sut.delegate.didFinish(session: any()))
-            .wasCalled(1)
         
-        verify(sut.playSubtitlesUseCase.pause())
-            .wasCalled(1)
+        eventually {
+            verify(sut.delegate.didFinish(session: any()))
+                .wasCalled(1)
+            
+            verify(sut.playSubtitlesUseCase.pause())
+                .wasCalled(1)
+        }
+        
+        await waitForExpectations(timeout: 1)
     }
 }
