@@ -96,4 +96,42 @@ class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
             )
         ).wasCalled(1)
     }
+    
+    func test_pause() async throws {
+
+        // Given
+        let mediaId = UUID()
+        
+        let params = PlayMediaWithSubtitlesSessionParams(
+            mediaId: mediaId,
+            subtitlesLanguage: "English"
+        )
+        
+        let sut = createSUT(params: params)
+        
+        given(sut.delegate.pause(session: any()))
+            .willReturn(.success(()))
+        
+        // When
+        let result = sut.controller.pause()
+        
+        // Then
+        try AssertResultSucceded(result)
+        
+        let playSubtitlesUseCase = sut.playSubtitlesUseCase
+        let playMediaUseCase = sut.playMediaUseCase
+        
+        verify(
+            sut.delegate.pause(
+                session: any(
+                    PlayMediaWithSubtitlesUseStateControllerActiveSession.self,
+                    where: { [weak playSubtitlesUseCase, weak playMediaUseCase] lhs in
+                        lhs.params == params &&
+                        lhs.playSubtitlesUseCase === playSubtitlesUseCase &&
+                        lhs.playMediaUseCase === playMediaUseCase
+                    }
+                )
+            )
+        ).wasCalled(1)
+    }
 }
