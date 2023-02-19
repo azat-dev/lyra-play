@@ -319,7 +319,7 @@ extension PlayMediaWithSubtitlesUseCaseImpl {
 
 // MARK: - Error Mapping
 
-fileprivate extension PlayMediaUseCaseError {
+extension PlayMediaUseCaseError {
     
     func map() -> PlayMediaWithSubtitlesUseCaseError {
         
@@ -337,11 +337,41 @@ fileprivate extension PlayMediaUseCaseError {
     }
 }
 
+extension PlayMediaWithSubtitlesUseCaseError {
+    
+    func map() -> PlayMediaUseCaseError {
+        
+        switch self {
+        
+        case .mediaFileNotFound:
+            return .trackNotFound
+            
+        case .internalError(let error):
+            return .internalError(error)
+            
+        case .noActiveMedia:
+            return .noActiveTrack
+        }
+    }
+}
+
 // MARK: - Result Mapping
 
-fileprivate extension Result where Failure == PlayMediaUseCaseError  {
+extension Result where Failure == PlayMediaUseCaseError  {
     
     func mapResult() -> Result<Success, PlayMediaWithSubtitlesUseCaseError> {
+        
+        guard case .success(let value) = self else {
+            return .failure(self.error!.map())
+        }
+        
+        return .success(value)
+    }
+}
+
+extension Result where Failure == PlayMediaWithSubtitlesUseCaseError  {
+    
+    func mapResult() -> Result<Success, PlayMediaUseCaseError> {
         
         guard case .success(let value) = self else {
             return .failure(self.error!.map())

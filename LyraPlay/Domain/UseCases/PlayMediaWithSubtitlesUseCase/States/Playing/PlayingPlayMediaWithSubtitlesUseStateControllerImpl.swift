@@ -45,6 +45,16 @@ public class PlayingPlayMediaWithSubtitlesUseStateControllerImpl: LoadedPlayMedi
     }
     
     public func run() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        fatalError()
+        
+        let result = session.playMediaUseCase.play()
+        
+        guard case .success = result else {
+            return result.mapResult()
+        }
+        
+        session.playSubtitlesUseCase?.play()
+        
+        delegate?.didStartPlay(session: session)
+        return .success(())
     }
 }
