@@ -129,7 +129,8 @@ class LoadingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         let expectedSession = PlayMediaWithSubtitlesUseStateControllerActiveSession(
             params: params,
             playMediaUseCase: sut.playMediaUseCase,
-            playSubtitlesUseCase: sut.playSubtitlesUseCase
+            playSubtitlesUseCase: sut.playSubtitlesUseCase,
+            subtitlesState: .init(nil)
         )
         
         let playSubtitlesUseCase = sut.playSubtitlesUseCase
