@@ -281,7 +281,7 @@ extension PlayMediaWithTranslationsUseCaseImpl {
 
 // MARK: - Error Mapping
 
-fileprivate extension PlayMediaWithSubtitlesUseCaseError {
+extension PlayMediaWithSubtitlesUseCaseError {
     
     func map() -> PlayMediaWithTranslationsUseCaseError {
         
@@ -301,7 +301,7 @@ fileprivate extension PlayMediaWithSubtitlesUseCaseError {
 
 // MARK: - Result Mapping
 
-fileprivate extension Result where Failure == PlayMediaWithSubtitlesUseCaseError  {
+extension Result where Failure == PlayMediaWithSubtitlesUseCaseError  {
     
     func mapResult() -> Result<Success, PlayMediaWithTranslationsUseCaseError> {
         

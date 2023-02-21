@@ -72,6 +72,48 @@ public final class LoadingPlayMediaWithTranslationsUseCaseStateControllerImpl: L
     }
     
     public func load(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
-        fatalError()
+        
+        let playMediaWithSubtitlesUseCase = playMediaUseCaseFactory.make()
+        
+        let result = await playMediaWithSubtitlesUseCase.prepare(
+            params: .init(mediaId: session.mediaId, subtitlesLanguage: session.learningLanguage)
+        )
+        
+        guard case .success = result else {
+            delegate?.didFailLoad(session: session)
+            return result.mapResult()
+        }
+        
+        guard case .activeSession(_, .loaded(let subtitlesState, _)) = playMediaWithSubtitlesUseCase.state.value else {
+            delegate?.didFailLoad(session: session)
+            return .failure(.internalError(nil))
+        }
+        
+        let provideTranslationsToPlayUseCase = provideTranslationsToPlayUseCaseFactory.make()
+        
+        if let subtitles = subtitlesState.value?.subtitles {
+            
+            await provideTranslationsToPlayUseCase.prepare(
+                params: .init(
+                    mediaId: session.mediaId,
+                    nativeLanguage: session.nativeLanguage,
+                    learningLanguage: session.learningLanguage,
+                    subtitles: subtitles
+                )
+            )
+        }
+        
+        let pronounceTranslationsUseCase = pronounceTranslationsUseCaseFactory.make()
+        
+        delegate?.didLoad(
+            session: .init(
+                session: session,
+                playMediaUseCase: playMediaWithSubtitlesUseCase,
+                provideTranslationsToPlayUseCase: provideTranslationsToPlayUseCase,
+                pronounceTranslationsUseCase: pronounceTranslationsUseCase
+            )
+        )
+
+        return .success(())
     }
 }
