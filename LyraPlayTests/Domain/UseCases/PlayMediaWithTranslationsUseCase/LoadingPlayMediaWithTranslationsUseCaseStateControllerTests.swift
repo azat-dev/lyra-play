@@ -8,6 +8,7 @@
 import Foundation
 import XCTest
 import Mockingbird
+import Combine
 import LyraPlay
 
 class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
@@ -17,7 +18,8 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
         delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegateMock,
         playMediaUseCase: PlayMediaWithSubtitlesUseCaseNewMock,
         provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCaseMock,
-        pronounceTranslationsUseCase: PronounceTranslationsUseCaseMock
+        pronounceTranslationsUseCase: PronounceTranslationsUseCaseMock,
+        playMediaUseCaseState: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseStateNew, Never>
     )
 
     // MARK: - Methods
@@ -26,7 +28,11 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
 
         let delegate = mock(PlayMediaWithTranslationsUseCaseStateControllerDelegate.self)
         
+        let playMediaUseCaseState = CurrentValueSubject<PlayMediaWithSubtitlesUseCaseStateNew, Never>(.noActiveSession)
         let playMediaUseCase = mock(PlayMediaWithSubtitlesUseCaseNew.self)
+        
+        given(playMediaUseCase.state)
+            .willReturn(playMediaUseCaseState)
 
         let playMediaUseCaseFactory = mock(PlayMediaWithSubtitlesUseCaseFactoryNew.self)
         
@@ -44,8 +50,8 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
         
         let pronounceTranslationsUseCaseFactory = mock(PronounceTranslationsUseCaseFactory.self)
         
-        given(provideTranslationsToPlayUseCaseFactory.make())
-            .willReturn(provideTranslationsToPlayUseCase)
+        given(pronounceTranslationsUseCaseFactory.make())
+            .willReturn(pronounceTranslationsUseCase)
 
         let controller = LoadingPlayMediaWithTranslationsUseCaseStateControllerImpl(
             session: session,
@@ -62,7 +68,8 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
             delegate,
             playMediaUseCase,
             provideTranslationsToPlayUseCase,
-            pronounceTranslationsUseCase
+            pronounceTranslationsUseCase,
+            playMediaUseCaseState
         )
     }
     
@@ -79,8 +86,19 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
         
         let sut = createSUT(session: session)
 
-        given(await sut.delegate.load(session: any()))
+        given(await sut.playMediaUseCase.prepare(params: any()))
             .willReturn(.success(()))
+        
+        given(await sut.provideTranslationsToPlayUseCase.prepare(params: any()))
+            .willReturn(())
+        
+        sut.playMediaUseCaseState.value = .activeSession(
+            .init(
+                mediaId: session.mediaId,
+                subtitlesLanguage: session.learningLanguage
+            ),
+            .loaded(.init(nil), .initial)
+        )
         
         // When
         let result = await sut.controller.load(session: session)
@@ -88,13 +106,13 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
         // Then
         try AssertResultSucceded(result)
         
-        let (_, _, playMediaUseCase, provideTranslationsToPlayUseCase, pronounceTranslationsUseCase) = sut
+        let (_, _, playMediaUseCase, provideTranslationsToPlayUseCase, pronounceTranslationsUseCase, _) = sut
 
         verify(
             sut.delegate.didLoad(
                 session: any(
                     PlayMediaWithTranslationsUseCaseStateControllerActiveSession.self,
-                    where: { [weak self] lhs in
+                    where: { lhs in
                         return lhs.playMediaUseCase === playMediaUseCase &&
                             lhs.provideTranslationsToPlayUseCase === provideTranslationsToPlayUseCase &&
                             lhs.pronounceTranslationsUseCase === pronounceTranslationsUseCase
