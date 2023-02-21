@@ -13,12 +13,12 @@ public enum TranslationsToPlayData: Equatable {
     case groupAfterSentence(items: [SubtitlesTranslationItem])
 }
 
-public protocol ProvideTranslationsToPlayUseCaseInput {
+public protocol ProvideTranslationsToPlayUseCaseInput: AnyObject {
 
     func prepare(params: AdvancedPlayerSession) async -> Void
 }
 
-public protocol ProvideTranslationsToPlayUseCaseOutput {
+public protocol ProvideTranslationsToPlayUseCaseOutput: AnyObject {
 
     func getTranslationsToPlay(for position: SubtitlesPosition) -> TranslationsToPlayData?
 }

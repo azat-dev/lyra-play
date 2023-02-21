@@ -23,7 +23,7 @@ public enum PronounceTranslationsUseCaseState: Equatable {
     case finished
 }
 
-public protocol PronounceTranslationsUseCaseInput {
+public protocol PronounceTranslationsUseCaseInput: AnyObject {
 
     func pronounceSingle(translation: SubtitlesTranslationItem) -> AsyncThrowingStream<PronounceTranslationsUseCaseState, Error>
 
@@ -34,7 +34,7 @@ public protocol PronounceTranslationsUseCaseInput {
     func stop() -> Void
 }
 
-public protocol PronounceTranslationsUseCaseOutput {
+public protocol PronounceTranslationsUseCaseOutput: AnyObject {
 
     var state: CurrentValueSubject<PronounceTranslationsUseCaseState, Never> { get }
 }
