@@ -14,4 +14,9 @@ public protocol PlayMediaWithTranslationsUseCaseStateControllerDelegate: AnyObje
     func didLoad(session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession)
     
     func didFailLoad(session: PlayMediaWithTranslationsSession)
+    
+    func play(
+        session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession,
+        delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate
+    ) -> Result<Void, PlayMediaWithTranslationsUseCaseError>
 }
