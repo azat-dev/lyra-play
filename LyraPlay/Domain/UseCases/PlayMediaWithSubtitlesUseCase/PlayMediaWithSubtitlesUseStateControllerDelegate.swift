@@ -6,21 +6,25 @@
 //
 
 import Foundation
+import Combine
 
 public struct PlayMediaWithSubtitlesUseStateControllerActiveSession {
     
     public let params: PlayMediaWithSubtitlesSessionParams
     public let playMediaUseCase: PlayMediaUseCase
     public let playSubtitlesUseCase: PlaySubtitlesUseCase?
+    public let subtitlesState: CurrentValueSubject<SubtitlesState?, Never>
     
     public init(
         params: PlayMediaWithSubtitlesSessionParams,
         playMediaUseCase: PlayMediaUseCase,
-        playSubtitlesUseCase: PlaySubtitlesUseCase? = nil
+        playSubtitlesUseCase: PlaySubtitlesUseCase? = nil,
+        subtitlesState: CurrentValueSubject<SubtitlesState?, Never>
     ) {
         self.params = params
         self.playMediaUseCase = playMediaUseCase
         self.playSubtitlesUseCase = playSubtitlesUseCase
+        self.subtitlesState = subtitlesState
     }
     
 }

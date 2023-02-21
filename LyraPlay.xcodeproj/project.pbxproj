@@ -513,6 +513,10 @@
 		AA9A8C4729A2C55100FFFACF /* PausedPlayMediaWithSubtitlesUseStateControllerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9A8C4629A2C55100FFFACF /* PausedPlayMediaWithSubtitlesUseStateControllerImpl.swift */; };
 		AA9A8C4929A2C55700FFFACF /* PausedPlayMediaWithSubtitlesUseStateControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9A8C4829A2C55700FFFACF /* PausedPlayMediaWithSubtitlesUseStateControllerFactory.swift */; };
 		AA9A8C4B29A2C55F00FFFACF /* PausedPlayMediaWithSubtitlesUseStateControllerImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9A8C4A29A2C55F00FFFACF /* PausedPlayMediaWithSubtitlesUseStateControllerImplFactory.swift */; };
+		AA9A8C4E29A2C79500FFFACF /* FinishedPlayMediaWithSubtitlesUseStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9A8C4D29A2C79500FFFACF /* FinishedPlayMediaWithSubtitlesUseStateController.swift */; };
+		AA9A8C5029A2C79C00FFFACF /* FinishedPlayMediaWithSubtitlesUseStateControllerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9A8C4F29A2C79C00FFFACF /* FinishedPlayMediaWithSubtitlesUseStateControllerImpl.swift */; };
+		AA9A8C5229A2C7A300FFFACF /* FinishedPlayMediaWithSubtitlesUseStateControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9A8C5129A2C7A300FFFACF /* FinishedPlayMediaWithSubtitlesUseStateControllerFactory.swift */; };
+		AA9A8C5429A2C7B600FFFACF /* FinishedPlayMediaWithSubtitlesUseStateControllerImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9A8C5329A2C7B600FFFACF /* FinishedPlayMediaWithSubtitlesUseStateControllerImplFactory.swift */; };
 		AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEAFD2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift */; };
 		AA9BEB022865D5BB0028DF8E /* MediaLibraryAudioFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB012865D5BB0028DF8E /* MediaLibraryAudioFile.swift */; };
 		AA9BEB0B28661DCE0028DF8E /* CoreDataMediaLibraryRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9BEB0A28661DCE0028DF8E /* CoreDataMediaLibraryRepositoryTests.swift */; };
@@ -1244,6 +1248,10 @@
 		AA9A8C4629A2C55100FFFACF /* PausedPlayMediaWithSubtitlesUseStateControllerImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PausedPlayMediaWithSubtitlesUseStateControllerImpl.swift; sourceTree = "<group>"; };
 		AA9A8C4829A2C55700FFFACF /* PausedPlayMediaWithSubtitlesUseStateControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PausedPlayMediaWithSubtitlesUseStateControllerFactory.swift; sourceTree = "<group>"; };
 		AA9A8C4A29A2C55F00FFFACF /* PausedPlayMediaWithSubtitlesUseStateControllerImplFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PausedPlayMediaWithSubtitlesUseStateControllerImplFactory.swift; sourceTree = "<group>"; };
+		AA9A8C4D29A2C79500FFFACF /* FinishedPlayMediaWithSubtitlesUseStateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedPlayMediaWithSubtitlesUseStateController.swift; sourceTree = "<group>"; };
+		AA9A8C4F29A2C79C00FFFACF /* FinishedPlayMediaWithSubtitlesUseStateControllerImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedPlayMediaWithSubtitlesUseStateControllerImpl.swift; sourceTree = "<group>"; };
+		AA9A8C5129A2C7A300FFFACF /* FinishedPlayMediaWithSubtitlesUseStateControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedPlayMediaWithSubtitlesUseStateControllerFactory.swift; sourceTree = "<group>"; };
+		AA9A8C5329A2C7B600FFFACF /* FinishedPlayMediaWithSubtitlesUseStateControllerImplFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedPlayMediaWithSubtitlesUseStateControllerImplFactory.swift; sourceTree = "<group>"; };
 		AA9BEAFD2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportAudioFileUseCaseTests.swift; sourceTree = "<group>"; };
 		AA9BEB012865D5BB0028DF8E /* MediaLibraryAudioFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaLibraryAudioFile.swift; sourceTree = "<group>"; };
 		AA9BEB0A28661DCE0028DF8E /* CoreDataMediaLibraryRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMediaLibraryRepositoryTests.swift; sourceTree = "<group>"; };
@@ -2665,6 +2673,7 @@
 		AA51001A299E040600720184 /* States */ = {
 			isa = PBXGroup;
 			children = (
+				AA9A8C4C29A2C78000FFFACF /* Finished */,
 				AA9A8C4329A2C53100FFFACF /* Paused */,
 				AA9A8C3E29A2B3AC00FFFACF /* Playing */,
 				AA9A8C2929A2AA5200FFFACF /* FailedLoad */,
@@ -3117,6 +3126,17 @@
 				AA9A8C4A29A2C55F00FFFACF /* PausedPlayMediaWithSubtitlesUseStateControllerImplFactory.swift */,
 			);
 			path = Paused;
+			sourceTree = "<group>";
+		};
+		AA9A8C4C29A2C78000FFFACF /* Finished */ = {
+			isa = PBXGroup;
+			children = (
+				AA9A8C4D29A2C79500FFFACF /* FinishedPlayMediaWithSubtitlesUseStateController.swift */,
+				AA9A8C4F29A2C79C00FFFACF /* FinishedPlayMediaWithSubtitlesUseStateControllerImpl.swift */,
+				AA9A8C5129A2C7A300FFFACF /* FinishedPlayMediaWithSubtitlesUseStateControllerFactory.swift */,
+				AA9A8C5329A2C7B600FFFACF /* FinishedPlayMediaWithSubtitlesUseStateControllerImplFactory.swift */,
+			);
+			path = Finished;
 			sourceTree = "<group>";
 		};
 		AA9BEAF92865BF310028DF8E /* UseCases */ = {
@@ -4270,6 +4290,7 @@
 				7C7878C62798C2F1C377CA05 /* PlayMediaWithTranslationsSession.swift in Sources */,
 				8B0AA4BAC419F2F2A9E7A5CF /* SubtitlesPosition.swift in Sources */,
 				AAC5FFB028BFF2C400D402FF /* PlaySubtitlesUseCaseState+Utils.swift in Sources */,
+				AA9A8C5229A2C7A300FFFACF /* FinishedPlayMediaWithSubtitlesUseStateControllerFactory.swift in Sources */,
 				7BB0BAF7E95CC090BD7B868B /* PlaySubtitlesUseCase.swift in Sources */,
 				60BB39D8DC14DAA9D6E6D35A /* WillChangeSubtitlesPositionData.swift in Sources */,
 				AA55227828CA7BC0007D5343 /* DictionaryFlowPresenterImpl.swift in Sources */,
@@ -4512,6 +4533,7 @@
 				902A8F42E9FC892959C91E37 /* EditMediaLibraryListUseCase.swift in Sources */,
 				5DAF1FDDE34B9DF41D3D459F /* EditMediaLibraryListUseCaseFactory.swift in Sources */,
 				E80F6FE3F95F6144645467AF /* EditMediaLibraryListUseCaseImpl.swift in Sources */,
+				AA9A8C5029A2C79C00FFFACF /* FinishedPlayMediaWithSubtitlesUseStateControllerImpl.swift in Sources */,
 				313D7050577153A3D89085A6 /* EditMediaLibraryListUseCaseImplFactory.swift in Sources */,
 				C600CA32FB628AD59DC38775 /* ManageSubtitlesUseCase.swift in Sources */,
 				8A901C9CC73234F0F15505EE /* ManageSubtitlesUseCaseFactory.swift in Sources */,
@@ -4587,6 +4609,7 @@
 				AADBBA71298F465200779B03 /* ActiveAudioPlayerStateControllerSession.swift in Sources */,
 				AA12908E2979CF090010FDAB /* TempURLProviderFactory.swift in Sources */,
 				2634EE039A6FD92026AEA2A8 /* CurrentPlayerStateDetailsViewModel.swift in Sources */,
+				AA9A8C5429A2C7B600FFFACF /* FinishedPlayMediaWithSubtitlesUseStateControllerImplFactory.swift in Sources */,
 				8072B7795F1DC1961390CD5E /* CurrentPlayerStateDetailsViewModelFactory.swift in Sources */,
 				5BC61EC14541B44CAC7191D4 /* CurrentPlayerStateDetailsViewModelImpl.swift in Sources */,
 				2CCD2D4C47136C64DC94766C /* CurrentPlayerStateDetailsViewModelImplFactory.swift in Sources */,
@@ -4636,6 +4659,7 @@
 				253421BCC403CCB8C79F73AB /* ImportDictionaryArchiveUseCaseImpl.swift in Sources */,
 				AA9EDB88299D033800AAF9FB /* FailedLoadPlayMediaUseCaseStateControllerFactory.swift in Sources */,
 				7AA2097AAA450120BEF733AD /* ImportDictionaryArchiveUseCaseImplFactory.swift in Sources */,
+				AA9A8C4E29A2C79500FFFACF /* FinishedPlayMediaWithSubtitlesUseStateController.swift in Sources */,
 				AA9A8C1D29A2A45200FFFACF /* LoadedPlayMediaWithSubtitlesUseStateController.swift in Sources */,
 				86F4F056A72E239BF78E4939 /* DeepLinksHandlerFlowModelFactory.swift in Sources */,
 				8D12F610C5A487591BB5AB75 /* DeepLinksHandlerFlowModelImpl.swift in Sources */,
