@@ -30,7 +30,8 @@ class LoadedPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         let session = PlayMediaWithSubtitlesUseStateControllerActiveSession(
             params: params,
             playMediaUseCase: playMediaUseCase,
-            playSubtitlesUseCase: playSubtitlesUseCase
+            playSubtitlesUseCase: playSubtitlesUseCase,
+            subtitlesState: .init(nil)
         )
         
         let controller = LoadedPlayMediaWithSubtitlesUseStateControllerImpl(
