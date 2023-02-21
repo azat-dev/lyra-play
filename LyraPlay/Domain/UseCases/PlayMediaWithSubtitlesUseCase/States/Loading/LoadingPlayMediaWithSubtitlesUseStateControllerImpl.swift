@@ -71,7 +71,8 @@ public final class LoadingPlayMediaWithSubtitlesUseStateControllerImpl: InitialP
                 session: .init(
                     params: params,
                     playMediaUseCase: playMediaUseCase,
-                    playSubtitlesUseCase: nil
+                    playSubtitlesUseCase: nil,
+                    subtitlesState: .init(nil)
                 )
             )
             return .failure(.internalError(nil))
@@ -83,7 +84,13 @@ public final class LoadingPlayMediaWithSubtitlesUseStateControllerImpl: InitialP
             session: .init(
                 params: params,
                 playMediaUseCase: playMediaUseCase,
-                playSubtitlesUseCase: playSubtitlesUseCase
+                playSubtitlesUseCase: playSubtitlesUseCase,
+                subtitlesState: .init(
+                    .init(
+                        position: playSubtitlesUseCase.state.value.position,
+                        subtitles: subtitles
+                    )
+                )
             )
         )
         

@@ -1,5 +1,5 @@
 //
-//  PausedPlayMediaWithSubtitlesUseStateControllerImplFactory.swift
+//  FinishedPlayMediaWithSubtitlesUseStateControllerImplFactory.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 20.02.23.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class PausedPlayMediaWithSubtitlesUseStateImplControllerFactory: PausedPlayMediaWithSubtitlesUseStateControllerFactory {
+public final class FinishedPlayMediaWithSubtitlesUseStateImplControllerFactory: FinishedPlayMediaWithSubtitlesUseStateControllerFactory {
 
     // MARK: - Initializers
     
@@ -18,9 +18,9 @@ public final class PausedPlayMediaWithSubtitlesUseStateImplControllerFactory: Pa
     public func make(
         session: PlayMediaWithSubtitlesUseStateControllerActiveSession,
         delegate: PlayMediaWithSubtitlesUseStateControllerDelegate
-    ) -> PausedPlayMediaWithSubtitlesUseStateController {
+    ) -> FinishedPlayMediaWithSubtitlesUseStateController {
         
-        return PausedPlayMediaWithSubtitlesUseStateControllerImpl(
+        return FinishedPlayMediaWithSubtitlesUseStateControllerImpl(
             session: session,
             delegate: delegate
         )

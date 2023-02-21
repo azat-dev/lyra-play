@@ -37,6 +37,28 @@ public enum PlayMediaWithSubtitlesUseCaseState: Equatable {
     case activeSession(PlayMediaWithSubtitlesSessionParams, PlayMediaWithTranslationsUseCaseLoadState)
 }
 
+public enum PlayMediaWithSubtitlesUseCasePlayerStateNew {
+
+    case initial
+    case playing
+    case paused(time: TimeInterval)
+    case stopped
+    case finished
+}
+
+public enum PlayMediaWithSubtitlesUseCaseLoadStateNew {
+
+    case loading
+    case loadFailed
+    case loaded(CurrentValueSubject<SubtitlesState?, Never>, PlayMediaWithSubtitlesUseCasePlayerStateNew)
+}
+
+public enum PlayMediaWithSubtitlesUseCaseStateNew {
+
+    case noActiveSession
+    case activeSession(PlayMediaWithSubtitlesSessionParams, PlayMediaWithSubtitlesUseCaseLoadStateNew)
+}
+
 // MARK: - Protocols
 
 public protocol PlayMediaWithSubtitlesUseCaseInput: AnyObject {
@@ -52,6 +74,17 @@ public protocol PlayMediaWithSubtitlesUseCaseInput: AnyObject {
     func stop() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
     
     func togglePlay() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
+}
+
+public protocol PlayMediaWithSubtitlesUseCaseOutputNew {
+
+    var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseStateNew, Never> { get }
+
+    var willChangeSubtitlesPosition: PassthroughSubject<WillChangeSubtitlesPositionData, Never> { get }
+}
+
+public protocol PlayMediaWithSubtitlesUseCaseNew: PlayMediaWithSubtitlesUseCaseOutputNew, PlayMediaWithSubtitlesUseCaseInput {
+
 }
 
 public protocol PlayMediaWithSubtitlesUseCaseOutput {
