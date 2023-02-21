@@ -1,5 +1,5 @@
 //
-//  InitialPlayMediaWithTranslationsUseCaseStateControllerImpl.swift
+//  LoadingPlayMediaWithTranslationsUseCaseStateControllerImpl.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 21.02.2023.
@@ -7,22 +7,32 @@
 
 import Foundation
 
-public class InitialPlayMediaWithTranslationsUseCaseStateControllerImpl: InitialPlayMediaWithTranslationsUseCaseStateController {
+public final class LoadingPlayMediaWithTranslationsUseCaseStateControllerImpl: LoadingPlayMediaWithTranslationsUseCaseStateController {
     
     // MARK: - Properties
     
     public let session: PlayMediaWithTranslationsSession
     public weak var delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate?
     
+    public let playMediaUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactoryNew
+    public let provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory
+    public let pronounceTranslationsUseCaseFactory: PronounceTranslationsUseCaseFactory
+    
     // MARK: - Initializers
     
     public init(
         session: PlayMediaWithTranslationsSession,
-        delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate
+        delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate,
+        playMediaUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactoryNew,
+        provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory,
+        pronounceTranslationsUseCaseFactory: PronounceTranslationsUseCaseFactory
     ) {
         
         self.session = session
         self.delegate = delegate
+        self.playMediaUseCaseFactory = playMediaUseCaseFactory
+        self.provideTranslationsToPlayUseCaseFactory = provideTranslationsToPlayUseCaseFactory
+        self.pronounceTranslationsUseCaseFactory = pronounceTranslationsUseCaseFactory
     }
     
     // MARK: - Methods
@@ -59,5 +69,9 @@ public class InitialPlayMediaWithTranslationsUseCaseStateControllerImpl: Initial
     public func togglePlay() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         return .failure(.noActiveMedia)
+    }
+    
+    public func load(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+        fatalError()
     }
 }

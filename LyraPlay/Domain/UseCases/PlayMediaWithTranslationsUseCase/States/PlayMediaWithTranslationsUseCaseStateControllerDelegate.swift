@@ -9,5 +9,7 @@ import Foundation
 
 public protocol PlayMediaWithTranslationsUseCaseStateControllerDelegate: AnyObject {
     
-    func load(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError>    
+    func load(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError>
+    
+    func didLoad(session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession)
 }
