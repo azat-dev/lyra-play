@@ -192,6 +192,7 @@ extension PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesUseStateCo
         )
         
         currentStateController = controller
+        
         state.value = .activeSession(
             session.params,
             .loaded(

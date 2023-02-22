@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class LoadedPlayMediaWithTranslationsUseCaseStateControllerImpl: LoadedPlayMediaWithTranslationsUseCaseStateController {
+public class LoadedPlayMediaWithTranslationsUseCaseStateControllerImpl: LoadedPlayMediaWithTranslationsUseCaseStateController {
 
     // MARK: - Properties
 
