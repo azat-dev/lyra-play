@@ -71,7 +71,7 @@ public final class LoadingPlayMediaWithTranslationsUseCaseStateControllerImpl: L
         return .failure(.noActiveMedia)
     }
     
-    public func load(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+    public func load() async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         let playMediaWithSubtitlesUseCase = playMediaUseCaseFactory.make()
         

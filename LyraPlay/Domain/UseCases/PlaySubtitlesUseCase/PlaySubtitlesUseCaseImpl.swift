@@ -8,6 +8,17 @@
 import Foundation
 import Combine
 
+public protocol PlaySubtitlesUseCaseDelegate {
+    
+    func playSubtitlesUseCaseWillChange(
+        from currentPosition: SubtitlesPosition?,
+        to nextPosition: SubtitlesPosition?,
+        stop: inout Bool
+    )
+    
+    func playSubtitlesUseCaseDidChangePosition()
+}
+
 public final class PlaySubtitlesUseCaseImpl: PlaySubtitlesUseCase {
 
     // MARK: - Properties
