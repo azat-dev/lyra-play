@@ -99,7 +99,6 @@ extension TimelineSchedulerImpl: TimelineSchedulerStateControllerDelegate {
         delegateChanges: TimelineSchedulerDelegateChanges?
     ) {
         
-        
         let newController = InitialSchedulerStateController(
             timer: timer,
             timeline: timeline,

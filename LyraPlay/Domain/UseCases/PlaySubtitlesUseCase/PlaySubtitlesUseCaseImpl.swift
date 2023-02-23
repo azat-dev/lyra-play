@@ -84,7 +84,6 @@ extension PlaySubtitlesUseCaseImpl {
     private func play(from fromTime: TimeInterval) {
         
         scheduler.execute(from: fromTime)
-        scheduler.execute(from: fromTime)
     }
     
     public func play() -> Void {
