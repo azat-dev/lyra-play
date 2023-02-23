@@ -14,14 +14,14 @@ import LyraPlay
 class InitialPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
     
     typealias SUT = (
-        controller: InitialPlayMediaWithSubtitlesUseStateControllerImpl,
+        controller: InitialPlayMediaWithSubtitlesUseStateController,
         delegate: PlayMediaWithSubtitlesUseStateControllerDelegateMock
     )
     
     func createSUT() -> SUT {
         
         let delegate = mock(PlayMediaWithSubtitlesUseStateControllerDelegate.self)
-        let controller = InitialPlayMediaWithSubtitlesUseStateControllerImpl(delegate: delegate)
+        let controller = InitialPlayMediaWithSubtitlesUseStateController(delegate: delegate)
         
         detectMemoryLeak(instance: controller)
         

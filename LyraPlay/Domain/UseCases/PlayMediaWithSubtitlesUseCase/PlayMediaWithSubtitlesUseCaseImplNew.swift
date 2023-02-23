@@ -17,39 +17,27 @@ public final class PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesU
     public var willChangeSubtitlesPosition = PassthroughSubject<WillChangeSubtitlesPositionData, Never>()
     
     private lazy var currentStateController: PlayMediaWithSubtitlesUseStateController = {
-        return initialStateControllerFactory.make(delegate: self)
+        return InitialPlayMediaWithSubtitlesUseStateController(delegate: self)
     } ()
-    
-    private let initialStateControllerFactory: InitialPlayMediaWithSubtitlesUseStateControllerFactory
-    private let loadingStateControllerFactory: LoadingPlayMediaWithSubtitlesUseStateControllerFactory
-    private let loadedStateControllerFactory: LoadedPlayMediaWithSubtitlesUseStateControllerFactory
-    private let failedLoadStateControllerFactory: FailedLoadPlayMediaWithSubtitlesUseStateControllerFactory
-    private let playingStateControllerFactory: PlayingPlayMediaWithSubtitlesUseStateControllerFactory
-    private let pausedStateControllerFactory: PausedPlayMediaWithSubtitlesUseStateControllerFactory
-    private let finishedStateControllerFactory: FinishedPlayMediaWithSubtitlesUseStateControllerFactory
     
     private var observers = Set<AnyCancellable>()
     
     public weak var delegate: PlayMediaWithSubtitlesUseCaseDelegate?
     
+    private let playMediaUseCaseFactory: PlayMediaUseCaseFactory
+    private let loadSubtitlesUseCaseFactory: LoadSubtitlesUseCaseFactory
+    private let playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory
+    
     // MARK: - Initializers
     
     public init(
-        initialStateControllerFactory: InitialPlayMediaWithSubtitlesUseStateControllerFactory,
-        loadingStateControllerFactory: LoadingPlayMediaWithSubtitlesUseStateControllerFactory,
-        loadedStateControllerFactory: LoadedPlayMediaWithSubtitlesUseStateControllerFactory,
-        failedLoadStateControllerFactory: FailedLoadPlayMediaWithSubtitlesUseStateControllerFactory,
-        playingStateControllerFactory: PlayingPlayMediaWithSubtitlesUseStateControllerFactory,
-        pausedStateControllerFactory: PausedPlayMediaWithSubtitlesUseStateControllerFactory,
-        finishedStateControllerFactory: FinishedPlayMediaWithSubtitlesUseStateControllerFactory
+        playMediaUseCaseFactory: PlayMediaUseCaseFactory,
+        loadSubtitlesUseCaseFactory: LoadSubtitlesUseCaseFactory,
+        playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory
     ) {
-        self.initialStateControllerFactory = initialStateControllerFactory
-        self.loadingStateControllerFactory = loadingStateControllerFactory
-        self.loadedStateControllerFactory = loadedStateControllerFactory
-        self.failedLoadStateControllerFactory = failedLoadStateControllerFactory
-        self.playingStateControllerFactory = playingStateControllerFactory
-        self.pausedStateControllerFactory = pausedStateControllerFactory
-        self.finishedStateControllerFactory = finishedStateControllerFactory
+        self.playMediaUseCaseFactory = playMediaUseCaseFactory
+        self.loadSubtitlesUseCaseFactory = loadSubtitlesUseCaseFactory
+        self.playSubtitlesUseCaseFactory = playSubtitlesUseCaseFactory
     }
 }
 
@@ -92,9 +80,12 @@ extension PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesUseStateCo
     
     public func load(params: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
-        let controller = loadingStateControllerFactory.make(
+        let controller = LoadingPlayMediaWithSubtitlesUseStateController(
             params: params,
-            delegate: self
+            delegate: self,
+            playMediaUseCaseFactory: playMediaUseCaseFactory,
+            loadSubtitlesUseCaseFactory: loadSubtitlesUseCaseFactory,
+            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory
         )
         
         currentStateController = controller
@@ -105,7 +96,7 @@ extension PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesUseStateCo
     
     public func didLoad(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) {
         
-        let controller = loadedStateControllerFactory.make(
+        let controller = LoadedPlayMediaWithSubtitlesUseStateController(
             session: session,
             delegate: self
         )
@@ -123,8 +114,7 @@ extension PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesUseStateCo
     
     public func didFailLoad(params: PlayMediaWithSubtitlesSessionParams) {
         
-        let controller = failedLoadStateControllerFactory.make(
-            params: params,
+        let controller = FailedLoadPlayMediaWithSubtitlesUseStateController(
             delegate: self
         )
         
@@ -134,7 +124,7 @@ extension PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesUseStateCo
     
     public func didFinish(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) {
         
-        currentStateController = finishedStateControllerFactory.make(
+        currentStateController = FinishedPlayMediaWithSubtitlesUseStateController(
             session: session,
             delegate: self
         )
@@ -150,7 +140,7 @@ extension PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesUseStateCo
     
     public func pause(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
-        let controller = pausedStateControllerFactory.make(
+        let controller = PausedPlayMediaWithSubtitlesUseStateController(
             session: session,
             delegate: self
         )
@@ -160,7 +150,7 @@ extension PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesUseStateCo
     
     public func didPause(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) {
         
-        let controller = pausedStateControllerFactory.make(
+        let controller = PausedPlayMediaWithSubtitlesUseStateController(
             session: session,
             delegate: self
         )
@@ -178,7 +168,7 @@ extension PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesUseStateCo
     
     public func play(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
-        let controller = playingStateControllerFactory.make(
+        let controller = PlayingPlayMediaWithSubtitlesUseStateController(
             session: session,
             delegate: self
         )
@@ -188,7 +178,7 @@ extension PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesUseStateCo
     
     public func didStartPlay(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) {
         
-        let controller = playingStateControllerFactory.make(
+        let controller = PlayingPlayMediaWithSubtitlesUseStateController(
             session: session,
             delegate: self
         )
@@ -211,7 +201,7 @@ extension PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesUseStateCo
     
     public func didStop() {
         
-        currentStateController = initialStateControllerFactory.make(delegate: self)
+        currentStateController = InitialPlayMediaWithSubtitlesUseStateController(delegate: self)
         state.value = .noActiveSession
     }
 }

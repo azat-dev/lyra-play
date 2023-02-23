@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class FinishedPlayMediaWithSubtitlesUseStateControllerImpl: PausedPlayMediaWithSubtitlesUseStateControllerImpl, FinishedPlayMediaWithSubtitlesUseStateController {
+public class FinishedPlayMediaWithSubtitlesUseStateController: PausedPlayMediaWithSubtitlesUseStateController {
     
     public override func play() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class PausedPlayMediaWithSubtitlesUseStateControllerImpl: PlayingPlayMediaWithSubtitlesUseStateControllerImpl, PausedPlayMediaWithSubtitlesUseStateController {
+public class PausedPlayMediaWithSubtitlesUseStateController: PlayingPlayMediaWithSubtitlesUseStateController {
     
     // MARK: - Methods
 

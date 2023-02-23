@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-public class PlayingPlayMediaWithSubtitlesUseStateControllerImpl: LoadedPlayMediaWithSubtitlesUseStateControllerImpl, PlayingPlayMediaWithSubtitlesUseStateController {
+public class PlayingPlayMediaWithSubtitlesUseStateController: LoadedPlayMediaWithSubtitlesUseStateController {
 
     // MARK: - Properties
     
