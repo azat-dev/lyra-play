@@ -14,14 +14,15 @@ import LyraPlay
 class LoadingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
     
     typealias SUT = (
-        controller: LoadingPlayMediaWithSubtitlesUseStateControllerDeprecated,
+        controller: LoadingPlayMediaWithSubtitlesUseStateController,
         delegate: PlayMediaWithSubtitlesUseStateControllerDelegateMock,
         playMediaUseCaseFactory: PlayMediaUseCaseFactoryMock,
         playMediaUseCase: PlayMediaUseCaseMock,
         loadSubtitlesUseCaseFactory: LoadSubtitlesUseCaseFactoryMock,
         loadSubtitlesUseCase: LoadSubtitlesUseCaseMock,
         playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactoryMock,
-        playSubtitlesUseCase: PlaySubtitlesUseCaseMock
+        playSubtitlesUseCase: PlaySubtitlesUseCaseMock,
+        playSubtitlesUseCaseDelegate: PlaySubtitlesUseCaseDelegateMock
     )
     
     func createSUT(params: PlayMediaWithSubtitlesSessionParams) -> SUT {
@@ -46,15 +47,18 @@ class LoadingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         
         let playSubtitlesUseCase = mock(PlaySubtitlesUseCase.self)
         
-        given(playSubtitlesUseCaseFactory.make(subtitles: any()))
+        given(playSubtitlesUseCaseFactory.make(subtitles: any(), delegate: any()))
             .willReturn(playSubtitlesUseCase)
+        
+        let playSubtitlesUseCaseDelegate = mock(PlaySubtitlesUseCaseDelegate.self)
         
         let controller = LoadingPlayMediaWithSubtitlesUseStateController(
             params: params,
             delegate: delegate,
             playMediaUseCaseFactory: playMediaUseCaseFactory,
             loadSubtitlesUseCaseFactory: loadSubtitlesUseCaseFactory,
-            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory
+            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
+            playSubtitlesUseCaseDelegate: playSubtitlesUseCaseDelegate
         )
         
         detectMemoryLeak(instance: controller)
@@ -66,7 +70,8 @@ class LoadingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
             loadSubtitlesUseCaseFactory,
             loadSubtitlesUseCase,
             playSubtitlesUseCaseFactory,
-            playSubtitlesUseCase
+            playSubtitlesUseCase,
+            playSubtitlesUseCaseDelegate
         )
         
         return (
@@ -77,7 +82,8 @@ class LoadingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
             loadSubtitlesUseCaseFactory,
             loadSubtitlesUseCase,
             playSubtitlesUseCaseFactory,
-            playSubtitlesUseCase
+            playSubtitlesUseCase,
+            playSubtitlesUseCaseDelegate
         )
     }
     
@@ -108,7 +114,11 @@ class LoadingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         given(await sut.playMediaUseCase.prepare(mediaId: any()))
             .willReturn(.success(()))
         
-        given(sut.playSubtitlesUseCaseFactory.make(subtitles: any()))
+        
+        given(sut.playSubtitlesUseCase.state)
+            .willReturn(.init(.initial))
+        
+        given(sut.playSubtitlesUseCaseFactory.make(subtitles: any(), delegate: any()))
             .willReturn(sut.playSubtitlesUseCase)
         
         // When
@@ -123,15 +133,8 @@ class LoadingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         verify(await sut.playMediaUseCase.prepare(mediaId: mediaId))
             .wasCalled(1)
         
-        verify(sut.playSubtitlesUseCaseFactory.make(subtitles: subtitles))
+        verify(sut.playSubtitlesUseCaseFactory.make(subtitles: subtitles, delegate: any()))
             .wasCalled(1)
-        
-        let expectedSession = PlayMediaWithSubtitlesUseStateControllerActiveSession(
-            params: params,
-            playMediaUseCase: sut.playMediaUseCase,
-            playSubtitlesUseCase: sut.playSubtitlesUseCase,
-            subtitlesState: .init(nil)
-        )
         
         let playSubtitlesUseCase = sut.playSubtitlesUseCase
         let playMediaUseCase = sut.playMediaUseCase

@@ -93,8 +93,6 @@ public protocol PlayMediaWithSubtitlesUseCaseOutputNew {
 
     var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseStateNew, Never> { get }
 
-    var willChangeSubtitlesPosition: PassthroughSubject<WillChangeSubtitlesPositionData, Never> { get }
-    
     var delegate: PlayMediaWithSubtitlesUseCaseDelegate? { get set }
 }
 

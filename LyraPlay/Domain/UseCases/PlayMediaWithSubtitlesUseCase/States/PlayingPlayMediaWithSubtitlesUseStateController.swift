@@ -13,7 +13,7 @@ public class PlayingPlayMediaWithSubtitlesUseStateController: LoadedPlayMediaWit
     // MARK: - Properties
     
     private var observers = Set<AnyCancellable>()
-    
+
     // MARK: - Initializers
     
     public override init(

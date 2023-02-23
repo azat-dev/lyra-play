@@ -76,6 +76,28 @@ extension PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesUseCaseInp
     }
 }
 
+extension PlayMediaWithSubtitlesUseCaseImplNew: PlaySubtitlesUseCaseDelegate {
+    
+    public func playSubtitlesUseCaseWillChange(fromPosition: SubtitlesPosition?, toPosition: SubtitlesPosition?, stop: inout Bool) {
+        
+        delegate?.playMediaWithSubtitlesUseCaseWillChange(
+            from: fromPosition,
+            to: toPosition,
+            stop: &stop
+        )
+    }
+    
+    public func playSubtitlesUseCaseDidChange(position: SubtitlesPosition?) {
+        
+        delegate?.playMediaWithSubtitlesUseCaseDidChange(position: position)
+    }
+    
+    public func playSubtitlesUseCaseDidFinish() {
+        
+        delegate?.playMediaWithSubtitlesUseCaseDidFinish()
+    }
+}
+
 extension PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesUseStateControllerDelegate {
     
     public func load(params: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
@@ -85,7 +107,8 @@ extension PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesUseStateCo
             delegate: self,
             playMediaUseCaseFactory: playMediaUseCaseFactory,
             loadSubtitlesUseCaseFactory: loadSubtitlesUseCaseFactory,
-            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory
+            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
+            playSubtitlesUseCaseDelegate: self
         )
         
         currentStateController = controller
