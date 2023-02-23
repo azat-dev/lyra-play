@@ -88,7 +88,6 @@
 		37EA52DF6B9D73C66E9442DB /* CoreDataMediaLibraryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A0DA9C177DFCF30F21FED1 /* CoreDataMediaLibraryRepository.swift */; };
 		380C4B6684AA68BD07B7F886 /* ManageSubtitlesUseCaseImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77BEC07254D77C44D359DC7 /* ManageSubtitlesUseCaseImplFactory.swift */; };
 		3849895234C46F9CA78A08C9 /* AttachSubtitlesFlowModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 712E30CC62EC7E94954464D1 /* AttachSubtitlesFlowModelFactory.swift */; };
-		3853A60524164B5EEF1FD4B7 /* PlaySubtitlesUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04B5F609856898D0CAD6798 /* PlaySubtitlesUseCaseImpl.swift */; };
 		386DA8803569D0FFEABB0788 /* AddDictionaryItemFlowModelImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AADDAE1075A768837D83591 /* AddDictionaryItemFlowModelImplFactory.swift */; };
 		387393771B62BBC06430A33C /* DictionaryListBrowserItemViewModelImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94DA2B05B7BF62E2BD0AAB63 /* DictionaryListBrowserItemViewModelImpl.swift */; };
 		38975444CD75AAE10F026ACE /* ChooseDialogViewModelImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2344E8B127C577DFE4C65000 /* ChooseDialogViewModelImpl.swift */; };
@@ -374,7 +373,7 @@
 		AA4ED76B29A7600D00B7FD05 /* SubtitlesIteratorFactoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4ED76A29A7600D00B7FD05 /* SubtitlesIteratorFactoryImpl.swift */; };
 		AA4ED76F29A7664100B7FD05 /* InitialSchedulerStateControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4ED76E29A7664100B7FD05 /* InitialSchedulerStateControllerTests.swift */; };
 		AA4ED77129A7739200B7FD05 /* RunningSchedulerStateControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4ED77029A7739200B7FD05 /* RunningSchedulerStateControllerTests.swift */; };
-		AA4ED77329A7889400B7FD05 /* PlaySubtitlesUseCaseImplNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4ED77229A7889400B7FD05 /* PlaySubtitlesUseCaseImplNew.swift */; };
+		AA4ED77329A7889400B7FD05 /* PlaySubtitlesUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4ED77229A7889400B7FD05 /* PlaySubtitlesUseCaseImpl.swift */; };
 		AA4F9707286E3C380087F45A /* MediaLibraryBrowserViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F9706286E3C380087F45A /* MediaLibraryBrowserViewController+Styles.swift */; };
 		AA4F9709286E3C4C0087F45A /* MediaLibraryBrowserViewController+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F9708286E3C4C0087F45A /* MediaLibraryBrowserViewController+Layout.swift */; };
 		AA510017299E035900720184 /* PlayMediaWithSubtitlesUseStateControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA510016299E035900720184 /* PlayMediaWithSubtitlesUseStateControllerDelegate.swift */; };
@@ -986,7 +985,6 @@
 		9E5AAB097477024187A1381A /* ChooseDialogView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChooseDialogView.swift; sourceTree = "<group>"; };
 		9F945D84529637AA8D425345 /* EditDictionaryItemViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EditDictionaryItemViewModel.swift; sourceTree = "<group>"; };
 		9FFC41909CE91D2A7F8FF2C9 /* ApplicationFlowPresenterImpl.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ApplicationFlowPresenterImpl.swift; sourceTree = "<group>"; };
-		A04B5F609856898D0CAD6798 /* PlaySubtitlesUseCaseImpl.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlaySubtitlesUseCaseImpl.swift; sourceTree = "<group>"; };
 		A1162AAAE20F85E62468C88B /* ApplicationFlowPresenterImplFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ApplicationFlowPresenterImplFactory.swift; sourceTree = "<group>"; };
 		A12F566CD0EC03ECA74A486D /* LoadingPlayMediaWithTranslationsUseCaseStateController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoadingPlayMediaWithTranslationsUseCaseStateController.swift; sourceTree = "<group>"; };
 		A2247F1A0FA83F520E69F4D5 /* CurrentPlayerStateDetailsFlowPresenterFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CurrentPlayerStateDetailsFlowPresenterFactory.swift; sourceTree = "<group>"; };
@@ -1145,7 +1143,7 @@
 		AA4ED76A29A7600D00B7FD05 /* SubtitlesIteratorFactoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesIteratorFactoryImpl.swift; sourceTree = "<group>"; };
 		AA4ED76E29A7664100B7FD05 /* InitialSchedulerStateControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialSchedulerStateControllerTests.swift; sourceTree = "<group>"; };
 		AA4ED77029A7739200B7FD05 /* RunningSchedulerStateControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunningSchedulerStateControllerTests.swift; sourceTree = "<group>"; };
-		AA4ED77229A7889400B7FD05 /* PlaySubtitlesUseCaseImplNew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaySubtitlesUseCaseImplNew.swift; sourceTree = "<group>"; };
+		AA4ED77229A7889400B7FD05 /* PlaySubtitlesUseCaseImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaySubtitlesUseCaseImpl.swift; sourceTree = "<group>"; };
 		AA4F9706286E3C380087F45A /* MediaLibraryBrowserViewController+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaLibraryBrowserViewController+Styles.swift"; sourceTree = "<group>"; };
 		AA4F9708286E3C4C0087F45A /* MediaLibraryBrowserViewController+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaLibraryBrowserViewController+Layout.swift"; sourceTree = "<group>"; };
 		AA510016299E035900720184 /* PlayMediaWithSubtitlesUseStateControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithSubtitlesUseStateControllerDelegate.swift; sourceTree = "<group>"; };
@@ -3903,8 +3901,7 @@
 			children = (
 				AE5625F63D68C7424CB6E975 /* PlaySubtitlesUseCase.swift */,
 				FE5C485C5D34C2F6833125E1 /* PlaySubtitlesUseCaseFactory.swift */,
-				A04B5F609856898D0CAD6798 /* PlaySubtitlesUseCaseImpl.swift */,
-				AA4ED77229A7889400B7FD05 /* PlaySubtitlesUseCaseImplNew.swift */,
+				AA4ED77229A7889400B7FD05 /* PlaySubtitlesUseCaseImpl.swift */,
 				201FCAC4808F8A80C6FF1FEF /* PlaySubtitlesUseCaseImplFactory.swift */,
 				AAC5FFAF28BFF2C400D402FF /* PlaySubtitlesUseCaseState+Utils.swift */,
 				CBC01D9BC320769887AD1D93 /* SubtitlesPosition.swift */,
@@ -4389,7 +4386,7 @@
 				AA3C533F28BE5F7700CBE3C6 /* ImportSubtitlesUseCaseImpl.swift in Sources */,
 				AA641E0D28C3A48A00641B0C /* MainTabBarViewController+Styles.swift in Sources */,
 				AA641E1128C3B08B00641B0C /* UINavigationController+Utills.swift in Sources */,
-				AA4ED77329A7889400B7FD05 /* PlaySubtitlesUseCaseImplNew.swift in Sources */,
+				AA4ED77329A7889400B7FD05 /* PlaySubtitlesUseCaseImpl.swift in Sources */,
 				AA7B0D542871A70F0067DDB5 /* LibraryItemViewController+Styles.swift in Sources */,
 				AA3C533428BE5C5D00CBE3C6 /* ImportAudioFileUseCase.swift in Sources */,
 				AA0F69C1287F5CD900BD13DB /* SentenceViewModel.swift in Sources */,
@@ -4497,7 +4494,6 @@
 				7BB0BAF7E95CC090BD7B868B /* PlaySubtitlesUseCase.swift in Sources */,
 				60BB39D8DC14DAA9D6E6D35A /* WillChangeSubtitlesPositionData.swift in Sources */,
 				AA55227828CA7BC0007D5343 /* DictionaryFlowPresenterImpl.swift in Sources */,
-				3853A60524164B5EEF1FD4B7 /* PlaySubtitlesUseCaseImpl.swift in Sources */,
 				AD26B8F8AD0C5EB893BB7090 /* PlaySubtitlesUseCaseImplFactory.swift in Sources */,
 				BB7E8509073F5233CBD2D37F /* PlaySubtitlesUseCaseFactory.swift in Sources */,
 				DBFDF518D30B8184892B6E68 /* SubtitlesTranslation.swift in Sources */,

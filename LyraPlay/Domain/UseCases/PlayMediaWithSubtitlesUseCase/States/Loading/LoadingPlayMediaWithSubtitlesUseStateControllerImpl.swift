@@ -78,7 +78,10 @@ public final class LoadingPlayMediaWithSubtitlesUseStateControllerImpl: InitialP
             return .failure(.internalError(nil))
         }
         
-        let playSubtitlesUseCase = playSubtitlesUseCaseFactory.make(subtitles: subtitles)
+        let playSubtitlesUseCase = playSubtitlesUseCaseFactory.make(
+            subtitles: subtitles,
+            delegate: nil
+        )
         
         delegate?.didLoad(
             session: .init(
