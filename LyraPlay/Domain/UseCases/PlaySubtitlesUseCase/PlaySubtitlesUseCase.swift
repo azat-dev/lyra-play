@@ -8,6 +8,15 @@
 import Foundation
 import Combine
 
+public protocol PlaySubtitlesUseCaseDelegate: AnyObject {
+    
+    func playSubtitlesUseCaseWillChange(fromPosition: SubtitlesPosition?, toPosition: SubtitlesPosition?)
+    
+    func playSubtitlesUseCaseDidChange(position: SubtitlesPosition?)
+    
+    func playSubtitlesUseCaseDidFinish()
+}
+
 public enum PlaySubtitlesUseCaseState: Equatable {
 
     case initial

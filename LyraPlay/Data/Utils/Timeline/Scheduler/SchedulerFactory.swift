@@ -9,5 +9,8 @@ import Foundation
 
 public protocol SchedulerFactory {
     
-    func make() -> Scheduler
+    func make(
+        timeline: TimeLineIterator,
+        delegate: SchedulerDelegateChanges
+    ) -> Scheduler
 }

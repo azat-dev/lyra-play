@@ -22,10 +22,17 @@ public final class SchedulerImplFactory: SchedulerFactory {
     
     // MARK: - Methods
     
-    public func make() -> Scheduler {
+    public func make(
+        timeline: TimeLineIterator,
+        delegate: SchedulerDelegateChanges
+    ) -> Scheduler {
         
         let actionTimer = actionTimerFactory.make()
         
-        return SchedulerImpl(timer: actionTimer)
+        return SchedulerImpl(
+            timer: actionTimer,
+            timeline: timeline,
+            delegateChanges: delegate
+        )
     }
 }

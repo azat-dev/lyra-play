@@ -30,12 +30,10 @@ public final class PlaySubtitlesUseCaseImplFactory: PlaySubtitlesUseCaseFactory 
     public func make(subtitles: Subtitles) -> PlaySubtitlesUseCase {
 
         let subtitlesIterator = subtitlesIteratorFactory.make(for: subtitles)
-        let scheduler = schedulerFactory.make()
 
         return PlaySubtitlesUseCaseImpl(
             subtitlesIterator: subtitlesIterator,
-            scheduler: scheduler
+            schedulerFactory: schedulerFactory
         )
     }
-
 }
