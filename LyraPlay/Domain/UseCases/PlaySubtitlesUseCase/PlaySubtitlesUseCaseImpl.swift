@@ -8,43 +8,42 @@
 import Foundation
 import Combine
 
-public protocol PlaySubtitlesUseCaseDelegate {
-    
-    func playSubtitlesUseCaseWillChange(
-        from currentPosition: SubtitlesPosition?,
-        to nextPosition: SubtitlesPosition?,
-        stop: inout Bool
-    )
-    
-    func playSubtitlesUseCaseDidChangePosition()
-}
-
 public final class PlaySubtitlesUseCaseImpl: PlaySubtitlesUseCase {
 
     // MARK: - Properties
 
     private let subtitlesIterator: SubtitlesIterator
-    private let scheduler: Scheduler
     public var state =  CurrentValueSubject<PlaySubtitlesUseCaseState, Never>(.initial)
     public var willChangePosition = PassthroughSubject<WillChangeSubtitlesPositionData, Never>()
+
+    private let schedulerFactory: SchedulerFactory
+    
+    private lazy var scheduler: Scheduler = {
+        
+        return schedulerFactory.make(
+           timeline: subtitlesIterator,
+           delegate: self
+       )
+    } ()
 
     // MARK: - Initializers
 
     public init(
         subtitlesIterator: SubtitlesIterator,
-        scheduler: Scheduler
+        schedulerFactory: SchedulerFactory
     ) {
 
         self.subtitlesIterator = subtitlesIterator
-        self.scheduler = scheduler
+        self.schedulerFactory = schedulerFactory
     }
 }
 
-// MARK: - Input Methods
+// MARK: - SchedulerDelegateChanges
 
-extension PlaySubtitlesUseCaseImpl {
+extension PlaySubtitlesUseCaseImpl: SchedulerDelegateChanges {
     
-    private func didChangePosition() {
+    
+    public func schedulerDidChange(time: TimeInterval) {
         
         let isLast = subtitlesIterator.getTimeOfNextEvent() == nil
         
@@ -56,7 +55,7 @@ extension PlaySubtitlesUseCaseImpl {
         state.value = .playing(position: subtitlesIterator.currentPosition)
     }
     
-    private func willChangePosition(fromTime: TimeInterval?) {
+    public func schedulerWillChange(from fromTime: TimeInterval?, to: TimeInterval?, stop: inout Bool) {
         
         let currentPosition = fromTime == nil ? nil : subtitlesIterator.currentPosition
         let nextPosition = subtitlesIterator.getNextPosition()
@@ -73,14 +72,19 @@ extension PlaySubtitlesUseCaseImpl {
         )
     }
     
+    public func schedulerDidFinish() {
+        
+    }
+}
+
+// MARK: - Input Methods
+
+extension PlaySubtitlesUseCaseImpl {
+    
     private func play(from fromTime: TimeInterval) {
         
-        scheduler.execute(
-            timeline: subtitlesIterator,
-            from: fromTime,
-            didChange: { [weak self] _ in self?.didChangePosition() },
-            willChange: { [weak self] fromTime, _ in self?.willChangePosition(fromTime: fromTime) }
-        )
+        scheduler.execute(from: fromTime)
+        scheduler.execute(from: fromTime)
     }
     
     public func play() -> Void {
