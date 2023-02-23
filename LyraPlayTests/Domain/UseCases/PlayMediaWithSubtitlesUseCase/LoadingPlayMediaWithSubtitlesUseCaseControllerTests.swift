@@ -107,36 +107,37 @@ class LoadingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         let sut = createSUT(params: params)
         
         let subtitles = anySubtitles()
-        
+
         given(await sut.loadSubtitlesUseCase.load(for: any(), language: any()))
             .willReturn(.success(subtitles))
-        
+
         given(await sut.playMediaUseCase.prepare(mediaId: any()))
             .willReturn(.success(()))
+
+
+        let playSubtitlesUseCase = sut.playSubtitlesUseCase
         
-        
-        given(sut.playSubtitlesUseCase.state)
+        given(playSubtitlesUseCase.state)
             .willReturn(.init(.initial))
-        
+
         given(sut.playSubtitlesUseCaseFactory.make(subtitles: any(), delegate: any()))
             .willReturn(sut.playSubtitlesUseCase)
-        
+
         // When
         let result = await sut.controller.load()
-        
+
         // Then
         try AssertResultSucceded(result)
-        
+
         verify(await sut.loadSubtitlesUseCase.load(for: mediaId, language: params.subtitlesLanguage))
             .wasCalled(1)
-        
+
         verify(await sut.playMediaUseCase.prepare(mediaId: mediaId))
             .wasCalled(1)
-        
+
         verify(sut.playSubtitlesUseCaseFactory.make(subtitles: subtitles, delegate: any()))
             .wasCalled(1)
-        
-        let playSubtitlesUseCase = sut.playSubtitlesUseCase
+
         let playMediaUseCase = sut.playMediaUseCase
         
         verify(
