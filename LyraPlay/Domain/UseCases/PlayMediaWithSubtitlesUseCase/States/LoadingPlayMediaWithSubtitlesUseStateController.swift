@@ -15,6 +15,7 @@ public final class LoadingPlayMediaWithSubtitlesUseStateController: InitialPlayM
     private let playMediaUseCaseFactory: PlayMediaUseCaseFactory
     private let loadSubtitlesUseCaseFactory: LoadSubtitlesUseCaseFactory
     private let playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory
+    private weak var playSubtitlesUseCaseDelegate: PlaySubtitlesUseCaseDelegate?
     
     // MARK: - Initializers
     
@@ -23,13 +24,15 @@ public final class LoadingPlayMediaWithSubtitlesUseStateController: InitialPlayM
         delegate: PlayMediaWithSubtitlesUseStateControllerDelegate,
         playMediaUseCaseFactory: PlayMediaUseCaseFactory,
         loadSubtitlesUseCaseFactory: LoadSubtitlesUseCaseFactory,
-        playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory
+        playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory,
+        playSubtitlesUseCaseDelegate: PlaySubtitlesUseCaseDelegate
     ) {
         
         self.params = params
         self.playMediaUseCaseFactory = playMediaUseCaseFactory
         self.loadSubtitlesUseCaseFactory = loadSubtitlesUseCaseFactory
         self.playSubtitlesUseCaseFactory = playSubtitlesUseCaseFactory
+        self.playSubtitlesUseCaseDelegate = playSubtitlesUseCaseDelegate
 
         super.init(delegate: delegate)
     }
@@ -80,7 +83,7 @@ public final class LoadingPlayMediaWithSubtitlesUseStateController: InitialPlayM
         
         let playSubtitlesUseCase = playSubtitlesUseCaseFactory.make(
             subtitles: subtitles,
-            delegate: nil
+            delegate: playSubtitlesUseCaseDelegate
         )
         
         delegate?.didLoad(

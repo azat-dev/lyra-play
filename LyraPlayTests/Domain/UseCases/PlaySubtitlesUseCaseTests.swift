@@ -29,9 +29,10 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         given(schedulerFactory.make(timeline: any(), delegate: any()))
             .willReturn(scheduler)
         
-        let useCase = PlaySubtitlesUseCaseImplNew(
+        let useCase = PlaySubtitlesUseCaseImpl(
             subtitlesIterator: subtitlesIterator,
-            schedulerFactory: schedulerFactory
+            schedulerFactory: schedulerFactory,
+            delegate: nil
         )
         detectMemoryLeak(instance: useCase, file: file, line: line)
         
