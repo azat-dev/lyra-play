@@ -30,6 +30,8 @@ public final class PlayMediaWithSubtitlesUseCaseImplNew: PlayMediaWithSubtitlesU
     
     private var observers = Set<AnyCancellable>()
     
+    public weak var delegate: PlayMediaWithSubtitlesUseCaseDelegate?
+    
     // MARK: - Initializers
     
     public init(
