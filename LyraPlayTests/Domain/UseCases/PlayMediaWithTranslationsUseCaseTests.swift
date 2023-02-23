@@ -21,7 +21,7 @@
 //        playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory,
 //        provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCaseMock,
 //        pronounceTranslationsUseCase: PronounceTranslationsUseCase,
-//        subtitlesScheduler: LyraPlay.Scheduler
+//        subtitlesScheduler: LyraPlay.TimelineScheduler
 //    )
 //    
 //    func createSUT() -> SUT {
@@ -39,8 +39,8 @@
 //        
 //        let subtitlesTimer = ActionTimerMockDeprecated()
 //        
-//        let subtitlesScheduler = SchedulerImpl(timer: subtitlesTimer)
-//        let schedulerFactory = mock(SchedulerFactory.self)
+//        let subtitlesScheduler = TimelineSchedulerImpl(timer: subtitlesTimer)
+//        let schedulerFactory = mock(TimelineSchedulerFactory.self)
 //        given(schedulerFactory.make()).willReturn(subtitlesScheduler)
 //        
 //        let subtitlesIteratorFactory = SubtitlesIteratorFactoryImpl()

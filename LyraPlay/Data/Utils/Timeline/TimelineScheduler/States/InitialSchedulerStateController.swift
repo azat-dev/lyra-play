@@ -7,22 +7,22 @@
 
 import Foundation
 
-public final class InitialSchedulerStateController: SchedulerStateController {
+public final class InitialSchedulerStateController: TimelineSchedulerStateController {
     
     // MARK: - Properties
     
     public let timer: ActionTimer
     public let timeline: TimeLineIterator
-    public weak var delegate: SchedulerStateControllerDelegate?
-    public weak var delegateChanges: SchedulerDelegateChanges?
+    public weak var delegate: TimelineSchedulerStateControllerDelegate?
+    public weak var delegateChanges: TimelineSchedulerDelegateChanges?
     
     // MARK: - Initializers
     
     public init(
         timer: ActionTimer,
         timeline: TimeLineIterator,
-        delegate: SchedulerStateControllerDelegate,
-        delegateChanges: SchedulerDelegateChanges?
+        delegate: TimelineSchedulerStateControllerDelegate,
+        delegateChanges: TimelineSchedulerDelegateChanges?
     ) {
         
         self.timer = timer

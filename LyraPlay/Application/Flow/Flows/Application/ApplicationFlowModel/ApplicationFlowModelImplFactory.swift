@@ -154,7 +154,7 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
         
         let playSubtitlesUseCaseFactory = PlaySubtitlesUseCaseImplFactory(
             subtitlesIteratorFactory: SubtitlesIteratorFactoryImpl(),
-            schedulerFactory: SchedulerImplFactory(actionTimerFactory: ActionTimerFactoryImpl())
+            schedulerFactory: TimelineSchedulerImplFactory(actionTimerFactory: ActionTimerFactoryImpl())
         )
         
         let playMediaWithSubtitlesUseCaseFactory = PlayMediaWithSubtitlesUseCaseImplFactory(

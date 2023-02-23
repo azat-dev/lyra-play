@@ -9,38 +9,36 @@ import XCTest
 import Combine
 
 import LyraPlay
+import Mockingbird
 
 class PlaySubtitlesUseCaseTests: XCTestCase {
     
     typealias SUT = (
         useCase: PlaySubtitlesUseCase,
-        subtitlesIterator: SubtitlesIterator,
-        scheduler: LyraPlay.Scheduler,
-        timer: ActionTimer
+        subtitlesIterator: SubtitlesIteratorMock,
+        scheduler: TimelineSchedulerMock
     )
     
     func createSUT(subtitles: Subtitles, file: StaticString = #filePath, line: UInt = #line) -> SUT {
         
-        let timeSlotsParser = SubtitlesTimeSlotsParser()
+        let subtitlesIterator = mock(SubtitlesIterator.self)
+        let scheduler = mock(TimelineScheduler.self)
         
-        let subtitlesIterator = SubtitlesIteratorImpl(
-            subtitlesTimeSlots: timeSlotsParser.parse(from: subtitles)
-        )
-        let timer = ActionTimerMockDeprecated()
+        let schedulerFactory = mock(TimelineSchedulerFactory.self)
         
-        let scheduler = SchedulerImpl(timer: timer)
+        given(schedulerFactory.make(timeline: any(), delegate: any()))
+            .willReturn(scheduler)
         
         let useCase = PlaySubtitlesUseCaseImpl(
             subtitlesIterator: subtitlesIterator,
-            scheduler: scheduler
+            schedulerFactory: schedulerFactory
         )
         detectMemoryLeak(instance: useCase, file: file, line: line)
         
         return (
             useCase,
             subtitlesIterator,
-            scheduler,
-            timer
+            scheduler
         )
     }
     

@@ -1,5 +1,5 @@
 //
-//  SchedulerImpl.swift
+//  TimelineSchedulerImpl.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 22.02.23.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class SchedulerImpl: Scheduler {
+public final class TimelineSchedulerImpl: TimelineScheduler {
     
     // MARK: - Properties
     
@@ -15,9 +15,9 @@ public final class SchedulerImpl: Scheduler {
     
     private let timer: ActionTimer
     private let timeline: TimeLineIterator
-    private let delegateChanges: SchedulerDelegateChanges
+    private let delegateChanges: TimelineSchedulerDelegateChanges
     
-    private lazy var currentController: SchedulerStateController = {
+    private lazy var currentController: TimelineSchedulerStateController = {
         
         return InitialSchedulerStateController(
             timer: timer,
@@ -36,7 +36,7 @@ public final class SchedulerImpl: Scheduler {
     public init(
         timer: ActionTimer,
         timeline: TimeLineIterator,
-        delegateChanges: SchedulerDelegateChanges
+        delegateChanges: TimelineSchedulerDelegateChanges
     ) {
         
         self.timer = timer
@@ -47,7 +47,7 @@ public final class SchedulerImpl: Scheduler {
 
 // MARK: - Methods
 
-extension SchedulerImpl {
+extension TimelineSchedulerImpl {
     
     public func pause() {
         
@@ -72,13 +72,13 @@ extension SchedulerImpl {
 
 // MARK: - Delegate
 
-extension SchedulerImpl: SchedulerStateControllerDelegate {
+extension TimelineSchedulerImpl: TimelineSchedulerStateControllerDelegate {
     
     public func execute(
         timer: ActionTimer,
         timeline: TimeLineIterator,
         from time: TimeInterval,
-        delegateChanges: SchedulerDelegateChanges?
+        delegateChanges: TimelineSchedulerDelegateChanges?
     ) {
         
         
@@ -96,7 +96,7 @@ extension SchedulerImpl: SchedulerStateControllerDelegate {
     public func stop(
         timer: ActionTimer,
         timeline: TimeLineIterator,
-        delegateChanges: SchedulerDelegateChanges?
+        delegateChanges: TimelineSchedulerDelegateChanges?
     ) {
         
         
@@ -115,7 +115,7 @@ extension SchedulerImpl: SchedulerStateControllerDelegate {
         elapsedTime: TimeInterval,
         timer: ActionTimer,
         timeline: TimeLineIterator,
-        delegateChanges: SchedulerDelegateChanges?
+        delegateChanges: TimelineSchedulerDelegateChanges?
     ) {
         
         

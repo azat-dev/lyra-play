@@ -12,13 +12,13 @@ public final class PlaySubtitlesUseCaseImplFactory: PlaySubtitlesUseCaseFactory 
     // MARK: - Properties
 
     private let subtitlesIteratorFactory: SubtitlesIteratorFactory
-    private let schedulerFactory: SchedulerFactory
+    private let schedulerFactory: TimelineSchedulerFactory
 
     // MARK: - Initializers
 
     public init(
         subtitlesIteratorFactory: SubtitlesIteratorFactory,
-        schedulerFactory: SchedulerFactory
+        schedulerFactory: TimelineSchedulerFactory
     ) {
 
         self.subtitlesIteratorFactory = subtitlesIteratorFactory
