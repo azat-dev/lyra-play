@@ -76,11 +76,26 @@ public protocol PlayMediaWithSubtitlesUseCaseInput: AnyObject {
     func togglePlay() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
 }
 
+public protocol PlayMediaWithSubtitlesUseCaseDelegate: AnyObject {
+    
+    func playMediaWithSubtitlesUseCaseWillChange(
+        from: SubtitlesPosition?,
+        to: SubtitlesPosition?,
+        stop: inout Bool
+    )
+    
+    func playMediaWithSubtitlesUseCaseDidChange(position: SubtitlesPosition?)
+    
+    func playMediaWithSubtitlesUseCaseDidFinish()
+}
+
 public protocol PlayMediaWithSubtitlesUseCaseOutputNew {
 
     var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseStateNew, Never> { get }
 
     var willChangeSubtitlesPosition: PassthroughSubject<WillChangeSubtitlesPositionData, Never> { get }
+    
+    var delegate: PlayMediaWithSubtitlesUseCaseDelegate? { get set }
 }
 
 public protocol PlayMediaWithSubtitlesUseCaseNew: PlayMediaWithSubtitlesUseCaseOutputNew, PlayMediaWithSubtitlesUseCaseInput {

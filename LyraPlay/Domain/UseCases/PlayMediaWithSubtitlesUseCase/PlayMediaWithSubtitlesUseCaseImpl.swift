@@ -25,6 +25,8 @@ public final class PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseC
     
     private var stateHash = UUID()
     
+    public weak var delegate: PlayMediaWithSubtitlesUseCaseDelegate?
+    
     private var playSubtitlesUseCase: PlaySubtitlesUseCase? {
         
         didSet {
