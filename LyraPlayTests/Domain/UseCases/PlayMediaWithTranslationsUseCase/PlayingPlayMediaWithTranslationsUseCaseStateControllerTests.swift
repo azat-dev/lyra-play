@@ -110,6 +110,31 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
         ).wasCalled(1)
     }
     
+    func test_pause() async throws {
+        
+        // Given
+        let session = PlayMediaWithTranslationsSession(
+            mediaId: UUID(),
+            learningLanguage: "English",
+            nativeLanguage: "French"
+        )
+        
+        let translation = anySingleTranslation()
+        
+        let sut = createSUT(session: session)
+        
+        given(sut.delegate.pause(session: any()))
+            .willReturn(.success(()))
+        
+        // When
+        let result = sut.useCase.pause()
+        try AssertResultSucceded(result)
+        
+        // Then
+        verify(sut.delegate.pause(session: any()))
+            .wasCalled(1)
+    }
+    
     // MARK: - Helpers
     
     func anySingleTranslation() -> TranslationsToPlayData {

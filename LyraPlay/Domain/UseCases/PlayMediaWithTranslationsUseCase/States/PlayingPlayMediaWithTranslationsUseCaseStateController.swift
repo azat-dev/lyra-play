@@ -24,20 +24,13 @@ public final class PlayingPlayMediaWithTranslationsUseCaseStateController: Loade
     
     // MARK: - Methods
     
-    private func pronounceCurrentTranslationItem(_ translations: TranslationsToPlayData) -> AsyncThrowingStream<PronounceTranslationsUseCaseState, Error> {
+    public override func pause() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        switch translations {
-            
-        case .single(let translation):
-            return session.pronounceTranslationsUseCase.pronounceSingle(translation: translation)
-            
-        case .groupAfterSentence(let translations):
-            return session.pronounceTranslationsUseCase.pronounceGroup(translations: translations)
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
         }
-    }
-    
-    private func playTranslationAfterSubtitlesPositionChange(_ data: WillChangeSubtitlesPositionData) {
-
+        
+        return delegate.pause(session: session)
     }
     
     public func run() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
