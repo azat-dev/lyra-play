@@ -7,5 +7,8 @@
 
 public protocol PlaySubtitlesUseCaseFactory {
 
-    func make(subtitles: Subtitles) -> PlaySubtitlesUseCase
+    func make(
+        subtitles: Subtitles,
+        delegate: PlaySubtitlesUseCaseDelegate?
+    ) -> PlaySubtitlesUseCase
 }

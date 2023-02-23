@@ -2,78 +2,71 @@
 //  PlaySubtitlesUseCaseImpl.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 31.08.2022.
+//  Created by Azat Kaiumov on 23.02.23.
 //
 
 import Foundation
 import Combine
 
 public final class PlaySubtitlesUseCaseImpl: PlaySubtitlesUseCase {
-
+    
     // MARK: - Properties
-
-    private let subtitlesIterator: SubtitlesIterator
+    
     public var state =  CurrentValueSubject<PlaySubtitlesUseCaseState, Never>(.initial)
-    public var willChangePosition = PassthroughSubject<WillChangeSubtitlesPositionData, Never>()
+
+    public weak var delegate: PlaySubtitlesUseCaseDelegate?
+    
+    public var willChangePosition: PassthroughSubject<WillChangeSubtitlesPositionData, Never> {
+        fatalError()
+    }
+    
+    private let subtitlesIterator: SubtitlesIterator
 
     private let schedulerFactory: TimelineSchedulerFactory
     
     private lazy var scheduler: TimelineScheduler = {
         
         return schedulerFactory.make(
-           timeline: subtitlesIterator,
-           delegate: self
-       )
+            timeline: subtitlesIterator,
+            delegate: self
+        )
     } ()
-
+    
     // MARK: - Initializers
-
+    
     public init(
         subtitlesIterator: SubtitlesIterator,
-        schedulerFactory: TimelineSchedulerFactory
+        schedulerFactory: TimelineSchedulerFactory,
+        delegate: PlaySubtitlesUseCaseDelegate?
     ) {
-
+        
         self.subtitlesIterator = subtitlesIterator
         self.schedulerFactory = schedulerFactory
+        self.delegate = delegate
     }
 }
 
-// MARK: - SchedulerDelegateChanges
-
 extension PlaySubtitlesUseCaseImpl: TimelineSchedulerDelegateChanges {
     
+    public func schedulerWillChange(from: TimeInterval?, to: TimeInterval?, stop: inout Bool) {
+        
+        delegate?.playSubtitlesUseCaseWillChange(
+            fromPosition: subtitlesIterator.currentPosition,
+            toPosition: subtitlesIterator.getNextPosition(),
+            stop: &stop
+        )
+    }
     
     public func schedulerDidChange(time: TimeInterval) {
         
-        let isLast = subtitlesIterator.getTimeOfNextEvent() == nil
-        
-        if isLast {
-            state.value = .finished
-            return
-        }
-        
-        state.value = .playing(position: subtitlesIterator.currentPosition)
-    }
-    
-    public func schedulerWillChange(from fromTime: TimeInterval?, to: TimeInterval?, stop: inout Bool) {
-        
-        let currentPosition = fromTime == nil ? nil : subtitlesIterator.currentPosition
-        let nextPosition = subtitlesIterator.getNextPosition()
-        
-        if currentPosition == nextPosition {
-            return
-        }
-        
-        willChangePosition.send(
-            .init(
-                from: currentPosition,
-                to: nextPosition
-            )
+        delegate?.playSubtitlesUseCaseDidChange(
+            position: subtitlesIterator.currentPosition
         )
     }
     
     public func schedulerDidFinish() {
-        
+     
+        delegate?.playSubtitlesUseCaseDidFinish()
     }
 }
 
@@ -81,37 +74,23 @@ extension PlaySubtitlesUseCaseImpl: TimelineSchedulerDelegateChanges {
 
 extension PlaySubtitlesUseCaseImpl {
     
-    private func play(from fromTime: TimeInterval) {
+    public func play(atTime fromTime: TimeInterval) {
         
         scheduler.execute(from: fromTime)
     }
     
     public func play() -> Void {
-        
-        if scheduler.isActive {
-            scheduler.resume()
-            return
-        }
-        
-        play(from: 0)
-    }
-    
-    public func play(atTime time: TimeInterval) -> Void {
-        
-        scheduler.stop()
-        play(from: time)
+
+        scheduler.execute(from: 0)
     }
     
     public func pause() -> Void {
-        
+
         scheduler.pause()
-        state.value = .paused(position: self.subtitlesIterator.currentPosition)
     }
     
     public func stop() -> Void {
-        
+
         scheduler.stop()
-        let _ = subtitlesIterator.beginNextExecution(from: 0)
-        state.value = .stopped
     }
 }

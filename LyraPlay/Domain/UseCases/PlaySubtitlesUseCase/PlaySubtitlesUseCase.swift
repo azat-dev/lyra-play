@@ -46,6 +46,8 @@ public protocol PlaySubtitlesUseCaseOutput: AnyObject {
     var state: CurrentValueSubject<PlaySubtitlesUseCaseState, Never> { get }
 
     var willChangePosition: PassthroughSubject<WillChangeSubtitlesPositionData, Never> { get }
+    
+    var delegate: PlaySubtitlesUseCaseDelegate? { get set }
 }
 
 public protocol PlaySubtitlesUseCase: PlaySubtitlesUseCaseOutput, PlaySubtitlesUseCaseInput {
