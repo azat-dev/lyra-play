@@ -1,29 +1,31 @@
 //
-//  LoadedPlayMediaWithTranslationsUseCaseStateControllerImpl.swift
+//  InitialPlayMediaWithTranslationsUseCaseStateController.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 22.02.2023.
+//  Created by Azat Kaiumov on 21.02.2023.
 //
 
 import Foundation
 
-public class LoadedPlayMediaWithTranslationsUseCaseStateControllerImpl: LoadedPlayMediaWithTranslationsUseCaseStateController {
-
+public class InitialPlayMediaWithTranslationsUseCaseStateController: PlayMediaWithTranslationsUseCaseStateController {
+    
     // MARK: - Properties
-
-    public let session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession
-    public weak var delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate? 
-
+    
+    public let session: PlayMediaWithTranslationsSession
+    public weak var delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate?
+    
     // MARK: - Initializers
-
+    
     public init(
-        session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession,
+        session: PlayMediaWithTranslationsSession,
         delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate
     ) {
-
+        
         self.session = session
         self.delegate = delegate
     }
+    
+    // MARK: - Methods
     
     public func prepare(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
@@ -36,30 +38,26 @@ public class LoadedPlayMediaWithTranslationsUseCaseStateControllerImpl: LoadedPl
     
     public func play() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        guard let delegate = delegate else {
-            return .failure(.internalError(nil))
-        }
-        
-        return delegate.play(
-            session: session,
-            delegate: delegate
-        )
+        return .failure(.noActiveMedia)
     }
     
     public func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
-        fatalError()
+        
+        return .failure(.noActiveMedia)
     }
     
     public func pause() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+        
         return .failure(.noActiveMedia)
     }
     
     public func stop() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
-        return .failure(.noActiveMedia)
+        
+        return .success(())
     }
     
     public func togglePlay() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        return play()
+        return .failure(.noActiveMedia)
     }
 }

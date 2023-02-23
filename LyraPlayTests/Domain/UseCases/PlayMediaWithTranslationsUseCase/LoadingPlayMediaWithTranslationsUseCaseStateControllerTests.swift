@@ -53,7 +53,7 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
         given(pronounceTranslationsUseCaseFactory.make())
             .willReturn(pronounceTranslationsUseCase)
 
-        let controller = LoadingPlayMediaWithTranslationsUseCaseStateControllerImpl(
+        let controller = LoadingPlayMediaWithTranslationsUseCaseStateController(
             session: session,
             delegate: delegate,
             playMediaUseCaseFactory: playMediaUseCaseFactory,

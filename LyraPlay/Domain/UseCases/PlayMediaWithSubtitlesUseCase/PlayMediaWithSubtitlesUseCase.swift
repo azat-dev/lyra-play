@@ -89,7 +89,7 @@ public protocol PlayMediaWithSubtitlesUseCaseDelegate: AnyObject {
     func playMediaWithSubtitlesUseCaseDidFinish()
 }
 
-public protocol PlayMediaWithSubtitlesUseCaseOutputNew {
+public protocol PlayMediaWithSubtitlesUseCaseOutputNew: AnyObject {
 
     var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseStateNew, Never> { get }
 
@@ -100,7 +100,7 @@ public protocol PlayMediaWithSubtitlesUseCaseNew: PlayMediaWithSubtitlesUseCaseO
 
 }
 
-public protocol PlayMediaWithSubtitlesUseCaseOutput {
+public protocol PlayMediaWithSubtitlesUseCaseOutput: AnyObject {
 
     var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseState, Never> { get }
 

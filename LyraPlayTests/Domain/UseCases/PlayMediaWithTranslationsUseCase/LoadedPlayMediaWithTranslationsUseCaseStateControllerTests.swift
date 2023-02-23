@@ -23,7 +23,7 @@ class LoadedPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
         
         let delegate = mock(PlayMediaWithTranslationsUseCaseStateControllerDelegate.self)
         
-        let controller = LoadedPlayMediaWithTranslationsUseCaseStateControllerImpl(
+        let controller = LoadedPlayMediaWithTranslationsUseCaseStateController(
             session: session,
             delegate: delegate
         )
@@ -54,7 +54,7 @@ class LoadedPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
         
         let sut = createSUT(session: session)
         
-        given(sut.delegate.play(session: any(), delegate: any()))
+        given(sut.delegate.play(session: any()))
             .willReturn(.success(()))
         
         // When
@@ -64,10 +64,7 @@ class LoadedPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
         try AssertResultSucceded(result)
         
         verify(
-            sut.delegate.play(
-                session: any(),
-                delegate: any()
-            )
+            sut.delegate.play(session: any())
         ).wasCalled(1)
     }
 }
