@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LoadedPlayMediaWithSubtitlesUseStateControllerImpl: LoadedPlayMediaWithSubtitlesUseStateController {
+public class LoadedPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubtitlesUseStateController {
 
     // MARK: - Properties
     

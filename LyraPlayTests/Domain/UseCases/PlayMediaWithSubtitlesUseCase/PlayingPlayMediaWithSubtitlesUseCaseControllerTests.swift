@@ -15,7 +15,7 @@ import LyraPlay
 class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
     
     typealias SUT = (
-        controller: PlayingPlayMediaWithSubtitlesUseStateController,
+        controller: PlayingPlayMediaWithSubtitlesUseStateControllerDeprecated,
         delegate: PlayMediaWithSubtitlesUseStateControllerDelegateMock,
         playMediaUseCase: PlayMediaUseCaseMock,
         playSubtitlesUseCase: PlaySubtitlesUseCaseMock,
@@ -47,7 +47,7 @@ class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
             subtitlesState: .init(nil)
         )
         
-        let controller = PlayingPlayMediaWithSubtitlesUseStateControllerImpl(
+        let controller = PlayingPlayMediaWithSubtitlesUseStateController(
             session: session,
             delegate: delegate
         )
