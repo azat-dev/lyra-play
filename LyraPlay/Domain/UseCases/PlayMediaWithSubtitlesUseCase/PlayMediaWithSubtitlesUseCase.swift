@@ -89,6 +89,19 @@ public protocol PlayMediaWithSubtitlesUseCaseDelegate: AnyObject {
     func playMediaWithSubtitlesUseCaseDidFinish()
 }
 
+public extension PlayMediaWithSubtitlesUseCaseDelegate {
+    
+    func playMediaWithSubtitlesUseCaseWillChange(
+        from: SubtitlesPosition?,
+        to: SubtitlesPosition?,
+        stop: inout Bool
+    ) {}
+    
+    func playMediaWithSubtitlesUseCaseDidChange(position: SubtitlesPosition?) {}
+    
+    func playMediaWithSubtitlesUseCaseDidFinish() {}
+}
+
 public protocol PlayMediaWithSubtitlesUseCaseOutputNew: AnyObject {
 
     var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseStateNew, Never> { get }
