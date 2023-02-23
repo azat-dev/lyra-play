@@ -10,7 +10,11 @@ import Combine
 
 public protocol PlaySubtitlesUseCaseDelegate: AnyObject {
     
-    func playSubtitlesUseCaseWillChange(fromPosition: SubtitlesPosition?, toPosition: SubtitlesPosition?)
+    func playSubtitlesUseCaseWillChange(
+        fromPosition: SubtitlesPosition?,
+        toPosition: SubtitlesPosition?,
+        stop: inout Bool
+    )
     
     func playSubtitlesUseCaseDidChange(position: SubtitlesPosition?)
     

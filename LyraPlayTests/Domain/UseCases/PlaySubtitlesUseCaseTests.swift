@@ -29,7 +29,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         given(schedulerFactory.make(timeline: any(), delegate: any()))
             .willReturn(scheduler)
         
-        let useCase = PlaySubtitlesUseCaseImpl(
+        let useCase = PlaySubtitlesUseCaseImplNew(
             subtitlesIterator: subtitlesIterator,
             schedulerFactory: schedulerFactory
         )
