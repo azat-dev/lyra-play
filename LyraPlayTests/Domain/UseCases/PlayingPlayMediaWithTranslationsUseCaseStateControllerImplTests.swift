@@ -21,15 +21,16 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
 
     func createSUT() -> SUT {
 
-        let delegate = mock(PlayMediaWithTranslationsUseCaseStateControllerDelegate.self)
-
-        let useCase = PlayingPlayMediaWithTranslationsUseCaseStateControllerImpl(delegate: delegate)
-
-        detectMemoryLeak(instance: useCase)
-
-        return (
-            useCase: useCase,
-            delegate: delegate
-        )
+        fatalError()
+//        let delegate = mock(PlayMediaWithTranslationsUseCaseStateControllerDelegate.self)
+//
+////        let useCase = PlayingPlayMediaWithTranslationsUseCaseStateControllerImpl(delegate: delegate)
+//
+//        detectMemoryLeak(instance: useCase)
+//
+//        return (
+//            useCase: useCase,
+//            delegate: delegate
+//        )
     }
 }

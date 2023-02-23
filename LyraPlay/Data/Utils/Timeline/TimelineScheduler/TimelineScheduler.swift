@@ -1,5 +1,5 @@
 //
-//  Scheduler.swift
+//  TimelineScheduler.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 13.07.22.
@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Interfaces
 
-public protocol SchedulerDelegateChanges: AnyObject {
+public protocol TimelineSchedulerDelegateChanges: AnyObject {
     
     func schedulerDidChange(time: TimeInterval) -> Void
     
@@ -18,12 +18,12 @@ public protocol SchedulerDelegateChanges: AnyObject {
     func schedulerDidFinish()
 }
 
-public protocol SchedulerOutput: AnyObject {
+public protocol TimelineSchedulerOutput: AnyObject {
     
     var isActive: Bool { get }
 }
 
-public protocol SchedulerInput: AnyObject {
+public protocol TimelineSchedulerInput: AnyObject {
     
     func execute(from: TimeInterval)
     
@@ -34,5 +34,5 @@ public protocol SchedulerInput: AnyObject {
     func resume()
 }
 
-public protocol Scheduler: SchedulerOutput, SchedulerInput {
+public protocol TimelineScheduler: TimelineSchedulerOutput, TimelineSchedulerInput {
 }

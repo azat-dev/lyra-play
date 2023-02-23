@@ -101,7 +101,7 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
         )
         
         // When
-        let result = await sut.controller.load(session: session)
+        let result = await sut.controller.load()
         
         // Then
         try AssertResultSucceded(result)

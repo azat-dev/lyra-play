@@ -1,5 +1,5 @@
 //
-//  SchedulerFactoryImpl.swift
+//  TimelineSchedulerFactoryImpl.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 31.08.22.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class SchedulerImplFactory: SchedulerFactory {
+public final class TimelineSchedulerImplFactory: TimelineSchedulerFactory {
     
     // MARK: - Properties
     
@@ -24,12 +24,12 @@ public final class SchedulerImplFactory: SchedulerFactory {
     
     public func make(
         timeline: TimeLineIterator,
-        delegate: SchedulerDelegateChanges
-    ) -> Scheduler {
+        delegate: TimelineSchedulerDelegateChanges
+    ) -> TimelineScheduler {
         
         let actionTimer = actionTimerFactory.make()
         
-        return SchedulerImpl(
+        return TimelineSchedulerImpl(
             timer: actionTimer,
             timeline: timeline,
             delegateChanges: delegate

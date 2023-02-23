@@ -178,6 +178,8 @@ class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         // Then
         verify(sut.delegate.didFinish(session: any()))
             .wasNeverCalled()
+        
+        await waitForExpectations(timeout: 1)
     }
     
     func test_finish__media_finished_first() async throws {

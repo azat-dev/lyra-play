@@ -16,9 +16,9 @@ public final class PlaySubtitlesUseCaseImpl: PlaySubtitlesUseCase {
     public var state =  CurrentValueSubject<PlaySubtitlesUseCaseState, Never>(.initial)
     public var willChangePosition = PassthroughSubject<WillChangeSubtitlesPositionData, Never>()
 
-    private let schedulerFactory: SchedulerFactory
+    private let schedulerFactory: TimelineSchedulerFactory
     
-    private lazy var scheduler: Scheduler = {
+    private lazy var scheduler: TimelineScheduler = {
         
         return schedulerFactory.make(
            timeline: subtitlesIterator,
@@ -30,7 +30,7 @@ public final class PlaySubtitlesUseCaseImpl: PlaySubtitlesUseCase {
 
     public init(
         subtitlesIterator: SubtitlesIterator,
-        schedulerFactory: SchedulerFactory
+        schedulerFactory: TimelineSchedulerFactory
     ) {
 
         self.subtitlesIterator = subtitlesIterator
@@ -40,7 +40,7 @@ public final class PlaySubtitlesUseCaseImpl: PlaySubtitlesUseCase {
 
 // MARK: - SchedulerDelegateChanges
 
-extension PlaySubtitlesUseCaseImpl: SchedulerDelegateChanges {
+extension PlaySubtitlesUseCaseImpl: TimelineSchedulerDelegateChanges {
     
     
     public func schedulerDidChange(time: TimeInterval) {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class PausedSchedulerStateController: SchedulerStateController {
+public class PausedSchedulerStateController: TimelineSchedulerStateController {
     
     private var pasedAt: Date!
     
@@ -16,16 +16,16 @@ public class PausedSchedulerStateController: SchedulerStateController {
     private let timer: ActionTimer
     private let timeline: TimeLineIterator
     
-    private weak var delegate: SchedulerStateControllerDelegate?
-    private weak var delegateChanges: SchedulerDelegateChanges?
+    private weak var delegate: TimelineSchedulerStateControllerDelegate?
+    private weak var delegateChanges: TimelineSchedulerDelegateChanges?
     
     // MARK: - Initializers
     
     public init(
         timer: ActionTimer,
         timeline: TimeLineIterator,
-        delegate: SchedulerStateControllerDelegate,
-        delegateChanges: SchedulerDelegateChanges?
+        delegate: TimelineSchedulerStateControllerDelegate,
+        delegateChanges: TimelineSchedulerDelegateChanges?
     ) {
         
         self.timer = timer

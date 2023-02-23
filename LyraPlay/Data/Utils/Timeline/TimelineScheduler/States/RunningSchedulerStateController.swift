@@ -7,15 +7,15 @@
 
 import Foundation
 
-public class RunningSchedulerStateController: SchedulerStateController {
+public class RunningSchedulerStateController: TimelineSchedulerStateController {
     
     // MARK: - Properties
     
     public let timer: ActionTimer
     public let timeline: TimeLineIterator
     
-    public weak var delegate: SchedulerStateControllerDelegate?
-    public weak var delegateChanges: SchedulerDelegateChanges?
+    public weak var delegate: TimelineSchedulerStateControllerDelegate?
+    public weak var delegateChanges: TimelineSchedulerDelegateChanges?
     
     private var startedAt: Date!
     private var baseOffset: TimeInterval = 0
@@ -31,8 +31,8 @@ public class RunningSchedulerStateController: SchedulerStateController {
     public init(
         timer: ActionTimer,
         timeline: TimeLineIterator,
-        delegate: SchedulerStateControllerDelegate,
-        delegateChanges: SchedulerDelegateChanges?
+        delegate: TimelineSchedulerStateControllerDelegate,
+        delegateChanges: TimelineSchedulerDelegateChanges?
     ) {
         
         self.timer = timer
@@ -116,6 +116,7 @@ public class RunningSchedulerStateController: SchedulerStateController {
     public func run(from time: TimeInterval) {
         
         self.baseOffset = time
+        self.startedAt = .now
         
         timer.cancel()
         
