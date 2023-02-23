@@ -63,7 +63,11 @@ public final class LoadingPlayMediaWithTranslationsUseCaseStateController: PlayM
     
     public func stop() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        return .success(())
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.stop(session: session)
     }
     
     public func togglePlay() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {

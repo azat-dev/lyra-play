@@ -17,24 +17,29 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
         delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegateMock,
         playMediaUseCase: PlayMediaWithSubtitlesUseCaseNewMock,
         provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCaseMock,
-        pronounceTranslationsUseCase: PronounceTranslationsUseCaseMock
+        session: PlayMediaWithTranslationsSession
     )
 
     // MARK: - Methods
 
-    func createSUT(session: PlayMediaWithTranslationsSession) -> SUT {
+    func createSUT() -> SUT {
+        
+        let session = PlayMediaWithTranslationsSession(
+            mediaId: UUID(),
+            learningLanguage: "English",
+            nativeLanguage: "French"
+        )
 
         let delegate = mock(PlayMediaWithTranslationsUseCaseStateControllerDelegate.self)
         
         let playMediaUseCase = mock(PlayMediaWithSubtitlesUseCaseNew.self)
         let provideTranslationsToPlayUseCase = mock(ProvideTranslationsToPlayUseCase.self)
-        let pronounceTranslationsUseCase = mock(PronounceTranslationsUseCase.self)
         
         let activeSession = PlayMediaWithTranslationsUseCaseStateControllerActiveSession(
             session: session,
             playMediaUseCase: playMediaUseCase,
             provideTranslationsToPlayUseCase: provideTranslationsToPlayUseCase,
-            pronounceTranslationsUseCase: pronounceTranslationsUseCase
+            pronounceTranslationsUseCase: mock(PronounceTranslationsUseCase.self)
         )
         
         let useCase = PlayingPlayMediaWithTranslationsUseCaseStateController(
@@ -47,8 +52,7 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
         releaseMocks(
             delegate,
             playMediaUseCase,
-            provideTranslationsToPlayUseCase,
-            pronounceTranslationsUseCase
+            provideTranslationsToPlayUseCase
         )
 
         return (
@@ -56,23 +60,16 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
             delegate,
             playMediaUseCase,
             provideTranslationsToPlayUseCase,
-            pronounceTranslationsUseCase
+            session
         )
     }
     
     func test_run() async throws {
         
         // Given
-        
-        let session = PlayMediaWithTranslationsSession(
-            mediaId: UUID(),
-            learningLanguage: "English",
-            nativeLanguage: "French"
-        )
-        
         let translation = anySingleTranslation()
         
-        let sut = createSUT(session: session)
+        let sut = createSUT()
         
         given(sut.playMediaUseCase.play())
             .willReturn(.success(()))
@@ -113,15 +110,7 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
     func test_pause() async throws {
         
         // Given
-        let session = PlayMediaWithTranslationsSession(
-            mediaId: UUID(),
-            learningLanguage: "English",
-            nativeLanguage: "French"
-        )
-        
-        let translation = anySingleTranslation()
-        
-        let sut = createSUT(session: session)
+        let sut = createSUT()
         
         given(sut.delegate.pause(session: any()))
             .willReturn(.success(()))
@@ -132,6 +121,40 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
         
         // Then
         verify(sut.delegate.pause(session: any()))
+            .wasCalled(1)
+    }
+    
+    func test_togglePlay() async throws {
+        
+        // Given
+        let sut = createSUT()
+        
+        given(sut.delegate.pause(session: any()))
+            .willReturn(.success(()))
+        
+        // When
+        let result = sut.useCase.togglePlay()
+        try AssertResultSucceded(result)
+        
+        // Then
+        verify(sut.delegate.pause(session: any()))
+            .wasCalled(1)
+    }
+    
+    func test_stop() async throws {
+        
+        // Given
+        let sut = createSUT()
+        
+        given(sut.delegate.stop(activeSession: any()))
+            .willReturn(.success(()))
+        
+        // When
+        let result = sut.useCase.stop()
+        try AssertResultSucceded(result)
+        
+        // Then
+        verify(sut.delegate.stop(activeSession: any()))
             .wasCalled(1)
     }
     

@@ -14,34 +14,15 @@ class LoadedPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
     
     typealias SUT = (
         controller: LoadedPlayMediaWithTranslationsUseCaseStateController,
-        delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegateMock
+        delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegateMock,
+        activeSession: PlayMediaWithTranslationsUseCaseStateControllerActiveSession
     )
     
     // MARK: - Methods
     
-    func createSUT(session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession) -> SUT {
+    func createSUT() -> SUT {
         
-        let delegate = mock(PlayMediaWithTranslationsUseCaseStateControllerDelegate.self)
-        
-        let controller = LoadedPlayMediaWithTranslationsUseCaseStateController(
-            session: session,
-            delegate: delegate
-        )
-        
-        detectMemoryLeak(instance: controller)
-        
-        return (
-            controller: controller,
-            delegate: delegate
-        )
-    }
-    
-    // MARK: - Methods
-    
-    func test_play() async throws {
-        
-        // Given
-        let session = PlayMediaWithTranslationsUseCaseStateControllerActiveSession(
+        let activeSession = PlayMediaWithTranslationsUseCaseStateControllerActiveSession(
             session: .init(
                 mediaId: UUID(),
                 learningLanguage: "English",
@@ -51,8 +32,31 @@ class LoadedPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
             provideTranslationsToPlayUseCase: mock(ProvideTranslationsToPlayUseCase.self),
             pronounceTranslationsUseCase: mock(PronounceTranslationsUseCase.self)
         )
+
         
-        let sut = createSUT(session: session)
+        let delegate = mock(PlayMediaWithTranslationsUseCaseStateControllerDelegate.self)
+        
+        let controller = LoadedPlayMediaWithTranslationsUseCaseStateController(
+            session: activeSession,
+            delegate: delegate
+        )
+        
+        detectMemoryLeak(instance: controller)
+        
+        return (
+            controller,
+            delegate,
+            activeSession
+        )
+    }
+    
+    // MARK: - Methods
+    
+    func test_play() async throws {
+        
+        // Given
+        
+        let sut = createSUT()
         
         given(sut.delegate.play(session: any()))
             .willReturn(.success(()))
@@ -66,5 +70,23 @@ class LoadedPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
         verify(
             sut.delegate.play(session: any())
         ).wasCalled(1)
+    }
+    
+    func test_stop() async throws {
+        
+        // Given
+        let sut = createSUT()
+        
+        given(sut.delegate.stop(activeSession: any()))
+            .willReturn(.success(()))
+        
+        // When
+        let result = sut.controller.stop()
+        
+        // Then
+        try AssertResultSucceded(result)
+        
+        verify(sut.delegate.stop(activeSession: any()))
+            .wasCalled(1)
     }
 }

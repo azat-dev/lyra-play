@@ -366,6 +366,8 @@
 		AA4ED76F29A7664100B7FD05 /* InitialSchedulerStateControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4ED76E29A7664100B7FD05 /* InitialSchedulerStateControllerTests.swift */; };
 		AA4ED77129A7739200B7FD05 /* RunningSchedulerStateControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4ED77029A7739200B7FD05 /* RunningSchedulerStateControllerTests.swift */; };
 		AA4ED77329A7889400B7FD05 /* PlaySubtitlesUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4ED77229A7889400B7FD05 /* PlaySubtitlesUseCaseImpl.swift */; };
+		AA4ED78429A7F75B00B7FD05 /* PlayingTranslationsPlayMediaWithTranslationsUseCaseStateControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4ED78329A7F75B00B7FD05 /* PlayingTranslationsPlayMediaWithTranslationsUseCaseStateControllerTests.swift */; };
+		AA4ED78629A7FC9600B7FD05 /* PlayingTranslationsPlayMediaWithTranslationsUseCaseStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4ED78529A7FC9600B7FD05 /* PlayingTranslationsPlayMediaWithTranslationsUseCaseStateController.swift */; };
 		AA4F9707286E3C380087F45A /* MediaLibraryBrowserViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F9706286E3C380087F45A /* MediaLibraryBrowserViewController+Styles.swift */; };
 		AA4F9709286E3C4C0087F45A /* MediaLibraryBrowserViewController+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F9708286E3C4C0087F45A /* MediaLibraryBrowserViewController+Layout.swift */; };
 		AA510017299E035900720184 /* PlayMediaWithSubtitlesUseStateControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA510016299E035900720184 /* PlayMediaWithSubtitlesUseStateControllerDelegate.swift */; };
@@ -1100,6 +1102,8 @@
 		AA4ED76E29A7664100B7FD05 /* InitialSchedulerStateControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialSchedulerStateControllerTests.swift; sourceTree = "<group>"; };
 		AA4ED77029A7739200B7FD05 /* RunningSchedulerStateControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunningSchedulerStateControllerTests.swift; sourceTree = "<group>"; };
 		AA4ED77229A7889400B7FD05 /* PlaySubtitlesUseCaseImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaySubtitlesUseCaseImpl.swift; sourceTree = "<group>"; };
+		AA4ED78329A7F75B00B7FD05 /* PlayingTranslationsPlayMediaWithTranslationsUseCaseStateControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayingTranslationsPlayMediaWithTranslationsUseCaseStateControllerTests.swift; sourceTree = "<group>"; };
+		AA4ED78529A7FC9600B7FD05 /* PlayingTranslationsPlayMediaWithTranslationsUseCaseStateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayingTranslationsPlayMediaWithTranslationsUseCaseStateController.swift; sourceTree = "<group>"; };
 		AA4F9706286E3C380087F45A /* MediaLibraryBrowserViewController+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaLibraryBrowserViewController+Styles.swift"; sourceTree = "<group>"; };
 		AA4F9708286E3C4C0087F45A /* MediaLibraryBrowserViewController+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaLibraryBrowserViewController+Layout.swift"; sourceTree = "<group>"; };
 		AA510016299E035900720184 /* PlayMediaWithSubtitlesUseStateControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithSubtitlesUseStateControllerDelegate.swift; sourceTree = "<group>"; };
@@ -3271,6 +3275,7 @@
 		AABFF9F629A5573F00FCFD09 /* States */ = {
 			isa = PBXGroup;
 			children = (
+				AA4ED78529A7FC9600B7FD05 /* PlayingTranslationsPlayMediaWithTranslationsUseCaseStateController.swift */,
 				5602FE647FF0261EE9E6D02C /* PlayingPlayMediaWithTranslationsUseCaseStateController.swift */,
 				EAC6C2682B859560190D4492 /* LoadedPlayMediaWithTranslationsUseCaseStateController.swift */,
 				61F9B5335F0026FB8A9748D3 /* LoadingPlayMediaWithTranslationsUseCaseStateController.swift */,
@@ -3286,6 +3291,7 @@
 			isa = PBXGroup;
 			children = (
 				DBA0F40980E535ECD6D0C9AC /* PlayingPlayMediaWithTranslationsUseCaseStateControllerTests.swift */,
+				AA4ED78329A7F75B00B7FD05 /* PlayingTranslationsPlayMediaWithTranslationsUseCaseStateControllerTests.swift */,
 				2C53B17DEF6D338E4DC43C3A /* LoadedPlayMediaWithTranslationsUseCaseStateControllerTests.swift */,
 				0F7AF2E68C518E5AAF1BB4BD /* LoadingPlayMediaWithTranslationsUseCaseStateControllerTests.swift */,
 				35174FA9315306F05343169A /* InitialPlayMediaWithTranslationsUseCaseStateControllerTests.swift */,
@@ -4579,6 +4585,7 @@
 				76361BF7F58AD8089EA74E22 /* AddMediaLibraryItemFlowModelImpl.swift in Sources */,
 				AA12908A2979CE0E0010FDAB /* TempURLProvider.swift in Sources */,
 				B28CE3AA1FE63EF706CBE289 /* AddMediaLibraryItemFlowModelImplFactory.swift in Sources */,
+				AA4ED78629A7FC9600B7FD05 /* PlayingTranslationsPlayMediaWithTranslationsUseCaseStateController.swift in Sources */,
 				2E4D590A1C70F2D145C8C73E /* ChooseDialogView.swift in Sources */,
 				AA41490028DBAF2A002FFDD4 /* ManagedLibraryItem+CoreDataClass.swift in Sources */,
 				11D1E5F44F4405696D1F071E /* ChooseDialogViewFactory.swift in Sources */,
@@ -4739,6 +4746,7 @@
 				AA0D3F812876244D006717B9 /* CoreDataSubtitlesRepositoryTests.swift in Sources */,
 				AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */,
 				AA5802192879A53700655B4A /* XCTestCase+Sequence.swift in Sources */,
+				AA4ED78429A7F75B00B7FD05 /* PlayingTranslationsPlayMediaWithTranslationsUseCaseStateControllerTests.swift in Sources */,
 				AAF2EEBE287DF75700894F71 /* ActionTimerFactoryTests.swift in Sources */,
 				AA0DADFD28A1893A00B11B95 /* PronounceTranslationsUseCaseTests.swift in Sources */,
 				AA81426E28D509F3004A37C0 /* XCTest+Observers.swift in Sources */,
