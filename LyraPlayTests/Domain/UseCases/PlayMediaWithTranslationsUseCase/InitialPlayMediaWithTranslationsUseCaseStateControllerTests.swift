@@ -23,7 +23,7 @@ class InitialPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
 
         let delegate = mock(PlayMediaWithTranslationsUseCaseStateControllerDelegate.self)
 
-        let controller = InitialPlayMediaWithTranslationsUseCaseStateControllerImpl(
+        let controller = InitialPlayMediaWithTranslationsUseCaseStateController(
             session: session,
             delegate: delegate
         )

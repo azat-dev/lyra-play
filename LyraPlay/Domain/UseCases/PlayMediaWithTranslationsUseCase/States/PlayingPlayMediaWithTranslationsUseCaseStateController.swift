@@ -1,5 +1,5 @@
 //
-//  PlayingPlayMediaWithTranslationsUseCaseStateControllerImpl.swift
+//  PlayingPlayMediaWithTranslationsUseCaseStateController.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 22.02.2023.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class PlayingPlayMediaWithTranslationsUseCaseStateControllerImpl: LoadedPlayMediaWithTranslationsUseCaseStateControllerImpl, PlayingPlayMediaWithTranslationsUseCaseStateController {
+public final class PlayingPlayMediaWithTranslationsUseCaseStateController: LoadedPlayMediaWithTranslationsUseCaseStateController {
     
     // MARK: - Initializers
     
@@ -38,17 +38,11 @@ public final class PlayingPlayMediaWithTranslationsUseCaseStateControllerImpl: L
     
     private func playTranslationAfterSubtitlesPositionChange(_ data: WillChangeSubtitlesPositionData) {
 
-        
     }
     
-    public func run(
-        session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession,
-        delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate
-    ) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+    public func run() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        guard case .activeSession(_, .loaded(let subtitlesState, _)) = session.playMediaUseCase.state.value else {
-            return .failure(.internalError(nil))
-        }
+        session.playMediaUseCase.delegate = self
         
         let playResult = session.playMediaUseCase.play()
         
@@ -56,6 +50,23 @@ public final class PlayingPlayMediaWithTranslationsUseCaseStateControllerImpl: L
             return playResult.mapResult()
         }
 
-        fatalError()
+        return .success(())
+    }
+}
+
+// MARK: - PlayMediaWithSubtitlesUseCaseDelegate
+
+extension PlayingPlayMediaWithTranslationsUseCaseStateController: PlayMediaWithSubtitlesUseCaseDelegate {
+    
+    public func playMediaWithSubtitlesUseCaseWillChange(from: SubtitlesPosition?, to: SubtitlesPosition?, stop: inout Bool) {
+        
+    }
+    
+    public func playMediaWithSubtitlesUseCaseDidChange(position: SubtitlesPosition?) {
+    
+    }
+    
+    public func playMediaWithSubtitlesUseCaseDidFinish() {
+        
     }
 }

@@ -1,5 +1,5 @@
 //
-//  LoadingPlayMediaWithTranslationsUseCaseStateControllerImpl.swift
+//  LoadingPlayMediaWithTranslationsUseCaseStateController.swift
 //  LyraPlay
 //
 //  Created by Azat Kaiumov on 21.02.2023.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class LoadingPlayMediaWithTranslationsUseCaseStateControllerImpl: LoadingPlayMediaWithTranslationsUseCaseStateController {
+public final class LoadingPlayMediaWithTranslationsUseCaseStateController: PlayMediaWithTranslationsUseCaseStateController {
     
     // MARK: - Properties
     
