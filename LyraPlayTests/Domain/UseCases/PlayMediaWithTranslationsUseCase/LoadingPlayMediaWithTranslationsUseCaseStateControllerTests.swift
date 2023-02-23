@@ -78,11 +78,7 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
     func test_load() async throws {
         
         // Given
-        let session = PlayMediaWithTranslationsSession(
-            mediaId: UUID(),
-            learningLanguage: "English",
-            nativeLanguage: "French"
-        )
+        let session = anySession()
         
         let sut = createSUT(session: session)
 
@@ -120,5 +116,35 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
                 )
             )
         ).wasCalled(1)
+    }
+    
+    func test_stop() async throws {
+        
+        // Given
+        let session = anySession()
+        let sut = createSUT(session: session)
+        
+        given(sut.delegate.stop(session: session))
+            .willReturn(.success(()))
+        
+        // When
+        let result = sut.controller.stop()
+        
+        // Then
+        try AssertResultSucceded(result)
+        
+        verify(sut.delegate.stop(session: session))
+            .wasCalled(1)
+    }
+    
+    // MARK: - Helpers
+    
+    func anySession() -> PlayMediaWithTranslationsSession {
+        
+        return .init(
+            mediaId: UUID(),
+            learningLanguage: "English",
+            nativeLanguage: "French"
+        )
     }
 }

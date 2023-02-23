@@ -27,4 +27,12 @@ public protocol PlayMediaWithTranslationsUseCaseStateControllerDelegate: AnyObje
     func pause(
         session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession
     ) -> Result<Void, PlayMediaWithTranslationsUseCaseError>
+    
+    func stop(
+        activeSession: PlayMediaWithTranslationsUseCaseStateControllerActiveSession
+    ) -> Result<Void, PlayMediaWithTranslationsUseCaseError>
+    
+    func stop(
+        session: PlayMediaWithTranslationsSession
+    ) -> Result<Void, PlayMediaWithTranslationsUseCaseError>
 }

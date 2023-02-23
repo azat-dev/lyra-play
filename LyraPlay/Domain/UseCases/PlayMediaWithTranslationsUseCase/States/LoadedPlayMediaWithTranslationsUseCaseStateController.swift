@@ -52,7 +52,12 @@ public class LoadedPlayMediaWithTranslationsUseCaseStateController: PlayMediaWit
     }
     
     public func stop() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
-        return .failure(.noActiveMedia)
+        
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.stop(activeSession: session)
     }
     
     public func togglePlay() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {

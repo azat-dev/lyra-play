@@ -33,6 +33,19 @@ public final class PlayingPlayMediaWithTranslationsUseCaseStateController: Loade
         return delegate.pause(session: session)
     }
     
+    public override func togglePlay() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+        return pause()
+    }
+    
+    public override func stop() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+        
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.stop(activeSession: session)
+    }
+    
     public func run() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         session.playMediaUseCase.delegate = self
