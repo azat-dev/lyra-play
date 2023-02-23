@@ -58,15 +58,24 @@ public final class PlayingPlayMediaWithTranslationsUseCaseStateController: Loade
 
 extension PlayingPlayMediaWithTranslationsUseCaseStateController: PlayMediaWithSubtitlesUseCaseDelegate {
     
-    public func playMediaWithSubtitlesUseCaseWillChange(from: SubtitlesPosition?, to: SubtitlesPosition?, stop: inout Bool) {
+    public func playMediaWithSubtitlesUseCaseWillChange(
+        from fromPosition: SubtitlesPosition?,
+        to: SubtitlesPosition?,
+        stop stopPlaying: inout Bool
+    ) {
         
-    }
-    
-    public func playMediaWithSubtitlesUseCaseDidChange(position: SubtitlesPosition?) {
-    
-    }
-    
-    public func playMediaWithSubtitlesUseCaseDidFinish() {
+        guard
+            let fromPosition = fromPosition,
+            let translationsData = session.provideTranslationsToPlayUseCase.getTranslationsToPlay(for: fromPosition)
+        else {
+            return
+        }
         
+        stopPlaying = true
+        
+        let _ = delegate?.pronounce(
+            translationData: translationsData,
+            session: session
+        )
     }
 }

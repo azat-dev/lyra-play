@@ -80,11 +80,28 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
         given(sut.provideTranslationsToPlayUseCase.getTranslationsToPlay(for: any()))
             .willReturn(translation)
         
+        given(
+            sut.delegate.pronounce(
+                translationData: any(),
+                session: any()
+            )
+        ).willReturn(.success(()))
+        
         // When
         let result = sut.useCase.run()
         try AssertResultSucceded(result)
         
+        var stopPlaying = false
+        
+        sut.useCase.playMediaWithSubtitlesUseCaseWillChange(
+            from: .sentence(0),
+            to: nil,
+            stop: &stopPlaying
+        )
+        
         // Then
+        XCTAssertTrue(stopPlaying)
+        
         verify(
             sut.delegate.pronounce(
                 translationData: translation,
