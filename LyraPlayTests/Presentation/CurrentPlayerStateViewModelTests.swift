@@ -120,7 +120,7 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         // When
         sut.playerState.value = .activeSession(
             .init(mediaId: mediaId, learningLanguage: "", nativeLanguage: ""),
-            .loaded(.paused(time: 10), nil, mediaInfo)
+            .loaded(.paused, nil, mediaInfo)
         )
 
         // Then

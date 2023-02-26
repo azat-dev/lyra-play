@@ -19,14 +19,26 @@ public protocol PlayMediaWithTranslationsUseCaseStateControllerDelegate: AnyObje
         session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession
     ) -> Result<Void, PlayMediaWithTranslationsUseCaseError>
     
-    func pronounce(
-        translationData: TranslationsToPlayData,
+    func play(
+        atTime: TimeInterval,
         session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession
     ) -> Result<Void, PlayMediaWithTranslationsUseCaseError>
     
+    func didStartPlaying(
+        withController: PlayingPlayMediaWithTranslationsUseCaseStateController
+    )
+    
+    func pronounce(
+        translationData: TranslationsToPlayData,
+        session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession
+    ) async -> Result<Void, PlayMediaWithTranslationsUseCaseError>
+    
     func pause(
+        elapsedTime: TimeInterval,
         session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession
     ) -> Result<Void, PlayMediaWithTranslationsUseCaseError>
+    
+    func didPause(controller: PausedPlayMediaWithTranslationsUseCaseStateController)
     
     func stop(
         activeSession: PlayMediaWithTranslationsUseCaseStateControllerActiveSession
@@ -35,4 +47,8 @@ public protocol PlayMediaWithTranslationsUseCaseStateControllerDelegate: AnyObje
     func stop(
         session: PlayMediaWithTranslationsSession
     ) -> Result<Void, PlayMediaWithTranslationsUseCaseError>
+    
+    func didStop()
+    
+    func didPronounce(session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession)
 }

@@ -16,10 +16,11 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
     typealias SUT = (
         controller: LoadingPlayMediaWithTranslationsUseCaseStateController,
         delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegateMock,
-        playMediaUseCase: PlayMediaWithSubtitlesUseCaseNewMock,
+        playMediaUseCase: PlayMediaWithSubtitlesUseCaseMock,
         provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCaseMock,
         pronounceTranslationsUseCase: PronounceTranslationsUseCaseMock,
-        playMediaUseCaseState: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseStateNew, Never>
+        playMediaUseCaseState: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseState, Never>,
+        subtitlesState: CurrentValueSubject<SubtitlesState?, Never>
     )
 
     // MARK: - Methods
@@ -28,13 +29,17 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
 
         let delegate = mock(PlayMediaWithTranslationsUseCaseStateControllerDelegate.self)
         
-        let playMediaUseCaseState = CurrentValueSubject<PlayMediaWithSubtitlesUseCaseStateNew, Never>(.noActiveSession)
-        let playMediaUseCase = mock(PlayMediaWithSubtitlesUseCaseNew.self)
+        let playMediaUseCaseState = CurrentValueSubject<PlayMediaWithSubtitlesUseCaseState, Never>(.noActiveSession)
+        let subtitlesState = CurrentValueSubject<SubtitlesState?, Never>(nil)
+        let playMediaUseCase = mock(PlayMediaWithSubtitlesUseCase.self)
         
         given(playMediaUseCase.state)
             .willReturn(playMediaUseCaseState)
+        
+        given(playMediaUseCase.subtitlesState)
+            .willReturn(subtitlesState)
 
-        let playMediaUseCaseFactory = mock(PlayMediaWithSubtitlesUseCaseFactoryNew.self)
+        let playMediaUseCaseFactory = mock(PlayMediaWithSubtitlesUseCaseFactory.self)
         
         given(playMediaUseCaseFactory.make())
             .willReturn(playMediaUseCase)
@@ -69,7 +74,8 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
             playMediaUseCase,
             provideTranslationsToPlayUseCase,
             pronounceTranslationsUseCase,
-            playMediaUseCaseState
+            playMediaUseCaseState,
+            subtitlesState
         )
     }
     
@@ -93,8 +99,10 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
                 mediaId: session.mediaId,
                 subtitlesLanguage: session.learningLanguage
             ),
-            .loaded(.init(nil), .initial)
+            .loaded
         )
+        
+        sut.subtitlesState.value = .init(position: .sentence(1), subtitles: anySubtitles())
         
         // When
         let result = await sut.controller.load()
@@ -102,7 +110,7 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
         // Then
         try AssertResultSucceded(result)
         
-        let (_, _, playMediaUseCase, provideTranslationsToPlayUseCase, pronounceTranslationsUseCase, _) = sut
+        let (_, _, playMediaUseCase, provideTranslationsToPlayUseCase, pronounceTranslationsUseCase, _, _) = sut
 
         verify(
             sut.delegate.didLoad(
@@ -146,5 +154,10 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
             learningLanguage: "English",
             nativeLanguage: "French"
         )
+    }
+    
+    private func anySubtitles() -> Subtitles {
+        
+        return .init(duration: 0, sentences: [])
     }
 }

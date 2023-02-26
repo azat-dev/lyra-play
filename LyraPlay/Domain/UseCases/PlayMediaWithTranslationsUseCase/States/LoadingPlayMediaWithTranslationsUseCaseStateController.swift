@@ -14,7 +14,7 @@ public final class LoadingPlayMediaWithTranslationsUseCaseStateController: PlayM
     public let session: PlayMediaWithTranslationsSession
     public weak var delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate?
     
-    public let playMediaUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactoryNew
+    public let playMediaUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactory
     public let provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory
     public let pronounceTranslationsUseCaseFactory: PronounceTranslationsUseCaseFactory
     
@@ -23,7 +23,7 @@ public final class LoadingPlayMediaWithTranslationsUseCaseStateController: PlayM
     public init(
         session: PlayMediaWithTranslationsSession,
         delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate,
-        playMediaUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactoryNew,
+        playMediaUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactory,
         provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory,
         pronounceTranslationsUseCaseFactory: PronounceTranslationsUseCaseFactory
     ) {
@@ -88,14 +88,14 @@ public final class LoadingPlayMediaWithTranslationsUseCaseStateController: PlayM
             return result.mapResult()
         }
         
-        guard case .activeSession(_, .loaded(let subtitlesState, _)) = playMediaWithSubtitlesUseCase.state.value else {
+        guard case .activeSession(_, .loaded) = playMediaWithSubtitlesUseCase.state.value else {
             delegate?.didFailLoad(session: session)
             return .failure(.internalError(nil))
         }
         
         let provideTranslationsToPlayUseCase = provideTranslationsToPlayUseCaseFactory.make()
         
-        if let subtitles = subtitlesState.value?.subtitles {
+        if let subtitles = playMediaWithSubtitlesUseCase.subtitlesState.value?.subtitles {
             
             await provideTranslationsToPlayUseCase.prepare(
                 params: .init(

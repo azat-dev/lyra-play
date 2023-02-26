@@ -21,24 +21,23 @@ public enum PlayMediaWithTranslationsUseCaseError: Error {
 public enum PlayMediaWithTranslationsUseCasePlayerState: Equatable {
     
     case initial
+    case loading
+    case loaded
+    case loadFailed
     case playing
-    case pronouncingTranslations(data: PronounceTranslationsUseCaseStateData)
-    case paused(time: TimeInterval)
+    case pronouncingTranslations
+    case paused
     case stopped
     case finished
-}
-
-public enum PlayMediaWithTranslationsUseCaseLoadState: Equatable {
-    
-    case loading
-    case loadFailed
-    case loaded(PlayMediaWithTranslationsUseCasePlayerState, SubtitlesState?)
 }
 
 public enum PlayMediaWithTranslationsUseCaseState: Equatable {
     
     case noActiveSession
-    case activeSession(PlayMediaWithTranslationsSession, PlayMediaWithTranslationsUseCaseLoadState)
+    case activeSession(
+        PlayMediaWithTranslationsSession,
+        PlayMediaWithTranslationsUseCasePlayerState
+    )
 }
 
 // MARK: - Protocols
@@ -60,7 +59,11 @@ public protocol PlayMediaWithTranslationsUseCaseInput {
 
 public protocol PlayMediaWithTranslationsUseCaseOutput {
     
+    var subtitlesState: CurrentValueSubject<SubtitlesState?, Never> { get }
+    
     var state: PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never> { get }
+    
+    var pronounceTranslationsState: CurrentValueSubject<PronounceTranslationsUseCaseState?, Never> { get }
 }
 
 public protocol PlayMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCaseOutput, PlayMediaWithTranslationsUseCaseInput {}

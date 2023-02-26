@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 public final class PlayingPlayMediaWithTranslationsUseCaseStateController: LoadedPlayMediaWithTranslationsUseCaseStateController {
     
@@ -22,6 +23,15 @@ public final class PlayingPlayMediaWithTranslationsUseCaseStateController: Loade
         )
     }
     
+    deinit {
+        
+        guard session.playMediaUseCase.delegate === self else {
+            return
+        }
+        
+        session.playMediaUseCase.delegate = nil
+    }
+    
     // MARK: - Methods
     
     public override func pause() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
@@ -30,7 +40,11 @@ public final class PlayingPlayMediaWithTranslationsUseCaseStateController: Loade
             return .failure(.internalError(nil))
         }
         
-        return delegate.pause(session: session)
+        // FIXME: 
+        return delegate.pause(
+            elapsedTime: 0,
+            session: session
+        )
     }
     
     public override func togglePlay() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
@@ -49,13 +63,28 @@ public final class PlayingPlayMediaWithTranslationsUseCaseStateController: Loade
     public func run() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         session.playMediaUseCase.delegate = self
-        
+
         let playResult = session.playMediaUseCase.play()
         
         guard case .success = playResult else {
             return playResult.mapResult()
         }
 
+        delegate?.didStartPlaying(withController: self)
+        return .success(())
+    }
+    
+    public func run(atTime: TimeInterval) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+        
+        session.playMediaUseCase.delegate = self
+        
+        let playResult = session.playMediaUseCase.play(atTime: atTime)
+        
+        guard case .success = playResult else {
+            return playResult.mapResult()
+        }
+
+        delegate?.didStartPlaying(withController: self)
         return .success(())
     }
 }
@@ -79,9 +108,12 @@ extension PlayingPlayMediaWithTranslationsUseCaseStateController: PlayMediaWithS
         
         stopPlaying = true
         
-        let _ = delegate?.pronounce(
-            translationData: translationsData,
-            session: session
-        )
+        Task {
+            
+            let _ = await delegate?.pronounce(
+                translationData: translationsData,
+                session: session
+            )
+        }
     }
 }

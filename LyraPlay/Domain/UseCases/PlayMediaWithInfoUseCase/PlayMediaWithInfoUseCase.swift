@@ -22,8 +22,8 @@ public enum PlayMediaWithInfoUseCasePlayerState: Equatable {
     
     case initial
     case playing
-    case pronouncingTranslations(data: PronounceTranslationsUseCaseStateData)
-    case paused(time: TimeInterval)
+    case pronouncingTranslations
+    case paused
     case stopped
     case finished
 }

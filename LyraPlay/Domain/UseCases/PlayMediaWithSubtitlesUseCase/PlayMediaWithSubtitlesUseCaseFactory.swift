@@ -9,8 +9,3 @@ public protocol PlayMediaWithSubtitlesUseCaseFactory {
 
     func make() -> PlayMediaWithSubtitlesUseCase
 }
-
-public protocol PlayMediaWithSubtitlesUseCaseFactoryNew {
-
-    func make() -> PlayMediaWithSubtitlesUseCaseNew
-}

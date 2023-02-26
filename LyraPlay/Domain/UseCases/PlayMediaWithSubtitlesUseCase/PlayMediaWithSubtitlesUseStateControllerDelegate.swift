@@ -41,11 +41,11 @@ public protocol PlayMediaWithSubtitlesUseStateControllerDelegate: AnyObject {
     
     func pause(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
     
-    func didPause(session: PlayMediaWithSubtitlesUseStateControllerActiveSession)
+    func didPause(controller: PausedPlayMediaWithSubtitlesUseStateController)
     
     func play(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
     
-    func didStartPlay(session: PlayMediaWithSubtitlesUseStateControllerActiveSession)
+    func didStartPlay(controller: PlayingPlayMediaWithSubtitlesUseStateController)
     
     func stop(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
     

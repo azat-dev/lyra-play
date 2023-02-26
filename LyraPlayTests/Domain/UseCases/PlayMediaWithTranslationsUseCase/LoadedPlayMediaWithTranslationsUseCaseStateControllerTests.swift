@@ -28,7 +28,7 @@ class LoadedPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
                 learningLanguage: "English",
                 nativeLanguage: "French"
             ),
-            playMediaUseCase: mock(PlayMediaWithSubtitlesUseCaseNew.self),
+            playMediaUseCase: mock(PlayMediaWithSubtitlesUseCase.self),
             provideTranslationsToPlayUseCase: mock(ProvideTranslationsToPlayUseCase.self),
             pronounceTranslationsUseCase: mock(PronounceTranslationsUseCase.self)
         )
@@ -88,5 +88,34 @@ class LoadedPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
         
         verify(sut.delegate.stop(activeSession: any()))
             .wasCalled(1)
+    }
+    
+    func test_prepare() async throws {
+        
+        // Given
+        let sut = createSUT()
+        
+        let session = anySession()
+        
+        given(await sut.delegate.load(session: any()))
+            .willReturn(.success(()))
+        
+        // When
+        let result = await sut.controller.prepare(session: session)
+        
+        // Then
+        try AssertResultSucceded(result)
+        
+        verify(await sut.delegate.load(session: session))
+            .wasCalled(1)
+    }
+    
+    func anySession() -> PlayMediaWithTranslationsSession {
+        
+        return .init(
+            mediaId: UUID(),
+            learningLanguage: "English",
+            nativeLanguage: "French"
+        )
     }
 }

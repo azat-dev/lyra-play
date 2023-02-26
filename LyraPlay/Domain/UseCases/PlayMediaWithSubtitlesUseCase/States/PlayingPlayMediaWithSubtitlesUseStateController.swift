@@ -80,7 +80,7 @@ public class PlayingPlayMediaWithSubtitlesUseStateController: LoadedPlayMediaWit
             }.store(in: &observers)
         
         session.playSubtitlesUseCase?.play()
-        delegate?.didStartPlay(session: session)
+        delegate?.didStartPlay(controller: self)
         
         return .success(())
     }

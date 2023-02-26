@@ -32,13 +32,10 @@ public final class PlayMediaWithSubtitlesUseCaseImplFactory: PlayMediaWithSubtit
 
     public func make() -> PlayMediaWithSubtitlesUseCase {
         
-        let playMediaUseCase = playMediaUseCaseFactory.make()
-        let loadSubtitlesUseCase = loadSubtitlesUseCaseFactory.make()
-
         return PlayMediaWithSubtitlesUseCaseImpl(
-            playMediaUseCase: playMediaUseCase,
-            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
-            loadSubtitlesUseCase: loadSubtitlesUseCase
+            playMediaUseCaseFactory: playMediaUseCaseFactory,
+            loadSubtitlesUseCaseFactory: loadSubtitlesUseCaseFactory,
+            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory
         )
     }
 

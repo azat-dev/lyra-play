@@ -12,7 +12,7 @@ public struct PlayMediaWithTranslationsUseCaseStateControllerActiveSession {
     // MARK: - Properties
     
     public let session: PlayMediaWithTranslationsSession
-    public let playMediaUseCase: PlayMediaWithSubtitlesUseCaseNew
+    public let playMediaUseCase: PlayMediaWithSubtitlesUseCase
     public let provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase
     public let pronounceTranslationsUseCase: PronounceTranslationsUseCase
     
@@ -20,7 +20,7 @@ public struct PlayMediaWithTranslationsUseCaseStateControllerActiveSession {
     
     public init(
         session: PlayMediaWithTranslationsSession,
-        playMediaUseCase: PlayMediaWithSubtitlesUseCaseNew,
+        playMediaUseCase: PlayMediaWithSubtitlesUseCase,
         provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase,
         pronounceTranslationsUseCase: PronounceTranslationsUseCase
     ) {

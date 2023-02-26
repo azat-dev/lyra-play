@@ -18,45 +18,23 @@ public enum PlayMediaWithSubtitlesUseCaseError: Error {
 public enum PlayMediaWithSubtitlesUseCasePlayerState: Equatable {
 
     case initial
-    case playing(SubtitlesState?)
-    case paused(subtitlesState: SubtitlesState?, time: TimeInterval)
-    case stopped
-    case finished(SubtitlesState)
-}
-
-public enum PlayMediaWithSubtitlesUseCaseLoadState: Equatable {
-
     case loading
     case loadFailed
-    case loaded(Subtitles, PlayMediaWithTranslationsUseCasePlayerState)
-}
-
-public enum PlayMediaWithSubtitlesUseCaseState: Equatable {
-
-    case noActiveSession
-    case activeSession(PlayMediaWithSubtitlesSessionParams, PlayMediaWithTranslationsUseCaseLoadState)
-}
-
-public enum PlayMediaWithSubtitlesUseCasePlayerStateNew {
-
-    case initial
+    case loaded
     case playing
-    case paused(time: TimeInterval)
+    case paused
     case stopped
     case finished
 }
 
-public enum PlayMediaWithSubtitlesUseCaseLoadStateNew {
 
-    case loading
-    case loadFailed
-    case loaded(CurrentValueSubject<SubtitlesState?, Never>, PlayMediaWithSubtitlesUseCasePlayerStateNew)
-}
-
-public enum PlayMediaWithSubtitlesUseCaseStateNew {
+public enum PlayMediaWithSubtitlesUseCaseState: Equatable {
 
     case noActiveSession
-    case activeSession(PlayMediaWithSubtitlesSessionParams, PlayMediaWithSubtitlesUseCaseLoadStateNew)
+    case activeSession(
+        PlayMediaWithSubtitlesSessionParams,
+        PlayMediaWithSubtitlesUseCasePlayerState
+    )
 }
 
 // MARK: - Protocols
@@ -102,22 +80,13 @@ public extension PlayMediaWithSubtitlesUseCaseDelegate {
     func playMediaWithSubtitlesUseCaseDidFinish() {}
 }
 
-public protocol PlayMediaWithSubtitlesUseCaseOutputNew: AnyObject {
-
-    var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseStateNew, Never> { get }
-
-    var delegate: PlayMediaWithSubtitlesUseCaseDelegate? { get set }
-}
-
-public protocol PlayMediaWithSubtitlesUseCaseNew: PlayMediaWithSubtitlesUseCaseOutputNew, PlayMediaWithSubtitlesUseCaseInput {
-
-}
-
 public protocol PlayMediaWithSubtitlesUseCaseOutput: AnyObject {
 
     var state: CurrentValueSubject<PlayMediaWithSubtitlesUseCaseState, Never> { get }
+    
+    var subtitlesState: CurrentValueSubject<SubtitlesState?, Never> { get }
 
-    var willChangeSubtitlesPosition: PassthroughSubject<WillChangeSubtitlesPositionData, Never> { get }
+    var delegate: PlayMediaWithSubtitlesUseCaseDelegate? { get set }
 }
 
 public protocol PlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCaseOutput, PlayMediaWithSubtitlesUseCaseInput {

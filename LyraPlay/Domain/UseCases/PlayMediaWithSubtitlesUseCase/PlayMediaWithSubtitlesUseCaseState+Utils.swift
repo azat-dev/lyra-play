@@ -17,13 +17,4 @@ extension PlayMediaWithSubtitlesUseCaseState {
 
         return session
     }
-    
-    var subtitlesState: SubtitlesState? {
-        
-        guard case .activeSession(_, .loaded(_, let subtitlesState)) = self else {
-            return nil
-        }
-
-        return subtitlesState
-    }
 }
