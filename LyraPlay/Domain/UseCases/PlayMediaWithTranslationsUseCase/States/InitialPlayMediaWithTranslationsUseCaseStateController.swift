@@ -11,17 +11,13 @@ public class InitialPlayMediaWithTranslationsUseCaseStateController: PlayMediaWi
     
     // MARK: - Properties
     
-    public let session: PlayMediaWithTranslationsSession
     public weak var delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate?
     
     // MARK: - Initializers
     
     public init(
-        session: PlayMediaWithTranslationsSession,
         delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate
     ) {
-        
-        self.session = session
         self.delegate = delegate
     }
     
@@ -59,5 +55,13 @@ public class InitialPlayMediaWithTranslationsUseCaseStateController: PlayMediaWi
     public func togglePlay() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         return .failure(.noActiveMedia)
+    }
+    
+    public func run(activeSession: PlayMediaWithTranslationsUseCaseStateControllerActiveSession) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+        
+        activeSession.pronounceTranslationsUseCase.stop()
+        activeSession.playMediaUseCase.stop()
+        
+        return .success(())
     }
 }

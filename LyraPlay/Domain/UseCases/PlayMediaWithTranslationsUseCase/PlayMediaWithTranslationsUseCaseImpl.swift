@@ -12,273 +12,218 @@ public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslatio
 
     // MARK: - Properties
 
-    private let playMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCase
-    private let playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory
-    private let provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase
-    private let pronounceTranslationsUseCase: PronounceTranslationsUseCase
-    
     public let state = PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>(.noActiveSession)
     
-    private var playMediaWithSubtitlesObserver: AnyCancellable?
-    private var subtitlesChangesObserver: AnyCancellable?
+    public let subtitlesState = CurrentValueSubject<SubtitlesState?, Never>(nil)
+    
+    public let pronounceTranslationsState = CurrentValueSubject<PronounceTranslationsUseCaseState?, Never>(nil)
+    
+    private lazy var currentController: PlayMediaWithTranslationsUseCaseStateController = {
+        
+        return InitialPlayMediaWithTranslationsUseCaseStateController(delegate: self)
+    } ()
+    
+    private let playMediaUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactory
+    private let provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory
+    private let pronounceTranslationsUseCaseFactory: PronounceTranslationsUseCaseFactory
 
     // MARK: - Initializers
 
     public init(
-        playMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCase,
-        playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory,
-        provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCase,
-        pronounceTranslationsUseCase: PronounceTranslationsUseCase
+        playMediaUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactory,
+        provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory,
+        pronounceTranslationsUseCaseFactory: PronounceTranslationsUseCaseFactory
+        
     ) {
 
-        self.playMediaWithSubtitlesUseCase = playMediaWithSubtitlesUseCase
-        self.playSubtitlesUseCaseFactory = playSubtitlesUseCaseFactory
-        self.provideTranslationsToPlayUseCase = provideTranslationsToPlayUseCase
-        self.pronounceTranslationsUseCase = pronounceTranslationsUseCase
-        
-        connectMediaObserver()
-        
-        subtitlesChangesObserver = playMediaWithSubtitlesUseCase.willChangeSubtitlesPosition.sink { [weak self] in self?.playTranslationAfterSubtitlesPositionChange($0) }
-    }
-    
-    deinit {
-        
-        subtitlesChangesObserver?.cancel()
-        playMediaWithSubtitlesObserver?.cancel()
-    }
-    
-    private func connectMediaObserver() {
-        
-        playMediaWithSubtitlesObserver = playMediaWithSubtitlesUseCase.state.dropFirst().sink { [weak self] in self?.updateState($0) }
+        self.playMediaUseCaseFactory = playMediaUseCaseFactory
+        self.provideTranslationsToPlayUseCaseFactory = provideTranslationsToPlayUseCaseFactory
+        self.pronounceTranslationsUseCaseFactory = pronounceTranslationsUseCaseFactory
     }
 }
 
 // MARK: - Input Methods
 
 extension PlayMediaWithTranslationsUseCaseImpl {
-
+    
     public func prepare(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        state.value = .activeSession(session, .loading)
-        
-        let result = await playMediaWithSubtitlesUseCase.prepare(
-            params: .init(mediaId: session.mediaId, subtitlesLanguage: session.learningLanguage)
-        )
-        
-        guard case .success = result else {
-            
-            state.value = .activeSession(session, .loadFailed)
-            return .failure(result.error!.map())
-        }
-        
-        if Task.isCancelled {
-            
-            state.value = .activeSession(session, .loadFailed)
-            return .failure(.taskCancelled)
-        }
-        
-        guard case .activeSession(_, .loaded(_, let subtitlesData)) = playMediaWithSubtitlesUseCase.state.value else {
-            
-            state.value = .activeSession(session, .loadFailed)
-            return .failure(.internalError(nil))
-        }
-        
-        guard let subtitles = subtitlesData?.subtitles else {
-            
-            state.value = .activeSession(session, .loaded(.initial, nil))
-            return .success(())
-        }
-        
-        await provideTranslationsToPlayUseCase.prepare(
-            params: .init(
-                mediaId: session.mediaId,
-                nativeLanguage: session.nativeLanguage,
-                learningLanguage: session.learningLanguage,
-                subtitles: subtitles
-            )
-        )
-
-        state.value = .activeSession(
-            session,
-            .loaded(
-                .initial,
-                .init(position: nil, subtitles: subtitles)
-            )
-        )
-
-        return .success(())
+        return await currentController.prepare(session: session)
     }
     
     public func play() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        return playMediaWithSubtitlesUseCase.play().mapResult()
+        return currentController.play()
     }
     
     public func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        return playMediaWithSubtitlesUseCase.play(atTime: atTime).mapResult()
+        return currentController.play(atTime: atTime)
     }
     
     public func pause() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        pronounceTranslationsUseCase.stop()
-        return playMediaWithSubtitlesUseCase.pause().mapResult()
+        return currentController.pause()
     }
     
     public func stop() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        pronounceTranslationsUseCase.stop()
-        return playMediaWithSubtitlesUseCase.stop().mapResult()
+        return currentController.stop()
     }
     
     public func togglePlay() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        switch state.value {
-            
-        case .activeSession(_, .loaded(.playing, _)):
-            return pause()
-            
-        case .activeSession(_, .loaded):
-            return play()
-            
-        default:
-            return .failure(.noActiveMedia)
-        }
+        return currentController.togglePlay()
     }
 }
-
 
 // MARK: - Update state
 
-extension PlayMediaWithTranslationsUseCaseImpl {
+extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCaseStateControllerDelegate {
     
-    private func updateState(_ newState: PlayMediaWithSubtitlesUseCaseState) {
+    public func load(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        let currentState = state.value
+        let newController = LoadingPlayMediaWithTranslationsUseCaseStateController(
+            session: session,
+            delegate: self,
+            playMediaUseCaseFactory: playMediaUseCaseFactory,
+            provideTranslationsToPlayUseCaseFactory: provideTranslationsToPlayUseCaseFactory,
+            pronounceTranslationsUseCaseFactory: pronounceTranslationsUseCaseFactory
+        )
         
-        guard let session = currentState.session else {
-            return
-        }
+        currentController = newController
+        state.value = .activeSession(session, .loading)
         
-        guard case .activeSession(_, let loadState) = newState else {
-            state.value = .noActiveSession
-            return
-        }
-        
-        switch loadState {
-        
-        case .loading:
-            state.value = .activeSession(session, .loading)
-
-        case .loadFailed:
-            state.value = .activeSession(session, .loadFailed)
-
-        case .loaded(let playerState, let subtitlesState):
-
-            switch playerState {
-
-            case .initial:
-                state.value = .activeSession(session, .loaded(.initial, subtitlesState))
-
-            case .playing:
-                state.value = .activeSession(session, .loaded(.playing, subtitlesState))
-
-            case .pronouncingTranslations(let data):
-
-                state.value = .activeSession(
-                    session,
-                    .loaded(.pronouncingTranslations(data: data), subtitlesState)
-                )
-
-            case .paused(let time):
-                state.value = .activeSession(session, .loaded(.paused(time: time), subtitlesState))
-
-            case .stopped:
-                state.value = .activeSession(session, .loaded(.stopped, subtitlesState))
-
-            case .finished:
-                state.value = .activeSession(session, .loaded(.finished, subtitlesState))
-            }
-        }        
-    }
-}
-
-// MARK: - Playing translations
-
-extension PlayMediaWithTranslationsUseCaseImpl {
-
-    private func pronounceCurrentTranslationItem(_ translations: TranslationsToPlayData) -> AsyncThrowingStream<PronounceTranslationsUseCaseState, Error> {
-        
-        switch translations {
-            
-        case .single(let translation):
-            return self.pronounceTranslationsUseCase.pronounceSingle(translation: translation)
-            
-        case .groupAfterSentence(let translations):
-            return self.pronounceTranslationsUseCase.pronounceGroup(translations: translations)
-        }
+        return await newController.load()
     }
     
-    private func playTranslationAfterSubtitlesPositionChange(_ data: WillChangeSubtitlesPositionData) {
+    public func didLoad(session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession) {
+        
+        let newController = LoadedPlayMediaWithTranslationsUseCaseStateController(
+            session: session,
+            delegate: self
+        )
+        
+        currentController = newController
+        state.value = .activeSession(session.session, .loaded)
+    }
+    
+    public func didFailLoad(session: PlayMediaWithTranslationsSession) {
+        
+        let newController = InitialPlayMediaWithTranslationsUseCaseStateController(
+            delegate: self
+        )
+        
+        currentController = newController
+        state.value = .activeSession(session, .loadFailed)
+    }
+    
+    public func play(session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+        
+        let newController = PlayingPlayMediaWithTranslationsUseCaseStateController(
+            session: session,
+            delegate: self
+        )
+        
+        return newController.run()
+    }
+    
+    public func play(
+        atTime: TimeInterval,
+        session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession
+    ) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+        
+        let newController = PlayingPlayMediaWithTranslationsUseCaseStateController(
+            session: session,
+            delegate: self
+        )
+        
+        return newController.run()
+    }
+    
+    public func didStartPlaying(
+        withController playingController: PlayingPlayMediaWithTranslationsUseCaseStateController
+    ) {
+        
+        let session = playingController.session
+        currentController = playingController
+        
+        state.value = .activeSession(session.session, .playing)
+    }
+    
+    public func pronounce(
+        translationData: TranslationsToPlayData,
+        session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession
+    ) async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+        
+        let newController = PlayingTranslationsPlayMediaWithTranslationsUseCaseStateController(
+            translations: translationData,
+            session: session,
+            delegate: self
+        )
+        
+        currentController = newController
+        
+        state.value = .activeSession(
+            session.session,
+            .pronouncingTranslations
+        )
 
-        let currentState = state.value
+        return await newController.run()
+    }
+    
+    public func pause(
+        elapsedTime: TimeInterval,
+        session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession
+    ) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        guard
-            let currentPosition = data.from,
-            case .activeSession(_, .loaded(.playing, _)) = currentState,
-            let session = currentState.session,
-            let subtitlesState = state.value.subtitlesState
-        else {
-            return
-        }
+        let newController = PausedPlayMediaWithTranslationsUseCaseStateController(
+            elapsedTime: elapsedTime,
+            session: session,
+            delegate: self
+        )
         
-        let nextPosition = data.to
-        let isEndOfSentence = nextPosition?.sentenceIndex != currentPosition.sentenceIndex
-        let isEndOfTimeMark = currentPosition.timeMarkIndex != nil
-        let canPlay = isEndOfSentence || isEndOfTimeMark
+        return newController.run()
+    }
+    
+    public func didPause(controller: PausedPlayMediaWithTranslationsUseCaseStateController) {
         
-        guard
-            canPlay,
-            let translationsToPlay = provideTranslationsToPlayUseCase.getTranslationsToPlay(for: currentPosition)
-        else {
-            return
-        }
+        currentController = controller
+        state.value = .activeSession(controller.session.session, .paused)
+    }
+    
+    public func stop(activeSession: PlayMediaWithTranslationsUseCaseStateControllerActiveSession) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        playMediaWithSubtitlesObserver?.cancel()
-        let _ = playMediaWithSubtitlesUseCase.pause()
+        let newController = InitialPlayMediaWithTranslationsUseCaseStateController(
+            delegate: self
+        )
         
-        connectMediaObserver()
-
-        Task {
-            
-            for try await pronounciationState in pronounceCurrentTranslationItem(translationsToPlay) {
-                
-                switch pronounciationState {
-                
-                case .stopped, .paused:
-                    return
-
-                case .finished, .loading:
-                    continue
-                    
-                case .playing(let stateData):
-                    
-                    do {
-                        try state.send(
-                            .activeSession(session, .loaded(.pronouncingTranslations(data: stateData), subtitlesState))
-                        )
-                        
-                    } catch is PublisherFlowIsChanged {
-                        return
-                    }
-                }
-            }
-            
-            let _ = playMediaWithSubtitlesUseCase.play()
-        }
+        return newController.run(activeSession: activeSession)
+    }
+    
+    public func stop(session: PlayMediaWithTranslationsSession) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+        
+        let newController = InitialPlayMediaWithTranslationsUseCaseStateController(
+            delegate: self
+        )
+        
+        currentController = newController
+        state.value = .noActiveSession
+        return .success(())
+    }
+    
+    public func didStop() {
+        
+        currentController = InitialPlayMediaWithTranslationsUseCaseStateController(delegate: self)
+        state.value = .noActiveSession
+    }
+    
+    public func didPronounce(session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession) {
+        
+        let _ = play(session: session)
     }
 }
-
+    
 // MARK: - Error Mapping
 
 extension PlayMediaWithSubtitlesUseCaseError {

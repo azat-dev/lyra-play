@@ -8,6 +8,8 @@
 import Foundation
 import XCTest
 import Mockingbird
+import Combine
+
 import LyraPlay
 
 class PlayingTranslationsPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCase {
@@ -15,7 +17,7 @@ class PlayingTranslationsPlayMediaWithTranslationsUseCaseStateControllerImplTest
     typealias SUT = (
         useCase: PlayingTranslationsPlayMediaWithTranslationsUseCaseStateController,
         delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegateMock,
-        playMediaUseCase: PlayMediaWithSubtitlesUseCaseNewMock,
+        playMediaUseCase: PlayMediaWithSubtitlesUseCaseMock,
         pronounceTranslationsUseCase: PronounceTranslationsUseCaseMock
     )
     
@@ -31,18 +33,18 @@ class PlayingTranslationsPlayMediaWithTranslationsUseCaseStateControllerImplTest
         
         let delegate = mock(PlayMediaWithTranslationsUseCaseStateControllerDelegate.self)
         
-        let playMediaUseCase = mock(PlayMediaWithSubtitlesUseCaseNew.self)
+        let playMediaUseCase = mock(PlayMediaWithSubtitlesUseCase.self)
         let pronounceTranslationsUseCase = mock(PronounceTranslationsUseCase.self)
         
         let activeSession = PlayMediaWithTranslationsUseCaseStateControllerActiveSession(
             session: session,
             playMediaUseCase: playMediaUseCase,
-            provideTranslationsToPlayUseCase: mock(PronounceTranslationsUseCase.self),
+            provideTranslationsToPlayUseCase: mock(ProvideTranslationsToPlayUseCase.self),
             pronounceTranslationsUseCase: pronounceTranslationsUseCase
         )
         
         let useCase = PlayingTranslationsPlayMediaWithTranslationsUseCaseStateController(
-            translationsData: translations,
+            translations: translations,
             session: activeSession,
             delegate: delegate
         )
@@ -71,26 +73,35 @@ class PlayingTranslationsPlayMediaWithTranslationsUseCaseStateControllerImplTest
         
         let sut = createSUT(translations: translation)
         
+        let str = CurrentValueSubject<PronounceTranslationsUseCaseState, Never>(.stopped)
+        
+        let pronounceStream = AsyncThrowingStream<PronounceTranslationsUseCaseState, Error> {
+            $0.yield(.playing(.single(translation: translationData)))
+            $0.yield(.finished)
+            $0.finish()
+        }
+        
         given(sut.pronounceTranslationsUseCase.pronounceSingle(translation: any()))
-            .willReturn(
-                .init(unfolding: { .playing(.single(translation: translationData)) } )
-            )
+            .willReturn(pronounceStream)
         
         given(
-            sut.delegate.pronounce(
+            await sut.delegate.pronounce(
                 translationData: any(),
                 session: any()
             )
         ).willReturn(.success(()))
         
         // When
-        let result = sut.useCase.run()
+        let result = await sut.useCase.run()
         try AssertResultSucceded(result)
         
         // Then
-        
         verify(
             sut.pronounceTranslationsUseCase.pronounceSingle(translation: translationData)
+        ).wasCalled(1)
+        
+        verify(
+            sut.delegate.didPronounce(session: any())
         ).wasCalled(1)
     }
     

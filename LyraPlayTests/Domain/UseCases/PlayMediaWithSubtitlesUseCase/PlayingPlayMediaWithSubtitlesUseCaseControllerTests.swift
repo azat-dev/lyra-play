@@ -107,14 +107,7 @@ class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         
         verify(
             sut.delegate.didStartPlay(
-                session: any(
-                    PlayMediaWithSubtitlesUseStateControllerActiveSession.self,
-                    where: { [weak playSubtitlesUseCase, weak playMediaUseCase] lhs in
-                        lhs.params == params &&
-                        lhs.playSubtitlesUseCase === playSubtitlesUseCase &&
-                        lhs.playMediaUseCase === playMediaUseCase
-                    }
-                )
+                controller: any()
             )
         ).wasCalled(1)
     }

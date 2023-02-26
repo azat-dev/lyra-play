@@ -183,13 +183,10 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
             audioPlayerFactory: mainAudioPlayerFactory
         )
         
-        let pronounceTranslationsUseCase = pronounceTranslationsUseCaseFactory.make()
-        
         let playMediaWithTranslationsUseCaseFactory = PlayMediaWithTranslationsUseCaseImplFactory(
             playMediaWithSubtitlesUseCaseFactory: playMediaWithSubtitlesUseCaseFactory,
-            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
             provideTranslationsToPlayUseCaseFactory: provideTranslationsToPlayUseCaseFactory,
-            pronounceTranslationsUseCase: pronounceTranslationsUseCase
+            pronounceTranslationsUseCaseFactory: pronounceTranslationsUseCaseFactory
         )
         
         let showMediaInfoUseCaseFactory = ShowMediaInfoUseCaseImplFactory(

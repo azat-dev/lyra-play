@@ -101,11 +101,7 @@ class PlayMediaWithInfoUseCaseTests: XCTestCase {
         given(await sut.playMediaWithTranslationsUseCase.prepare(session: playMediaWithTranslationSession))
             .will({ [weak playMediaWithTranslationsUseCaseState] session in
                 
-                playMediaWithTranslationsUseCaseState?.value = .activeSession(
-                    playMediaWithTranslationSession,
-                        .loaded(.initial, nil)
-                )
-                
+                playMediaWithTranslationsUseCaseState?.value = .activeSession(playMediaWithTranslationSession, .loaded)
                 return .success(())
             })
         

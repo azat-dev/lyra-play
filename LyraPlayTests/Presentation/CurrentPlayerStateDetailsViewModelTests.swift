@@ -91,7 +91,7 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
         sut.playerState.value = .activeSession(session, .loading)
         sut.playerState.value = .activeSession(session, .loaded(.playing, nil, mediaInfo))
         
-        sut.playerState.value = .activeSession(session, .loaded(.paused(time: 0), nil, mediaInfo))
+        sut.playerState.value = .activeSession(session, .loaded(.paused, nil, mediaInfo))
 
         // Then
         verify(sut.playMediaUseCase.togglePlay())

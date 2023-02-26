@@ -12,37 +12,32 @@ public final class PlayMediaWithTranslationsUseCaseImplFactory: PlayMediaWithTra
     // MARK: - Properties
 
     private let playMediaWithSubtitlesUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactory
-    private let playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory
     private let provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory
-    private let pronounceTranslationsUseCase: PronounceTranslationsUseCase
+    private let pronounceTranslationsUseCaseFactory: PronounceTranslationsUseCaseFactory
 
     // MARK: - Initializers
 
     public init(
         playMediaWithSubtitlesUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactory,
-        playSubtitlesUseCaseFactory: PlaySubtitlesUseCaseFactory,
         provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory,
-        pronounceTranslationsUseCase: PronounceTranslationsUseCase
+        pronounceTranslationsUseCaseFactory: PronounceTranslationsUseCaseFactory
     ) {
 
         self.playMediaWithSubtitlesUseCaseFactory = playMediaWithSubtitlesUseCaseFactory
-        self.playSubtitlesUseCaseFactory = playSubtitlesUseCaseFactory
         self.provideTranslationsToPlayUseCaseFactory = provideTranslationsToPlayUseCaseFactory
-        self.pronounceTranslationsUseCase = pronounceTranslationsUseCase
+        self.pronounceTranslationsUseCaseFactory = pronounceTranslationsUseCaseFactory
     }
 
     // MARK: - Methods
 
     public func make() -> PlayMediaWithTranslationsUseCase {
 
-        let playMediaWithSubtitlesUseCase = playMediaWithSubtitlesUseCaseFactory.make()
         let provideTranslationsToPlayUseCase = provideTranslationsToPlayUseCaseFactory.make()
         
         return PlayMediaWithTranslationsUseCaseImpl(
-            playMediaWithSubtitlesUseCase: playMediaWithSubtitlesUseCase,
-            playSubtitlesUseCaseFactory: playSubtitlesUseCaseFactory,
-            provideTranslationsToPlayUseCase: provideTranslationsToPlayUseCase,
-            pronounceTranslationsUseCase: pronounceTranslationsUseCase
+            playMediaUseCaseFactory: playMediaWithSubtitlesUseCaseFactory,
+            provideTranslationsToPlayUseCaseFactory: provideTranslationsToPlayUseCaseFactory,
+            pronounceTranslationsUseCaseFactory: pronounceTranslationsUseCaseFactory
         )
     }
 

@@ -38,7 +38,7 @@ public class PausedPlayMediaWithSubtitlesUseStateController: PlayingPlayMediaWit
         }
         
         session.playSubtitlesUseCase?.pause()
-        delegate.didPause(session: session)
+        delegate.didPause(controller: self)
         
         return .success(())
     }

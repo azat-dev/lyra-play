@@ -105,17 +105,7 @@ class PausedPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         verify(playMediaUseCase.pause())
             .wasCalled(1)
         
-        verify(
-            sut.delegate.didPause(
-                session: any(
-                    PlayMediaWithSubtitlesUseStateControllerActiveSession.self,
-                    where: { [weak playSubtitlesUseCase, weak playMediaUseCase] lhs in
-                        lhs.params == params &&
-                        lhs.playSubtitlesUseCase === playSubtitlesUseCase &&
-                        lhs.playMediaUseCase === playMediaUseCase
-                    }
-                )
-            )
-        ).wasCalled(1)
+        verify(sut.delegate.didPause(controller:  any()))
+            .wasCalled(1)
     }    
 }

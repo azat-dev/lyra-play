@@ -23,10 +23,7 @@ class InitialPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
 
         let delegate = mock(PlayMediaWithTranslationsUseCaseStateControllerDelegate.self)
 
-        let controller = InitialPlayMediaWithTranslationsUseCaseStateController(
-            session: session,
-            delegate: delegate
-        )
+        let controller = InitialPlayMediaWithTranslationsUseCaseStateController(delegate: delegate)
 
         detectMemoryLeak(instance: controller)
 

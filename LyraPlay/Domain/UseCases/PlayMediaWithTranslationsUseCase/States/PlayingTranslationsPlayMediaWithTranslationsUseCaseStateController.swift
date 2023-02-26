@@ -11,14 +11,14 @@ public final class PlayingTranslationsPlayMediaWithTranslationsUseCaseStateContr
     
     // MARK: - Properties
     
-    private let translations: TranslationsToPlay
+    private let translations: TranslationsToPlayData
     private let session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession
     private weak var delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate?
     
     // MARK: - Initializers
     
     public init(
-        translations: TranslationsToPlay,
+        translations: TranslationsToPlayData,
         session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession,
         delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate
     ) {
@@ -36,7 +36,11 @@ public final class PlayingTranslationsPlayMediaWithTranslationsUseCaseStateContr
             return .failure(.internalError(nil))
         }
         
-        return delegate.pause(session: session)
+        return delegate.pause(
+            // FIXME: 
+            elapsedTime: 0,
+            session: session
+        )
     }
     
     public func prepare(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
@@ -79,49 +83,30 @@ public final class PlayingTranslationsPlayMediaWithTranslationsUseCaseStateContr
         }
     }
     
-    public func run() async throws -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+    public func run() async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        for try await pronounciationState in pronounceCurrentTranslationItem(translations.data) {
+        do {
             
-            switch pronounciationState {
-            
-            case .stopped, .paused:
-                return .success(())
-
-            case .finished, .loading:
-                continue
+            for try await pronounciationState in pronounceCurrentTranslationItem(translations) {
                 
-            case .playing(let stateData):
-                continue
+                switch pronounciationState {
+                    
+                case .stopped, .paused:
+                    return .success(())
+                    
+                case .finished, .loading:
+                    continue
+                    
+                case .playing(let stateData):
+                    continue
+                }
             }
+            
+        } catch {
+            return .failure(.internalError(nil))
         }
         
+        delegate?.didPronounce(session: session)
         return .success(())
-    }
-}
-
-// MARK: - PlayMediaWithSubtitlesUseCaseDelegate
-
-extension PlayingTranslationsPlayMediaWithTranslationsUseCaseStateController: PlayMediaWithSubtitlesUseCaseDelegate {
-    
-    public func playMediaWithSubtitlesUseCaseWillChange(
-        from fromPosition: SubtitlesPosition?,
-        to: SubtitlesPosition?,
-        stop stopPlaying: inout Bool
-    ) {
-        
-        guard
-            let fromPosition = fromPosition,
-            let translationsData = session.provideTranslationsToPlayUseCase.getTranslationsToPlay(for: fromPosition)
-        else {
-            return
-        }
-        
-        stopPlaying = true
-        
-        let _ = delegate?.pronounce(
-            translationData: translationsData,
-            session: session
-        )
     }
 }

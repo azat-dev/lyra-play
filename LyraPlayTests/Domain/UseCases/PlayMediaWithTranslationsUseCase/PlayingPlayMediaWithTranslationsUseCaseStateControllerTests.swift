@@ -7,6 +7,7 @@
 
 import Foundation
 import XCTest
+import Combine
 import Mockingbird
 import LyraPlay
 
@@ -15,7 +16,7 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
     typealias SUT = (
         useCase: PlayingPlayMediaWithTranslationsUseCaseStateController,
         delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegateMock,
-        playMediaUseCase: PlayMediaWithSubtitlesUseCaseNewMock,
+        playMediaUseCase: PlayMediaWithSubtitlesUseCaseMock,
         provideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCaseMock,
         session: PlayMediaWithTranslationsSession
     )
@@ -31,8 +32,8 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
         )
 
         let delegate = mock(PlayMediaWithTranslationsUseCaseStateControllerDelegate.self)
-        
-        let playMediaUseCase = mock(PlayMediaWithSubtitlesUseCaseNew.self)
+
+        let playMediaUseCase = mock(PlayMediaWithSubtitlesUseCase.self)
         let provideTranslationsToPlayUseCase = mock(ProvideTranslationsToPlayUseCase.self)
         
         let activeSession = PlayMediaWithTranslationsUseCaseStateControllerActiveSession(
@@ -76,13 +77,21 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
         
         given(sut.provideTranslationsToPlayUseCase.getTranslationsToPlay(for: any()))
             .willReturn(translation)
+
+        let pronounceExpectation = expectation(description: "Pronounce")
         
         given(
-            sut.delegate.pronounce(
+            await sut.delegate.pronounce(
                 translationData: any(),
                 session: any()
             )
-        ).willReturn(.success(()))
+        ).will { translationData, _ in
+            
+            if translationData == translation {
+                pronounceExpectation.fulfill()
+            }
+            return .success(())
+        }
         
         // When
         let result = sut.useCase.run()
@@ -99,12 +108,17 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
         // Then
         XCTAssertTrue(stopPlaying)
         
-        verify(
-            sut.delegate.pronounce(
-                translationData: translation,
-                session: any()
-            )
-        ).wasCalled(1)
+        verify(sut.delegate.didStartPlaying(withController: any()))
+            .wasCalled(1)
+        
+//        verify(
+//            await sut.delegate.pronounce(
+//                translationData: translation,
+//                session: any()
+//            )
+//        ).wasCalled(1)
+        
+        wait(for: [pronounceExpectation], timeout: 1)
     }
     
     func test_pause() async throws {
@@ -112,7 +126,7 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
         // Given
         let sut = createSUT()
         
-        given(sut.delegate.pause(session: any()))
+        given(sut.delegate.pause(elapsedTime: any(), session: any()))
             .willReturn(.success(()))
         
         // When
@@ -120,7 +134,7 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
         try AssertResultSucceded(result)
         
         // Then
-        verify(sut.delegate.pause(session: any()))
+        verify(sut.delegate.pause(elapsedTime: any(), session: any()))
             .wasCalled(1)
     }
     
@@ -129,7 +143,7 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
         // Given
         let sut = createSUT()
         
-        given(sut.delegate.pause(session: any()))
+        given(sut.delegate.pause(elapsedTime: any(), session: any()))
             .willReturn(.success(()))
         
         // When
@@ -137,7 +151,7 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
         try AssertResultSucceded(result)
         
         // Then
-        verify(sut.delegate.pause(session: any()))
+        verify(sut.delegate.pause(elapsedTime: any(), session: any()))
             .wasCalled(1)
     }
     
