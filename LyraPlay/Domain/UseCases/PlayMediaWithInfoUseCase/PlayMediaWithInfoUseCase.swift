@@ -60,7 +60,11 @@ public protocol PlayMediaWithInfoUseCaseInput: AnyObject {
 
 public protocol PlayMediaWithInfoUseCaseOutput: AnyObject {
     
-    var state: PublisherWithSession<PlayMediaWithInfoUseCaseState, Never> { get }
+    var state: CurrentValueSubject<PlayMediaWithInfoUseCaseState, Never> { get }
+    
+    var subtitlesState: CurrentValueSubject<SubtitlesState?, Never> { get }
+    
+    var pronounceTranslationsState: CurrentValueSubject<PronounceTranslationsUseCaseState?, Never> { get }
 }
 
 public protocol PlayMediaWithInfoUseCase: PlayMediaWithInfoUseCaseOutput, PlayMediaWithInfoUseCaseInput {}

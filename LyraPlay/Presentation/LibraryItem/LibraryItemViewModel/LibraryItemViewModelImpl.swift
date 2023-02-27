@@ -73,7 +73,7 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
     
     private func bind(to playMediaUseCase: PlayMediaWithInfoUseCase) {
         
-        playMediaUseCase.state.publisher.sink { [weak self] state in
+        playMediaUseCase.state.sink { [weak self] state in
             
             self?.updateState(state)
             

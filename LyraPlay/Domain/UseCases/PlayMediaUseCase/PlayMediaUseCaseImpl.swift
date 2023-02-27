@@ -213,6 +213,21 @@ extension PlayMediaUseCaseImpl {
         return newController.run()
     }
     
+    public func play(
+        atTime: TimeInterval,
+        mediaId: UUID,
+        audioPlayer: AudioPlayer
+    ) -> Result<Void, PlayMediaUseCaseError> {
+        
+        let newController = playingStateFactory.make(
+            mediaId: mediaId,
+            audioPlayer: audioPlayer,
+            delegate: self
+        )
+        
+        return newController.run(atTime: atTime)
+    }
+    
     public func didStartPlay(
         mediaId: UUID,
         audioPlayer: AudioPlayer

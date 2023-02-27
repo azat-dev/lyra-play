@@ -61,7 +61,7 @@ public protocol PlayMediaWithTranslationsUseCaseOutput {
     
     var subtitlesState: CurrentValueSubject<SubtitlesState?, Never> { get }
     
-    var state: PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never> { get }
+    var state: CurrentValueSubject<PlayMediaWithTranslationsUseCaseState, Never> { get }
     
     var pronounceTranslationsState: CurrentValueSubject<PronounceTranslationsUseCaseState?, Never> { get }
 }

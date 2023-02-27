@@ -12,7 +12,7 @@ public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslatio
 
     // MARK: - Properties
 
-    public let state = PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>(.noActiveSession)
+    public let state = CurrentValueSubject<PlayMediaWithTranslationsUseCaseState, Never>(.noActiveSession)
     
     public let subtitlesState = CurrentValueSubject<SubtitlesState?, Never>(nil)
     
@@ -221,6 +221,17 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
     public func didPronounce(session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession) {
         
         let _ = play(session: session)
+    }
+    
+    public func didFinish(session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession) {
+        
+        currentController = FinishedPlayMediaWithTranslationsUseCaseStateController(
+            elapsedTime: 0,
+            session: session,
+            delegate: self
+        )
+        
+        state.value = .activeSession(session.session, .finished)
     }
 }
     
