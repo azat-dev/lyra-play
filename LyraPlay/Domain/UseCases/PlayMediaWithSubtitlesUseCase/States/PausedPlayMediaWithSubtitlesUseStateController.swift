@@ -7,29 +7,35 @@
 
 import Foundation
 
-public class PausedPlayMediaWithSubtitlesUseStateController: PlayingPlayMediaWithSubtitlesUseStateController {
+public class PausedPlayMediaWithSubtitlesUseStateController: LoadedPlayMediaWithSubtitlesUseStateController {
     
     // MARK: - Methods
 
-    public override func play() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+    public override func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
     
         guard let delegate = delegate else {
             return .failure(.internalError(nil))
         }
         
-        return delegate.play(session: session)
+        return delegate.play(atTime: atTime, session: session)
+    }
+    
+
+    public override func resume() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+        
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.resumePlaying(session: session)
     }
     
     public override func togglePlay() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
-        return play()
+        return resume()
     }
     
-    public override func run() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        
-        guard let delegate = delegate else {
-            return .failure(.internalError(nil))
-        }
+    public func runPausing() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         let result = session.playMediaUseCase.pause()
         
@@ -38,7 +44,7 @@ public class PausedPlayMediaWithSubtitlesUseStateController: PlayingPlayMediaWit
         }
         
         session.playSubtitlesUseCase?.pause()
-        delegate.didPause(controller: self)
+        delegate?.didPause(controller: self)
         
         return .success(())
     }

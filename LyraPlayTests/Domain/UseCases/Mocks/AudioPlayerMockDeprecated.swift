@@ -25,7 +25,7 @@ class AudioPlayerMockDeprecated: AudioPlayer {
         return .success(())
     }
     
-    func play() -> Result<Void, AudioPlayerError> {
+    func resume() -> Result<Void, AudioPlayerError> {
         
         guard let currentFileId = currentFileId else {
             return .failure(.noActiveFile)
@@ -37,9 +37,8 @@ class AudioPlayerMockDeprecated: AudioPlayer {
     
     func play(atTime: TimeInterval) -> Result<Void, AudioPlayerError> {
         
-        return play()
+        return resume()
     }
-
     
     func playAndWaitForEnd() async -> Result<Void, AudioPlayerError> {
         

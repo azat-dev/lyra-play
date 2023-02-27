@@ -33,13 +33,18 @@ public class PlayingPlayMediaWithSubtitlesUseStateController: LoadedPlayMediaWit
     
     // MARK: - Methods
     
-    public override func play() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+    public override func resume() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         return .success(())
     }
     
     public override func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        fatalError()
+        
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.play(atTime: atTime, session: session)
     }
     
     public override func pause() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
@@ -56,13 +61,7 @@ public class PlayingPlayMediaWithSubtitlesUseStateController: LoadedPlayMediaWit
         return pause()
     }
     
-    public func run() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        
-        let result = session.playMediaUseCase.play()
-        
-        guard case .success = result else {
-            return result.mapResult()
-        }
+    private func startWatchingPlayingState() {
         
         session.playMediaUseCase.state
             .sink { [weak self] newState in
@@ -78,9 +77,34 @@ public class PlayingPlayMediaWithSubtitlesUseStateController: LoadedPlayMediaWit
                 self.delegate?.didFinish(session: self.session)
                 
             }.store(in: &observers)
+    }
+    
+    public func run(atTime: TimeInterval) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
-        session.playSubtitlesUseCase?.play()
-        delegate?.didStartPlay(controller: self)
+        startWatchingPlayingState()
+        let result = session.playMediaUseCase.play(atTime: 0)
+        
+        guard case .success = result else {
+            return result.mapResult()
+        }
+        
+        session.playSubtitlesUseCase?.play(atTime: 0)
+        delegate?.didStartPlaying(withController: self)
+        
+        return .success(())
+    }
+    
+    public func resumeRunning() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+        
+        startWatchingPlayingState()
+        let result = session.playMediaUseCase.resume()
+        
+        guard case .success = result else {
+            return result.mapResult()
+        }
+        
+        session.playSubtitlesUseCase?.resume()
+        delegate?.didResumePlaying(withController: self)
         
         return .success(())
     }

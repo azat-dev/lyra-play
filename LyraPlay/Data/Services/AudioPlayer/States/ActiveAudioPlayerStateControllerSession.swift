@@ -12,5 +12,4 @@ public struct ActiveAudioPlayerStateControllerSession {
     
     let fileId: String
     let systemPlayer: AVAudioPlayer
-    unowned var context: AudioPlayerStateControllerContext
 }

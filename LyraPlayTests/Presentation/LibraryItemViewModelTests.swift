@@ -30,7 +30,7 @@ class LibraryItemViewModelTests: XCTestCase {
         given(playMediaUseCase.togglePlay())
             .willReturn(.success(()))
         
-        given(playMediaUseCase.play())
+        given(playMediaUseCase.play(atTime: any()))
             .willReturn(.success(()))
         
         given(await playMediaUseCase.prepare(session: any()))
@@ -164,7 +164,7 @@ class LibraryItemViewModelTests: XCTestCase {
         let _ = await sut.viewModel.togglePlay()
         
         // Then
-        verify(sut.playMediaUseCase.play())
+        verify(sut.playMediaUseCase.togglePlay())
             .wasCalled(1)
     }
     
@@ -206,7 +206,7 @@ class LibraryItemViewModelTests: XCTestCase {
         // Then
         verify(await sut.playMediaUseCase.prepare(session: any()))
             .wasCalled(1)
-        verify(sut.playMediaUseCase.play())
+        verify(sut.playMediaUseCase.togglePlay())
             .wasCalled(1)
     }
 }

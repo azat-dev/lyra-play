@@ -72,7 +72,7 @@ class PausedPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
     
     // MARK: - Test Methods
     
-    func test_run() async throws {
+    func test_runPausing() async throws {
 
         // Given
         let mediaId = UUID()
@@ -91,7 +91,7 @@ class PausedPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
             .willReturn(())
         
         // When
-        let result = sut.controller.run()
+        let result = sut.controller.runPausing()
         
         // Then
         try AssertResultSucceded(result)

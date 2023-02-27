@@ -50,9 +50,9 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseCaseInput 
         return await currentStateController.prepare(params: params)
     }
     
-    public func play() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+    public func resume() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
-        return currentStateController.play()
+        return currentStateController.resume()
     }
     
     public func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
@@ -155,7 +155,7 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseStateContr
             delegate: self
         )
 
-        return controller.run()
+        return controller.runPausing()
     }
     
     public func didPause(controller: PausedPlayMediaWithSubtitlesUseStateController) {
@@ -164,20 +164,39 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseStateContr
         state.value = .activeSession(controller.session.params, .paused)
     }
     
-    public func play(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+    public func resumePlaying(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         let controller = PlayingPlayMediaWithSubtitlesUseStateController(
             session: session,
             delegate: self
         )
 
-        return controller.run()
+        return controller.resumeRunning()
     }
     
-    public func didStartPlay(controller: PlayingPlayMediaWithSubtitlesUseStateController) {
+    public func didResumePlaying(withController controller: PlayingPlayMediaWithSubtitlesUseStateController) {
         
         currentStateController = controller
         state.value = .activeSession(controller.session.params, .playing)
+    }
+    
+    public func play(
+        atTime: TimeInterval,
+        session: PlayMediaWithSubtitlesUseStateControllerActiveSession
+    ) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+        
+        let controller = PlayingPlayMediaWithSubtitlesUseStateController(
+            session: session,
+            delegate: self
+        )
+
+        return controller.run(atTime: atTime)
+    }
+    
+    public func didStartPlaying(withController: PlayingPlayMediaWithSubtitlesUseStateController) {
+        
+        currentStateController = withController
+        state.value = .activeSession(withController.session.params, .playing)
     }
     
     public func stop(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {

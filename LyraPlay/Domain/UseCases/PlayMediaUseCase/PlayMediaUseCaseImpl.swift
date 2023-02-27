@@ -9,6 +9,7 @@ import Foundation
 import Combine
 
 public class PlayMediaUseCaseImpl: PlayMediaUseCase, PlayMediaUseCaseStateControllerDelegate {
+    
 
     private struct CurrentState {
         
@@ -24,38 +25,23 @@ public class PlayMediaUseCaseImpl: PlayMediaUseCase, PlayMediaUseCaseStateContro
     } ()
     
     private lazy var currentStateController: PlayMediaUseCaseStateController = {
-        return initialStateFactory.make(delegate: self)
+        return InitialPlayMediaUseCaseStateController(delegate: self)
     } ()
     
-    let initialStateFactory: InitialPlayMediaUseCaseStateControllerFactory
-    let loadingStateFactory: LoadingPlayMediaUseCaseStateControllerFactory
-    let loadedStateFactory: LoadedPlayMediaUseCaseStateControllerFactory
-    let failedLoadStateFactory: FailedLoadPlayMediaUseCaseStateControllerFactory
-    let playingStateFactory: PlayingPlayMediaUseCaseStateControllerFactory
-    let pausedStateFactory: PausedPlayMediaUseCaseStateControllerFactory
-    let finishedStateFactory: FinishedPlayMediaUseCaseStateControllerFactory
     
     private var observers = Set<AnyCancellable>()
+    
+    private let loadTrackUseCaseFactory: LoadTrackUseCaseFactory
+    private let audioPlayerFactory: AudioPlayerFactory
     
     // MARK: - Initializers
     
     public init(
-        initialStateFactory: InitialPlayMediaUseCaseStateControllerFactory,
-        loadingStateFactory: LoadingPlayMediaUseCaseStateControllerFactory,
-        loadedStateFactory: LoadedPlayMediaUseCaseStateControllerFactory,
-        failedLoadStateFactory: FailedLoadPlayMediaUseCaseStateControllerFactory,
-        playingStateFactory: PlayingPlayMediaUseCaseStateControllerFactory,
-        pausedStateFactory: PausedPlayMediaUseCaseStateControllerFactory,
-        finishedStateFactory: FinishedPlayMediaUseCaseStateControllerFactory
+        loadTrackUseCaseFactory: LoadTrackUseCaseFactory,
+        audioPlayerFactory: AudioPlayerFactory
     ) {
-        
-        self.initialStateFactory = initialStateFactory
-        self.loadingStateFactory = loadingStateFactory
-        self.loadedStateFactory = loadedStateFactory
-        self.failedLoadStateFactory = failedLoadStateFactory
-        self.playingStateFactory = playingStateFactory
-        self.pausedStateFactory = pausedStateFactory
-        self.finishedStateFactory = finishedStateFactory
+        self.loadTrackUseCaseFactory = loadTrackUseCaseFactory
+        self.audioPlayerFactory = audioPlayerFactory
     }
 }
 
@@ -68,9 +54,9 @@ extension PlayMediaUseCaseImpl{
         return await currentStateController.prepare(mediaId: mediaId)
     }
     
-    public func play() -> Result<Void, PlayMediaUseCaseError> {
+    public func resume() -> Result<Void, PlayMediaUseCaseError> {
         
-        return currentStateController.play()
+        return currentStateController.resume()
     }
     
     public func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError> {
@@ -102,9 +88,11 @@ extension PlayMediaUseCaseImpl {
 
         state.value = .loading(mediaId: mediaId)
         
-        let controller = loadingStateFactory.make(
+        let controller = LoadingPlayMediaUseCaseStateController(
             mediaId: mediaId,
-            delegate: self
+            delegate: self,
+            loadTrackUseCaseFactory: loadTrackUseCaseFactory,
+            audioPlayerFactory: audioPlayerFactory
         )
         
         currentStateController = controller
@@ -116,7 +104,7 @@ extension PlayMediaUseCaseImpl {
         audioPlayer: AudioPlayer
     ) {
         
-        let controller = loadedStateFactory.make(
+        let controller = LoadedPlayMediaUseCaseStateController(
             mediaId: mediaId,
             audioPlayer: audioPlayer,
             delegate: self
@@ -136,13 +124,13 @@ extension PlayMediaUseCaseImpl {
     
     public func didStop() {
         
-        currentStateController = initialStateFactory.make(delegate: self)
+        currentStateController = InitialPlayMediaUseCaseStateController(delegate: self)
         state.value = .stopped
     }
     
     public func didFailLoad(mediaId: UUID) {
         
-        currentStateController = failedLoadStateFactory.make(
+        currentStateController = FailedLoadPlayMediaUseCaseStateController(
             mediaId: mediaId,
             delegate: self
         )
@@ -155,7 +143,7 @@ extension PlayMediaUseCaseImpl {
         audioPlayer: AudioPlayer
     ) {
         
-        currentStateController = finishedStateFactory.make(
+        currentStateController = FinishedPlayMediaUseCaseStateController(
             mediaId: mediaId,
             audioPlayer: audioPlayer,
             delegate: self
@@ -175,42 +163,19 @@ extension PlayMediaUseCaseImpl {
             return .failure(.internalError(nil))
         }
         
-        let controller = pausedStateFactory.make(
+        let controller = PausedPlayMediaUseCaseStateController(
             mediaId: mediaId,
             audioPlayer: audioPlayer,
             delegate: self
         )
 
-        return controller.run()
+        return controller.runPausing()
     }
     
-    public func didPause(
-        mediaId: UUID,
-        audioPlayer: AudioPlayer
-    ) {
-        
-        let controller = pausedStateFactory.make(
-            mediaId: mediaId,
-            audioPlayer: audioPlayer,
-            delegate: self
-        )
+    public func didPause(withController controller: PausedPlayMediaUseCaseStateController) {
         
         currentStateController = controller
-        state.value = .paused(mediaId: mediaId, time: 0)
-    }
-    
-    public func play(
-        mediaId: UUID,
-        audioPlayer: AudioPlayer
-    ) -> Result<Void, PlayMediaUseCaseError> {
-        
-        let newController = playingStateFactory.make(
-            mediaId: mediaId,
-            audioPlayer: audioPlayer,
-            delegate: self
-        )
-        
-        return newController.run()
+        state.value = .paused(mediaId: controller.mediaId, time: 0)
     }
     
     public func play(
@@ -219,28 +184,39 @@ extension PlayMediaUseCaseImpl {
         audioPlayer: AudioPlayer
     ) -> Result<Void, PlayMediaUseCaseError> {
         
-        let newController = playingStateFactory.make(
+        let newController = PlayingPlayMediaUseCaseStateController(
             mediaId: mediaId,
             audioPlayer: audioPlayer,
             delegate: self
         )
         
-        return newController.run(atTime: atTime)
+        return newController.runPlaying(atTime: atTime)
     }
     
-    public func didStartPlay(
+    public func didStartPlay(withController controller: PlayingPlayMediaUseCaseStateController) {
+        
+        currentStateController = controller
+        state.value = .playing(mediaId: controller.mediaId)
+    }
+    
+    public func resumePlaying(
         mediaId: UUID,
         audioPlayer: AudioPlayer
-    ) {
+    ) -> Result<Void, PlayMediaUseCaseError> {
         
-        let newController = playingStateFactory.make(
+        let newController = PlayingPlayMediaUseCaseStateController(
             mediaId: mediaId,
             audioPlayer: audioPlayer,
             delegate: self
         )
         
-        currentStateController = newController
-        state.value = .playing(mediaId: mediaId)
+        return newController.runResumePlaying()
+    }
+    
+    public func didResumePlaying(withController controller: PlayingPlayMediaUseCaseStateController) {
+        
+        currentStateController = controller
+        state.value = .playing(mediaId: controller.mediaId)
     }
 }
 

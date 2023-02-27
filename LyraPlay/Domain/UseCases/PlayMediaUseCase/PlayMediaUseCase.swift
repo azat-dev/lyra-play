@@ -31,9 +31,9 @@ public protocol PlayMediaUseCaseInput: AnyObject {
 
     func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError>
 
-    func play() -> Result<Void, PlayMediaUseCaseError>
-
     func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError>
+
+    func resume() -> Result<Void, PlayMediaUseCaseError>
 
     func pause() -> Result<Void, PlayMediaUseCaseError>
 

@@ -23,11 +23,13 @@ public protocol PlayMediaUseCaseStateControllerDelegate: AnyObject {
     
     func pause(mediaId: UUID, audioPlayer: AudioPlayer) -> Result<Void, PlayMediaUseCaseError>
     
-    func didPause(mediaId: UUID, audioPlayer: AudioPlayer)
+    func didPause(withController: PausedPlayMediaUseCaseStateController)
     
-    func play(mediaId: UUID, audioPlayer: AudioPlayer) -> Result<Void, PlayMediaUseCaseError>
+    func resumePlaying(mediaId: UUID, audioPlayer: AudioPlayer) -> Result<Void, PlayMediaUseCaseError>
     
     func play(atTime: TimeInterval, mediaId: UUID, audioPlayer: AudioPlayer) -> Result<Void, PlayMediaUseCaseError>
     
-    func didStartPlay(mediaId: UUID, audioPlayer: AudioPlayer)
+    func didStartPlay(withController: PlayingPlayMediaUseCaseStateController)
+    
+    func didResumePlaying(withController: PlayingPlayMediaUseCaseStateController)
 }

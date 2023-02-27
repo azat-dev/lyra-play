@@ -10,15 +10,11 @@ import AVFAudio
 
 public protocol AudioPlayerStateController {
     
-    // MARK: - Properties
-    
-    var currentState: AudioPlayerState { get }
-    
-    // MARK: - Methods
-    
     func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioPlayerError>
     
-    func play() -> Result<Void, AudioPlayerError>
+    func resume() -> Result<Void, AudioPlayerError>
+    
+    func play(atTime: TimeInterval) -> Result<Void, AudioPlayerError>
     
     func pause() -> Result<Void, AudioPlayerError>
     

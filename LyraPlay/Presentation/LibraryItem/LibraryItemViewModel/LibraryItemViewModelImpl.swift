@@ -124,7 +124,7 @@ extension LibraryItemViewModelImpl {
             return
         }
         
-        let _ = playMediaUseCase.play()
+        let _ = playMediaUseCase.play(atTime: 0)
     }
     
     public func togglePlay() async {

@@ -12,32 +12,47 @@ public class PausedAudioPlayerStateController: AudioPlayerStateController {
     
     // MARK: - Properties
     
-    private let session: ActiveAudioPlayerStateControllerSession
-    
-    public var currentState: AudioPlayerState
+    public let session: ActiveAudioPlayerStateControllerSession
+    public weak var delegate: AudioPlayerStateControllerDelegate?
     
     // MARK: - Initializers
     
-    public init(session: ActiveAudioPlayerStateControllerSession) {
+    public init(
+        session: ActiveAudioPlayerStateControllerSession,
+        delegate: AudioPlayerStateControllerDelegate
+    ) {
         
-        currentState = .playing(session: .init(fileId: session.fileId))
         self.session = session
+        self.delegate = delegate
     }
     
     // MARK: - Methods
     
     public func prepare(fileId: String, data: Data) -> Result<Void, AudioPlayerError> {
         
-        let newController = InitialAudioPlayerStateController(context: session.context)
-        session.context.setController(newController)
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
         
-        return newController.prepare(fileId: fileId, data: data)
+        return delegate.load(fileId: fileId, data: data)
     }
     
-    public func play() -> Result<Void, AudioPlayerError> {
+    public func resume() -> Result<Void, AudioPlayerError> {
         
-        let newController = LoadedAudioPlayerStateController(session: session)
-        return newController.play()
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.resumePlaying(session: session)
+    }
+    
+    public func play(atTime: TimeInterval) -> Result<Void, AudioPlayerError> {
+        
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.startPlaying(atTime: atTime, session: session)
     }
     
     public func pause() -> Result<Void, AudioPlayerError> {
@@ -45,14 +60,24 @@ public class PausedAudioPlayerStateController: AudioPlayerStateController {
     }
     
     public func toggle() -> Result<Void, AudioPlayerError> {
-        return play()
+        return resume()
     }
     
     public func stop() -> Result<Void, AudioPlayerError> {
         
-        let newController = StoppedAudioPlayerStateController(context: session.context)
-        session.context.setController(newController)
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
         
+        return delegate.stop(session: session)
+    }
+    
+    public func runPausing() -> Result<Void, AudioPlayerError> {
+        
+        session.systemPlayer.pause()
+        session.systemPlayer.delegate = nil
+        
+        delegate?.didPause(withController: self)
         return .success(())
     }
 }

@@ -29,12 +29,12 @@ class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
         given(audioPlayer.state)
             .willReturn(audioPlayeState)
         
-        given(audioPlayer.play())
+        given(audioPlayer.play(atTime: any()))
             .willReturn(.success(()))
         
         let delegate = mock(PlayMediaUseCaseStateControllerDelegate.self)
         
-        let controller = PlayingPlayMediaUseCaseStateControllerImpl(
+        let controller = PlayingPlayMediaUseCaseStateController(
             mediaId: mediaId,
             audioPlayer: audioPlayer,
             delegate: delegate
@@ -100,22 +100,19 @@ class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
         let loadedMediaId = UUID()
         let sut = createSUT(mediaId: loadedMediaId)
         
-        given(sut.audioPlayer.play())
+        given(sut.audioPlayer.play(atTime: 0))
             .willReturn(.success(()))
         
         // When
-        let result = sut.controller.run()
+        let result = sut.controller.runPlaying(atTime: 0)
 
         // Then
         try AssertResultSucceded(result)
         verify(
-            sut.delegate.didStartPlay(
-                mediaId: loadedMediaId,
-                audioPlayer: sut.audioPlayer
-            )
+            sut.delegate.didStartPlay(withController: any())
         ).wasCalled(1)
         
-        verify(sut.audioPlayer.play())
+        verify(sut.audioPlayer.play(atTime: 0))
             .wasCalled(1)
     }
 }

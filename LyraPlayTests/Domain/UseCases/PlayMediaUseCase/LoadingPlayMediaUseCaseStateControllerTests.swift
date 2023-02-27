@@ -38,7 +38,7 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
         
         let delegate = mock(PlayMediaUseCaseStateControllerDelegate.self)
         
-        let controller = LoadingPlayMediaUseCaseStateControllerImpl(
+        let controller = LoadingPlayMediaUseCaseStateController(
             mediaId: mediaId,
             delegate: delegate,
             loadTrackUseCaseFactory: loadTrackUseCaseFactory,

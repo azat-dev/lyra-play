@@ -16,10 +16,6 @@ public final class PlaySubtitlesUseCaseImpl: PlaySubtitlesUseCase {
 
     public weak var delegate: PlaySubtitlesUseCaseDelegate?
     
-    public var willChangePosition: PassthroughSubject<WillChangeSubtitlesPositionData, Never> {
-        fatalError()
-    }
-    
     private let subtitlesIterator: SubtitlesIterator
 
     private let schedulerFactory: TimelineSchedulerFactory
@@ -79,9 +75,9 @@ extension PlaySubtitlesUseCaseImpl {
         scheduler.execute(from: fromTime)
     }
     
-    public func play() -> Void {
+    public func resume() -> Void {
 
-        scheduler.execute(from: 0)
+        scheduler.resume()
     }
     
     public func pause() -> Void {

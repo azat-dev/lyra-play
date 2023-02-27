@@ -12,16 +12,13 @@ public class InitialAudioPlayerStateController: NSObject, AudioPlayerStateContro
     
     // MARK: - Properties
     
-    private unowned var context: AudioPlayerStateControllerContext
-    
-    public let currentState: AudioPlayerState
+    private weak var delegate: AudioPlayerStateControllerDelegate?
     
     // MARK: - Initializers
     
-    public init(context: AudioPlayerStateControllerContext) {
+    public init(delegate: AudioPlayerStateControllerDelegate) {
         
-        self.currentState = .initial
-        self.context = context
+        self.delegate = delegate
     }
     
     // MARK: - Methods
@@ -30,34 +27,19 @@ public class InitialAudioPlayerStateController: NSObject, AudioPlayerStateContro
         fileId: String,
         data trackData: Data
     ) -> Result<Void, AudioPlayerError> {
-        
-        do {
-            
-            let systemPlayer = try AVAudioPlayer(data: trackData)
-            systemPlayer.delegate = self
-            
-            systemPlayer.prepareToPlay()
-            
-            let newController = LoadedAudioPlayerStateController(
-                session: .init(
-                    fileId: fileId,
-                    systemPlayer: systemPlayer,
-                    context: context
-                )
-            )
-            
-            context.setController(newController)
-            
-        } catch {
-            
-            print("*** Unable to set up the audio player: \(error.localizedDescription) ***")
-            return .failure(.internalError(error))
+
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
         }
         
-        return .success(())
+        return delegate.load(fileId: fileId, data: trackData)
     }
     
-    public func play() -> Result<Void, AudioPlayerError> {
+    public func resume() -> Result<Void, AudioPlayerError> {
+        return .failure(.noActiveFile)
+    }
+    
+    public func play(atTime: TimeInterval) -> Result<Void, AudioPlayerError> {
         return .failure(.noActiveFile)
     }
     

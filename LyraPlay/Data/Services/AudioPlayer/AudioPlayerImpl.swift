@@ -11,7 +11,7 @@ import AVFoundation
 import MediaPlayer
 
 
-public final class AudioPlayerImpl: NSObject, AudioPlayer, AudioPlayerStateControllerContext {
+public final class AudioPlayerImpl: NSObject, AudioPlayer {
 
     // MARK: - Properties
 
@@ -21,7 +21,7 @@ public final class AudioPlayerImpl: NSObject, AudioPlayer, AudioPlayerStateContr
     
     private lazy var currentStateController: AudioPlayerStateController = {
         
-        InitialAudioPlayerStateController(context: self)
+        InitialAudioPlayerStateController(delegate: self)
     } ()
     
     // MARK: - Initializers
@@ -29,12 +29,6 @@ public final class AudioPlayerImpl: NSObject, AudioPlayer, AudioPlayerStateContr
     public init(audioSession: AudioSession) {
         
         self.audioSession = audioSession
-    }
-    
-    public func setController(_ currenStateController: AudioPlayerStateController) {
-        
-        self.currentStateController = currenStateController
-        state.value = currenStateController.currentState
     }
     
     public func activateAudioSession() {
@@ -49,13 +43,13 @@ public final class AudioPlayerImpl: NSObject, AudioPlayer, AudioPlayerStateContr
         return currentStateController.prepare(fileId: fileId, data: data)
     }
     
-    public func play() -> Result<Void, AudioPlayerError> {
-        return currentStateController.play()
+    public func resume() -> Result<Void, AudioPlayerError> {
+        return currentStateController.resume()
     }
     
     public func play(atTime: TimeInterval) -> Result<Void, AudioPlayerError> {
         
-        fatalError("Implement")
+        return currentStateController.play(atTime: atTime)
     }
     
     public func playAndWaitForEnd() async -> Result<Void, AudioPlayerError> {
@@ -111,7 +105,7 @@ public final class AudioPlayerImpl: NSObject, AudioPlayer, AudioPlayerStateContr
                 subscription.cancel()
             }
 
-            let result = play()
+            let result = play(atTime: 0)
             
             guard case .success = result else {
                 subscription.cancel()
@@ -127,5 +121,120 @@ public final class AudioPlayerImpl: NSObject, AudioPlayer, AudioPlayerStateContr
     
     public func stop() -> Result<Void, AudioPlayerError> {
         return currentStateController.stop()
+    }
+}
+
+extension AudioPlayerImpl: AudioPlayerStateControllerDelegate {
+    
+    public func load(fileId: String, data: Data) -> Result<Void, AudioPlayerError> {
+        
+        let controller = LoadingAudioPlayerStateController(
+            fileId: fileId,
+            data: data,
+            delegate: self
+        )
+        
+        return controller.runLoading()
+    }
+    
+    public func didLoad(session: ActiveAudioPlayerStateControllerSession) {
+        
+        currentStateController = LoadedAudioPlayerStateController(
+            session: session,
+            delegate: self
+        )
+
+        state.value = .loaded(session: session.map())
+    }
+    
+    public func stop(session: ActiveAudioPlayerStateControllerSession) -> Result<Void, AudioPlayerError> {
+        
+        let controller = StoppedAudioPlayerStateController(
+            session: session.map(),
+            delegate: self
+        )
+
+        return controller.runStopping(activeSession: session)
+    }
+    
+    public func didStop(withController controller: StoppedAudioPlayerStateController) {
+        
+        deactivateAudioSession()
+        currentStateController = controller
+        state.value = .stopped
+    }
+    
+    public func resumePlaying(session: ActiveAudioPlayerStateControllerSession) -> Result<Void, AudioPlayerError> {
+        
+        let controller = PlayingAudioPlayerStateController(
+            session: session,
+            delegate: self
+        )
+        
+        return controller.runResumePlaying()
+    }
+    
+    public func didResumePlaying(withController controller: PlayingAudioPlayerStateController) {
+        
+        
+        activateAudioSession()
+        currentStateController = controller
+        
+        state.value = .playing(session: controller.session.map())
+    }
+    
+    public func pause(session: ActiveAudioPlayerStateControllerSession) -> Result<Void, AudioPlayerError> {
+        
+        let controller = PausedAudioPlayerStateController(
+            session: session,
+            delegate: self
+        )
+        
+        return controller.runPausing()
+    }
+    
+    public func didPause(withController controller: PausedAudioPlayerStateController) {
+        
+        deactivateAudioSession()
+        currentStateController = controller
+        
+        state.value = .paused(session: controller.session.map(), time: 0)
+    }
+    
+    public func startPlaying(atTime: TimeInterval, session: ActiveAudioPlayerStateControllerSession) -> Result<Void, AudioPlayerError> {
+        
+        let controller = PlayingAudioPlayerStateController(
+            session: session,
+            delegate: self
+        )
+        
+        return controller.runPlaying(atTime: atTime)
+    }
+    
+    public func didStartPlaying(withController controller: PlayingAudioPlayerStateController) {
+        
+        activateAudioSession()
+        currentStateController = controller
+        
+        state.value = .playing(session: controller.session.map())
+    }
+    
+    public func didFinishPlaying(session: ActiveAudioPlayerStateControllerSession) {
+        
+        deactivateAudioSession()
+        currentStateController = FinishedAudioPlayerStateController(
+            session: session,
+            delegate: self
+        )
+        
+        state.value = .finished(session: session.map())
+    }
+}
+
+extension ActiveAudioPlayerStateControllerSession {
+    
+    func map() -> AudioPlayerSession {
+        
+        return .init(fileId: fileId)
     }
 }

@@ -51,7 +51,7 @@ class AudioPlayerTests: XCTestCase {
         try AssertResultSucceded(prepareResult1)
         
         // When
-        let result1 = audioPlayer.play()
+        let result1 = audioPlayer.play(atTime: 0)
         
         // Then
         try AssertResultSucceded(result1)
@@ -61,7 +61,7 @@ class AudioPlayerTests: XCTestCase {
         let prepareResult2 = audioPlayer.prepare(fileId: fileId2, data: shortData)
         try AssertResultSucceded(prepareResult2)
         
-        let result2 = audioPlayer.play()
+        let result2 = audioPlayer.play(atTime: 0)
         try AssertResultSucceded(result2)
         
         sleep(1)

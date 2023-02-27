@@ -11,33 +11,19 @@ public final class PlayMediaUseCaseImplFactory: PlayMediaUseCaseFactory {
     
     // MARK: - Properties
     
-    private let initialStateFactory: InitialPlayMediaUseCaseStateControllerFactory
-    private let loadingStateFactory: LoadingPlayMediaUseCaseStateControllerFactory
-    private let loadedStateFactory: LoadedPlayMediaUseCaseStateControllerFactory
-    private let failedLoadStateFactory: FailedLoadPlayMediaUseCaseStateControllerFactory
-    private let playingStateFactory: PlayingPlayMediaUseCaseStateControllerFactory
-    private let pausedStateFactory: PausedPlayMediaUseCaseStateControllerFactory
-    private let finishedStateFactory: FinishedPlayMediaUseCaseStateControllerFactory
+    private let loadTrackUseCaseFactory: LoadTrackUseCaseFactory
+    private let audioPlayerFactory: AudioPlayerFactory
+    
     
     // MARK: - Initializers
     
     public init(
-        initialStateFactory: InitialPlayMediaUseCaseStateControllerFactory,
-        loadingStateFactory: LoadingPlayMediaUseCaseStateControllerFactory,
-        loadedStateFactory: LoadedPlayMediaUseCaseStateControllerFactory,
-        failedLoadStateFactory: FailedLoadPlayMediaUseCaseStateControllerFactory,
-        playingStateFactory: PlayingPlayMediaUseCaseStateControllerFactory,
-        pausedStateFactory: PausedPlayMediaUseCaseStateControllerFactory,
-        finishedStateFactory: FinishedPlayMediaUseCaseStateControllerFactory
+        loadTrackUseCaseFactory: LoadTrackUseCaseFactory,
+        audioPlayerFactory: AudioPlayerFactory
     ) {
-        
-        self.initialStateFactory = initialStateFactory
-        self.loadingStateFactory = loadingStateFactory
-        self.loadedStateFactory = loadedStateFactory
-        self.failedLoadStateFactory = failedLoadStateFactory
-        self.playingStateFactory = playingStateFactory
-        self.pausedStateFactory = pausedStateFactory
-        self.finishedStateFactory = finishedStateFactory
+
+        self.loadTrackUseCaseFactory = loadTrackUseCaseFactory
+        self.audioPlayerFactory = audioPlayerFactory
     }
 
     // MARK: - Methods
@@ -45,13 +31,8 @@ public final class PlayMediaUseCaseImplFactory: PlayMediaUseCaseFactory {
     public func make() -> PlayMediaUseCase {
         
         return PlayMediaUseCaseImpl(
-            initialStateFactory: initialStateFactory,
-            loadingStateFactory: loadingStateFactory,
-            loadedStateFactory: loadedStateFactory,
-            failedLoadStateFactory: failedLoadStateFactory,
-            playingStateFactory: playingStateFactory,
-            pausedStateFactory: pausedStateFactory,
-            finishedStateFactory: finishedStateFactory
+            loadTrackUseCaseFactory: loadTrackUseCaseFactory,
+            audioPlayerFactory: audioPlayerFactory
         )
     }
 }

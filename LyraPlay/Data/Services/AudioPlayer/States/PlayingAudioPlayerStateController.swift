@@ -8,47 +8,56 @@
 import Foundation
 import AVFAudio
 
-public class PlayingAudioPlayerStateController: NSObject, AudioPlayerStateController, AVAudioPlayerDelegate {
+public class PlayingAudioPlayerStateController: NSObject, AVAudioPlayerDelegate, AudioPlayerStateController {
     
+
     // MARK: - Properties
     
-    private let session: ActiveAudioPlayerStateControllerSession
-
-    public let currentState: AudioPlayerState
+    public let session: ActiveAudioPlayerStateControllerSession
+    public weak var delegate: AudioPlayerStateControllerDelegate?
     
     // MARK: - Initializers
     
-    
-    public init(session: ActiveAudioPlayerStateControllerSession) {
-       
-        currentState = .playing(session: .init(fileId: session.fileId))
+    public init(
+        session: ActiveAudioPlayerStateControllerSession,
+        delegate: AudioPlayerStateControllerDelegate
+    ) {
+        
         self.session = session
+        self.delegate = delegate
     }
     
     // MARK: - Methods
-
-    public func prepare(fileId: String, data: Data) -> Result<Void, AudioPlayerError> {
-
-        let newController = InitialAudioPlayerStateController(context: session.context)
-        session.context.setController(newController)
+    
+    public func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioPlayerError> {
         
-        return newController.prepare(fileId: fileId, data: data)
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.load(fileId: fileId, data: trackData)
+    }
+
+    public func resume() -> Result<Void, AudioPlayerError> {
+        return .success(())
     }
     
-    public func play() -> Result<Void, AudioPlayerError> {
-        return .success(())
+    public func play(atTime: TimeInterval) -> Result<Void, AudioPlayerError> {
+        
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.startPlaying(atTime: atTime, session: session)
     }
     
     public func pause() -> Result<Void, AudioPlayerError> {
         
-        session.systemPlayer.pause()
-        session.context.deactivateAudioSession()
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
         
-        session.systemPlayer.delegate = nil
-        let newController = PausedAudioPlayerStateController(session: session)
-        session.context.setController(newController)
-        
-        return .success(())
+        return delegate.pause(session: session)
     }
     
     public func toggle() -> Result<Void, AudioPlayerError> {
@@ -57,15 +66,41 @@ public class PlayingAudioPlayerStateController: NSObject, AudioPlayerStateContro
     
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         
-        let newController = FinishedAudioPlayerStateController(session: session)
-        session.context.setController(newController)
+        delegate?.didFinishPlaying(session: session)
     }
     
     public func stop() -> Result<Void, AudioPlayerError> {
         
-        let newController = StoppedAudioPlayerStateController(context: session.context)
-        session.context.setController(newController)
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
         
+        return delegate.stop(session: session)
+    }
+    
+    public func runResumePlaying() -> Result<Void, AudioPlayerError>  {
+        
+        session.systemPlayer.delegate = self
+        
+        guard session.systemPlayer.play() else {
+            session.systemPlayer.delegate = nil
+            return .failure(.internalError(nil))
+        }
+        
+        delegate?.didResumePlaying(withController: self)
+        return .success(())
+    }
+    
+    public func runPlaying(atTime: TimeInterval) -> Result<Void, AudioPlayerError>  {
+        
+        session.systemPlayer.delegate = self
+        
+        guard session.systemPlayer.play(atTime: atTime) else {
+            session.systemPlayer.delegate = nil
+            return .failure(.internalError(nil))
+        }
+        
+        delegate?.didStartPlaying(withController: self)
         return .success(())
     }
 }

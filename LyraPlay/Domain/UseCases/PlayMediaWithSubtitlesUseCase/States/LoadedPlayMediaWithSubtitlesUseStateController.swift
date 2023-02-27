@@ -36,17 +36,18 @@ public class LoadedPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubtit
         return await delegate.load(params: params)
     }
     
-    public func play() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+    public func resume() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+        
+        return play(atTime: 0)
+    }
+    
+    public func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         guard let delegate = delegate else {
             return .failure(.internalError(nil))
         }
         
-        return delegate.play(session: session)
-    }
-    
-    public func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
-        fatalError()
+        return delegate.play(atTime: atTime, session: session)
     }
     
     public func pause() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
@@ -64,6 +65,6 @@ public class LoadedPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubtit
     
     public func togglePlay() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
-        return play()
+        return resume()
     }
 }

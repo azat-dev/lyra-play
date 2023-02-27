@@ -1,13 +1,13 @@
 //
-//  LoadedPlayMediaUseCaseStateController.swift
+//  PlayingPlayMediaUseCaseStateController.swift
 //  LyraPlay
 //
-//  Created by Azat Kaiumov on 14.02.23.
+//  Created by Azat Kaiumov on 15.02.23.
 //
 
 import Foundation
 
-public class LoadedPlayMediaUseCaseStateControllerImpl: LoadedPlayMediaUseCaseStateController {
+public class PausedPlayMediaUseCaseStateController: PlayMediaUseCaseStateController {
     
     // MARK: - Properties
     
@@ -16,7 +16,7 @@ public class LoadedPlayMediaUseCaseStateControllerImpl: LoadedPlayMediaUseCaseSt
     public weak var delegate: PlayMediaUseCaseStateControllerDelegate?
     
     // MARK: - Initializers
-
+    
     public init(
         mediaId: UUID,
         audioPlayer: AudioPlayer,
@@ -39,39 +39,55 @@ public class LoadedPlayMediaUseCaseStateControllerImpl: LoadedPlayMediaUseCaseSt
         return await delegate.load(mediaId: mediaId)
     }
     
-    public func play() -> Result<Void, PlayMediaUseCaseError> {
-        
-        guard let delegate = delegate else {
-            return .failure(.internalError(nil))
-        }
-        
-        return delegate.play(
-            mediaId: mediaId,
-            audioPlayer: audioPlayer
-        )
-    }
-    
-    public func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError> {
-        fatalError()
-    }
-    
-    public func pause() -> Result<Void, PlayMediaUseCaseError> {
-        return .failure(.noActiveTrack)
-    }
-    
     public func stop() -> Result<Void, PlayMediaUseCaseError> {
         
         guard let delegate = delegate else {
             return .failure(.internalError(nil))
         }
         
-        return delegate.stop(
+        
+        return delegate.stop(mediaId: mediaId, audioPlayer: audioPlayer)
+    }
+    
+    public func resume() -> Result<Void, PlayMediaUseCaseError> {
+        
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.resumePlaying(
             mediaId: mediaId,
             audioPlayer: audioPlayer
         )
     }
     
+    public func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError> {
+        
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.play(
+            atTime: atTime,
+            mediaId: mediaId,
+            audioPlayer: audioPlayer
+        )
+    }
+    
+    public func pause() -> Result<Void, PlayMediaUseCaseError> {
+        
+        return .success(())
+    }
+    
     public func togglePlay() -> Result<Void, PlayMediaUseCaseError> {
-        return play()
+        return resume()
+    }
+    
+    public func runPausing() -> Result<Void, PlayMediaUseCaseError> {
+        
+        let result = audioPlayer.pause()
+        
+        delegate?.didPause(withController: self)
+        return result.mapResult()
     }
 }

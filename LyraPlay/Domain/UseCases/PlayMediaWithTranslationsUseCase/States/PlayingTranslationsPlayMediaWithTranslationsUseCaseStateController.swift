@@ -52,13 +52,17 @@ public final class PlayingTranslationsPlayMediaWithTranslationsUseCaseStateContr
         return await delegate.load(session: session)
     }
     
-    public func play() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+    public func resume() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         return .success(())
     }
     
     public func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        return .success(())
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.play(atTime: atTime, session: session)
     }
     
     public func stop() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
