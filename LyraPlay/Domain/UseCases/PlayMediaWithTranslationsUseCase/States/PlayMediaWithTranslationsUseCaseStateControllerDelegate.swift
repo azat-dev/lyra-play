@@ -51,4 +51,6 @@ public protocol PlayMediaWithTranslationsUseCaseStateControllerDelegate: AnyObje
     func didStop()
     
     func didPronounce(session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession)
+    
+    func didFinish(session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession)
 }

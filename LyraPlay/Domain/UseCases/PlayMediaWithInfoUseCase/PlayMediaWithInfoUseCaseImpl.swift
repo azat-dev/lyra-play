@@ -15,7 +15,9 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
     private let playMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCase
     private let showMediaInfoUseCaseFactory: ShowMediaInfoUseCaseFactory
     
-    public var state = PublisherWithSession<PlayMediaWithInfoUseCaseState, Never>(.noActiveSession)
+    public let state = CurrentValueSubject<PlayMediaWithInfoUseCaseState, Never>(.noActiveSession)
+    public let subtitlesState: CurrentValueSubject<SubtitlesState?, Never>
+    public let pronounceTranslationsState: CurrentValueSubject<PronounceTranslationsUseCaseState?, Never>
     
     private var currentMediaInfo: MediaInfo?
     private var currentSession: PlayMediaWithInfoSession?
@@ -30,6 +32,9 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
     ) {
         self.playMediaWithTranslationsUseCase = playMediaWithTranslationsUseCaseFactory.make()
         self.showMediaInfoUseCaseFactory = showMediaInfoUseCaseFactory
+        
+        self.subtitlesState = playMediaWithTranslationsUseCase.subtitlesState
+        self.pronounceTranslationsState = playMediaWithTranslationsUseCase.pronounceTranslationsState
     }
     
     public func prepare(session: PlayMediaWithInfoSession) async -> Result<Void, PlayMediaWithInfoUseCaseError> {
@@ -37,23 +42,38 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
     }
     
     public func play() -> Result<Void, PlayMediaWithInfoUseCaseError> {
-        return .success(())
+        
+        return playMediaWithTranslationsUseCase
+            .play()
+            .mapResult()
     }
     
     public func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithInfoUseCaseError> {
-        return .success(())
+        
+        return playMediaWithTranslationsUseCase
+            .play(atTime: atTime)
+            .mapResult()
     }
     
     public func pause() -> Result<Void, PlayMediaWithInfoUseCaseError> {
-        return .success(())
+        
+        return playMediaWithTranslationsUseCase
+            .pause()
+            .mapResult()
     }
     
     public func stop() -> Result<Void, PlayMediaWithInfoUseCaseError> {
-        return .success(())
+        
+        return playMediaWithTranslationsUseCase
+            .stop()
+            .mapResult()
     }
     
     public func togglePlay() -> Result<Void, PlayMediaWithInfoUseCaseError> {
-        return .success(())
+        
+        return playMediaWithTranslationsUseCase
+            .togglePlay()
+            .mapResult()
     }
 }
 
@@ -123,5 +143,18 @@ extension PlayMediaWithTranslationsUseCasePlayerState {
         case .loading, .loaded, .loadFailed:
             fatalError()
         }
+    }
+}
+
+extension Result where Failure == PlayMediaWithTranslationsUseCaseError {
+
+    
+    func mapResult() -> Result<Success, PlayMediaWithInfoUseCaseError> {
+        
+        guard case .success(let value) = self else {
+            return .failure(self.error!.map())
+        }
+        
+        return .success(value)
     }
 }

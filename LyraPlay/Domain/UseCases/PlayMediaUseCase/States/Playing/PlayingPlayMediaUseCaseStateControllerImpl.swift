@@ -88,4 +88,20 @@ public class PlayingPlayMediaUseCaseStateControllerImpl: LoadedPlayMediaUseCaseS
         
         return .success(())
     }
+    
+    public func run(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError> {
+        
+        let result = audioPlayer.play(atTime: atTime)
+        
+        guard case .success = result else {
+            return result.mapResult()
+        }
+        
+        delegate?.didStartPlay(
+            mediaId: mediaId,
+            audioPlayer: audioPlayer
+        )
+        
+        return .success(())
+    }
 }

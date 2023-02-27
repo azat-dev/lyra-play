@@ -34,7 +34,7 @@ public final class CurrentPlayerStateViewModelImpl: CurrentPlayerStateViewModel 
     
     private func observePlayerState(playMediaUseCase: PlayMediaWithInfoUseCase) {
 
-        playMediaUseCase.state.publisher
+        playMediaUseCase.state
             .sink { [weak self] state in self?.updateState(state) }
             .store(in: &observers)
     }

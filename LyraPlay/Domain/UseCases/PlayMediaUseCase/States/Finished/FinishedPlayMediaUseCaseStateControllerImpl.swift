@@ -7,9 +7,22 @@
 
 import Foundation
 
-public class FinishedPlayMediaUseCaseStateControllerImpl: PausedPlayMediaUseCaseStateControllerImpl, FinishedPlayMediaUseCaseStateController {
+public final class FinishedPlayMediaUseCaseStateControllerImpl: PausedPlayMediaUseCaseStateControllerImpl, FinishedPlayMediaUseCaseStateController {
     
     public override func play() -> Result<Void, PlayMediaUseCaseError> {
-        return super.play(atTime: 0)
+        
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.play(
+            atTime: 0,
+            mediaId: mediaId,
+            audioPlayer: audioPlayer
+        )
+    }
+    
+    public override func togglePlay() -> Result<Void, PlayMediaUseCaseError> {
+        return play()
     }
 }
