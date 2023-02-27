@@ -54,7 +54,16 @@ public class PlayingPlayMediaUseCaseStateController: LoadedPlayMediaUseCaseState
     }
     
     public override func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError> {
-        fatalError()
+        
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.play(
+            atTime: atTime,
+            mediaId: mediaId,
+            audioPlayer: audioPlayer
+        )
     }
     
     public override func pause() -> Result<Void, PlayMediaUseCaseError> {
