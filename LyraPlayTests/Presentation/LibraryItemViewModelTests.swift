@@ -8,6 +8,7 @@
 import Foundation
 import XCTest
 import Mockingbird
+import Combine
 import LyraPlay
 
 class LibraryItemViewModelTests: XCTestCase {
@@ -17,7 +18,7 @@ class LibraryItemViewModelTests: XCTestCase {
         delegate: LibraryItemViewModelDelegateMock,
         showMediaInfoUseCase: ShowMediaInfoUseCaseMock,
         playMediaUseCase: PlayMediaWithInfoUseCaseMock,
-        playerState: PublisherWithSession<PlayMediaWithInfoUseCaseState, Never>
+        playerState: CurrentValueSubject<PlayMediaWithInfoUseCaseState, Never>
     )
     
     func createSUT(mediaId: UUID) async -> SUT {
@@ -35,7 +36,7 @@ class LibraryItemViewModelTests: XCTestCase {
         given(await playMediaUseCase.prepare(session: any()))
             .willReturn(.success(()))
         
-        let playerState = PublisherWithSession<PlayMediaWithInfoUseCaseState, Never>(.noActiveSession)
+        let playerState = CurrentValueSubject<PlayMediaWithInfoUseCaseState, Never>(.noActiveSession)
         
         given(playMediaUseCase.state)
             .willReturn(playerState)
@@ -109,7 +110,7 @@ class LibraryItemViewModelTests: XCTestCase {
                 learningLanguage: "",
                 nativeLanguage: ""
             ),
-            .loaded(.playing, nil, mediaInfo)
+            .loaded(.playing, mediaInfo)
         )
     }
     

@@ -55,7 +55,7 @@ public final class CurrentPlayerStateViewModelImpl: CurrentPlayerStateViewModel 
         case .loadFailed:
             self.state.value = .notActive
             
-        case .loaded(let playerState, _, let mediaInfo):
+        case .loaded(let playerState, let mediaInfo):
             self.state.value = .active(mediaInfo: mediaInfo, state: playerState.map())
         }
     }
@@ -72,7 +72,7 @@ extension CurrentPlayerStateViewModelImpl {
 
     public func togglePlay() {
 
-        playMediaUseCase.togglePlay()
+        let _ = playMediaUseCase.togglePlay()
     }
 }
 

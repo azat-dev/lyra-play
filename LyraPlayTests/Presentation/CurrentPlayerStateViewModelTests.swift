@@ -8,6 +8,7 @@
 import Foundation
 import XCTest
 import Mockingbird
+import Combine
 import LyraPlay
 
 class CurrentPlayerStateViewModelTests: XCTestCase {
@@ -17,7 +18,7 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         delegate: CurrentPlayerStateViewModelDelegateMock,
         playMediaUseCase: PlayMediaWithInfoUseCaseMock,
         showMediaInfoUseCase: ShowMediaInfoUseCaseMock,
-        playerState: PublisherWithSession<PlayMediaWithInfoUseCaseState, Never>
+        playerState: CurrentValueSubject<PlayMediaWithInfoUseCaseState, Never>
     )
 
     // MARK: - Methods
@@ -34,7 +35,7 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         
         let playMediaUseCase = mock(PlayMediaWithInfoUseCase.self)
         
-        let state = PublisherWithSession<PlayMediaWithInfoUseCaseState, Never>(.noActiveSession)
+        let state = CurrentValueSubject<PlayMediaWithInfoUseCaseState, Never>(.noActiveSession)
         
         given(playMediaUseCase.state)
             .willReturn(state)
@@ -81,7 +82,7 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         // When
         sut.playerState.value = .activeSession(
             .init(mediaId: mediaId, learningLanguage: "", nativeLanguage: ""),
-            .loaded(.playing, nil, mediaInfo)
+            .loaded(.playing, mediaInfo)
         )
 
         // Then
@@ -120,7 +121,7 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         // When
         sut.playerState.value = .activeSession(
             .init(mediaId: mediaId, learningLanguage: "", nativeLanguage: ""),
-            .loaded(.paused, nil, mediaInfo)
+            .loaded(.paused, mediaInfo)
         )
 
         // Then
