@@ -9,8 +9,13 @@ import Foundation
 
 public class FinishedPlayMediaWithSubtitlesUseStateController: PausedPlayMediaWithSubtitlesUseStateController {
     
-    public override func play() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+    public override func resume() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         return super.play(atTime: 0)
-    }    
+    }
+    
+    public override func togglePlay() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
+        
+        return super.resume()
+    }
 }

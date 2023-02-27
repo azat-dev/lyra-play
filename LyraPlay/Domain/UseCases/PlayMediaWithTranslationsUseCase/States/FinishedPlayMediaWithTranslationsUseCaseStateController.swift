@@ -9,7 +9,7 @@ import Foundation
 
 public final class FinishedPlayMediaWithTranslationsUseCaseStateController: PausedPlayMediaWithTranslationsUseCaseStateController {
     
-    public override func play() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+    public override func resume() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         guard let delegate = delegate else {
             return .failure(.internalError(nil))
@@ -20,6 +20,6 @@ public final class FinishedPlayMediaWithTranslationsUseCaseStateController: Paus
     
     public override func togglePlay() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        return play()
+        return resume()
     }
 }

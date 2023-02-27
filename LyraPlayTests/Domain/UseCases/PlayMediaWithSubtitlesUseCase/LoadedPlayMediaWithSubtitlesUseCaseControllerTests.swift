@@ -74,11 +74,11 @@ class LoadedPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         
         let sut = createSUT(params: params)
         
-        given(sut.delegate.play(session: any()))
+        given(sut.delegate.play(atTime: 0, session: any()))
             .willReturn(.success(()))
         
         // When
-        let result = sut.controller.play()
+        let result = sut.controller.play(atTime: 0)
         
         // Then
         try AssertResultSucceded(result)
@@ -88,6 +88,7 @@ class LoadedPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         
         verify(
             sut.delegate.play(
+                atTime: 0,
                 session: any(
                     PlayMediaWithSubtitlesUseStateControllerActiveSession.self,
                     where: { [weak playSubtitlesUseCase, weak playMediaUseCase] lhs in

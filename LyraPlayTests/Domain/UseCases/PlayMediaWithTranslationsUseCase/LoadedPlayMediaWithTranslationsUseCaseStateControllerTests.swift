@@ -58,17 +58,17 @@ class LoadedPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
         
         let sut = createSUT()
         
-        given(sut.delegate.play(session: any()))
+        given(sut.delegate.play(atTime: 0, session: any()))
             .willReturn(.success(()))
         
         // When
-        let result = sut.controller.play()
+        let result = sut.controller.play(atTime: 0)
         
         // Then
         try AssertResultSucceded(result)
         
         verify(
-            sut.delegate.play(session: any())
+            sut.delegate.play(atTime: 0, session: any())
         ).wasCalled(1)
     }
     

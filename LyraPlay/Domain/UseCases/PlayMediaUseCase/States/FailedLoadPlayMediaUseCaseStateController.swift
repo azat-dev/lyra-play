@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class FailedLoadPlayMediaUseCaseStateControllerImpl: InitialPlayMediaUseCaseStateControllerImpl, FailedLoadPlayMediaUseCaseStateController {
+public class FailedLoadPlayMediaUseCaseStateController: InitialPlayMediaUseCaseStateController {
     
     // MARK: - Properties
     

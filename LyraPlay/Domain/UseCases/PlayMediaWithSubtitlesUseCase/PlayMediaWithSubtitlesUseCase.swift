@@ -43,7 +43,7 @@ public protocol PlayMediaWithSubtitlesUseCaseInput: AnyObject {
 
     func prepare(params: PlayMediaWithSubtitlesSessionParams) async -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
 
-    func play() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
+    func resume() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
 
     func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
 

@@ -72,10 +72,10 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
         return .success(())
     }
     
-    public func play() -> Result<Void, PlayMediaWithInfoUseCaseError> {
+    public func resume() -> Result<Void, PlayMediaWithInfoUseCaseError> {
         
         return playMediaWithTranslationsUseCase
-            .play()
+            .resume()
             .mapResult()
     }
     

@@ -46,7 +46,7 @@ public final class LoadingPlayMediaWithTranslationsUseCaseStateController: PlayM
         return await delegate.load(session: session)
     }
     
-    public func play() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+    public func resume() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         return .failure(.noActiveMedia)
     }

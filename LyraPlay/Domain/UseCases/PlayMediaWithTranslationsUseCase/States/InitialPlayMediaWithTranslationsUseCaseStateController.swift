@@ -32,7 +32,7 @@ public class InitialPlayMediaWithTranslationsUseCaseStateController: PlayMediaWi
         return await delegate.load(session: session)
     }
     
-    public func play() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+    public func resume() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         return .failure(.noActiveMedia)
     }
@@ -60,7 +60,7 @@ public class InitialPlayMediaWithTranslationsUseCaseStateController: PlayMediaWi
     public func run(activeSession: PlayMediaWithTranslationsUseCaseStateControllerActiveSession) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         activeSession.pronounceTranslationsUseCase.stop()
-        activeSession.playMediaUseCase.stop()
+        let _ = activeSession.playMediaUseCase.stop()
         
         return .success(())
     }

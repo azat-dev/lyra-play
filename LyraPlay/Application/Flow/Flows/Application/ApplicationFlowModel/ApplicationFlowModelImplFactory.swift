@@ -110,31 +110,9 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
             audioFilesRepository: audioFilesRepository
         )
         
-        let initialPlayMediaUseCaseStateControllerFactory = InitialPlayMediaUseCaseStateControllerImplFactory()
-        
-        let loadingPlayMediaUseCaseStateControllerFactory = LoadingPlayMediaUseCaseStateControllerImplFactory(
+        let playMediaUseCaseFactory = PlayMediaUseCaseImplFactory(
             loadTrackUseCaseFactory: loadTrackUseCaseFactory,
             audioPlayerFactory: mainAudioPlayerFactory
-        )
-        
-        let loadedPlayMediaUseCaseStateControllerFactory = LoadedPlayMediaUseCaseStateControllerImplFactory()
-        
-        let failedLoadPlayMediaUseCaseStateControllerFactory = FailedLoadPlayMediaUseCaseStateControllerImplFactory()
-        
-        let playingPlayMediaUseCaseStateControllerFactory = PlayingPlayMediaUseCaseStateControllerImplFactory()
-        
-        let pausedPlayMediaUseCaseStateControllerFactory = PausedPlayMediaUseCaseStateControllerImplFactory()
-        
-        let finishedPlayMediaUseCaseStateControllerFactory = FinishedPlayMediaUseCaseStateControllerImplFactory()
-        
-        let playMediaUseCaseFactory = PlayMediaUseCaseImplFactory(
-            initialStateFactory: initialPlayMediaUseCaseStateControllerFactory,
-            loadingStateFactory: loadingPlayMediaUseCaseStateControllerFactory,
-            loadedStateFactory: loadedPlayMediaUseCaseStateControllerFactory,
-            failedLoadStateFactory: failedLoadPlayMediaUseCaseStateControllerFactory,
-            playingStateFactory: playingPlayMediaUseCaseStateControllerFactory,
-            pausedStateFactory: pausedPlayMediaUseCaseStateControllerFactory,
-            finishedStateFactory: finishedPlayMediaUseCaseStateControllerFactory
         )
         
         let textSplitterFactory = TextSplitterImplFactory()

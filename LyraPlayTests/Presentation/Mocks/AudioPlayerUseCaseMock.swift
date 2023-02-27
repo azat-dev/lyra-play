@@ -39,7 +39,7 @@ final class PlayMediaUseCaseMockStateble: PlayMediaUseCase {
         return .success(())
     }
     
-    func play() -> Result<Void, PlayMediaUseCaseError> {
+    func resume() -> Result<Void, PlayMediaUseCaseError> {
         
         guard let currentTrackId = currentTrackId else {
             return .failure(.noActiveTrack)

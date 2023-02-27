@@ -34,17 +34,22 @@ public class LoadedPlayMediaWithTranslationsUseCaseStateController: PlayMediaWit
         return await delegate.load(session: session)
     }
     
-    public func play() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+    public func resume() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         guard let delegate = delegate else {
             return .failure(.internalError(nil))
         }
         
-        return delegate.play(session: session)
+        return delegate.play(atTime: 0, session: session)
     }
     
     public func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
-        fatalError()
+        
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.play(atTime: atTime, session: session)
     }
     
     public func pause() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
@@ -62,6 +67,6 @@ public class LoadedPlayMediaWithTranslationsUseCaseStateController: PlayMediaWit
     
     public func togglePlay() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
-        return play()
+        return play(atTime: 0)
     }
 }

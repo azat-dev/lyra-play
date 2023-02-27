@@ -84,14 +84,14 @@ class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         
         let sut = createSUT(params: params)
         
-        given(sut.playMediaUseCase.play())
+        given(sut.playMediaUseCase.play(atTime: 0))
             .willReturn(.success(()))
         
-        given(sut.playSubtitlesUseCase.play())
+        given(sut.playSubtitlesUseCase.play(atTime: 0))
             .willReturn(())
         
         // When
-        let result = sut.controller.run()
+        let result = sut.controller.run(atTime: 0)
         
         // Then
         try AssertResultSucceded(result)
@@ -99,15 +99,15 @@ class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         let playSubtitlesUseCase = sut.playSubtitlesUseCase
         let playMediaUseCase = sut.playMediaUseCase
         
-        verify(playMediaUseCase.play())
+        verify(playMediaUseCase.play(atTime: 0))
             .wasCalled(1)
         
-        verify(playSubtitlesUseCase.play())
+        verify(playSubtitlesUseCase.play(atTime: 0))
             .wasCalled(1)
         
         verify(
-            sut.delegate.didStartPlay(
-                controller: any()
+            sut.delegate.didStartPlaying(
+                withController: any()
             )
         ).wasCalled(1)
     }
@@ -185,7 +185,7 @@ class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         
         let sut = createSUT(params: params)
        
-        given(sut.playMediaUseCase.play())
+        given(sut.playMediaUseCase.play(atTime: 0))
             .willReturn(.success(()))
         
         given(sut.delegate.pause(session: any()))
@@ -195,7 +195,7 @@ class PlayingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
             .willReturn(())
         
         // When
-        let _ = sut.controller.run()
+        let _ = sut.controller.run(atTime: 0)
         sut.playMediaState.value = .finished(mediaId: mediaId)
         
         // Then

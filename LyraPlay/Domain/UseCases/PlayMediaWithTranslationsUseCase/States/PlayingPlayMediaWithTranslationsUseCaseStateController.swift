@@ -60,21 +60,21 @@ public final class PlayingPlayMediaWithTranslationsUseCaseStateController: Loade
         return delegate.stop(activeSession: session)
     }
     
-    public func run() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+    public func runResumePlaying() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         session.playMediaUseCase.delegate = self
 
-        let playResult = session.playMediaUseCase.play()
+        let playResult = session.playMediaUseCase.resume()
         
         guard case .success = playResult else {
             return playResult.mapResult()
         }
 
-        delegate?.didStartPlaying(withController: self)
+        delegate?.didResumePlaying(withController: self)
         return .success(())
     }
     
-    public func run(atTime: TimeInterval) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
+    public func runPlaying(atTime: TimeInterval) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         session.playMediaUseCase.delegate = self
         

@@ -32,9 +32,9 @@ public enum PlaySubtitlesUseCaseState: Equatable {
 
 public protocol PlaySubtitlesUseCaseInput: AnyObject {
 
-    func play() -> Void
-
     func play(atTime: TimeInterval) -> Void
+    
+    func resume() -> Void
 
     func pause() -> Void
 
@@ -45,8 +45,6 @@ public protocol PlaySubtitlesUseCaseOutput: AnyObject {
 
     var state: CurrentValueSubject<PlaySubtitlesUseCaseState, Never> { get }
 
-    var willChangePosition: PassthroughSubject<WillChangeSubtitlesPositionData, Never> { get }
-    
     var delegate: PlaySubtitlesUseCaseDelegate? { get set }
 }
 

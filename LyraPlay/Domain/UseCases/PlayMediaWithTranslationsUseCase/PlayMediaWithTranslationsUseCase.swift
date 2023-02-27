@@ -46,7 +46,7 @@ public protocol PlayMediaWithTranslationsUseCaseInput {
     
     func prepare(session: PlayMediaWithTranslationsSession) async -> Result<Void, PlayMediaWithTranslationsUseCaseError>
     
-    func play() -> Result<Void, PlayMediaWithTranslationsUseCaseError>
+    func resume() -> Result<Void, PlayMediaWithTranslationsUseCaseError>
     
     func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithTranslationsUseCaseError>
     

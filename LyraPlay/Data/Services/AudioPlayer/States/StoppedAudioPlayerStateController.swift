@@ -12,16 +12,18 @@ public class StoppedAudioPlayerStateController: NSObject, AudioPlayerStateContro
     
     // MARK: - Properties
     
-    private unowned var context: AudioPlayerStateControllerContext
-    
-    public let currentState: AudioPlayerState
+    public let session: AudioPlayerSession
+    public weak var delegate: AudioPlayerStateControllerDelegate?
     
     // MARK: - Initializers
     
-    public init(context: AudioPlayerStateControllerContext) {
+    public init(
+        session: AudioPlayerSession,
+        delegate: AudioPlayerStateControllerDelegate
+    ) {
         
-        self.currentState = .stopped
-        self.context = context
+        self.session = session
+        self.delegate = delegate
     }
     
     // MARK: - Methods
@@ -31,13 +33,18 @@ public class StoppedAudioPlayerStateController: NSObject, AudioPlayerStateContro
         data: Data
     ) -> Result<Void, AudioPlayerError> {
         
-        let newController = InitialAudioPlayerStateController(context: context)
-        context.setController(newController)
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
         
-        return newController.prepare(fileId: fileId, data: data)
+        return delegate.load(fileId: fileId, data: data)
     }
     
-    public func play() -> Result<Void, AudioPlayerError> {
+    public func resume() -> Result<Void, AudioPlayerError> {
+        return .failure(.noActiveFile)
+    }
+    
+    public func play(atTime: TimeInterval) -> Result<Void, AudioPlayerError> {
         return .failure(.noActiveFile)
     }
     
@@ -51,5 +58,13 @@ public class StoppedAudioPlayerStateController: NSObject, AudioPlayerStateContro
     
     public func stop() -> Result<Void, AudioPlayerError> {
         return .failure(.noActiveFile)
+    }
+    
+    public func runStopping(activeSession session: ActiveAudioPlayerStateControllerSession)  -> Result<Void, AudioPlayerError> {
+        
+        session.systemPlayer.stop()
+        delegate?.didStop(withController: self)
+        
+        return .success(())
     }
 }

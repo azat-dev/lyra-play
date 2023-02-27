@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-public class PlayingPlayMediaUseCaseStateControllerImpl: LoadedPlayMediaUseCaseStateControllerImpl, PlayingPlayMediaUseCaseStateController {
+public class PlayingPlayMediaUseCaseStateController: LoadedPlayMediaUseCaseStateController {
 
     // MARK: - Properties
     
@@ -48,7 +48,7 @@ public class PlayingPlayMediaUseCaseStateControllerImpl: LoadedPlayMediaUseCaseS
     
     // MARK: - Methods
     
-    public override func play() -> Result<Void, PlayMediaUseCaseError> {
+    public override func resume() -> Result<Void, PlayMediaUseCaseError> {
         
         return .success(())
     }
@@ -73,23 +73,19 @@ public class PlayingPlayMediaUseCaseStateControllerImpl: LoadedPlayMediaUseCaseS
         return pause()
     }
     
-    public func run() -> Result<Void, PlayMediaUseCaseError> {
+    public func runResumePlaying() -> Result<Void, PlayMediaUseCaseError> {
         
-        let result = audioPlayer.play()
+        let result = audioPlayer.resume()
         
         guard case .success = result else {
             return result.mapResult()
         }
         
-        delegate?.didStartPlay(
-            mediaId: mediaId,
-            audioPlayer: audioPlayer
-        )
-        
+        delegate?.didResumePlaying(withController: self)
         return .success(())
     }
     
-    public func run(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError> {
+    public func runPlaying(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError> {
         
         let result = audioPlayer.play(atTime: atTime)
         
@@ -97,11 +93,7 @@ public class PlayingPlayMediaUseCaseStateControllerImpl: LoadedPlayMediaUseCaseS
             return result.mapResult()
         }
         
-        delegate?.didStartPlay(
-            mediaId: mediaId,
-            audioPlayer: audioPlayer
-        )
-        
+        delegate?.didStartPlay(withController: self)
         return .success(())
     }
 }

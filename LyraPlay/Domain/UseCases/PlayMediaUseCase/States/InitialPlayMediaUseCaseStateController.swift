@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class InitialPlayMediaUseCaseStateControllerImpl: InitialPlayMediaUseCaseStateController {
+public class InitialPlayMediaUseCaseStateController: PlayMediaUseCaseStateController {
     
     // MARK: - Properties
     
@@ -33,7 +33,7 @@ public class InitialPlayMediaUseCaseStateControllerImpl: InitialPlayMediaUseCase
         return await delegate.load(mediaId: mediaId)
     }
     
-    public func play() -> Result<Void, PlayMediaUseCaseError> {
+    public func resume() -> Result<Void, PlayMediaUseCaseError> {
         return .failure(.noActiveTrack)
     }
     

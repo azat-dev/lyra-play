@@ -47,7 +47,7 @@ public protocol PlayMediaWithInfoUseCaseInput: AnyObject {
     
     func prepare(session: PlayMediaWithInfoSession) async -> Result<Void, PlayMediaWithInfoUseCaseError>
     
-    func play() -> Result<Void, PlayMediaWithInfoUseCaseError>
+    func resume() -> Result<Void, PlayMediaWithInfoUseCaseError>
     
     func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithInfoUseCaseError>
     

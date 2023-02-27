@@ -72,7 +72,7 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
         
         let sut = createSUT()
         
-        given(sut.playMediaUseCase.play())
+        given(sut.playMediaUseCase.play(atTime: 0))
             .willReturn(.success(()))
         
         given(sut.provideTranslationsToPlayUseCase.getTranslationsToPlay(for: any()))
@@ -94,7 +94,7 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
         }
         
         // When
-        let result = sut.useCase.run()
+        let result = sut.useCase.runPlaying(atTime: 0)
         try AssertResultSucceded(result)
         
         var stopPlaying = false

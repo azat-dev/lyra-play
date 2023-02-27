@@ -29,7 +29,7 @@ public protocol AudioPlayerInput: AnyObject {
     
     func prepare(fileId: String, data: Data) -> Result<Void, AudioPlayerError>
     
-    func play() -> Result<Void, AudioPlayerError>
+    func resume() -> Result<Void, AudioPlayerError>
     
     func play(atTime: TimeInterval) -> Result<Void, AudioPlayerError>
     
