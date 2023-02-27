@@ -16,11 +16,15 @@ public protocol TimelineSchedulerStateControllerDelegate: AnyObject {
         delegateChanges: TimelineSchedulerDelegateChanges?
     )
     
+    func didStartExecuting(withController: RunningSchedulerStateController)
+    
     func stop(
         timer: ActionTimer,
         timeline: TimeLineIterator,
         delegateChanges: TimelineSchedulerDelegateChanges?
     )
+    
+    func didStop(withController: InitialSchedulerStateController)
     
     func pause(
         elapsedTime: TimeInterval,
@@ -28,4 +32,8 @@ public protocol TimelineSchedulerStateControllerDelegate: AnyObject {
         timeline: TimeLineIterator,
         delegateChanges: TimelineSchedulerDelegateChanges?
     )
+    
+    func didPause(withController controller: PausedSchedulerStateController)
+    
+    func didFinish()
 }

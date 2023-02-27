@@ -82,15 +82,20 @@ extension TimelineSchedulerImpl: TimelineSchedulerStateControllerDelegate {
     ) {
         
         
-        let newController = RunningSchedulerStateController(
+        let controller = RunningSchedulerStateController(
             timer: timer,
             timeline: timeline,
             delegate: self,
             delegateChanges: delegateChanges
         )
         
-        self.currentController = newController
-        newController.run(from: time)
+        controller.runExecution(from: time)
+    }
+    
+    public func didStartExecuting(withController controller: RunningSchedulerStateController) {
+        
+        currentController = controller
+        delegateChanges.schedulerDidStart()
     }
     
     public func stop(
@@ -106,8 +111,13 @@ extension TimelineSchedulerImpl: TimelineSchedulerStateControllerDelegate {
             delegateChanges: delegateChanges
         )
         
-        self.currentController = newController
-        newController.run()
+        newController.runStop()
+    }
+    
+    public func didStop(withController controller: InitialSchedulerStateController) {
+        
+        currentController = controller
+        delegateChanges.schedulerDidStop()
     }
     
     public func pause(
@@ -118,14 +128,23 @@ extension TimelineSchedulerImpl: TimelineSchedulerStateControllerDelegate {
     ) {
         
         
-        let newController = PausedSchedulerStateController(
+        let controller = PausedSchedulerStateController(
             timer: timer,
             timeline: timeline,
             delegate: self,
             delegateChanges: delegateChanges
         )
         
-        self.currentController = newController
-        newController.run(elapsedTime: elapsedTime)
+        controller.runPausing(elapsedTime: elapsedTime)
+    }
+    
+    public func didPause(withController controller: PausedSchedulerStateController) {
+        
+        self.currentController = controller
+        self.delegateChanges.schedulerDidPause()
+    }
+    
+    public func didFinish() {
+        self.delegateChanges.schedulerDidFinish()
     }
 }

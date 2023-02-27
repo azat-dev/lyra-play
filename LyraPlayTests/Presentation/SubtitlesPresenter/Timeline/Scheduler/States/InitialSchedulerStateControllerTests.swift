@@ -46,17 +46,20 @@ class InitialSchedulerStateControllerTests: XCTestCase {
     }
     
     
-    func test_run() async throws {
+    func test_runStop() async throws {
         
         let sut = createSUT()
         
         // Given
         
         // When
-        sut.controller.run()
+        sut.controller.runStop()
         
         // Then
         verify(sut.timer.cancel())
+            .wasCalled(1)
+        
+        verify(sut.delegate.didStop(withController: any()))
             .wasCalled(1)
     }
     

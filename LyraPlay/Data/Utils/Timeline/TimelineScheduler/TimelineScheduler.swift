@@ -16,6 +16,12 @@ public protocol TimelineSchedulerDelegateChanges: AnyObject {
     func schedulerWillChange(from: TimeInterval?, to: TimeInterval?, stop: inout Bool) -> Void
     
     func schedulerDidFinish()
+    
+    func schedulerDidStart()
+    
+    func schedulerDidPause()
+    
+    func schedulerDidStop()
 }
 
 public protocol TimelineSchedulerOutput: AnyObject {

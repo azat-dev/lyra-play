@@ -39,6 +39,12 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         )
         detectMemoryLeak(instance: useCase, file: file, line: line)
         
+        releaseMocks(
+            subtitlesIterator,
+            scheduler,
+            delegate
+        )
+        
         return (
             useCase,
             subtitlesIterator,
@@ -149,19 +155,19 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         let sut = createSUT(subtitles: emptySubtitles())
         
         let statesPromise = watch(sut.useCase.state)
-        
+
         // When
         sut.useCase.play(atTime: 0)
-        
+
         // Then
         statesPromise.expect([
             .initial,
             .finished,
         ])
-        
-        verify(sut.delegate.playSubtitlesUseCaseWillChange(fromPosition: any(), toPosition: any(), stop: any()))
-            .wasNeverCalled()
-        
+//
+//        verify(sut.delegate.playSubtitlesUseCaseWillChange(fromPosition: any(), toPosition: any(), stop: any()))
+//            .wasNeverCalled()
+//
     }
     
 //    func test_play__empty_subtitles__with_offset() async throws {

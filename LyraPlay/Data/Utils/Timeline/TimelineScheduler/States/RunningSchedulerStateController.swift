@@ -95,7 +95,7 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
         guard
             let nextTimeMark = timeline.getTimeOfNextEvent()
         else {
-            delegateChanges?.schedulerDidFinish()
+            delegate?.didFinish()
             return
         }
         
@@ -113,7 +113,7 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
         }
     }
     
-    public func run(from time: TimeInterval) {
+    public func runExecution(from time: TimeInterval) {
         
         self.baseOffset = time
         self.startedAt = .now
@@ -125,11 +125,12 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
         guard
             let nextTimeMark = timeline.getTimeOfNextEvent()
         else {
-            delegateChanges?.schedulerDidFinish()
+            delegate?.didFinish()
             return
         }
         
         self.startedAt = Date.now
+        delegate?.didStartExecuting(withController: self)
         
         timer.executeAfter(nextTimeMark) { [weak self] in
             
