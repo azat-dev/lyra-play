@@ -17,7 +17,7 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
     
     public let state = CurrentValueSubject<PlayMediaWithInfoUseCaseState, Never>(.noActiveSession)
     public let subtitlesState: CurrentValueSubject<SubtitlesState?, Never>
-    public let pronounceTranslationsState: CurrentValueSubject<PronounceTranslationsUseCaseState?, Never>
+    public let pronounceTranslationsState: CurrentValueSubject<PronounceTranslationsUseCaseState, Never>
     
     private var currentMediaInfo: MediaInfo?
     private var currentSession: PlayMediaWithInfoSession?
@@ -68,7 +68,6 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
             state.value = .activeSession(session, .loadFailed)
             return .failure(resultLoadingInfo.error!.map())
         }
-        
         
         if case .failure(let error) = await loadingTranslationsPromise {
             state.value = .activeSession(session, .loadFailed)

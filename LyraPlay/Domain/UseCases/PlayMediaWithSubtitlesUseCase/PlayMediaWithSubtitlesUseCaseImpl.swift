@@ -39,6 +39,10 @@ public final class PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseC
         self.loadSubtitlesUseCaseFactory = loadSubtitlesUseCaseFactory
         self.playSubtitlesUseCaseFactory = playSubtitlesUseCaseFactory
     }
+    
+    deinit {
+        observers.removeAll()
+    }
 }
 
 // MARK: - Input Methods
@@ -89,7 +93,9 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlaySubtitlesUseCaseDelegate {
     
     public func playSubtitlesUseCaseDidChange(position: SubtitlesPosition?) {
         
+        subtitlesState.value = subtitlesState.value?.positioned(position)
         delegate?.playMediaWithSubtitlesUseCaseDidChange(position: position)
+        
     }
     
     public func playSubtitlesUseCaseDidFinish() {
@@ -123,6 +129,12 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseStateContr
             session: session,
             delegate: self
         )
+        
+        observers.removeAll()
+        
+        session.subtitlesState
+            .subscribe(subtitlesState)
+            .store(in: &observers)
         
         currentStateController = controller
         state.value = .activeSession(session.params, .loaded)

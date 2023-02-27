@@ -16,7 +16,7 @@ public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslatio
     
     public let subtitlesState = CurrentValueSubject<SubtitlesState?, Never>(nil)
     
-    public let pronounceTranslationsState = CurrentValueSubject<PronounceTranslationsUseCaseState?, Never>(nil)
+    public let pronounceTranslationsState = CurrentValueSubject<PronounceTranslationsUseCaseState, Never>(.stopped)
     
     private lazy var currentController: PlayMediaWithTranslationsUseCaseStateController = {
         
@@ -26,6 +26,8 @@ public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslatio
     private let playMediaUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactory
     private let provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory
     private let pronounceTranslationsUseCaseFactory: PronounceTranslationsUseCaseFactory
+    
+    private var observers = Set<AnyCancellable>()
 
     // MARK: - Initializers
 
@@ -39,6 +41,10 @@ public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslatio
         self.playMediaUseCaseFactory = playMediaUseCaseFactory
         self.provideTranslationsToPlayUseCaseFactory = provideTranslationsToPlayUseCaseFactory
         self.pronounceTranslationsUseCaseFactory = pronounceTranslationsUseCaseFactory
+    }
+    
+    deinit {
+        observers.removeAll()
     }
 }
 
@@ -103,6 +109,16 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
             session: session,
             delegate: self
         )
+        
+        observers.removeAll()
+        
+        session.playMediaUseCase.subtitlesState
+            .subscribe(subtitlesState)
+            .store(in: &observers)
+        
+        session.pronounceTranslationsUseCase.state
+            .subscribe(pronounceTranslationsState)
+            .store(in: &observers)
         
         currentController = newController
         state.value = .activeSession(session.session, .loaded)
