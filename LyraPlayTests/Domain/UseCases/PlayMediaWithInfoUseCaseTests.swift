@@ -8,6 +8,7 @@
 import Foundation
 import XCTest
 import Mockingbird
+import Combine
 
 import LyraPlay
 
@@ -19,12 +20,14 @@ class PlayMediaWithInfoUseCaseTests: XCTestCase {
         playMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCaseMock,
         showMediaInfoUseCaseFactory: ShowMediaInfoUseCaseFactoryMock,
         showMediaInfoUseCase: ShowMediaInfoUseCaseMock,
-        playMediaWithTranslationsUseCaseState: PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>
+        playMediaWithTranslationsUseCaseState: CurrentValueSubject<PlayMediaWithTranslationsUseCaseState, Never>,
+        subtitlesState: CurrentValueSubject<SubtitlesState?, Never>,
+        pronounceTranslationsState: CurrentValueSubject<PronounceTranslationsUseCaseState?, Never>
     )
     
     func createSUT() -> SUT {
     
-        let playMediaWithTranslationsUseCaseState = PublisherWithSession<PlayMediaWithTranslationsUseCaseState, Never>(.noActiveSession)
+        let playMediaWithTranslationsUseCaseState = CurrentValueSubject<PlayMediaWithTranslationsUseCaseState, Never>(.noActiveSession)
         
         let playMediaWithTranslationsUseCase = mock(PlayMediaWithTranslationsUseCase.self)
         let playMediaWithTranslationsUseCaseFactory = mock(PlayMediaWithTranslationsUseCaseFactory.self)
@@ -34,6 +37,16 @@ class PlayMediaWithInfoUseCaseTests: XCTestCase {
         
         given(playMediaWithTranslationsUseCase.state)
             .willReturn(playMediaWithTranslationsUseCaseState)
+        
+        let subtitlesState = CurrentValueSubject<SubtitlesState?, Never>(nil)
+        
+        given(playMediaWithTranslationsUseCase.subtitlesState)
+            .willReturn(subtitlesState)
+        
+        let pronounceTranslationsState = CurrentValueSubject<PronounceTranslationsUseCaseState?, Never>(.stopped)
+        
+        given(playMediaWithTranslationsUseCase.pronounceTranslationsState)
+            .willReturn(pronounceTranslationsState)
         
         let showMediaInfoUseCase = mock(ShowMediaInfoUseCase.self)
         let showMediaInfoUseCaseFactory = mock(ShowMediaInfoUseCaseFactory.self)
@@ -61,7 +74,9 @@ class PlayMediaWithInfoUseCaseTests: XCTestCase {
             playMediaWithTranslationsUseCase,
             showMediaInfoUseCaseFactory,
             showMediaInfoUseCase,
-            playMediaWithTranslationsUseCaseState
+            playMediaWithTranslationsUseCaseState,
+            subtitlesState,
+            pronounceTranslationsState
         )
     }
     
@@ -93,7 +108,7 @@ class PlayMediaWithInfoUseCaseTests: XCTestCase {
             nativeLanguage: ""
         )
         
-        let statePromise = watch(sut.useCase.state.publisher)
+        let statePromise = watch(sut.useCase.state)
         
         let playMediaWithTranslationsUseCaseState = sut.playMediaWithTranslationsUseCaseState
         let playMediaWithTranslationSession = PlayMediaWithTranslationsSession(mediaId: mediaId, learningLanguage: "", nativeLanguage: "")
@@ -109,13 +124,12 @@ class PlayMediaWithInfoUseCaseTests: XCTestCase {
         let result = await sut.useCase.prepare(session: session)
         
         // Then
-        
         try AssertResultSucceded(result)
         
         statePromise.expect([
             .noActiveSession,
             .activeSession(session, .loading),
-            .activeSession(session, .loaded(.initial, nil, mediaInfo)),
+            .activeSession(session, .loaded(.initial, mediaInfo)),
         ])
     }
 }

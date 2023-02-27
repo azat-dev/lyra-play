@@ -38,6 +38,37 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
     }
     
     public func prepare(session: PlayMediaWithInfoSession) async -> Result<Void, PlayMediaWithInfoUseCaseError> {
+        
+        state.value = .activeSession(session, .loading)
+        
+        async let loadingTranslationsPromise = playMediaWithTranslationsUseCase.prepare(
+            session: .init(
+                mediaId: session.mediaId,
+                learningLanguage: session.learningLanguage,
+                nativeLanguage: session.nativeLanguage
+            )
+        )
+        
+        let showMediaInfoUseCase = showMediaInfoUseCaseFactory.make()
+        async let loadingInfoPromise = showMediaInfoUseCase.fetchInfo(trackId: session.mediaId)
+        
+        currentMediaInfo = nil
+        
+        let resultLoadingInfo = await loadingInfoPromise
+        
+        guard case .success(let info) = resultLoadingInfo else {
+            state.value = .activeSession(session, .loadFailed)
+            return .failure(resultLoadingInfo.error!.map())
+        }
+        
+        
+        if case .failure(let error) = await loadingTranslationsPromise {
+            state.value = .activeSession(session, .loadFailed)
+            return .failure(error.map())
+        }
+
+        currentMediaInfo = info
+        state.value = .activeSession(session, .loaded(.initial, info))
         return .success(())
     }
     

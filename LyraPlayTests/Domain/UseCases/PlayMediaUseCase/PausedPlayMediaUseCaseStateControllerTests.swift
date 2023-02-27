@@ -7,6 +7,7 @@
 
 import Foundation
 import XCTest
+import Combine
 import Mockingbird
 
 import LyraPlay
@@ -16,7 +17,8 @@ class PausedPlayMediaUseCaseStateControllerTests: XCTestCase {
     typealias SUT = (
         controller: PlayMediaUseCaseStateController,
         delegate: PlayMediaUseCaseStateControllerDelegateMock,
-        audioPlayer: AudioPlayerMock
+        audioPlayer: AudioPlayerMock,
+        audioPlayerState: CurrentValueSubject<AudioPlayerState, Never>
     )
     
     func createSUT(mediaId: UUID) -> SUT {
@@ -25,6 +27,11 @@ class PausedPlayMediaUseCaseStateControllerTests: XCTestCase {
         
         given(audioPlayer.pause())
             .willReturn(.success(()))
+        
+        let audioPlayerState = CurrentValueSubject<AudioPlayerState, Never>(.initial)
+        
+        given(audioPlayer.state)
+            .willReturn(audioPlayerState)
         
         let delegate = mock(PlayMediaUseCaseStateControllerDelegate.self)
         
@@ -39,7 +46,8 @@ class PausedPlayMediaUseCaseStateControllerTests: XCTestCase {
         return (
             controller,
             delegate,
-            audioPlayer
+            audioPlayer,
+            audioPlayerState
         )
     }
     
@@ -57,7 +65,8 @@ class PausedPlayMediaUseCaseStateControllerTests: XCTestCase {
             .willReturn(.success(()))
 
         // When
-        await sut.controller.prepare(mediaId: preparingMediaId)
+        let result = await sut.controller.prepare(mediaId: preparingMediaId)
+        try AssertResultSucceded(result)
 
         // Then
         verify(
@@ -76,7 +85,8 @@ class PausedPlayMediaUseCaseStateControllerTests: XCTestCase {
             .willReturn(.success(()))
 
         // When
-        sut.controller.stop()
+        let result = sut.controller.stop()
+        try AssertResultSucceded(result)
 
         // Then
         verify(sut.delegate.stop(mediaId: loadedMediaId, audioPlayer: sut.audioPlayer))
@@ -91,9 +101,11 @@ class PausedPlayMediaUseCaseStateControllerTests: XCTestCase {
         let sut = createSUT(mediaId: loadedMediaId)
         
         given(sut.delegate.play(mediaId: any(), audioPlayer: any()))
+            .willReturn(.success(()))
 
         // When
-        sut.controller.play()
+        let result = sut.controller.play()
+        try AssertResultSucceded(result)
 
         // Then
         verify(

@@ -8,6 +8,7 @@
 import Foundation
 import XCTest
 import Mockingbird
+import Combine
 import LyraPlay
 
 class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
@@ -16,8 +17,9 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
         viewModel: CurrentPlayerStateDetailsViewModel,
         delegate: CurrentPlayerStateDetailsViewModelDelegateMock,
         playMediaUseCase: PlayMediaWithInfoUseCaseMock,
-        playerState: PublisherWithSession<PlayMediaWithInfoUseCaseState, Never>,
-        subtitlesPresenterViewModel: SubtitlesPresenterViewModel
+        playerState: CurrentValueSubject<PlayMediaWithInfoUseCaseState, Never>,
+        subtitlesPresenterViewModel: SubtitlesPresenterViewModel,
+        subtitlesState: CurrentValueSubject<SubtitlesState?, Never>
     )
 
     // MARK: - Methods
@@ -28,16 +30,22 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
 
         let playMediaUseCase = mock(PlayMediaWithInfoUseCase.self)
         
-        let playerState = PublisherWithSession<PlayMediaWithInfoUseCaseState, Never>(.noActiveSession)
+        let playerState = CurrentValueSubject<PlayMediaWithInfoUseCaseState, Never>(.noActiveSession)
         
         given(playMediaUseCase.state)
             .willReturn(playerState)
+        
+
+        let subtitlesState = CurrentValueSubject<SubtitlesState?, Never>(nil)
         
         let subtitlesPresenterViewModelFactory = mock(SubtitlesPresenterViewModelFactory.self)
         let subtitlesPresenterViewModel = mock(SubtitlesPresenterViewModel.self)
         
         given(subtitlesPresenterViewModelFactory.make(subtitles: any()))
             .willReturn(subtitlesPresenterViewModel)
+        
+        given(playMediaUseCase.subtitlesState)
+            .willReturn(subtitlesState)
 
         let viewModel = CurrentPlayerStateDetailsViewModelImpl(
             delegate: delegate,
@@ -52,7 +60,8 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
             delegate,
             playMediaUseCase,
             playerState,
-            subtitlesPresenterViewModel
+            subtitlesPresenterViewModel,
+            subtitlesState
         )
     }
     
@@ -89,9 +98,9 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
         sut.viewModel.togglePlay()
         
         sut.playerState.value = .activeSession(session, .loading)
-        sut.playerState.value = .activeSession(session, .loaded(.playing, nil, mediaInfo))
+        sut.playerState.value = .activeSession(session, .loaded(.playing, mediaInfo))
         
-        sut.playerState.value = .activeSession(session, .loaded(.paused, nil, mediaInfo))
+        sut.playerState.value = .activeSession(session, .loaded(.paused, mediaInfo))
 
         // Then
         verify(sut.playMediaUseCase.togglePlay())
@@ -133,49 +142,35 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
             ]
         )
         
-        let mediaInfo = anyMediaInfo()
-        
-        let session = PlayMediaWithInfoSession(
-            mediaId: UUID(uuidString: mediaInfo.id)!,
-            learningLanguage: "",
-            nativeLanguage: ""
-        )
-        
-        given(sut.playMediaUseCase.togglePlay())
-            .willReturn(.success(()))
-        
-        let updateSubtitles = { (sentenceIndex: Int) -> Void in
-            
-            sut.playerState.value = .activeSession(
-                session,
-                .loaded(
-                    .playing,
-                    .init(
-                        position: .sentence(sentenceIndex),
-                        subtitles: subtitles
-                    ),
-                    mediaInfo
-                )
-            )
-        }
-        
         let expectedSubtitlesIndexes = [0, 1, 3]
         
-        // When
-        sut.viewModel.togglePlay()
+        sut.subtitlesState.value = .init(position: nil, subtitles: subtitles)
+        sut.playerState.value = .activeSession(
+            anySession(),
+            .loaded(.initial, anyMediaInfo())
+        )
         
-        sut.playerState.value = .activeSession(session, .loading)
-        expectedSubtitlesIndexes.forEach { updateSubtitles($0) }
+        
+        // When
+        expectedSubtitlesIndexes.forEach({ index in
+            
+            sut.subtitlesState.value = .init(
+                position: .sentence(index),
+                subtitles: subtitles
+            )
+        })
         
         // Then
-        verify(sut.playMediaUseCase.togglePlay())
-            .wasCalled(1)
-
-        expectedSubtitlesIndexes.forEach { sentenceIndex in
-            
-            verify(sut.subtitlesPresenterViewModel.update(position: .sentence(sentenceIndex)))
-                .wasCalled(1)
+        eventually {
+            inOrder {
+                expectedSubtitlesIndexes.forEach { sentenceIndex in
+                    verify(sut.subtitlesPresenterViewModel.update(position: .sentence(sentenceIndex)))
+                        .wasCalled(1)
+                }
+            }
         }
+        
+        await waitForExpectations(timeout: 1)
     }
 
     func test_dispose() async throws {
@@ -189,6 +184,15 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
         // Then
         verify(sut.delegate.currentPlayerStateDetailsViewModelDidDispose())
             .wasCalled(1)
+    }
+    
+    private func anySession() -> PlayMediaWithInfoSession {
+        
+        return .init(
+            mediaId: UUID(),
+            learningLanguage: "English",
+            nativeLanguage: "French"
+        )
     }
 }
 

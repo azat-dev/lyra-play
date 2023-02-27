@@ -57,8 +57,8 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
         
         switch state {
             
-        case .activeSession(let session, .loaded(.playing, _, _)),
-                .activeSession(let session, .loaded(.pronouncingTranslations, _, _)):
+        case .activeSession(let session, .loaded(.playing, _)),
+                .activeSession(let session, .loaded(.pronouncingTranslations, _)):
             
             isPlaying = session.mediaId == trackId
             
