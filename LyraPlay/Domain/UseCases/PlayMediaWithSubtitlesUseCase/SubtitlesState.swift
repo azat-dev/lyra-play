@@ -25,7 +25,7 @@ public struct SubtitlesState: Equatable {
         self.subtitles = subtitles
     }
     
-    public func positioned(_ position: SubtitlesPosition) -> SubtitlesState {
+    public func positioned(_ position: SubtitlesPosition?) -> SubtitlesState {
         
         var newState = self
         newState.position = position
