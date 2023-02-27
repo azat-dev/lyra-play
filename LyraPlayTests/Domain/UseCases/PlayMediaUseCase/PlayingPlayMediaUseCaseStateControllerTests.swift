@@ -42,6 +42,11 @@ class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
         
         detectMemoryLeak(instance: controller)
         
+        releaseMocks(
+            delegate,
+            audioPlayer
+        )
+        
         return (
             controller,
             delegate,

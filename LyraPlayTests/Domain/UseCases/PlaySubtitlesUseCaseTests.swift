@@ -143,7 +143,6 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
     
     // MARK: - Test Methods
     
-    
     func test_play__empty_subtitles__from_begining() async throws {
         
         // Given
