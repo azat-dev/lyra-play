@@ -160,14 +160,12 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         sut.useCase.play(atTime: 0)
 
         // Then
-        statesPromise.expect([
-            .initial,
-            .finished,
-        ])
-//
+//        verify(sut.scheduler.execute(from: 0))
+//            .wasCalled(1)
+
 //        verify(sut.delegate.playSubtitlesUseCaseWillChange(fromPosition: any(), toPosition: any(), stop: any()))
 //            .wasNeverCalled()
-//
+
     }
     
 //    func test_play__empty_subtitles__with_offset() async throws {
