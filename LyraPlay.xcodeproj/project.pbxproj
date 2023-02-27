@@ -526,7 +526,6 @@
 		AAC5FFAA28BFE38400D402FF /* PlayMediaUseCaseState+MediaId.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC5FFA928BFE38400D402FF /* PlayMediaUseCaseState+MediaId.swift */; };
 		AAC5FFAC28BFEDE600D402FF /* PlayMediaWithSubtitlesUseCaseState+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC5FFAB28BFEDE600D402FF /* PlayMediaWithSubtitlesUseCaseState+Utils.swift */; };
 		AAC5FFAE28BFEFFE00D402FF /* PlayMediaWithTranslationsUseCaseState+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC5FFAD28BFEFFE00D402FF /* PlayMediaWithTranslationsUseCaseState+Utils.swift */; };
-		AAC5FFB028BFF2C400D402FF /* PlaySubtitlesUseCaseState+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC5FFAF28BFF2C400D402FF /* PlaySubtitlesUseCaseState+Utils.swift */; };
 		AAC5FFB228BFFF8A00D402FF /* TimelineSchedulerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC5FFB128BFFF8A00D402FF /* TimelineSchedulerFactory.swift */; };
 		AAC5FFB428C000E000D402FF /* TimelineSchedulerFactoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC5FFB328C000E000D402FF /* TimelineSchedulerFactoryImpl.swift */; };
 		AAC728A928CCB1FA00834D72 /* AttachingSubtitlesProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC728A828CCB1FA00834D72 /* AttachingSubtitlesProgressViewController.swift */; };
@@ -1243,7 +1242,6 @@
 		AAC5FFA928BFE38400D402FF /* PlayMediaUseCaseState+MediaId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PlayMediaUseCaseState+MediaId.swift"; sourceTree = "<group>"; };
 		AAC5FFAB28BFEDE600D402FF /* PlayMediaWithSubtitlesUseCaseState+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PlayMediaWithSubtitlesUseCaseState+Utils.swift"; sourceTree = "<group>"; };
 		AAC5FFAD28BFEFFE00D402FF /* PlayMediaWithTranslationsUseCaseState+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PlayMediaWithTranslationsUseCaseState+Utils.swift"; sourceTree = "<group>"; };
-		AAC5FFAF28BFF2C400D402FF /* PlaySubtitlesUseCaseState+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PlaySubtitlesUseCaseState+Utils.swift"; sourceTree = "<group>"; };
 		AAC5FFB128BFFF8A00D402FF /* TimelineSchedulerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineSchedulerFactory.swift; sourceTree = "<group>"; };
 		AAC5FFB328C000E000D402FF /* TimelineSchedulerFactoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineSchedulerFactoryImpl.swift; sourceTree = "<group>"; };
 		AAC728A828CCB1FA00834D72 /* AttachingSubtitlesProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachingSubtitlesProgressViewController.swift; sourceTree = "<group>"; };
@@ -3609,7 +3607,6 @@
 				FE5C485C5D34C2F6833125E1 /* PlaySubtitlesUseCaseFactory.swift */,
 				AA4ED77229A7889400B7FD05 /* PlaySubtitlesUseCaseImpl.swift */,
 				201FCAC4808F8A80C6FF1FEF /* PlaySubtitlesUseCaseImplFactory.swift */,
-				AAC5FFAF28BFF2C400D402FF /* PlaySubtitlesUseCaseState+Utils.swift */,
 				CBC01D9BC320769887AD1D93 /* SubtitlesPosition.swift */,
 				D95144486BE470D2C4D2FD26 /* WillChangeSubtitlesPositionData.swift */,
 			);
@@ -4182,7 +4179,6 @@
 				04C6A74CBA0989C05B4F9130 /* PlayMediaWithTranslationsUseCaseImplFactory.swift in Sources */,
 				7C7878C62798C2F1C377CA05 /* PlayMediaWithTranslationsSession.swift in Sources */,
 				8B0AA4BAC419F2F2A9E7A5CF /* SubtitlesPosition.swift in Sources */,
-				AAC5FFB028BFF2C400D402FF /* PlaySubtitlesUseCaseState+Utils.swift in Sources */,
 				7BB0BAF7E95CC090BD7B868B /* PlaySubtitlesUseCase.swift in Sources */,
 				60BB39D8DC14DAA9D6E6D35A /* WillChangeSubtitlesPositionData.swift in Sources */,
 				AA55227828CA7BC0007D5343 /* DictionaryFlowPresenterImpl.swift in Sources */,

@@ -66,7 +66,7 @@ class RunningSchedulerStateControllerTests: XCTestCase {
             .willReturn(nil)
         
         // When
-        sut.controller.run(from: startTime)
+        sut.controller.runExecution(from: startTime)
         sut.controller.pause()
         
         // Then
@@ -100,7 +100,7 @@ class RunningSchedulerStateControllerTests: XCTestCase {
             .willReturn(nil)
         
         // When
-        sut.controller.run(from: startTime)
+        sut.controller.runExecution(from: startTime)
         
         // Then
         verify(sut.delegateChanges.schedulerDidFinish())
@@ -128,7 +128,7 @@ class RunningSchedulerStateControllerTests: XCTestCase {
             .willReturn(nil)
         
         // When
-        sut.controller.run(from: startTime)
+        sut.controller.runExecution(from: startTime)
         
         // Then
         
@@ -136,14 +136,21 @@ class RunningSchedulerStateControllerTests: XCTestCase {
             
             var stop = false
             
+            verify(sut.delegate.didStartExecuting(withController: any()))
+                .wasCalled(1)
+            
             verify(sut.delegateChanges.schedulerWillChange(from: nil, to: startTime, stop: &stop))
                 .wasCalled(1)
             
             verify(sut.delegateChanges.schedulerDidChange(time: startTime))
                 .wasCalled(1)
             
+            verify(sut.delegate.didFinish())
+                .wasCalled(1)
+            
             verify(sut.delegateChanges.schedulerDidFinish())
                 .wasCalled(1)
+
         }
     }
     
@@ -162,7 +169,7 @@ class RunningSchedulerStateControllerTests: XCTestCase {
         }
         
         // When
-        sut.controller.run(from: startTime)
+        sut.controller.runExecution(from: startTime)
         
         // Then
         eventually {

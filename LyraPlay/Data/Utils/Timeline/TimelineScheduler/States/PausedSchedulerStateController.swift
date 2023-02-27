@@ -70,7 +70,7 @@ public class PausedSchedulerStateController: TimelineSchedulerStateController {
     }
     
     
-    public func run(elapsedTime: TimeInterval) {
+    public func runPausing(elapsedTime: TimeInterval) {
         
         self.pasedAt = .now
         self.elapsedTime = elapsedTime

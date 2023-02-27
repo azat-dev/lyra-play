@@ -24,8 +24,8 @@ public protocol PlaySubtitlesUseCaseDelegate: AnyObject {
 public enum PlaySubtitlesUseCaseState: Equatable {
 
     case initial
-    case playing(position: SubtitlesPosition?)
-    case paused(position: SubtitlesPosition?)
+    case playing
+    case paused
     case stopped
     case finished
 }
@@ -44,6 +44,8 @@ public protocol PlaySubtitlesUseCaseInput: AnyObject {
 public protocol PlaySubtitlesUseCaseOutput: AnyObject {
 
     var state: CurrentValueSubject<PlaySubtitlesUseCaseState, Never> { get }
+    
+    var subtitlesPosition: CurrentValueSubject<SubtitlesPosition?, Never> { get }
 
     var delegate: PlaySubtitlesUseCaseDelegate? { get set }
 }

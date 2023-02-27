@@ -49,9 +49,11 @@ public final class InitialSchedulerStateController: TimelineSchedulerStateContro
         )
     }
     
-    public func run() {
+    public func runStop() {
         
         let _ = timeline.beginNextExecution(from: 0)
         timer.cancel()
+        
+        delegate?.didStop(withController: self)
     }
 }
