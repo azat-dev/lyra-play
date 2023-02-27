@@ -15,6 +15,7 @@ public final class CurrentPlayerStateViewModelImpl: CurrentPlayerStateViewModel 
     private weak var delegate: CurrentPlayerStateViewModelDelegate?
     
     private let playMediaUseCase: PlayMediaWithInfoUseCase
+    
     public var state = CurrentValueSubject<CurrentPlayerStateViewModelState, Never>(.loading)
     
     private var observers = Set<AnyCancellable>()

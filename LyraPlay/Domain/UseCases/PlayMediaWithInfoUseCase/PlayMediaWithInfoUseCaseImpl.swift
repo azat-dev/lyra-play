@@ -37,7 +37,15 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
         self.pronounceTranslationsState = playMediaWithTranslationsUseCase.pronounceTranslationsState
     }
     
+    deinit {
+        observers.removeAll()
+    }
+    
+    // MARK: - Methods
+    
     public func prepare(session: PlayMediaWithInfoSession) async -> Result<Void, PlayMediaWithInfoUseCaseError> {
+        
+        observers.removeAll()
         
         state.value = .activeSession(session, .loading)
         
@@ -69,7 +77,32 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
 
         currentMediaInfo = info
         state.value = .activeSession(session, .loaded(.initial, info))
+        
+        startObservingState()
         return .success(())
+    }
+    
+    private func update(state: PlayMediaWithTranslationsUseCaseState) {
+        
+        guard let mediaInfo = currentMediaInfo else {
+            return
+        }
+        
+        switch state {
+            
+        case .noActiveSession:
+            self.state.value = .noActiveSession
+            
+        case .activeSession(let session, let playerState):
+            self.state.value = .activeSession(session.map(), playerState.map(withMediaInfo: mediaInfo))
+        }
+    }
+    
+    private func startObservingState() {
+        
+        playMediaWithTranslationsUseCase.state.sink { [weak self] state in
+            self?.update(state: state)
+        }.store(in: &observers)
     }
     
     public func resume() -> Result<Void, PlayMediaWithInfoUseCaseError> {
@@ -149,30 +182,36 @@ extension ShowMediaInfoUseCaseError {
 
 extension PlayMediaWithTranslationsUseCasePlayerState {
     
-    func map() -> PlayMediaWithInfoUseCasePlayerState {
+    func map(withMediaInfo mediaInfo: MediaInfo) -> PlayMediaWithInfoUseCaseLoadState {
         
         switch self {
         
         case .initial:
-            return .initial
+            return .loaded(.initial, mediaInfo)
         
         case .playing:
-            return .playing
+            return .loaded(.playing, mediaInfo)
             
         case .pronouncingTranslations:
-            return .pronouncingTranslations
+            return .loaded(.pronouncingTranslations, mediaInfo)
             
         case .paused:
-            return .paused
+            return .loaded(.paused, mediaInfo)
             
         case .stopped:
-            return .stopped
+            return .loaded(.stopped, mediaInfo)
             
         case .finished:
-            return .finished
+            return .loaded(.finished, mediaInfo)
             
-        case .loading, .loaded, .loadFailed:
-            fatalError()
+        case .loading:
+            return .loading
+            
+        case .loaded:
+            return .loaded(.initial, mediaInfo)
+            
+        case .loadFailed:
+            return .loadFailed
         }
     }
 }
@@ -187,5 +226,17 @@ extension Result where Failure == PlayMediaWithTranslationsUseCaseError {
         }
         
         return .success(value)
+    }
+}
+
+extension PlayMediaWithTranslationsSession {
+    
+    func map() -> PlayMediaWithInfoSession {
+        
+        return .init(
+            mediaId: mediaId,
+            learningLanguage: learningLanguage,
+            nativeLanguage: nativeLanguage
+        )
     }
 }
