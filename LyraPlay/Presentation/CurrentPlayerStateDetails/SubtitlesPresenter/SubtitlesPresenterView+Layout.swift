@@ -14,10 +14,10 @@ extension SubtitlesPresenterView {
         
         static func apply(
             view: UIView,
-            tableView: UITableView
+            collectionView: UICollectionView
         ) {
             
-            tableView.constraintTo(view: view)
+            collectionView.constraintTo(view: view)
         }
     }
 }

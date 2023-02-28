@@ -9,10 +9,10 @@ import Foundation
 import Combine
 import UIKit
 
-public final class SubtitlesPresenterView: UIView {
+public final class SubtitlesPresenterView: UIView, UICollectionViewDelegate {
     
     private var viewModelObserver: AnyCancellable?
-    private var tableView: UITableView!
+    private var collectionView: UICollectionView!
     
     public var viewModel: SubtitlesPresenterViewModel? {
         
@@ -65,12 +65,12 @@ extension SubtitlesPresenterView {
                 
                 if let activeSentenceIndex = newState.activeSentenceIndex {
                     
-                    guard self.tableView.numberOfSections > activeSentenceIndex else {
+                    guard self.collectionView.numberOfSections > activeSentenceIndex else {
                         return
                     }
                     
-                    let indexPath = IndexPath(row: 0, section: activeSentenceIndex)
-                    self.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+                    let indexPath = IndexPath(row: activeSentenceIndex, section: 0)
+                    self.collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
                 }
             }
     }
@@ -92,25 +92,64 @@ extension SubtitlesPresenterView: UITableViewDelegate {
 
 extension SubtitlesPresenterView {
     
+    private func createLayout() -> UICollectionViewLayout {
+        
+        let layout = UICollectionViewCompositionalLayout {
+            [weak self] (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
+
+            guard let self = self else {
+                return nil
+            }
+
+//            let insets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
+            
+            let itemSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .estimated(50)
+            )
+            
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            
+//            let groupSize = NSCollectionLayoutSize(
+//                widthDimension: .fractionalWidth(1.0),
+//                heightDimension: .estimated(20)
+//            )
+            
+            let group = NSCollectionLayoutGroup.horizontal(
+                layoutSize: itemSize,
+                subitems: [item]
+            )
+            
+//            group.interItemSpacing = .fixed(10)
+            
+            let section = NSCollectionLayoutSection(group: group)
+//            section.contentInsets = insets
+            
+//            section.interGroupSpacing = verticalSpacing
+            
+            
+            return section
+        }
+
+        return layout
+    }
+    
     private func setupViews() {
         
-        tableView = UITableView(
+        collectionView = UICollectionView(
             frame: frame,
-            style: .plain
+            collectionViewLayout: createLayout()
         )
         
-        tableView.register(
+        collectionView.register(
             RowCell.self,
-            forCellReuseIdentifier: RowCell.reuseIdentifier
+            forCellWithReuseIdentifier: RowCell.reuseIdentifier
         )
         
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.sectionHeaderHeight = 1
-        tableView.tableFooterView = nil
-        tableView.estimatedSectionFooterHeight = 0
+        collectionView.dataSource = self
+        collectionView.delegate = self
         
-        addSubview(tableView)
+        addSubview(collectionView)
     }
 }
 
@@ -122,7 +161,7 @@ extension SubtitlesPresenterView {
         
         Layout.apply(
             view: self,
-            tableView: tableView
+            collectionView: collectionView
         )
     }
 }
@@ -133,28 +172,23 @@ extension SubtitlesPresenterView {
     
     private func style() {
         
-        Styles.apply(tableView: tableView)
+        Styles.apply(collectionView: collectionView)
     }
 }
 
 // MARK: - Data Source
 
-extension SubtitlesPresenterView: UITableViewDataSource {
+extension SubtitlesPresenterView: UICollectionViewDataSource {
     
-    public func numberOfSections(in tableView: UITableView) -> Int {
-        
-        return viewModel?.state.value.rows.count ?? 0
-    }
-    
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
         
         return 1
     }
     
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: RowCell.reuseIdentifier,
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: RowCell.reuseIdentifier,
             for: indexPath
         )
         
@@ -165,10 +199,15 @@ extension SubtitlesPresenterView: UITableViewDataSource {
         }
         
         guard let rows = viewModel?.state.value.rows else {
-            fatalError("Can't find row at: \(indexPath.section)")
+            fatalError("Can't find row at: \(indexPath.item)")
         }
         
-        cell.viewModel = rows[indexPath.section]
+        cell.viewModel = rows[indexPath.item]
         return cell
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+
+        return viewModel?.state.value.rows.count ?? 0
     }
 }

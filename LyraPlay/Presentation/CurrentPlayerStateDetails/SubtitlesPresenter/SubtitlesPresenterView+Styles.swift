@@ -12,11 +12,10 @@ extension SubtitlesPresenterView {
     
     final class Styles {
         
-        static func apply(tableView: UITableView) {
+        static func apply(collectionView: UICollectionView) {
             
-            tableView.separatorStyle = .none
-            tableView.backgroundColor = .clear
-            tableView.backgroundView = nil
+            collectionView.backgroundColor = .clear
+            collectionView.backgroundView = nil
         }
     }
 }
