@@ -171,13 +171,12 @@ extension AudioPlayerImpl: AudioPlayerStateControllerDelegate {
             delegate: self
         )
         
+        activateAudioSession()
         return controller.runResumePlaying()
     }
     
     public func didResumePlaying(withController controller: PlayingAudioPlayerStateController) {
         
-        
-        activateAudioSession()
         currentStateController = controller
         
         state.value = .playing(session: controller.session.map())
@@ -208,12 +207,12 @@ extension AudioPlayerImpl: AudioPlayerStateControllerDelegate {
             delegate: self
         )
         
+        activateAudioSession()
         return controller.runPlaying(atTime: atTime)
     }
     
     public func didStartPlaying(withController controller: PlayingAudioPlayerStateController) {
         
-        activateAudioSession()
         currentStateController = controller
         
         state.value = .playing(session: controller.session.map())

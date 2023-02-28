@@ -13,7 +13,7 @@ public protocol PlaySubtitlesUseCaseDelegate: AnyObject {
     func playSubtitlesUseCaseWillChange(
         fromPosition: SubtitlesPosition?,
         toPosition: SubtitlesPosition?,
-        stop: inout Bool
+        interrupt: inout Bool
     )
     
     func playSubtitlesUseCaseDidChange(position: SubtitlesPosition?)

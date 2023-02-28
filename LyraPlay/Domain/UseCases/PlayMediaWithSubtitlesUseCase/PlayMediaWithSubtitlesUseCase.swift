@@ -59,7 +59,7 @@ public protocol PlayMediaWithSubtitlesUseCaseDelegate: AnyObject {
     func playMediaWithSubtitlesUseCaseWillChange(
         from: SubtitlesPosition?,
         to: SubtitlesPosition?,
-        stop: inout Bool
+        interrupt: inout Bool
     )
     
     func playMediaWithSubtitlesUseCaseDidChange(position: SubtitlesPosition?)
@@ -72,7 +72,7 @@ public extension PlayMediaWithSubtitlesUseCaseDelegate {
     func playMediaWithSubtitlesUseCaseWillChange(
         from: SubtitlesPosition?,
         to: SubtitlesPosition?,
-        stop: inout Bool
+        interrupt: inout Bool
     ) {}
     
     func playMediaWithSubtitlesUseCaseDidChange(position: SubtitlesPosition?) {}

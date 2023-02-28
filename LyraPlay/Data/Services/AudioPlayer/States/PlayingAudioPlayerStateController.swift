@@ -95,7 +95,9 @@ public class PlayingAudioPlayerStateController: NSObject, AVAudioPlayerDelegate,
         
         session.systemPlayer.delegate = self
         
-        guard session.systemPlayer.play(atTime: atTime) else {
+        guard
+            atTime == 0 ? session.systemPlayer.play() : session.systemPlayer.play(atTime: atTime)
+        else {
             session.systemPlayer.delegate = nil
             return .failure(.internalError(nil))
         }

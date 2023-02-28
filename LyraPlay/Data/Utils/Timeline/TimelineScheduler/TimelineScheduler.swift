@@ -13,7 +13,7 @@ public protocol TimelineSchedulerDelegateChanges: AnyObject {
     
     func schedulerDidChange(time: TimeInterval) -> Void
     
-    func schedulerWillChange(from: TimeInterval?, to: TimeInterval?, stop: inout Bool) -> Void
+    func schedulerWillChange(from: TimeInterval?, to: TimeInterval?, interrupt: inout Bool) -> Void
     
     func schedulerDidFinish()
     

@@ -96,7 +96,7 @@ extension PlayingPlayMediaWithTranslationsUseCaseStateController: PlayMediaWithS
     public func playMediaWithSubtitlesUseCaseWillChange(
         from fromPosition: SubtitlesPosition?,
         to: SubtitlesPosition?,
-        stop stopPlaying: inout Bool
+        interrupt stopPlaying: inout Bool
     ) {
         
         guard

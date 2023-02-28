@@ -19,11 +19,11 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
     
     private var startedAt: Date!
     private var baseOffset: TimeInterval = 0
-    private var deltaSum: TimeInterval = 0
     
     public var elapsedTime: TimeInterval {
         
-        return baseOffset + startedAt.timeIntervalSinceNow
+        print("elapsedTime = \(timeIntervalToString(Date.now.timeIntervalSince(startedAt) + baseOffset))")
+        return Date.now.timeIntervalSince(startedAt) + baseOffset
     }
     
     // MARK: - Initializers
@@ -76,15 +76,21 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
     
     private func change(to newTimeMark: TimeInterval, withDelta delta: TimeInterval) {
         
-        var stop = false
+        var interrupt = false
         
         delegateChanges?.schedulerWillChange(
             from: timeline.lastEventTime,
             to: newTimeMark,
-            stop: &stop
+            interrupt: &interrupt
         )
         
-        if stop {
+        if interrupt {
+//            delegate?.pause(
+//                elapsedTime: elapsedTime,
+//                timer: timer,
+//                timeline: timeline,
+//                delegateChanges: delegateChanges
+//            )
             return
         }
         
@@ -99,22 +105,25 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
             return
         }
         
-        let timeOffset = nextTimeMark - newTimeMark - delta
+        let timeOffset = max(nextTimeMark - elapsedTime, 0)
         
+        print(timeOffset)
+        
+        print(timeIntervalToString(nextTimeMark))
         timer.executeAfter(timeOffset) { [weak self] in
             
             guard let self = self else {
                 return
             }
             
-            let delta = self.startedAt.timeIntervalSinceNow - nextTimeMark
-            
+            let delta = Date.now.timeIntervalSince(self.startedAt) - nextTimeMark
             self.change(to: nextTimeMark, withDelta: delta)
         }
     }
     
     public func runExecution(from time: TimeInterval) {
         
+        print("runExecution \(timeIntervalToString(time))")
         self.baseOffset = time
         self.startedAt = .now
         
@@ -130,17 +139,28 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
         }
         
         self.startedAt = Date.now
+        
         delegate?.didStartExecuting(withController: self)
         
-        timer.executeAfter(nextTimeMark) { [weak self] in
+        let timeOffset = max(nextTimeMark - elapsedTime, 0)
+        
+        assert(timeOffset >= 0)
+        print(timeOffset)
+        print(timeIntervalToString(nextTimeMark))
+        timer.executeAfter(timeOffset) { [weak self] in
             
             guard let self = self else {
                 return
             }
             
-            let delta = self.startedAt.timeIntervalSinceNow - nextTimeMark
-            
+            let delta = Date.now.timeIntervalSince(self.startedAt) - nextTimeMark
             self.change(to: nextTimeMark, withDelta: delta)
         }
     }
+}
+
+func timeIntervalToString(_ interval: TimeInterval) -> String {
+    let minutes = Int(interval) / 60
+    let seconds = Int(interval) % 60
+    return String(format: "%02d:%02d", minutes, seconds)
 }
