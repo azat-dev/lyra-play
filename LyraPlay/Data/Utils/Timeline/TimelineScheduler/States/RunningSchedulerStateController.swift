@@ -22,7 +22,6 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
     
     public var elapsedTime: TimeInterval {
         
-        print("elapsedTime = \(timeIntervalToString(Date.now.timeIntervalSince(startedAt) + baseOffset))")
         return Date.now.timeIntervalSince(startedAt) + baseOffset
     }
     
@@ -85,12 +84,6 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
         )
         
         if interrupt {
-//            delegate?.pause(
-//                elapsedTime: elapsedTime,
-//                timer: timer,
-//                timeline: timeline,
-//                delegateChanges: delegateChanges
-//            )
             return
         }
         
@@ -107,9 +100,6 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
         
         let timeOffset = max(nextTimeMark - elapsedTime, 0)
         
-        print(timeOffset)
-        
-        print(timeIntervalToString(nextTimeMark))
         timer.executeAfter(timeOffset) { [weak self] in
             
             guard let self = self else {
@@ -123,7 +113,6 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
     
     public func runExecution(from time: TimeInterval) {
         
-        print("runExecution \(timeIntervalToString(time))")
         self.baseOffset = time
         self.startedAt = .now
         
@@ -143,10 +132,7 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
         delegate?.didStartExecuting(withController: self)
         
         let timeOffset = max(nextTimeMark - elapsedTime, 0)
-        
-        assert(timeOffset >= 0)
-        print(timeOffset)
-        print(timeIntervalToString(nextTimeMark))
+
         timer.executeAfter(timeOffset) { [weak self] in
             
             guard let self = self else {
@@ -157,10 +143,4 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
             self.change(to: nextTimeMark, withDelta: delta)
         }
     }
-}
-
-func timeIntervalToString(_ interval: TimeInterval) -> String {
-    let minutes = Int(interval) / 60
-    let seconds = Int(interval) % 60
-    return String(format: "%02d:%02d", minutes, seconds)
 }
