@@ -22,7 +22,7 @@ class PlayMediaWithInfoUseCaseTests: XCTestCase {
         showMediaInfoUseCase: ShowMediaInfoUseCaseMock,
         playMediaWithTranslationsUseCaseState: CurrentValueSubject<PlayMediaWithTranslationsUseCaseState, Never>,
         subtitlesState: CurrentValueSubject<SubtitlesState?, Never>,
-        pronounceTranslationsState: CurrentValueSubject<PronounceTranslationsUseCaseState?, Never>
+        pronounceTranslationsState: CurrentValueSubject<PronounceTranslationsUseCaseState, Never>
     )
     
     func createSUT() -> SUT {
@@ -43,7 +43,7 @@ class PlayMediaWithInfoUseCaseTests: XCTestCase {
         given(playMediaWithTranslationsUseCase.subtitlesState)
             .willReturn(subtitlesState)
         
-        let pronounceTranslationsState = CurrentValueSubject<PronounceTranslationsUseCaseState?, Never>(.stopped)
+        let pronounceTranslationsState = CurrentValueSubject<PronounceTranslationsUseCaseState, Never>(.stopped)
         
         given(playMediaWithTranslationsUseCase.pronounceTranslationsState)
             .willReturn(pronounceTranslationsState)

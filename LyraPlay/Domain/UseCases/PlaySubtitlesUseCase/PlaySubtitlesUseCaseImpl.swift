@@ -46,13 +46,18 @@ public final class PlaySubtitlesUseCaseImpl: PlaySubtitlesUseCase {
 
 extension PlaySubtitlesUseCaseImpl: TimelineSchedulerDelegateChanges {
     
-    public func schedulerWillChange(from: TimeInterval?, to: TimeInterval?, stop: inout Bool) {
+    public func schedulerWillChange(from: TimeInterval?, to: TimeInterval?, interrupt: inout Bool) {
         
         delegate?.playSubtitlesUseCaseWillChange(
             fromPosition: subtitlesIterator.currentPosition,
             toPosition: subtitlesIterator.getNextPosition(),
-            stop: &stop
+            interrupt: &interrupt
         )
+        
+        if interrupt {
+            
+            let _ = pause()
+        }
     }
     
     public func schedulerDidChange(time: TimeInterval) {

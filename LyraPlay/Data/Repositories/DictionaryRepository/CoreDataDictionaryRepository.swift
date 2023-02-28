@@ -155,8 +155,6 @@ extension CoreDataDictionaryRepository {
             value = originalText
         }
         
-        print("KEY: \(key)")
-        
         return NSComparisonPredicate(
             leftExpression: .init(forKeyPath: key),
             rightExpression: .init(forConstantValue: value),
@@ -201,6 +199,10 @@ extension CoreDataDictionaryRepository {
             
             let chunkEnd = min(chunkOffset + predicatesLimit, itemsFilters.count)
             let predicates = itemsFilters[chunkOffset..<chunkEnd].map { Self.predicate(for: $0) }
+            
+            if predicates.isEmpty {
+                break
+            }
             
             do {
                 

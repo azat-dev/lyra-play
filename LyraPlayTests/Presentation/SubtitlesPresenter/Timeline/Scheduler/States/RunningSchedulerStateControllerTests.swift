@@ -134,12 +134,12 @@ class RunningSchedulerStateControllerTests: XCTestCase {
         
         inOrder {
             
-            var stop = false
+            var interrupt = false
             
             verify(sut.delegate.didStartExecuting(withController: any()))
                 .wasCalled(1)
             
-            verify(sut.delegateChanges.schedulerWillChange(from: nil, to: startTime, stop: &stop))
+            verify(sut.delegateChanges.schedulerWillChange(from: nil, to: startTime, interrupt: &interrupt))
                 .wasCalled(1)
             
             verify(sut.delegateChanges.schedulerDidChange(time: startTime))
@@ -186,7 +186,7 @@ class RunningSchedulerStateControllerTests: XCTestCase {
                             sut.delegateChanges.schedulerWillChange(
                                 from: lastTime,
                                 to: time,
-                                stop: &stop
+                                interrupt: &stop
                             )
                         ).wasCalled(1)
                         

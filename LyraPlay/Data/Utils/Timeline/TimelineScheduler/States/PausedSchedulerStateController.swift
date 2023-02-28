@@ -75,5 +75,7 @@ public class PausedSchedulerStateController: TimelineSchedulerStateController {
         self.pasedAt = .now
         self.elapsedTime = elapsedTime
         timer.cancel()
+        
+        delegate?.didPause(withController: self)
     }
 }

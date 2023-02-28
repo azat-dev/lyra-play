@@ -158,7 +158,7 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
         
         let pronounceTranslationsUseCaseFactory = PronounceTranslationsUseCaseImplFactory(
             textToSpeechConverterFactory: textToSpeechConverterFactory,
-            audioPlayerFactory: mainAudioPlayerFactory
+            audioPlayerFactory: secondaryAudioPlayerFactory
         )
         
         let playMediaWithTranslationsUseCaseFactory = PlayMediaWithTranslationsUseCaseImplFactory(
