@@ -17,6 +17,8 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     
     private let activityIndicator = UIActivityIndicatorView()
     private let contentGroup = UIView()
+    private let infoGroup = UIView()
+    private let backgroundImageView = UIImageView()
     private let coverImageView = UIImageView()
     
     private let titleLabel = UILabel()
@@ -77,8 +79,11 @@ extension CurrentPlayerStateDetailsViewController {
         subtitleLabel.text = data.subtitle
         
         if let coverImage = data.coverImage {
+
+            let image = UIImage(data: coverImage)
             
-            coverImageView.image = UIImage(data: coverImage)
+            coverImageView.image = image
+            backgroundImageView.image = image
         }
         
         contentGroup.isHidden = false
@@ -129,11 +134,18 @@ extension CurrentPlayerStateDetailsViewController {
     
     private func setupViews() {
         
-        view.addSubview(coverImageView)
+        view.addSubview(backgroundImageView)
         view.addSubview(activityIndicator)
         
         view.addSubview(blurView)
         view.addSubview(subtitlesPresenterView)
+
+        infoGroup.addSubview(titleLabel)
+        infoGroup.addSubview(subtitleLabel)
+        infoGroup.addSubview(coverImageView)
+        
+        view.addSubview(infoGroup)
+        
     }
 }
 
@@ -141,10 +153,22 @@ extension CurrentPlayerStateDetailsViewController {
 extension CurrentPlayerStateDetailsViewController {
     
     private func layout() {
+        
+        Layout.apply(
+            infoGroup: infoGroup,
+            coverImageView: coverImageView,
+            titleLabel: titleLabel,
+            subtitleLabel: subtitleLabel
+        )
+        
+        Layout.apply(
+            contentView: view,
+            infoGroup: infoGroup
+        )
 
         Layout.apply(
             contentView: view,
-            coverImageView: coverImageView
+            backgroundImageView: backgroundImageView
         )
         
         Layout.apply(
@@ -172,7 +196,7 @@ extension CurrentPlayerStateDetailsViewController {
         
         Styles.apply(contentView: view)
         Styles.apply(activityIndicator: activityIndicator)
-        Styles.apply(coverImage: coverImageView)
+        Styles.apply(backgroundImageView: backgroundImageView)
         Styles.apply(slider: sliderView)
         
         Styles.apply(goForwardButton: goForwardButton)

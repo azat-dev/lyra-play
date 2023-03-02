@@ -65,7 +65,7 @@ extension CurrentPlayerStateDetailsViewController {
             blurView.effect = UIBlurEffect(style: .dark)
         }
         
-        static func apply(coverImage imageView: UIImageView) {
+        static func apply(backgroundImageView imageView: UIImageView) {
             
             imageView.layer.cornerRadius = cornerRadius
             imageView.contentMode = .scaleAspectFill
