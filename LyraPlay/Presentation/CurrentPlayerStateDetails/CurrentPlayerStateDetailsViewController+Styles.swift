@@ -11,11 +11,11 @@ import UIKit
 extension CurrentPlayerStateDetailsViewController {
     
     final class Styles {
-
+        
         // MARK: - Properties
         
         private static let colorBackground = UIColor(named: "Color.Background")
-        private static let cornerRadius: CGFloat = 20
+        private static let imageCornerRadius: CGFloat = 5
         
         static let imageConfig = UIImage.SymbolConfiguration(weight: .bold)
         
@@ -25,11 +25,28 @@ extension CurrentPlayerStateDetailsViewController {
         static let iconGoForward = UIImage(systemName: "goforward.30")
         static let iconGoBackward = UIImage(systemName: "gobackward.30")
         
-        static let fontTitle = Fonts.RedHatDisplay.semiBold.preferred(with: .headline)
-        static let fontSubtitle = Fonts.RedHatDisplay.regular.preferred(with: .subheadline)
+        static let fontTitle = Fonts.RedHatDisplay.bold.preferred(with: .headline)
+        static let fontSubtitle = Fonts.RedHatDisplay.semiBold.preferred(with: .subheadline)
         
         static let colorTrackMinimum = UIColor(named: "Color.Slider.Track.Minimum")
         static let colorTrackMaximum = UIColor(named: "Color.Slider.Track.Maximum")
+        
+        static let shadowColor = UIColor(red: 0.094, green: 0.153, blue: 0.3, alpha: 1)
+        
+        static var imageShape: ShapeCallback {
+            get {
+                let callback: ShapeCallback = { view in
+                    return CGPath(
+                        roundedRect: view.bounds,
+                        cornerWidth: self.imageCornerRadius,
+                        cornerHeight: self.imageCornerRadius,
+                        transform: nil
+                    )
+                }
+                
+                return callback
+            }
+        }
         
         // MARK: - Methods
         
@@ -47,6 +64,7 @@ extension CurrentPlayerStateDetailsViewController {
         static func apply(subtitleLabel label: UILabel) {
             
             label.textAlignment = .left
+            label.layer.opacity = 0.5
             label.font = fontSubtitle
         }
         
@@ -62,12 +80,27 @@ extension CurrentPlayerStateDetailsViewController {
         
         static func apply(blurView: UIVisualEffectView) {
             
-            blurView.effect = UIBlurEffect(style: .dark)
+            blurView.effect = UIBlurEffect(style: .systemThinMaterialDark)
+        }
+        
+        static func apply(coverImageView shadowedImageView: ImageViewShadowed) {
+            
+            shadowedImageView.shadowView.shadows = [
+                ShadowView.ShadowParams(
+                    color: Self.shadowColor.cgColor,
+                    opacity: 0.55,
+                    radius: 10,
+                    offset: CGSize(width: 0, height: 8)
+                ),
+            ]
+            
+            shadowedImageView.containerView.shape = Self.imageShape
+            shadowedImageView.shadowView.shape = Self.imageShape
         }
         
         static func apply(backgroundImageView imageView: UIImageView) {
             
-            imageView.layer.cornerRadius = cornerRadius
+            imageView.layer.cornerRadius = imageCornerRadius
             imageView.contentMode = .scaleAspectFill
             imageView.clipsToBounds = true
         }
@@ -103,7 +136,7 @@ extension CurrentPlayerStateDetailsViewController {
         }
         
         static func apply(slider: UISlider) {
-
+            
             slider.minimumTrackTintColor = colorTrackMinimum
             slider.maximumTrackTintColor = colorTrackMaximum
         }

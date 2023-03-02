@@ -19,7 +19,7 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     private let contentGroup = UIView()
     private let infoGroup = UIView()
     private let backgroundImageView = UIImageView()
-    private let coverImageView = UIImageView()
+    private let coverImageView = ImageViewShadowed()
     
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
@@ -82,7 +82,7 @@ extension CurrentPlayerStateDetailsViewController {
 
             let image = UIImage(data: coverImage)
             
-            coverImageView.image = image
+            coverImageView.imageView.image = image
             backgroundImageView.image = image
         }
         
@@ -196,6 +196,7 @@ extension CurrentPlayerStateDetailsViewController {
         
         Styles.apply(contentView: view)
         Styles.apply(activityIndicator: activityIndicator)
+        Styles.apply(coverImageView: coverImageView)
         Styles.apply(backgroundImageView: backgroundImageView)
         Styles.apply(slider: sliderView)
         

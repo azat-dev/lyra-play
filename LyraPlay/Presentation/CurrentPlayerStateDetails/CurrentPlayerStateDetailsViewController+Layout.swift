@@ -77,16 +77,19 @@ extension CurrentPlayerStateDetailsViewController {
             infoGroup: UIView
         ) {
             
-            infoGroup.constraintToHorizontalEdges(of: contentView)
+            infoGroup.translatesAutoresizingMaskIntoConstraints = false
             
             NSLayoutConstraint.activate([
-                infoGroup.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor)
+                
+                infoGroup.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 20),
+                infoGroup.leftAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leftAnchor, constant: 20),
+                infoGroup.rightAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.rightAnchor, constant: -20)
             ])
         }
         
         static func apply(
             infoGroup: UIView,
-            coverImageView: UIImageView,
+            coverImageView: ImageViewShadowed,
             titleLabel: UILabel,
             subtitleLabel: UILabel
         ) {
@@ -114,7 +117,7 @@ extension CurrentPlayerStateDetailsViewController {
                 titleGroup.topAnchor.constraint(equalTo: infoGroup.topAnchor),
                 titleGroup.bottomAnchor.constraint(equalTo: infoGroup.bottomAnchor),
                 titleGroup.leftAnchor.constraint(equalTo: coverImageView.rightAnchor, constant: 10),
-                titleGroup.rightAnchor.constraint(equalTo: infoGroup.rightAnchor, constant: 10),
+                titleGroup.rightAnchor.constraint(equalTo: infoGroup.rightAnchor),
             ])
             
             NSLayoutConstraint.activate([
