@@ -139,6 +139,9 @@ extension CurrentPlayerStateDetailsViewController {
             
             slider.minimumTrackTintColor = colorTrackMinimum
             slider.maximumTrackTintColor = colorTrackMaximum
+            slider.thumbTintColor = .white
+            slider.minimumTrackTintColor = .white
+            slider.maximumTrackTintColor = .gray
         }
     }
 }
