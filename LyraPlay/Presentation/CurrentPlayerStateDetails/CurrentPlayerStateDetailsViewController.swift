@@ -91,6 +91,12 @@ extension CurrentPlayerStateDetailsViewController {
         activityIndicator.stopAnimating()
         
         subtitlesPresenterView.viewModel = data.subtitlesPresenterViewModel
+        
+        if data.isPlaying {
+            Styles.apply(pauseButton: togglePlayButton)
+        } else {
+            Styles.apply(playButton: togglePlayButton)
+        }
     }
     
     private func updateLoadingState() {
@@ -133,7 +139,18 @@ extension CurrentPlayerStateDetailsViewController {
         viewModel.togglePlay()
     }
     
+    private func setupTogglePlayButton() {
+        
+        let tapRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.didTapTogglePlayButton))
+        
+        togglePlayButton.addGestureRecognizer(tapRecognizer)
+    }
+    
     private func setupViews() {
+        
+        setupTogglePlayButton()
         
         view.addSubview(backgroundImageView)
         view.addSubview(activityIndicator)
