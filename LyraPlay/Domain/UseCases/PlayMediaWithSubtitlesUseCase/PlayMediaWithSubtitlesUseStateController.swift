@@ -8,4 +8,8 @@
 import Foundation
 
 public protocol PlayMediaWithSubtitlesUseStateController: PlayMediaWithSubtitlesUseCaseInput {
+    
+    var currentTime: TimeInterval { get }
+    
+    var duration: TimeInterval { get }
 }

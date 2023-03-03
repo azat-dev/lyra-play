@@ -14,6 +14,14 @@ public class LoadedPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubtit
     public let session: PlayMediaWithSubtitlesUseStateControllerActiveSession
     public weak var delegate: PlayMediaWithSubtitlesUseStateControllerDelegate?
     
+    public var currentTime: TimeInterval {
+        return session.playMediaUseCase.currentTime
+    }
+    
+    public var duration: TimeInterval {
+        return session.playMediaUseCase.duration
+    }
+    
     // MARK: - Initializers
     
     public init(

@@ -9,4 +9,7 @@ import Foundation
 
 public protocol PlayMediaUseCaseStateController: PlayMediaUseCaseInput {
     
+    var currentTime: TimeInterval { get }
+    
+    var duration: TimeInterval { get }
 }

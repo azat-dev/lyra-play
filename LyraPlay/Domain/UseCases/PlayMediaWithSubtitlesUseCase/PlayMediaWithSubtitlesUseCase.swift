@@ -87,6 +87,10 @@ public protocol PlayMediaWithSubtitlesUseCaseOutput: AnyObject {
     var subtitlesState: CurrentValueSubject<SubtitlesState?, Never> { get }
 
     var delegate: PlayMediaWithSubtitlesUseCaseDelegate? { get set }
+    
+    var currentTime: TimeInterval { get }
+    
+    var duration: TimeInterval { get }
 }
 
 public protocol PlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCaseOutput, PlayMediaWithSubtitlesUseCaseInput {

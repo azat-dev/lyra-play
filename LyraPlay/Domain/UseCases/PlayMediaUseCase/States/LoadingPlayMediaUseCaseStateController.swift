@@ -17,6 +17,9 @@ public class LoadingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
     private let loadTrackUseCaseFactory: LoadTrackUseCaseFactory
     private let audioPlayerFactory: AudioPlayerFactory
     
+    public let currentTime: TimeInterval = 0
+    public let duration: TimeInterval = 0
+    
     // MARK: - Initializers
     
     public init(

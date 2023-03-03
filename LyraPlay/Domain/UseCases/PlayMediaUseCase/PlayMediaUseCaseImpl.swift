@@ -9,7 +9,6 @@ import Foundation
 import Combine
 
 public class PlayMediaUseCaseImpl: PlayMediaUseCase, PlayMediaUseCaseStateControllerDelegate {
-    
 
     private struct CurrentState {
         
@@ -18,6 +17,14 @@ public class PlayMediaUseCaseImpl: PlayMediaUseCase, PlayMediaUseCaseStateContro
     }
     
     // MARK: - Properties
+    
+    public var currentTime: TimeInterval {
+        return currentStateController.currentTime
+    }
+    
+    public var duration: TimeInterval {
+        return currentStateController.currentTime
+    }
     
     public lazy var state: CurrentValueSubject<PlayMediaUseCaseState, Never> = {
         
