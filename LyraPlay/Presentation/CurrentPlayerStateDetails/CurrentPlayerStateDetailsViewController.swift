@@ -145,6 +145,7 @@ extension CurrentPlayerStateDetailsViewController {
             target: self,
             action: #selector(self.didTapTogglePlayButton))
         
+        togglePlayButton.isUserInteractionEnabled = true
         togglePlayButton.addGestureRecognizer(tapRecognizer)
     }
     

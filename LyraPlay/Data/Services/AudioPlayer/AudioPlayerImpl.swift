@@ -19,6 +19,14 @@ public final class AudioPlayerImpl: NSObject, AudioPlayer {
     
     public var state: CurrentValueSubject<AudioPlayerState, Never> = .init(.initial)
     
+    public var currentTime: TimeInterval {
+        return currentStateController.currentTime
+    }
+    
+    public var duration: TimeInterval {
+        return currentStateController.duration
+    }
+    
     private lazy var currentStateController: AudioPlayerStateController = {
         
         InitialAudioPlayerStateController(delegate: self)

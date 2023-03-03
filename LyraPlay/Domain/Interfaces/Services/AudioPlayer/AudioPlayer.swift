@@ -45,6 +45,10 @@ public protocol AudioPlayerInput: AnyObject {
 public protocol AudioPlayerOutput: AnyObject {
     
     var state: CurrentValueSubject<AudioPlayerState, Never> { get }
+    
+    var duration: TimeInterval { get }
+    
+    var currentTime: TimeInterval { get }
 }
 
 public protocol AudioPlayer: AudioPlayerOutput, AudioPlayerInput {}
