@@ -24,6 +24,14 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
     
     private var observers = Set<AnyCancellable>()
     
+    public var currentTime: TimeInterval {
+        return playMediaWithTranslationsUseCase.currentTime
+    }
+    
+    public var duration: TimeInterval {
+        return playMediaWithTranslationsUseCase.duration
+    }
+    
     // MARK: - Initializers
     
     public init(

@@ -12,7 +12,15 @@ public class LoadedPlayMediaWithTranslationsUseCaseStateController: PlayMediaWit
     // MARK: - Properties
 
     public let session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession
-    public weak var delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate? 
+    public weak var delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate?
+    
+    public var currentTime: TimeInterval {
+        return session.playMediaUseCase.currentTime
+    }
+    
+    public var duration: TimeInterval {
+        return session.playMediaUseCase.duration
+    }
 
     // MARK: - Initializers
 

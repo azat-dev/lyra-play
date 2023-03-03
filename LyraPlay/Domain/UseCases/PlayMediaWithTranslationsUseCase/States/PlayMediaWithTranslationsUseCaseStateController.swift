@@ -9,4 +9,7 @@ import Foundation
 
 public protocol PlayMediaWithTranslationsUseCaseStateController: AnyObject, PlayMediaWithTranslationsUseCaseInput {
     
+    var currentTime: TimeInterval { get }
+    
+    var duration: TimeInterval { get }
 }

@@ -64,6 +64,10 @@ public protocol PlayMediaWithTranslationsUseCaseOutput {
     var state: CurrentValueSubject<PlayMediaWithTranslationsUseCaseState, Never> { get }
     
     var pronounceTranslationsState: CurrentValueSubject<PronounceTranslationsUseCaseState, Never> { get }
+    
+    var currentTime: TimeInterval { get }
+    
+    var duration: TimeInterval { get }
 }
 
 public protocol PlayMediaWithTranslationsUseCase: PlayMediaWithTranslationsUseCaseOutput, PlayMediaWithTranslationsUseCaseInput {}

@@ -18,6 +18,14 @@ public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslatio
     
     public let pronounceTranslationsState = CurrentValueSubject<PronounceTranslationsUseCaseState, Never>(.stopped)
     
+    public var currentTime: TimeInterval {
+        return currentController.currentTime
+    }
+    
+    public var duration: TimeInterval {
+        return currentController.duration
+    }
+    
     private lazy var currentController: PlayMediaWithTranslationsUseCaseStateController = {
         
         return InitialPlayMediaWithTranslationsUseCaseStateController(delegate: self)
