@@ -367,6 +367,23 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
             currentPlayerStateDetailsFlowModelFactory: currentPlayerStateDetailsFlowModelFactory
         )
         
+        mainFlowModel.runLibraryFlow()
+        mainFlowModel.libraryFlow.value?.runOpenLibraryItemFlow(itemId: UUID(uuidString: "0B746729-8F81-43AE-BA44-338FC9DF9E95")!)
+        switch mainFlowModel.libraryFlow.value?.libraryItemFlow.value {
+            
+        case .file(let fileFlowModel):
+            
+            Task {
+                
+                await fileFlowModel.viewModel.togglePlay()
+            }
+        case .none:
+            break
+        }
+        
+        
+        mainFlowModel.runOpenCurrentPlayerStateDetailsFlow()
+        
         let deepLinksHandlerFactory = DeepLinksHandlerFlowModelImplFactory(
             dictionaryArchiveExtension: settings.dictionaryArchiveExtension
         )

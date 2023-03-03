@@ -24,9 +24,10 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
     
+    private let controlsGroup = UIView()
     private let sliderView = UISlider()
     
-    private let buttonsGroup = UIView()
+    private let togglePlayButton = UIImageView()
     private let goForwardButton = UIImageView()
     private let goBackwardButton = UIImageView()
     
@@ -146,6 +147,12 @@ extension CurrentPlayerStateDetailsViewController {
         
         view.addSubview(infoGroup)
         
+        controlsGroup.addSubview(sliderView)
+        controlsGroup.addSubview(goBackwardButton)
+        controlsGroup.addSubview(togglePlayButton)
+        controlsGroup.addSubview(goForwardButton)
+        
+        view.addSubview(controlsGroup)
     }
 }
 
@@ -185,6 +192,19 @@ extension CurrentPlayerStateDetailsViewController {
             contentView: view,
             blurView: blurView
         )
+        
+        Layout.apply(
+            contentView: view,
+            controlsGroup: controlsGroup
+        )
+        
+        Layout.apply(
+            controlsGroup: controlsGroup,
+            sliderView: sliderView,
+            togglePlayButton: togglePlayButton,
+            goBackwardButton: goBackwardButton,
+            goForwardButton: goForwardButton
+        )
     }
 }
 
@@ -198,9 +218,10 @@ extension CurrentPlayerStateDetailsViewController {
         Styles.apply(activityIndicator: activityIndicator)
         Styles.apply(coverImageView: coverImageView)
         Styles.apply(backgroundImageView: backgroundImageView)
-        Styles.apply(slider: sliderView)
         
+        Styles.apply(slider: sliderView)
         Styles.apply(goForwardButton: goForwardButton)
+        Styles.apply(playButton: togglePlayButton)
         Styles.apply(goBackwardButton: goBackwardButton)
         
         Styles.apply(titleLabel: titleLabel)

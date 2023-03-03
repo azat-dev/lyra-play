@@ -135,5 +135,67 @@ extension CurrentPlayerStateDetailsViewController {
                 subtitleLabel.bottomAnchor.constraint(equalTo: titleGroup.bottomAnchor),
             ])
         }
+        
+        static func apply(
+            controlsGroup: UIView,
+            sliderView: UISlider,
+            togglePlayButton: UIImageView,
+            goBackwardButton: UIImageView,
+            goForwardButton: UIImageView
+        ) {
+            
+            sliderView.translatesAutoresizingMaskIntoConstraints = false
+            togglePlayButton.translatesAutoresizingMaskIntoConstraints = false
+            goBackwardButton.translatesAutoresizingMaskIntoConstraints = false
+            goForwardButton.translatesAutoresizingMaskIntoConstraints = false
+            
+            let buttonsGroup = UILayoutGuide()
+            controlsGroup.addLayoutGuide(buttonsGroup)
+            
+            NSLayoutConstraint.activate([
+                sliderView.leftAnchor.constraint(equalTo: controlsGroup.leftAnchor),
+                sliderView.rightAnchor.constraint(equalTo: controlsGroup.rightAnchor),
+                sliderView.topAnchor.constraint(equalTo: controlsGroup.topAnchor),
+                
+                buttonsGroup.topAnchor.constraint(equalTo: sliderView.bottomAnchor, constant: 10),
+                buttonsGroup.leftAnchor.constraint(equalTo: controlsGroup.leftAnchor),
+                buttonsGroup.rightAnchor.constraint(equalTo: controlsGroup.rightAnchor),
+                buttonsGroup.bottomAnchor.constraint(equalTo: controlsGroup.bottomAnchor),
+            ])
+            
+            NSLayoutConstraint.activate([
+                
+                togglePlayButton.centerXAnchor.constraint(equalTo: buttonsGroup.centerXAnchor),
+                togglePlayButton.topAnchor.constraint(equalTo: buttonsGroup.topAnchor),
+                togglePlayButton.bottomAnchor.constraint(equalTo: buttonsGroup.bottomAnchor),
+                togglePlayButton.heightAnchor.constraint(equalTo: togglePlayButton.widthAnchor),
+                togglePlayButton.heightAnchor.constraint(equalToConstant: Self.buttonSize),
+                
+                goBackwardButton.rightAnchor.constraint(equalTo: togglePlayButton.leftAnchor, constant: -30),
+                goBackwardButton.heightAnchor.constraint(equalTo: goBackwardButton.widthAnchor),
+                goBackwardButton.heightAnchor.constraint(equalToConstant: Self.buttonSize),
+                goBackwardButton.centerYAnchor.constraint(equalTo: togglePlayButton.centerYAnchor),
+                
+                goForwardButton.leftAnchor.constraint(equalTo: togglePlayButton.rightAnchor, constant: 30),
+                goForwardButton.heightAnchor.constraint(equalTo: goForwardButton.widthAnchor),
+                goForwardButton.heightAnchor.constraint(equalToConstant: Self.buttonSize),
+                goForwardButton.centerYAnchor.constraint(equalTo: togglePlayButton.centerYAnchor),
+            ])
+        }
+        
+        static func apply(
+            contentView: UIView,
+            controlsGroup: UIView
+        ) {
+            
+            controlsGroup.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([
+                controlsGroup.leftAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leftAnchor, constant: 10),
+                controlsGroup.rightAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.rightAnchor, constant: -10),
+                controlsGroup.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor),
+            ])
+        }
     }
+    
 }
