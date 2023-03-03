@@ -65,7 +65,7 @@ extension SubtitlesPresenterView {
                 
                 if let activeSentenceIndex = newState.activeSentenceIndex {
                     
-                    guard self.collectionView.numberOfSections > activeSentenceIndex else {
+                    guard self.collectionView.numberOfItems(inSection: 0) > activeSentenceIndex else {
                         return
                     }
                     
@@ -73,20 +73,6 @@ extension SubtitlesPresenterView {
                     self.collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
                 }
             }
-    }
-}
-
-// MARK: - Setup Views
-
-extension SubtitlesPresenterView: UITableViewDelegate {
-    
-    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0
-    }
-    
-    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        
-        return 25
     }
 }
 
