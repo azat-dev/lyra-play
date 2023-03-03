@@ -45,6 +45,10 @@ public protocol PlayMediaUseCaseInput: AnyObject {
 public protocol PlayMediaUseCaseOutput: AnyObject {
 
     var state: CurrentValueSubject<PlayMediaUseCaseState, Never> { get }
+    
+    var currentTime: TimeInterval { get }
+    
+    var duration: TimeInterval { get }
 }
 
 public protocol PlayMediaUseCase: PlayMediaUseCaseOutput, PlayMediaUseCaseInput {}

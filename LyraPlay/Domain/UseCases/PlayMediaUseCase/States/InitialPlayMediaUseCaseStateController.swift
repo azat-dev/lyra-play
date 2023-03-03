@@ -13,6 +13,10 @@ public class InitialPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
     
     private weak var delegate: PlayMediaUseCaseStateControllerDelegate?
     
+    public let currentTime: TimeInterval = 0
+    
+    public let duration: TimeInterval = 0
+    
     // MARK: - Initializers
 
     public init(

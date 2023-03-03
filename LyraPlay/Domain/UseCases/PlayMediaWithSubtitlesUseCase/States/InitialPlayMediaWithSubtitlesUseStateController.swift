@@ -13,6 +13,10 @@ public class InitialPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubti
     
     public weak var delegate: PlayMediaWithSubtitlesUseStateControllerDelegate?
     
+    public let currentTime: TimeInterval = 0
+    
+    public let duration: TimeInterval = 0
+    
     // MARK: - Initializers
     
     public init(delegate: PlayMediaWithSubtitlesUseStateControllerDelegate) {

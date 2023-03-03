@@ -20,6 +20,14 @@ public final class PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseC
         return InitialPlayMediaWithSubtitlesUseStateController(delegate: self)
     } ()
     
+    public var currentTime: TimeInterval {
+        return currentStateController.currentTime
+    }
+    
+    public var duration: TimeInterval {
+        return currentStateController.duration
+    }
+    
     private var observers = Set<AnyCancellable>()
     
     public weak var delegate: PlayMediaWithSubtitlesUseCaseDelegate?

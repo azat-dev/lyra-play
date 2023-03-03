@@ -15,6 +15,14 @@ public class LoadedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
     public let audioPlayer: AudioPlayer
     public weak var delegate: PlayMediaUseCaseStateControllerDelegate?
     
+    public var currentTime: TimeInterval {
+        return audioPlayer.currentTime
+    }
+    
+    public var duration: TimeInterval {
+        return audioPlayer.duration
+    }
+    
     // MARK: - Initializers
 
     public init(
