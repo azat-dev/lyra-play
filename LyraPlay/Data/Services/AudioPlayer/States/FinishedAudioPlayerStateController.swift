@@ -15,6 +15,14 @@ public class FinishedAudioPlayerStateController: AudioPlayerStateController {
     private let session: ActiveAudioPlayerStateControllerSession
     public weak var delegate: AudioPlayerStateControllerDelegate?
     
+    public var currentTime: TimeInterval {
+        return session.systemPlayer.currentTime
+    }
+    
+    public var duration: TimeInterval {
+        return session.systemPlayer.duration
+    }
+    
     // MARK: - Initializers
     
     public init(

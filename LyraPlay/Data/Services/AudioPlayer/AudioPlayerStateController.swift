@@ -10,6 +10,14 @@ import AVFAudio
 
 public protocol AudioPlayerStateController {
     
+    // MARK: - Properties
+    
+    var currentTime: TimeInterval { get }
+    
+    var duration: TimeInterval { get }
+    
+    // MARK: - Methods
+    
     func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioPlayerError>
     
     func resume() -> Result<Void, AudioPlayerError>

@@ -14,6 +14,10 @@ public class InitialAudioPlayerStateController: NSObject, AudioPlayerStateContro
     
     private weak var delegate: AudioPlayerStateControllerDelegate?
     
+    public let currentTime: TimeInterval = 0
+    
+    public let duration: TimeInterval = 0
+    
     // MARK: - Initializers
     
     public init(delegate: AudioPlayerStateControllerDelegate) {
