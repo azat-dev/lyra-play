@@ -15,6 +15,14 @@ public final class PlayingTranslationsPlayMediaWithTranslationsUseCaseStateContr
     private let session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession
     private weak var delegate: PlayMediaWithTranslationsUseCaseStateControllerDelegate?
     
+    public var currentTime: TimeInterval {
+        return session.playMediaUseCase.currentTime
+    }
+    
+    public var duration: TimeInterval {
+        return session.playMediaUseCase.duration
+    }
+    
     // MARK: - Initializers
     
     public init(

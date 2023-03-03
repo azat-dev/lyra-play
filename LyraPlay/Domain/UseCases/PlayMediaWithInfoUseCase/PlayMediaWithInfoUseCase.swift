@@ -65,6 +65,10 @@ public protocol PlayMediaWithInfoUseCaseOutput: AnyObject {
     var subtitlesState: CurrentValueSubject<SubtitlesState?, Never> { get }
     
     var pronounceTranslationsState: CurrentValueSubject<PronounceTranslationsUseCaseState, Never> { get }
+    
+    var currentTime: TimeInterval { get }
+
+    var duration: TimeInterval { get }
 }
 
 public protocol PlayMediaWithInfoUseCase: PlayMediaWithInfoUseCaseOutput, PlayMediaWithInfoUseCaseInput {}

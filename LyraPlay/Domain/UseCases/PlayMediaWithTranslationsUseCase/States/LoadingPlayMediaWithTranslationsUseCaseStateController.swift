@@ -18,6 +18,9 @@ public final class LoadingPlayMediaWithTranslationsUseCaseStateController: PlayM
     public let provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory
     public let pronounceTranslationsUseCaseFactory: PronounceTranslationsUseCaseFactory
     
+    public let currentTime: TimeInterval = 0
+    public let duration: TimeInterval = 0
+    
     // MARK: - Initializers
     
     public init(
