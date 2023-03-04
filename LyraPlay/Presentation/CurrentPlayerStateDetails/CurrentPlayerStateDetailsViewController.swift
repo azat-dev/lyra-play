@@ -245,6 +245,8 @@ extension CurrentPlayerStateDetailsViewController {
         
         Layout.apply(
             contentView: view,
+            infoGroup: infoGroup,
+            controlsGroup: controlsGroup,
             subtitlesPresenterView: subtitlesPresenterView
         )
 

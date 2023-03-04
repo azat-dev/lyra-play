@@ -60,6 +60,8 @@ extension CurrentPlayerStateDetailsViewController {
         
         static func apply(
             contentView: UIView,
+            infoGroup: UIView,
+            controlsGroup: UIView,
             subtitlesPresenterView: SubtitlesPresenterView
         ) {
             
@@ -67,8 +69,8 @@ extension CurrentPlayerStateDetailsViewController {
             subtitlesPresenterView.constraintToHorizontalEdges(of: contentView)
             
             NSLayoutConstraint.activate([
-                subtitlesPresenterView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor),
-                subtitlesPresenterView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+                subtitlesPresenterView.topAnchor.constraint(equalTo: infoGroup.bottomAnchor),
+                subtitlesPresenterView.bottomAnchor.constraint(equalTo: controlsGroup.topAnchor)
             ])
         }
         
