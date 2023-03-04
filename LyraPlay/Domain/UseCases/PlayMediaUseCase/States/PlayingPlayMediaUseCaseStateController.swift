@@ -8,25 +8,41 @@
 import Foundation
 import Combine
 
-public class PlayingPlayMediaUseCaseStateController: LoadedPlayMediaUseCaseStateController {
+public class PlayingPlayMediaUseCaseStateController: PlayMediaUseCaseStateController {
 
     // MARK: - Properties
+    
+    public let mediaId: UUID
+    public let audioPlayer: AudioPlayer
+    public weak var delegate: PlayMediaUseCaseStateControllerDelegate?
+    
+    public var currentTime: TimeInterval {
+        return audioPlayer.currentTime
+    }
+    
+    public var duration: TimeInterval {
+        return audioPlayer.duration
+    }
+    
+    private let updatePlayedTimeUseCaseFactory: UpdatePlayedTimeUseCaseFactory
+    private var timer: DispatchSourceTimer?
     
     private var observers = Set<AnyCancellable>()
     
     // MARK: - Initializers
     
-    public override init(
+    public init(
         mediaId: UUID,
         audioPlayer: AudioPlayer,
-        delegate: PlayMediaUseCaseStateControllerDelegate
+        delegate: PlayMediaUseCaseStateControllerDelegate,
+        updatePlayedTimeUseCaseFactory: UpdatePlayedTimeUseCaseFactory
     ) {
         
-        super.init(
-            mediaId: mediaId,
-            audioPlayer: audioPlayer,
-            delegate: delegate
-        )
+        self.updatePlayedTimeUseCaseFactory = updatePlayedTimeUseCaseFactory
+        
+        self.mediaId = mediaId
+        self.audioPlayer = audioPlayer
+        self.delegate = delegate
         
         audioPlayer.state.sink { [weak self] state in
         
@@ -46,14 +62,31 @@ public class PlayingPlayMediaUseCaseStateController: LoadedPlayMediaUseCaseState
         }.store(in: &observers)
     }
     
+    deinit {
+        timer?.cancel()
+        timer = nil
+    }
+    
     // MARK: - Methods
     
-    public override func resume() -> Result<Void, PlayMediaUseCaseError> {
+    public func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError> {
+        
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        stopUpdatingPlayedTime()
+        updatePlayedTime()
+        
+        return await delegate.load(mediaId: mediaId)
+    }
+    
+    public func resume() -> Result<Void, PlayMediaUseCaseError> {
         
         return .success(())
     }
     
-    public override func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError> {
+    public func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError> {
         
         guard let delegate = delegate else {
             return .failure(.internalError(nil))
@@ -66,11 +99,14 @@ public class PlayingPlayMediaUseCaseStateController: LoadedPlayMediaUseCaseState
         )
     }
     
-    public override func pause() -> Result<Void, PlayMediaUseCaseError> {
+    public func pause() -> Result<Void, PlayMediaUseCaseError> {
         
         guard let delegate = delegate else {
             return .failure(.internalError(nil))
         }
+        
+        stopUpdatingPlayedTime()
+        updatePlayedTime()
         
         return delegate.pause(
             mediaId: mediaId,
@@ -78,8 +114,53 @@ public class PlayingPlayMediaUseCaseStateController: LoadedPlayMediaUseCaseState
         )
     }
     
-    public override func togglePlay() -> Result<Void, PlayMediaUseCaseError> {
+    public func togglePlay() -> Result<Void, PlayMediaUseCaseError> {
         return pause()
+    }
+    
+    private func updatePlayedTime() {
+        
+        Task {
+            let updatePlayedTimeUseCase = updatePlayedTimeUseCaseFactory.make()
+            
+            let _ = await updatePlayedTimeUseCase.updatePlayedTime(
+                for: mediaId,
+                time: audioPlayer.currentTime
+            )
+        }
+    }
+    
+    private func stopUpdatingPlayedTime() {
+        timer?.cancel()
+        timer = nil
+    }
+    
+    public func stop() -> Result<Void, PlayMediaUseCaseError> {
+        
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        stopUpdatingPlayedTime()
+        updatePlayedTime()
+        
+        return delegate.stop(
+            mediaId: mediaId,
+            audioPlayer: audioPlayer
+        )
+    }
+    
+    private func startUpdatingPlayedTime() {
+        
+        let timer = DispatchSource.makeTimerSource(queue: DispatchQueue.global())
+        self.timer = timer
+        
+        timer.schedule(deadline: .now(), repeating: .seconds(1))
+        
+        timer.setEventHandler { [weak self] in
+            self?.updatePlayedTime()
+        }
+        timer.resume()
     }
     
     public func runResumePlaying() -> Result<Void, PlayMediaUseCaseError> {
@@ -90,6 +171,7 @@ public class PlayingPlayMediaUseCaseStateController: LoadedPlayMediaUseCaseState
             return result.mapResult()
         }
         
+        startUpdatingPlayedTime()
         delegate?.didResumePlaying(withController: self)
         return .success(())
     }
@@ -102,6 +184,7 @@ public class PlayingPlayMediaUseCaseStateController: LoadedPlayMediaUseCaseState
             return result.mapResult()
         }
         
+        startUpdatingPlayedTime()
         delegate?.didStartPlay(withController: self)
         return .success(())
     }
