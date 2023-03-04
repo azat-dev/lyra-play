@@ -37,9 +37,13 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     
     private var observers = Set<AnyCancellable>()
     
+    private var timer: Timer?
+    
     // MARK: - Initializers
     
-    public init(viewModel: CurrentPlayerStateDetailsViewModel) {
+    public init(
+        viewModel: CurrentPlayerStateDetailsViewModel
+    ) {
         
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -51,6 +55,7 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     
     deinit {
         observers.removeAll()
+        timer?.invalidate()
     }
     
     // MARK: - Methods
@@ -74,6 +79,41 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
 
 extension CurrentPlayerStateDetailsViewController {
     
+    private func updateSlider() {
+        
+        sliderView.value = viewModel.currentTime
+    }
+    
+    private func updateTimer(isPlaying: Bool) {
+        
+        guard isPlaying else {
+            timer?.invalidate()
+            timer = nil
+            return
+        }
+        
+        guard timer == nil else {
+            return
+        }
+        
+        let timer = Timer(timeInterval: 0.8, repeats: true) { [weak self] _ in
+            self?.updateSlider()
+        }
+        
+        self.timer = timer
+        RunLoop.main.add(timer, forMode: .default)
+    }
+    
+    private func updateToggleButton(isPlaying: Bool) {
+        
+        guard isPlaying else {
+            Styles.apply(playButton: togglePlayButton)
+            return
+        }
+        
+        Styles.apply(pauseButton: togglePlayButton)
+    }
+    
     private func updateActiveState(_ data: CurrentPlayerStateDetailsViewModelPresentation) {
         
         titleLabel.text = data.title
@@ -92,11 +132,11 @@ extension CurrentPlayerStateDetailsViewController {
         
         subtitlesPresenterView.viewModel = data.subtitlesPresenterViewModel
         
-        if data.isPlaying {
-            Styles.apply(pauseButton: togglePlayButton)
-        } else {
-            Styles.apply(playButton: togglePlayButton)
-        }
+        let isPlaying = data.isPlaying
+
+        updateToggleButton(isPlaying: isPlaying)
+        sliderView.maximumValue = viewModel.duration
+        updateTimer(isPlaying: isPlaying)
     }
     
     private func updateLoadingState() {
@@ -149,9 +189,15 @@ extension CurrentPlayerStateDetailsViewController {
         togglePlayButton.addGestureRecognizer(tapRecognizer)
     }
     
+    private func setupSlider() {
+        
+        sliderView.minimumValue = 0
+    }
+    
     private func setupViews() {
         
         setupTogglePlayButton()
+        setupSlider()
         
         view.addSubview(backgroundImageView)
         view.addSubview(activityIndicator)
