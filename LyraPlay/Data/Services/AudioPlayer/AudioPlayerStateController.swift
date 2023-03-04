@@ -29,4 +29,6 @@ public protocol AudioPlayerStateController {
     func toggle() -> Result<Void, AudioPlayerError>
     
     func stop() -> Result<Void, AudioPlayerError>
+    
+    func set(currentTime: TimeInterval)
 }

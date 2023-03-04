@@ -102,7 +102,18 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
         let mainAudioSessionFactory = AudioSessionImplSingleInstanceFactory(mode: .mainAudio)
         let secondaryAudioSessionFactory = AudioSessionImplSingleInstanceFactory(mode: .promptAudio)
         
-        let mainAudioPlayerFactory = AudioPlayerImplSingleInstanceFactory(audioSessionFactory: mainAudioSessionFactory)
+        let getPlayedTimeUseCaseFactory = GetPlayedTimeUseCaseImplFactory(
+            mediaLibraryRepository: mediaLibraryRepository
+        )
+        
+        let updatePlayedTimeUseCaseFactory = UpdatePlayedTimeUseCaseImplFactory(
+            mediaLibraryRepository: mediaLibraryRepository
+        )
+
+        let mainAudioPlayerFactory = AudioPlayerImplSingleInstanceFactory(
+            audioSessionFactory: mainAudioSessionFactory
+        )
+        
         let secondaryAudioPlayerFactory = AudioPlayerImplSingleInstanceFactory(audioSessionFactory: secondaryAudioSessionFactory)
         
         let loadTrackUseCaseFactory = LoadTrackUseCaseImplFactory(
@@ -112,7 +123,9 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
         
         let playMediaUseCaseFactory = PlayMediaUseCaseImplFactory(
             loadTrackUseCaseFactory: loadTrackUseCaseFactory,
-            audioPlayerFactory: mainAudioPlayerFactory
+            audioPlayerFactory: mainAudioPlayerFactory,
+            getPlayedTimeUseCaseFactory: getPlayedTimeUseCaseFactory,
+            updatePlayedTimeUseCaseFactory: updatePlayedTimeUseCaseFactory
         )
         
         let textSplitterFactory = TextSplitterImplFactory()

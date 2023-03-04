@@ -86,4 +86,16 @@ public class FinishedAudioPlayerStateController: AudioPlayerStateController {
         
         return delegate.stop(session: session)
     }
+    
+    public func set(currentTime: TimeInterval) {
+        
+        guard let delegate = delegate else {
+            return
+        }
+        
+        return delegate.seekPaused(
+            atTime: currentTime,
+            session: session
+        )
+    }
 }

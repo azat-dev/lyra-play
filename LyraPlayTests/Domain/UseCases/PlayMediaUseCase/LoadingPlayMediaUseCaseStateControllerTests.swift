@@ -17,7 +17,8 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
         controller: LoadingPlayMediaUseCaseStateController,
         loadTrackUseCase: LoadTrackUseCaseMock,
         delegate: PlayMediaUseCaseStateControllerDelegateMock,
-        audioPlayer: AudioPlayerMock
+        audioPlayer: AudioPlayerMock,
+        getPlayedTimeUseCase: GetPlayedTimeUseCaseMock
     )
     
     func createSUT(
@@ -36,13 +37,20 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
         given(audioPlayerFactory.make())
             .willReturn(audioPlayer)
         
+        let getPlayedTimeUseCaseFactory = mock(GetPlayedTimeUseCaseFactory.self)
+        let getPlayedTimeUseCase = mock(GetPlayedTimeUseCase.self)
+        
+        given(getPlayedTimeUseCaseFactory.make())
+            .willReturn(getPlayedTimeUseCase)
+        
         let delegate = mock(PlayMediaUseCaseStateControllerDelegate.self)
         
         let controller = LoadingPlayMediaUseCaseStateController(
             mediaId: mediaId,
             delegate: delegate,
             loadTrackUseCaseFactory: loadTrackUseCaseFactory,
-            audioPlayerFactory: audioPlayerFactory
+            audioPlayerFactory: audioPlayerFactory,
+            getPlayedTimeUseCaseFactory: getPlayedTimeUseCaseFactory
         )
         
         detectMemoryLeak(instance: controller)
@@ -51,7 +59,8 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
             controller,
             loadTrackUseCase,
             delegate,
-            audioPlayer
+            audioPlayer,
+            getPlayedTimeUseCase
         )
     }
     
@@ -95,6 +104,7 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
 
         // Given
         let mediaId = UUID()
+        let expectedTime: TimeInterval = 1234
         
         let loadTrackUseCase = mock(LoadTrackUseCase.self)
         
@@ -112,6 +122,9 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
             audioPlayer: audioPlayer
         )
         
+        given(await sut.getPlayedTimeUseCase.getPlayedTime(for: mediaId))
+            .willReturn(.success(expectedTime))
+        
         // When
         let result = await sut.controller.load()
 
@@ -119,6 +132,12 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
         try AssertResultSucceded(result)
         
         verify(sut.delegate.didLoad(mediaId: mediaId, audioPlayer: audioPlayer))
+            .wasCalled(1)
+        
+        verify(await sut.getPlayedTimeUseCase.getPlayedTime(for: mediaId))
+            .wasCalled(1)
+        
+        verify(sut.audioPlayer.set(currentTime: expectedTime))
             .wasCalled(1)
     }
     

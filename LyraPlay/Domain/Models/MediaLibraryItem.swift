@@ -68,7 +68,7 @@ public struct MediaLibraryFile: Equatable {
     public var genre: String?
     public var duration: Double
     public var lastPlayedAt: Date?
-    public var playedTime: Double
+    public var playedTime: Double?
 
     public init(
         id: UUID,
@@ -82,7 +82,7 @@ public struct MediaLibraryFile: Equatable {
         image: String?,
         genre: String?,
         lastPlayedAt: Date? = nil,
-        playedTime: Double = 0
+        playedTime: Double? = nil
     ) {
         
         self.id = id

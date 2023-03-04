@@ -14,7 +14,7 @@ import MediaPlayer
 public final class AudioPlayerImpl: NSObject, AudioPlayer {
 
     // MARK: - Properties
-
+    
     private let audioSession: AudioSession
     
     public var state: CurrentValueSubject<AudioPlayerState, Never> = .init(.initial)
@@ -34,7 +34,9 @@ public final class AudioPlayerImpl: NSObject, AudioPlayer {
     
     // MARK: - Initializers
 
-    public init(audioSession: AudioSession) {
+    public init(
+        audioSession: AudioSession
+    ) {
         
         self.audioSession = audioSession
     }
@@ -129,6 +131,10 @@ public final class AudioPlayerImpl: NSObject, AudioPlayer {
     
     public func stop() -> Result<Void, AudioPlayerError> {
         return currentStateController.stop()
+    }
+    
+    public func set(currentTime: TimeInterval) {
+        return currentStateController.set(currentTime: currentTime)
     }
 }
 
@@ -235,6 +241,14 @@ extension AudioPlayerImpl: AudioPlayerStateControllerDelegate {
         )
         
         state.value = .finished(session: session.map())
+    }
+    
+    public func seekPaused(atTime: TimeInterval, session: ActiveAudioPlayerStateControllerSession) {
+        
+        currentStateController = PausedAudioPlayerStateController(
+            session: session,
+            delegate: self
+        )
     }
 }
 

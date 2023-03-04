@@ -79,4 +79,9 @@ public class LoadedAudioPlayerStateController: NSObject, AudioPlayerStateControl
         
         return delegate.stop(session: session)
     }
+    
+    public func set(currentTime: TimeInterval) {
+        
+        session.systemPlayer.currentTime = currentTime
+    }
 }

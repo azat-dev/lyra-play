@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22D49" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="ManagedAudioFile" representedClassName=".ManagedAudioFile" syncable="YES">
         <attribute name="artist" optional="YES" attributeType="String"/>
         <attribute name="audioFile" attributeType="String"/>
@@ -71,10 +71,4 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <elements>
-        <element name="ManagedAudioFile" positionX="-63" positionY="-18" width="128" height="164"/>
-        <element name="ManagedDictionaryItem" positionX="-63" positionY="54" width="128" height="134"/>
-        <element name="ManagedLibraryItem" positionX="-63" positionY="72" width="128" height="254"/>
-        <element name="ManagedSubtitles" positionX="-63" positionY="54" width="128" height="74"/>
-    </elements>
 </model>

@@ -39,7 +39,7 @@ public protocol PlayMediaUseCaseInput: AnyObject {
 
     func stop() -> Result<Void, PlayMediaUseCaseError>
     
-    func togglePlay() -> Result<Void, PlayMediaUseCaseError>
+    func togglePlay() -> Result<Void, PlayMediaUseCaseError>    
 }
 
 public protocol PlayMediaUseCaseOutput: AnyObject {

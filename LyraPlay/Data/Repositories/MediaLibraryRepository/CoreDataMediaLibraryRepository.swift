@@ -181,7 +181,7 @@ extension CoreDataMediaLibraryRepository {
             managedFile.title = updatedData.title
             managedFile.subtitle = updatedData.subtitle
             managedFile.file = updatedData.file
-            managedFile.playedTime = updatedData.playedTime
+            managedFile.playedTime = updatedData.playedTime == nil ? -1 : updatedData.playedTime!
             managedFile.lastPlayedAt = updatedData.lastPlayedAt
             managedFile.duration = updatedData.duration
             managedFile.genre = updatedData.genre
