@@ -200,10 +200,10 @@ extension CoreDataMediaLibraryRepository {
         }
     }
     
-    public func updateFileProgress(id: UUID, time: TimeInterval) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError> {
+    public func updateFileProgress(id: UUID, time: TimeInterval) async -> Result<Void, MediaLibraryRepositoryError> {
         
         
-        let action = { (context: NSManagedObjectContext) throws -> Result<MediaLibraryFile, MediaLibraryRepositoryError> in
+        let action = { (context: NSManagedObjectContext) throws -> Result<Void, MediaLibraryRepositoryError> in
             
             guard let managedFile = try self.getManagedItem(id: id, context: context) else {
                 return .failure(.fileNotFound)
@@ -216,7 +216,7 @@ extension CoreDataMediaLibraryRepository {
             managedFile.playedTime = time
             
             try context.save()
-            return .success(managedFile.toDomainFile())
+            return .success(())
         }
         
         do {
