@@ -495,6 +495,34 @@ class CoreDataMediaLibraryRepositoryTests: XCTestCase {
         
         AssertEqualReadable(fetchedFolder2, .folder(existingFolders[1]))
     }
+    
+    func test_updateFileProgress() async throws {
+        
+        let sut = createSUT()
+        
+        // Given
+        
+        let existingFiles = try await given(sut: sut, folderId: nil, withFiles: ["file1"])
+        let file = existingFiles.first!
+        
+        let expectedPlayedTime: TimeInterval = 12345
+        
+        
+        // When
+        let result = await sut.updateFileProgress(id: file.id, time: expectedPlayedTime)
+        try AssertResultSucceded(result)
+        
+        // Then
+        let fileResult = await sut.getItem(id: file.id)
+        let updatedItem = try AssertResultSucceded(fileResult)
+        
+        guard case .file(let fileData) = updatedItem else {
+            XCTFail("Wrong type")
+            return
+        }
+        
+        XCTAssertEqual(fileData.playedTime, expectedPlayedTime)
+    }
 }
 
 // MARK: - Helpers
