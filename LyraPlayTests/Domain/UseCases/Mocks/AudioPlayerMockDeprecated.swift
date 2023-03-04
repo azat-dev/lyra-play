@@ -14,7 +14,9 @@ class AudioPlayerMockDeprecated: AudioPlayer {
     
     public var state: CurrentValueSubject<AudioPlayerState, Never> = .init(.initial)
     
-    public var currentTime = Observable(0.0)
+    public var currentTime: TimeInterval = 0
+    
+    public var duration: TimeInterval = 0
     
     public var currentFileId: String?
     
@@ -76,7 +78,7 @@ class AudioPlayerMockDeprecated: AudioPlayer {
             
         case .paused(let session, _), .playing(let session):
             
-            self.state.value = .paused(session: session, time: currentTime.value)
+            self.state.value = .paused(session: session, time: currentTime)
             return .success(())
             
         case .finished:

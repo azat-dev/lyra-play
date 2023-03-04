@@ -12,6 +12,11 @@ import LyraPlay
 
 final class PlayMediaUseCaseMockStateble: PlayMediaUseCase {
     
+    var currentTime: TimeInterval = 0
+    
+    var duration: TimeInterval = 0
+    
+    
     private var currentTrackId: UUID? = nil
     var state = CurrentValueSubject<PlayMediaUseCaseState, Never>(.initial)
     
