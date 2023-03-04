@@ -46,7 +46,11 @@ public class LoadedPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubtit
     
     public func resume() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
-        return play(atTime: 0)
+        guard let delegate = delegate else {
+            return .failure(.internalError(nil))
+        }
+        
+        return delegate.resumePlaying(session: session)
     }
     
     public func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
