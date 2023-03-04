@@ -135,6 +135,7 @@ extension CurrentPlayerStateDetailsViewController {
         let isPlaying = data.isPlaying
 
         updateToggleButton(isPlaying: isPlaying)
+        
         sliderView.maximumValue = viewModel.duration
         updateTimer(isPlaying: isPlaying)
     }
