@@ -75,7 +75,7 @@ public protocol MediaLibraryRepositoryInput {
     
     func updateFile(data: MediaLibraryFile) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError>
     
-    func updateFileProgress(id: UUID, time: TimeInterval) async -> Result<MediaLibraryFile, MediaLibraryRepositoryError>
+    func updateFileProgress(id: UUID, time: TimeInterval) async -> Result<Void, MediaLibraryRepositoryError>
     
     func updateFolder(data: MediaLibraryFolder) async -> Result<MediaLibraryFolder, MediaLibraryRepositoryError>
 }
