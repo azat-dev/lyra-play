@@ -58,4 +58,7 @@ public class InitialAudioPlayerStateController: NSObject, AudioPlayerStateContro
     public func stop() -> Result<Void, AudioPlayerError> {
         return .failure(.noActiveFile)
     }
+    
+    public func set(currentTime: TimeInterval) {
+    }
 }

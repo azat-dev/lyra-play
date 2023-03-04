@@ -99,6 +99,11 @@ public class PlayingAudioPlayerStateController: NSObject, AVAudioPlayerDelegate,
         return .success(())
     }
     
+    public func set(currentTime: TimeInterval) {
+        
+        session.systemPlayer.currentTime = currentTime
+    }
+    
     public func runPlaying(atTime: TimeInterval) -> Result<Void, AudioPlayerError>  {
         
         session.systemPlayer.delegate = self

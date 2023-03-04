@@ -46,5 +46,10 @@ public protocol AudioPlayerStateControllerDelegate: AnyObject {
     func didStartPlaying(withController: PlayingAudioPlayerStateController)
     
     func didFinishPlaying(session: ActiveAudioPlayerStateControllerSession)
+    
+    func seekPaused(
+        atTime: TimeInterval,
+        session: ActiveAudioPlayerStateControllerSession
+    )
 }
 

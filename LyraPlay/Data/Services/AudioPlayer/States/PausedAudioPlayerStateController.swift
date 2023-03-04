@@ -80,6 +80,11 @@ public class PausedAudioPlayerStateController: AudioPlayerStateController {
         return delegate.stop(session: session)
     }
     
+    public func set(currentTime: TimeInterval) {
+        
+        session.systemPlayer.currentTime = currentTime
+    }
+    
     public func runPausing() -> Result<Void, AudioPlayerError> {
         
         session.systemPlayer.pause()

@@ -40,6 +40,8 @@ public protocol AudioPlayerInput: AnyObject {
     func pause() -> Result<Void, AudioPlayerError>
     
     func stop() -> Result<Void, AudioPlayerError>
+    
+    func set(currentTime: TimeInterval)
 }
 
 public protocol AudioPlayerOutput: AnyObject {

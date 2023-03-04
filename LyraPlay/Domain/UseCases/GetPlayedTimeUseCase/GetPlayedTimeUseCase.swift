@@ -12,7 +12,7 @@ public enum GetPlayedTimeUseCaseError: Error {
     case internalError
 }
 
-public protocol GetPlayedTimeUseCase {
+public protocol GetPlayedTimeUseCase: AnyObject {
  
-    func getPlayedTime(for mediaId: UUID) async -> Result<TimeInterval, GetPlayedTimeUseCaseError>
+    func getPlayedTime(for mediaId: UUID) async -> Result<TimeInterval?, GetPlayedTimeUseCaseError>
 }

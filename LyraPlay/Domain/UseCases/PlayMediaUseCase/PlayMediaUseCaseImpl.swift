@@ -40,15 +40,22 @@ public class PlayMediaUseCaseImpl: PlayMediaUseCase, PlayMediaUseCaseStateContro
     
     private let loadTrackUseCaseFactory: LoadTrackUseCaseFactory
     private let audioPlayerFactory: AudioPlayerFactory
+    private let getPlayedTimeUseCaseFactory: GetPlayedTimeUseCaseFactory
+    private let updatePlayedTimeUseCaseFactory: UpdatePlayedTimeUseCaseFactory
     
     // MARK: - Initializers
     
     public init(
         loadTrackUseCaseFactory: LoadTrackUseCaseFactory,
-        audioPlayerFactory: AudioPlayerFactory
+        audioPlayerFactory: AudioPlayerFactory,
+        getPlayedTimeUseCaseFactory: GetPlayedTimeUseCaseFactory,
+        updatePlayedTimeUseCaseFactory: UpdatePlayedTimeUseCaseFactory
+        
     ) {
         self.loadTrackUseCaseFactory = loadTrackUseCaseFactory
         self.audioPlayerFactory = audioPlayerFactory
+        self.getPlayedTimeUseCaseFactory = getPlayedTimeUseCaseFactory
+        self.updatePlayedTimeUseCaseFactory = updatePlayedTimeUseCaseFactory
     }
 }
 
@@ -99,7 +106,8 @@ extension PlayMediaUseCaseImpl {
             mediaId: mediaId,
             delegate: self,
             loadTrackUseCaseFactory: loadTrackUseCaseFactory,
-            audioPlayerFactory: audioPlayerFactory
+            audioPlayerFactory: audioPlayerFactory,
+            getPlayedTimeUseCaseFactory: getPlayedTimeUseCaseFactory
         )
         
         currentStateController = controller

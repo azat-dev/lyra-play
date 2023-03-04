@@ -30,7 +30,7 @@ extension ManagedLibraryItem {
             image: image,
             genre: genre,
             lastPlayedAt: lastPlayedAt,
-            playedTime: playedTime
+            playedTime: playedTime <= 0 ? nil : playedTime
         )
     }
     

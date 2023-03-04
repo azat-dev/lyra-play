@@ -21,7 +21,7 @@ public final class GetPlayedTimeUseCaseImpl: GetPlayedTimeUseCase {
     
     // MARK: - Methods
     
-    public func getPlayedTime(for mediaId: UUID) async -> Result<TimeInterval, GetPlayedTimeUseCaseError> {
+    public func getPlayedTime(for mediaId: UUID) async -> Result<TimeInterval?, GetPlayedTimeUseCaseError> {
         
         let result = await mediaLibraryRepository.getItem(id: mediaId)
         

@@ -19,7 +19,9 @@ public final class AudioPlayerImplSingleInstanceFactory: AudioPlayerFactory {
     
     // MARK: - Initializers
     
-    public init(audioSessionFactory: AudioSessionFactory) {
+    public init(
+        audioSessionFactory: AudioSessionFactory
+    ) {
         
         self.audioSessionFactory = audioSessionFactory
     }
@@ -37,7 +39,9 @@ public final class AudioPlayerImplSingleInstanceFactory: AudioPlayerFactory {
         }
         
         let audioSession = audioSessionFactory.make()
-        let newInstance = AudioPlayerImpl(audioSession: audioSession)
+        let newInstance = AudioPlayerImpl(
+            audioSession: audioSession
+        )
         instance = newInstance
         
         return newInstance

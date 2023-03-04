@@ -562,6 +562,10 @@
 		AADE097B29B3E40100F7A8D7 /* UpdatePlayedTimeUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE097A29B3E40100F7A8D7 /* UpdatePlayedTimeUseCaseTests.swift */; };
 		AADE097E29B3E4F700F7A8D7 /* UpdatePlayedTimeUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE097D29B3E4F700F7A8D7 /* UpdatePlayedTimeUseCase.swift */; };
 		AADE098029B3E4FD00F7A8D7 /* UpdatePlayedTimeUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE097F29B3E4FD00F7A8D7 /* UpdatePlayedTimeUseCaseImpl.swift */; };
+		AADE098229B3E83300F7A8D7 /* GetPlayedTimeUseCaseFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE098129B3E83300F7A8D7 /* GetPlayedTimeUseCaseFactory.swift */; };
+		AADE098429B3E85700F7A8D7 /* GetPlayedTimeUseCaseImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE098329B3E85700F7A8D7 /* GetPlayedTimeUseCaseImplFactory.swift */; };
+		AADE098629B3E90A00F7A8D7 /* UpdatePlayedTimeUseCaseFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE098529B3E90A00F7A8D7 /* UpdatePlayedTimeUseCaseFactory.swift */; };
+		AADE098829B3E93800F7A8D7 /* UpdatePlayedTimeUseCaseImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE098729B3E93800F7A8D7 /* UpdatePlayedTimeUseCaseImplFactory.swift */; };
 		AAE202EA28F4A239009A9C8E /* SubtitlesPresenterViewModelImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE202E928F4A239009A9C8E /* SubtitlesPresenterViewModelImpl.swift */; };
 		AAE202EC28F4A392009A9C8E /* SubtitlesPresenterViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE202EB28F4A392009A9C8E /* SubtitlesPresenterViewModelFactory.swift */; };
 		AAE202EE28F4A3FD009A9C8E /* SubtitlesPresenterViewModelImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE202ED28F4A3FD009A9C8E /* SubtitlesPresenterViewModelImplFactory.swift */; };
@@ -1285,6 +1289,10 @@
 		AADE097A29B3E40100F7A8D7 /* UpdatePlayedTimeUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePlayedTimeUseCaseTests.swift; sourceTree = "<group>"; };
 		AADE097D29B3E4F700F7A8D7 /* UpdatePlayedTimeUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePlayedTimeUseCase.swift; sourceTree = "<group>"; };
 		AADE097F29B3E4FD00F7A8D7 /* UpdatePlayedTimeUseCaseImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePlayedTimeUseCaseImpl.swift; sourceTree = "<group>"; };
+		AADE098129B3E83300F7A8D7 /* GetPlayedTimeUseCaseFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetPlayedTimeUseCaseFactory.swift; sourceTree = "<group>"; };
+		AADE098329B3E85700F7A8D7 /* GetPlayedTimeUseCaseImplFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetPlayedTimeUseCaseImplFactory.swift; sourceTree = "<group>"; };
+		AADE098529B3E90A00F7A8D7 /* UpdatePlayedTimeUseCaseFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePlayedTimeUseCaseFactory.swift; sourceTree = "<group>"; };
+		AADE098729B3E93800F7A8D7 /* UpdatePlayedTimeUseCaseImplFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePlayedTimeUseCaseImplFactory.swift; sourceTree = "<group>"; };
 		AAE202E928F4A239009A9C8E /* SubtitlesPresenterViewModelImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterViewModelImpl.swift; sourceTree = "<group>"; };
 		AAE202EB28F4A392009A9C8E /* SubtitlesPresenterViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterViewModelFactory.swift; sourceTree = "<group>"; };
 		AAE202ED28F4A3FD009A9C8E /* SubtitlesPresenterViewModelImplFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterViewModelImplFactory.swift; sourceTree = "<group>"; };
@@ -3321,6 +3329,8 @@
 			children = (
 				AADE097629B3DCD900F7A8D7 /* GetPlayedTimeUseCase.swift */,
 				AADE097429B3DCCF00F7A8D7 /* GetPlayedTimeUseCaseImpl.swift */,
+				AADE098129B3E83300F7A8D7 /* GetPlayedTimeUseCaseFactory.swift */,
+				AADE098329B3E85700F7A8D7 /* GetPlayedTimeUseCaseImplFactory.swift */,
 			);
 			path = GetPlayedTimeUseCase;
 			sourceTree = "<group>";
@@ -3330,6 +3340,8 @@
 			children = (
 				AADE097D29B3E4F700F7A8D7 /* UpdatePlayedTimeUseCase.swift */,
 				AADE097F29B3E4FD00F7A8D7 /* UpdatePlayedTimeUseCaseImpl.swift */,
+				AADE098529B3E90A00F7A8D7 /* UpdatePlayedTimeUseCaseFactory.swift */,
+				AADE098729B3E93800F7A8D7 /* UpdatePlayedTimeUseCaseImplFactory.swift */,
 			);
 			path = UpdatePlayedTimeUseCase;
 			sourceTree = "<group>";
@@ -4122,6 +4134,7 @@
 				AA4ED77329A7889400B7FD05 /* PlaySubtitlesUseCaseImpl.swift in Sources */,
 				AA7B0D542871A70F0067DDB5 /* LibraryItemViewController+Styles.swift in Sources */,
 				AA3C533428BE5C5D00CBE3C6 /* ImportAudioFileUseCase.swift in Sources */,
+				AADE098229B3E83300F7A8D7 /* GetPlayedTimeUseCaseFactory.swift in Sources */,
 				AA0F69C1287F5CD900BD13DB /* SentenceViewModel.swift in Sources */,
 				AA35E582286AA3D90086DB28 /* FilesRepository.swift in Sources */,
 				AA369EA72884646200FDAD27 /* TextSplitter.swift in Sources */,
@@ -4281,6 +4294,7 @@
 				45CD0ABD075AFB052D87276E /* SubtitlesParserFactory.swift in Sources */,
 				03D7A848327D5DC33D346496 /* LyricsParser.swift in Sources */,
 				AA41490128DBAF2A002FFDD4 /* ManagedLibraryItem+CoreDataProperties.swift in Sources */,
+				AADE098629B3E90A00F7A8D7 /* UpdatePlayedTimeUseCaseFactory.swift in Sources */,
 				807C5BDFD4B22706FAC4D9CB /* LyricsParserFactory.swift in Sources */,
 				0728BF3347981BF3D2264FBE /* SubRipFileFormatParser.swift in Sources */,
 				AA9A8C2D29A2AA7900FFFACF /* FailedLoadPlayMediaWithSubtitlesUseStateController.swift in Sources */,
@@ -4306,6 +4320,7 @@
 				AA180D4A28E7254C00023C7A /* CurrentPlayerStateDetailsViewController+Layout.swift in Sources */,
 				2E8ADADE1DFCEDB9460963A6 /* MediaLibraryBrowserViewModelFactory.swift in Sources */,
 				AA9A64BA2975A67E00198120 /* ExportedDictionaryItem.swift in Sources */,
+				AADE098829B3E93800F7A8D7 /* UpdatePlayedTimeUseCaseImplFactory.swift in Sources */,
 				BC9ECCA466E1DBAA156C8166 /* MediaLibraryBrowserViewModelImpl.swift in Sources */,
 				AA641DFA28C3516800641B0C /* PresentableViewFactory.swift in Sources */,
 				AA753DA029ABE3EB00B70003 /* FinishedPlayMediaWithTranslationsUseCaseStateController.swift in Sources */,
@@ -4539,6 +4554,7 @@
 				AA4ED78829A81A3000B7FD05 /* PausedPlayMediaWithTranslationsUseCaseStateController.swift in Sources */,
 				96E46A592FB1138C6E661BEB /* ExportDictionaryUseCaseImplFactory.swift in Sources */,
 				AEC1A4A1EF2D3969340B3FA8 /* FileSharingViewModel.swift in Sources */,
+				AADE098429B3E85700F7A8D7 /* GetPlayedTimeUseCaseImplFactory.swift in Sources */,
 				08720D780ADB2D8FC2A8B63B /* FileSharingViewModelFactory.swift in Sources */,
 				A5585BC577AFFC1173DC602B /* FileSharingViewModelImpl.swift in Sources */,
 				5DB8D70C773DD5E80EB5E9F4 /* FileSharingViewModelImplFactory.swift in Sources */,
