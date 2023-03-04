@@ -20,7 +20,6 @@ class GetPlayedTimeUseCaseTests: XCTestCase {
     
     func createSUT() -> SUT {
         
-        let tagsParser = mock(TagsParser.self)
         let mediaLibraryRepository = mock(MediaLibraryRepositoryOutput.self)
         
         let useCase = GetPlayedTimeUseCaseImpl(
