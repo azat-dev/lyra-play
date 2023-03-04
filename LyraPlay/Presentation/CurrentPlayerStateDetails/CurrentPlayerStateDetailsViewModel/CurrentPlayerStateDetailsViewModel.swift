@@ -30,6 +30,10 @@ public protocol CurrentPlayerStateDetailsViewModelInput: AnyObject {
 public protocol CurrentPlayerStateDetailsViewModelOutput: AnyObject {
 
     var state: CurrentValueSubject<CurrentPlayerStateDetailsViewModelState, Never> { get }
+    
+    var currentTime: Float { get }
+    
+    var duration: Float { get }
 }
 
 public protocol CurrentPlayerStateDetailsViewModel: CurrentPlayerStateDetailsViewModelOutput, CurrentPlayerStateDetailsViewModelInput {}

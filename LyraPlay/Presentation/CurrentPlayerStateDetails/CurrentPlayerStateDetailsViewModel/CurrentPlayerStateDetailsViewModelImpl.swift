@@ -9,29 +9,37 @@ import Foundation
 import Combine
 
 public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDetailsViewModel {
-
+    
     // MARK: - Properties
-
+    
     private weak var delegate: CurrentPlayerStateDetailsViewModelDelegate?
-
+    
     private let playMediaUseCase: PlayMediaWithInfoUseCase
     
     private let subtitlesPresenterViewModelFactory: SubtitlesPresenterViewModelFactory
-
+    
     public let state = CurrentValueSubject<CurrentPlayerStateDetailsViewModelState, Never>(.loading)
     
     private var observers = Set<AnyCancellable>()
     
     private var currentSubtitles: Subtitles?
-
+    
+    public var currentTime: Float {
+        return Float(playMediaUseCase.currentTime)
+    }
+    
+    public var duration: Float {
+        return Float(playMediaUseCase.duration)
+    }
+    
     // MARK: - Initializers
-
+    
     public init(
         delegate: CurrentPlayerStateDetailsViewModelDelegate,
         playMediaUseCase: PlayMediaWithInfoUseCase,
         subtitlesPresenterViewModelFactory: SubtitlesPresenterViewModelFactory
     ) {
-
+        
         self.delegate = delegate
         self.playMediaUseCase = playMediaUseCase
         self.subtitlesPresenterViewModelFactory = subtitlesPresenterViewModelFactory
@@ -74,7 +82,7 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
         case .activeSession(_, let loadState):
             
             switch loadState {
-            
+                
             case .loading:
                 state.value = .loading
                 
@@ -96,7 +104,7 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
         guard let subtitlesPresenterViewModel = data.subtitlesPresenterViewModel else {
             return
         }
-
+        
         guard let subtitlesState = subtitlesState else {
             
             var newData = data
@@ -129,14 +137,14 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
 // MARK: - Input Methods
 
 extension CurrentPlayerStateDetailsViewModelImpl {
-
+    
     public func togglePlay() {
-
+        
         let _ = playMediaUseCase.togglePlay()
     }
-
+    
     public func dispose() {
-
+        
         delegate?.currentPlayerStateDetailsViewModelDidDispose()
     }
 }
@@ -144,7 +152,7 @@ extension CurrentPlayerStateDetailsViewModelImpl {
 // MARK: - Output Methods
 
 extension CurrentPlayerStateDetailsViewModelImpl {
-
+    
 }
 
 // MARK: - Helpers
@@ -154,10 +162,10 @@ fileprivate extension PlayMediaWithInfoUseCasePlayerState {
     var isPlaying: Bool {
         
         switch self {
-
+            
         case .playing, .pronouncingTranslations:
             return true
-
+            
         default:
             return false
         }

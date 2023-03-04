@@ -23,7 +23,7 @@ public class PlayMediaUseCaseImpl: PlayMediaUseCase, PlayMediaUseCaseStateContro
     }
     
     public var duration: TimeInterval {
-        return currentStateController.currentTime
+        return currentStateController.duration
     }
     
     public lazy var state: CurrentValueSubject<PlayMediaUseCaseState, Never> = {
