@@ -202,7 +202,8 @@ extension PlayMediaUseCaseImpl {
         let newController = PlayingPlayMediaUseCaseStateController(
             mediaId: mediaId,
             audioPlayer: audioPlayer,
-            delegate: self
+            delegate: self,
+            updatePlayedTimeUseCaseFactory: updatePlayedTimeUseCaseFactory
         )
         
         return newController.runPlaying(atTime: atTime)
@@ -222,7 +223,8 @@ extension PlayMediaUseCaseImpl {
         let newController = PlayingPlayMediaUseCaseStateController(
             mediaId: mediaId,
             audioPlayer: audioPlayer,
-            delegate: self
+            delegate: self,
+            updatePlayedTimeUseCaseFactory: updatePlayedTimeUseCaseFactory
         )
         
         return newController.runResumePlaying()
