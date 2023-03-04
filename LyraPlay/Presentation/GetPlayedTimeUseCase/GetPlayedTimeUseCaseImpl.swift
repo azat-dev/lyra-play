@@ -23,6 +23,12 @@ public final class GetPlayedTimeUseCaseImpl: GetPlayedTimeUseCase {
     
     public func getPlayedTime(for mediaId: UUID) async -> Result<TimeInterval, GetPlayedTimeUseCaseError> {
         
-        return .failure(.internalError)
+        let result = await mediaLibraryRepository.getItem(id: mediaId)
+        
+        guard case .success(.file(let mediaItem)) = result else {
+            return .failure(.internalError)
+        }
+
+        return .success(mediaItem.playedTime)
     }
 }
