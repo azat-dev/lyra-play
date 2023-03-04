@@ -82,13 +82,13 @@ public class PlayingPlayMediaWithSubtitlesUseStateController: LoadedPlayMediaWit
     public func run(atTime: TimeInterval) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         startWatchingPlayingState()
-        let result = session.playMediaUseCase.play(atTime: 0)
+        let result = session.playMediaUseCase.play(atTime: atTime)
         
         guard case .success = result else {
             return result.mapResult()
         }
         
-        session.playSubtitlesUseCase?.play(atTime: 0)
+        session.playSubtitlesUseCase?.play(atTime: atTime)
         delegate?.didStartPlaying(withController: self)
         
         return .success(())
@@ -103,7 +103,7 @@ public class PlayingPlayMediaWithSubtitlesUseStateController: LoadedPlayMediaWit
             return result.mapResult()
         }
         
-        session.playSubtitlesUseCase?.resume()
+        session.playSubtitlesUseCase?.play(atTime: currentTime)
         delegate?.didResumePlaying(withController: self)
         
         return .success(())

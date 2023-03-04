@@ -48,7 +48,7 @@ public class LoadedPlayMediaWithTranslationsUseCaseStateController: PlayMediaWit
             return .failure(.internalError(nil))
         }
         
-        return delegate.play(atTime: 0, session: session)
+        return delegate.resumePlaying(session: session)
     }
     
     public func play(atTime: TimeInterval) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
