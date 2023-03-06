@@ -57,7 +57,7 @@ extension CurrentPlayerStateView {
     private func bind(to viewModel: CurrentPlayerStateViewModel) {
         
         viewModel.state
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] state in self?.updateState(state)}
             .store(in: &observers)
     }

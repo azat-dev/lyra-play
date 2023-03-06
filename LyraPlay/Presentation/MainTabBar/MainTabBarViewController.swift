@@ -92,7 +92,7 @@ extension MainTabBarViewController {
     private func bind(to viewModel: MainTabBarViewModel) {
 
         viewModel.activeTabIndex
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] activeTabIndex in
 
                 guard let self = self else {
@@ -104,7 +104,7 @@ extension MainTabBarViewController {
             }.store(in: &observers)
         
         viewModel.currentPlayerStateViewModel
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] viewModel in
                 
                 guard let self = self else {

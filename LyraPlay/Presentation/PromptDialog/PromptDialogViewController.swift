@@ -86,7 +86,7 @@ extension PromptDialogViewController {
         submitButton.setTitle(viewModel.submitText, for: .normal)
         
         viewModel.isProcessing
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] isProcessing in
                 
                 guard let self = self else {
@@ -109,7 +109,7 @@ extension PromptDialogViewController {
             }.store(in: &observers)
         
         viewModel.errorText
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] errorText in
                 
                 guard let self = self else {

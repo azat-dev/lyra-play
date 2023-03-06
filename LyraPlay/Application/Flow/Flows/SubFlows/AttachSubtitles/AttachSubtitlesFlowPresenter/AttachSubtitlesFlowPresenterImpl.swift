@@ -50,7 +50,7 @@ extension AttachSubtitlesFlowPresenterImpl {
     public func present(at container: UINavigationController) {
         
         flowModel.progressViewModel
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] progressViewModel in
                 
                 guard let self = self else {

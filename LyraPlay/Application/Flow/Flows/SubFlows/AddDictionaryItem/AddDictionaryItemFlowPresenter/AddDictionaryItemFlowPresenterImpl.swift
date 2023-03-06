@@ -42,7 +42,7 @@ extension AddDictionaryItemFlowPresenterImpl {
     public func present(at container: UINavigationController) {
         
         flowModel.editDictionaryItemViewModel
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] editItemViewModel in
                 
                 guard let self = self else {

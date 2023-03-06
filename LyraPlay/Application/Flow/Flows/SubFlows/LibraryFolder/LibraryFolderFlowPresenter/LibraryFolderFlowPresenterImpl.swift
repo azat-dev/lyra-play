@@ -66,7 +66,7 @@ extension LibraryFolderFlowPresenterImpl {
     public func present(at container: UINavigationController) {
         
         flowModel.libraryItemFlow
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] itemFlow in
                 
                 guard let self = self else {
@@ -87,7 +87,7 @@ extension LibraryFolderFlowPresenterImpl {
             }.store(in: &observers)
         
         flowModel.addMediaLibraryItemFlow
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] addMediaLibraryItemFlow in
                 
                 guard let self = self else {
@@ -109,7 +109,7 @@ extension LibraryFolderFlowPresenterImpl {
             .store(in: &observers)
         
         flowModel.deleteMediaLibraryItemFlow
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] deleteLibraryItemFlow in
                 
                 guard let self = self else {

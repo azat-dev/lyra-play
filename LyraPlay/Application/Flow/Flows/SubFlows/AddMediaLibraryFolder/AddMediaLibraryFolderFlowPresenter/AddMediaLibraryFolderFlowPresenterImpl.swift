@@ -44,7 +44,7 @@ extension AddMediaLibraryFolderFlowPresenterImpl {
     public func present(at container: UINavigationController) {
 
         flowModel.promptFolderNameViewModel
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] promptFolderNameViewModel in
                 
                 guard let self = self else {

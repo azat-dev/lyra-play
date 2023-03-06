@@ -48,7 +48,7 @@ extension LibraryFileFlowPresenterImpl {
     public func present(at container: UINavigationController) {
         
         flow.attachSubtitlesFlow
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] attachSubtitlesFlow in
 
                 guard let self = self else {

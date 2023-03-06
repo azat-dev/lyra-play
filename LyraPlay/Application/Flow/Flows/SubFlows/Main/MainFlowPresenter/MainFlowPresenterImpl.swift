@@ -64,7 +64,7 @@ extension MainFlowPresenterImpl {
         let mainTabBarView = mainTabBarViewFactory.make(viewModel: mainFlowModel.mainTabBarViewModel)
         
         mainFlowModel.libraryFlow
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] libraryFlow in
                 
                 guard let self = self else {
@@ -86,7 +86,7 @@ extension MainFlowPresenterImpl {
         
         
         mainFlowModel.dictionaryFlow
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self]  dictionaryFlow in
                 
                 guard let self = self else {
@@ -107,7 +107,7 @@ extension MainFlowPresenterImpl {
             }.store(in: &observers)
         
         mainFlowModel.currentPlayerStateDetailsFlow
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] currentPlayerStateDetailsFlow in
                 
                 guard let self = self else {
