@@ -171,14 +171,12 @@ extension CurrentPlayerStateDetailsViewController {
     @objc
     private func didTapForwardButton() {
         
-        dismiss(animated: true)
-//        viewModel.moveForward()
+        viewModel.moveForward()
     }
     
     @objc
     private func didTapBackwardButton() {
-        dismiss(animated: true)
-//        viewModel.moveBackward()
+        viewModel.moveBackward()
     }
     
     private func setupTogglePlayButton() {
