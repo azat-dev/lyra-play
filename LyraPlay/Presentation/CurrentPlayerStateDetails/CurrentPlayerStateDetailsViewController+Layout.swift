@@ -103,7 +103,6 @@ extension CurrentPlayerStateDetailsViewController {
             coverImageView.contentMode = .scaleAspectFill
             
             let titleGroup = UILayoutGuide()
-            
             infoGroup.addLayoutGuide(titleGroup)
             
             NSLayoutConstraint.activate([
@@ -111,13 +110,14 @@ extension CurrentPlayerStateDetailsViewController {
                 coverImageView.leftAnchor.constraint(equalTo: infoGroup.leftAnchor, constant: 10),
                 coverImageView.heightAnchor.constraint(equalTo: coverImageView.widthAnchor),
                 coverImageView.centerYAnchor.constraint(equalTo: titleGroup.centerYAnchor),
-                coverImageView.heightAnchor.constraint(equalToConstant: 60)
+                coverImageView.heightAnchor.constraint(equalToConstant: 60),
+                
+                coverImageView.topAnchor.constraint(equalTo: infoGroup.topAnchor, constant: 10),
+                coverImageView.bottomAnchor.constraint(equalTo: infoGroup.bottomAnchor, constant: -10)
             ])
             
             NSLayoutConstraint.activate([
                 
-                titleGroup.topAnchor.constraint(equalTo: infoGroup.topAnchor),
-                titleGroup.bottomAnchor.constraint(equalTo: infoGroup.bottomAnchor),
                 titleGroup.leftAnchor.constraint(equalTo: coverImageView.rightAnchor, constant: 10),
                 titleGroup.rightAnchor.constraint(equalTo: infoGroup.rightAnchor),
             ])
