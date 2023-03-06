@@ -69,6 +69,10 @@ public class PausedSchedulerStateController: TimelineSchedulerStateController {
     public func pause() {
     }
     
+    public func setTime(_ time: TimeInterval) {
+        
+        let _ = timeline.beginNextExecution(from: time)
+    }
     
     public func runPausing(elapsedTime: TimeInterval) {
         

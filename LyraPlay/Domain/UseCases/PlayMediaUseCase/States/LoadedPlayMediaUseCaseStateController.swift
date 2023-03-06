@@ -88,6 +88,11 @@ public class LoadedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
         )
     }
     
+    public func setTime(_ time: TimeInterval) {
+        
+        audioPlayer.setTime(time)
+    }
+    
     public func togglePlay() -> Result<Void, PlayMediaUseCaseError> {
         return resume()
     }

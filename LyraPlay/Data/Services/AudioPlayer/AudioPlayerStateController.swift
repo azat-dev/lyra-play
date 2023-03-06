@@ -30,5 +30,5 @@ public protocol AudioPlayerStateController {
     
     func stop() -> Result<Void, AudioPlayerError>
     
-    func set(currentTime: TimeInterval)
+    func setTime(_ time: TimeInterval)
 }

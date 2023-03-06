@@ -166,6 +166,10 @@ public class PlayingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
         timer.resume()
     }
     
+    public func setTime(_ time: TimeInterval) {
+        audioPlayer.setTime(time)
+    }
+    
     public func runResumePlaying() -> Result<Void, PlayMediaUseCaseError> {
         
         let result = audioPlayer.resume()

@@ -34,6 +34,12 @@ public class PausedPlayMediaWithSubtitlesUseStateController: LoadedPlayMediaWith
         return resume()
     }
     
+    public override func setTime(_ time: TimeInterval) {
+        
+        session.playMediaUseCase.setTime(time)
+        session.playSubtitlesUseCase?.setTime(time)
+    }
+    
     public func runPausing() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         let result = session.playMediaUseCase.pause()

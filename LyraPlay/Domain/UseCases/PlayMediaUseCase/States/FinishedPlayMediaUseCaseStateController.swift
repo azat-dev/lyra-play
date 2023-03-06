@@ -12,4 +12,18 @@ public final class FinishedPlayMediaUseCaseStateController: PausedPlayMediaUseCa
     public override func togglePlay() -> Result<Void, PlayMediaUseCaseError> {
         return play(atTime: 0)
     }
+    
+    public override func setTime(_ time: TimeInterval) {
+        
+        guard time < audioPlayer.duration else {
+            return
+        }
+        
+        audioPlayer.setTime(time)
+        
+        delegate?.pause(
+            mediaId: mediaId,
+            audioPlayer: audioPlayer
+        )
+    }
 }

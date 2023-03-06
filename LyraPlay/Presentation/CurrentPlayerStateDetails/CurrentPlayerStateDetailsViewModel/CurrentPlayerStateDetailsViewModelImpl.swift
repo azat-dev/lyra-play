@@ -24,14 +24,14 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
     private var observers = Set<AnyCancellable>()
     
     private var currentSubtitles: Subtitles?
-    
-    public var currentTime: Float {
-        return Float(playMediaUseCase.currentTime)
-    }
+
+    public var sliderValue: CurrentValueSubject<Float, Never>
     
     public var duration: Float {
         return Float(playMediaUseCase.duration)
     }
+    
+    private var timerObserver: AnyCancellable?
     
     // MARK: - Initializers
     
@@ -44,13 +44,48 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
         self.delegate = delegate
         self.playMediaUseCase = playMediaUseCase
         self.subtitlesPresenterViewModelFactory = subtitlesPresenterViewModelFactory
+        self.sliderValue = .init(Float(playMediaUseCase.currentTime))
         
         bind(to: playMediaUseCase)
     }
     
     // MARK: - Methods
     
-    private func didLoad(playerState: PlayMediaWithInfoUseCasePlayerState, mediaInfo: MediaInfo) {
+    private func startUpdatingSlider() {
+        
+        timerObserver = Timer.publish(
+            every: 0.8,
+            on: .main,
+            in: .default
+        ).sink { [weak self] _ in
+            
+            guard let self = self else {
+                return
+            }
+            
+            self.sliderValue.value = Float(self.playMediaUseCase.currentTime)
+        }
+    }
+    
+    private func stopUpdatingSlider() {
+        
+        timerObserver = nil
+    }
+    
+    private func updateTimer(isPlaying: Bool) {
+        
+        guard isPlaying else {
+            stopUpdatingSlider()
+            return
+        }
+        
+        startUpdatingSlider()
+    }
+    
+    private func updateLoadedState(
+        playerState: PlayMediaWithInfoUseCasePlayerState,
+        mediaInfo: MediaInfo
+    ) {
         
         var subtitlesPresenterViewModel: SubtitlesPresenterViewModel?
         
@@ -62,12 +97,16 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
             subtitlesPresenterViewModel?.update(position: subtitlesState.position)
         }
         
+        let isPlaying = playerState.isPlaying
+        
+        updateTimer(isPlaying: isPlaying)
+        
         state.value = .active(
             data: .init(
                 title: mediaInfo.title,
                 subtitle: mediaInfo.artist ?? "",
                 coverImage: mediaInfo.coverImage,
-                isPlaying: playerState.isPlaying,
+                isPlaying: isPlaying,
                 subtitlesPresenterViewModel: subtitlesPresenterViewModel
             )
         )
@@ -91,7 +130,10 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
                 state.value = .notActive
                 
             case .loaded(let playerState, let mediaInfo):
-                didLoad(playerState: playerState, mediaInfo: mediaInfo)
+                updateLoadedState(
+                    playerState: playerState,
+                    mediaInfo: mediaInfo
+                )
             }
         }
     }
@@ -144,6 +186,18 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
     }
     
     public func seek(time: Float) {
+        
+        sliderValue.value = time
+    }
+    
+    public func startSeeking() {
+        stopUpdatingSlider()
+    }
+    
+    public func endSeeking(time: Float) {
+        
+        playMediaUseCase.setTime(TimeInterval(time))
+        startUpdatingSlider()
     }
 }
 

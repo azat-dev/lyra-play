@@ -60,6 +60,11 @@ public final class PlayingPlayMediaWithTranslationsUseCaseStateController: Loade
         return delegate.stop(activeSession: session)
     }
     
+    public override func setTime(_ time: TimeInterval) {
+        
+        session.playMediaUseCase.setTime(time)
+    }
+    
     public func runResumePlaying() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         session.playMediaUseCase.delegate = self

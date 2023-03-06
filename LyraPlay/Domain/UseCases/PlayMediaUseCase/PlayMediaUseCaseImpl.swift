@@ -92,6 +92,11 @@ extension PlayMediaUseCaseImpl{
         
         return currentStateController.stop()
     }
+    
+    public func setTime(_ time: TimeInterval) {
+        
+        currentStateController.setTime(time)
+    }
 }
 
 // MARK: - Delegate

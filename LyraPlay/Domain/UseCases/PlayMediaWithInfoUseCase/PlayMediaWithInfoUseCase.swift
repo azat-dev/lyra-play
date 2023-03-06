@@ -56,6 +56,8 @@ public protocol PlayMediaWithInfoUseCaseInput: AnyObject {
     func stop() -> Result<Void, PlayMediaWithInfoUseCaseError>
     
     func togglePlay() -> Result<Void, PlayMediaWithInfoUseCaseError>
+    
+    func setTime(_ time: TimeInterval)
 }
 
 public protocol PlayMediaWithInfoUseCaseOutput: AnyObject {

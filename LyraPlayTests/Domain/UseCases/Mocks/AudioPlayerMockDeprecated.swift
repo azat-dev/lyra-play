@@ -20,7 +20,7 @@ class AudioPlayerMockDeprecated: AudioPlayer {
     
     public var currentFileId: String?
     
-    func set(currentTime: TimeInterval) {
+    func setTime(_ time: TimeInterval) {
     }
     
     func prepare(fileId: String, data: Data) -> Result<Void, AudioPlayerError> {

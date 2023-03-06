@@ -63,6 +63,12 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
     
     public func resume() {}
     
+    public func setTime(_ time: TimeInterval) {
+        
+        timer.cancel()
+        execute(from: time)
+    }
+    
     public func execute(from time: TimeInterval) {
         
         delegate?.execute(

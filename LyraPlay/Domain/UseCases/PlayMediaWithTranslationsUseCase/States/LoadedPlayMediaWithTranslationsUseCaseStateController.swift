@@ -64,8 +64,9 @@ public class LoadedPlayMediaWithTranslationsUseCaseStateController: PlayMediaWit
         return .failure(.noActiveMedia)
     }
     
-    public func set(currentTime: TimeInterval) {
-        print("Implement")
+    public func setTime(_ time: TimeInterval) {
+        
+        session.playMediaUseCase.setTime(time)
     }
     
     public func stop() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {

@@ -38,6 +38,8 @@ public protocol TimelineSchedulerInput: AnyObject {
     func pause()
     
     func resume()
+    
+    func setTime(_ time: TimeInterval)
 }
 
 public protocol TimelineScheduler: TimelineSchedulerOutput, TimelineSchedulerInput {

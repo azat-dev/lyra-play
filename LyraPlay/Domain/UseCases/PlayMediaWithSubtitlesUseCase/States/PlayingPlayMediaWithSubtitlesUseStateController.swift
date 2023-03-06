@@ -79,6 +79,12 @@ public class PlayingPlayMediaWithSubtitlesUseStateController: LoadedPlayMediaWit
             }.store(in: &observers)
     }
     
+    public override func setTime(_ time: TimeInterval) {
+        
+        session.playMediaUseCase.setTime(time)
+        session.playSubtitlesUseCase?.setTime(time)
+    }
+    
     public func run(atTime: TimeInterval) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         startWatchingPlayingState()

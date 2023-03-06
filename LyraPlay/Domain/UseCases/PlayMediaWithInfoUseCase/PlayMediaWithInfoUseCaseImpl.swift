@@ -146,6 +146,11 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
             .togglePlay()
             .mapResult()
     }
+    
+    public func setTime(_ time: TimeInterval) {
+        
+        playMediaWithTranslationsUseCase.setTime(time)
+    }
 }
 
 

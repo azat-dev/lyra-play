@@ -114,4 +114,9 @@ extension PlaySubtitlesUseCaseImpl {
         
         scheduler.stop()
     }
+    
+    public func setTime(_ time: TimeInterval) {
+        
+        scheduler.setTime(time)
+    }
 }

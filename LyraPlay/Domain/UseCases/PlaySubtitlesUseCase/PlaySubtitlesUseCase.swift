@@ -39,6 +39,8 @@ public protocol PlaySubtitlesUseCaseInput: AnyObject {
     func pause() -> Void
 
     func stop() -> Void
+    
+    func setTime(_ time: TimeInterval)
 }
 
 public protocol PlaySubtitlesUseCaseOutput: AnyObject {

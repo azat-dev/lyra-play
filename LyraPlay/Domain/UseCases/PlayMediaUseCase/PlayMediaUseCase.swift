@@ -9,14 +9,14 @@ import Foundation
 import Combine
 
 public enum PlayMediaUseCaseError: Error {
-
+    
     case trackNotFound
     case noActiveTrack
     case internalError(Error?)
 }
 
 public enum PlayMediaUseCaseState: Equatable {
-
+    
     case initial
     case loading(mediaId: UUID)
     case loaded(mediaId: UUID)
@@ -28,22 +28,24 @@ public enum PlayMediaUseCaseState: Equatable {
 }
 
 public protocol PlayMediaUseCaseInput: AnyObject {
-
+    
     func prepare(mediaId: UUID) async -> Result<Void, PlayMediaUseCaseError>
-
+    
     func play(atTime: TimeInterval) -> Result<Void, PlayMediaUseCaseError>
-
+    
     func resume() -> Result<Void, PlayMediaUseCaseError>
-
+    
     func pause() -> Result<Void, PlayMediaUseCaseError>
-
+    
     func stop() -> Result<Void, PlayMediaUseCaseError>
     
-    func togglePlay() -> Result<Void, PlayMediaUseCaseError>    
+    func togglePlay() -> Result<Void, PlayMediaUseCaseError>
+    
+    func setTime(_ time: TimeInterval)
 }
 
 public protocol PlayMediaUseCaseOutput: AnyObject {
-
+    
     var state: CurrentValueSubject<PlayMediaUseCaseState, Never> { get }
     
     var currentTime: TimeInterval { get }

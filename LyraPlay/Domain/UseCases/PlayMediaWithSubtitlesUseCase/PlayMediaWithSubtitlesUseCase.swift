@@ -52,6 +52,8 @@ public protocol PlayMediaWithSubtitlesUseCaseInput: AnyObject {
     func stop() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
     
     func togglePlay() -> Result<Void, PlayMediaWithSubtitlesUseCaseError>
+    
+    func setTime(_ time: TimeInterval)
 }
 
 public protocol PlayMediaWithSubtitlesUseCaseDelegate: AnyObject {
