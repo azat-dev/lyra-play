@@ -78,14 +78,14 @@ extension MediaLibraryBrowserViewController {
         self.viewModel.isLoading.observe(on: self, queue: .main) { isLoading in }
         
         self.viewModel.items
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] ids in
 
                 self?.updateList(with: ids)
             }.store(in: &observers)
         
         self.viewModel.changedItems
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] ids in
 
                 self?.updateItems(with: ids)

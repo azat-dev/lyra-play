@@ -43,7 +43,7 @@ extension DeleteMediaLibraryItemFlowPresenterImpl {
     public func present(at container: UINavigationController) {
 
         flowModel.confirmDialogViewModel
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] viewModel in
                 
                 guard let self = self else {

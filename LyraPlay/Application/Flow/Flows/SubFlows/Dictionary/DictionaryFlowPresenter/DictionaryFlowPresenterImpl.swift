@@ -53,7 +53,7 @@ extension DictionaryFlowPresenterImpl {
         let listView = listViewFactory.make(viewModel: flowModel.listViewModel)
         
         flowModel.addDictionaryItemFlow
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] addDictionaryItemFlow in
                 
                 guard let self = self else {
@@ -75,7 +75,7 @@ extension DictionaryFlowPresenterImpl {
             .store(in: &observers)
         
         flowModel.exportDictionaryFlow
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] exportDictionaryFlow in
                 
                 guard let self = self else {

@@ -146,12 +146,12 @@ extension CurrentPlayerStateDetailsViewController {
     private func bind(to viewModel: CurrentPlayerStateDetailsViewModel) {
         
         viewModel.state
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink {  [weak self] state in self?.updateState(state) }
             .store(in: &observers)
         
         viewModel.sliderValue
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] newValue in
                 self?.updateSlider(value: newValue)
             }.store(in: &observers)

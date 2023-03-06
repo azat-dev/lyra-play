@@ -63,19 +63,19 @@ extension DictionaryListBrowserViewController {
     
     private func bind(to viewModel: DictionaryListBrowserViewModel) {
         
-        viewModel.isLoading.receive(on: RunLoop.main).sink { isLoading in
+        viewModel.isLoading.receive(on: DispatchQueue.main).sink { isLoading in
             
         }.store(in: &observers)
         
         viewModel.items
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] ids in
                 
                 self?.updateList(ids)
             }.store(in: &observers)
         
         viewModel.changedItems
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] ids in
                 
                 self?.updateItems(with: ids)

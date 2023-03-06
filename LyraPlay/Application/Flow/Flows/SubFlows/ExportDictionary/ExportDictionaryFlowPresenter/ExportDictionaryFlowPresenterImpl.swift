@@ -41,7 +41,7 @@ extension ExportDictionaryFlowPresenterImpl {
     public func present(at container: UINavigationController, popoverElement: UIBarButtonItem?) {
 
         flowModel.fileSharingViewModel
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] fileSharingViewModel in
                 
                 guard let self = self else {

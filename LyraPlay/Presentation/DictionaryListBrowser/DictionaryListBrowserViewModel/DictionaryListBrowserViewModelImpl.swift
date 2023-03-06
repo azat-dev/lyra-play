@@ -76,7 +76,7 @@ extension DictionaryListBrowserViewModelImpl: DictionaryListBrowserItemViewModel
         let pronounceUseCase = pronounceTextUseCaseFactory.make()
         
         let observer = pronounceUseCase.state
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 
                 guard let self = self else {

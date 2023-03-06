@@ -56,7 +56,7 @@ extension SubtitlesPresenterView {
         var prevPosition: SubtitlesPosition?
         
         viewModelObserver = viewModel.position
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] newPosition in
                 
                 guard let self = self else {

@@ -108,7 +108,7 @@ extension EditDictionaryItemViewController {
         self.title = viewModel.title
         
         viewModel.state
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.updateState(state: $0) }
             .store(in: &observers)
     }

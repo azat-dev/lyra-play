@@ -53,7 +53,7 @@ extension AddMediaLibraryItemFlowPresenterImpl {
     public func present(at container: UINavigationController) {
 
         flowModel.chooseItemTypeViewModel
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] chooseItemTypeViewModel in
                 
                 guard let self = self else {
@@ -75,7 +75,7 @@ extension AddMediaLibraryItemFlowPresenterImpl {
             }.store(in: &observers)
         
         flowModel.importMediaFilesFlow
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] importMediaFilesFlow in
                 
                 guard let self = self else {
@@ -97,7 +97,7 @@ extension AddMediaLibraryItemFlowPresenterImpl {
             .store(in: &observers)
 
         flowModel.addMediaLibraryFolderFlow
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] addMediaLibraryFolderFlow in
                 
                 guard let self = self else {
