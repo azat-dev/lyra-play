@@ -21,7 +21,7 @@ class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
         audioPlayerState: CurrentValueSubject<AudioPlayerState, Never>
     )
     
-    func createSUT(mediaId: UUID) -> SUT {
+    func createSUT(mediaId: UUID) async -> SUT {
 
         let audioPlayer = mock(AudioPlayer.self)
         let audioPlayeState = CurrentValueSubject<AudioPlayerState, Never>(.initial)
@@ -34,17 +34,30 @@ class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
         
         let delegate = mock(PlayMediaUseCaseStateControllerDelegate.self)
         
+        let updatePlayedTimeUseCaseFactory = mock(UpdatePlayedTimeUseCaseFactory.self)
+        
+        let updatePlayedTimeUseCase = mock(UpdatePlayedTimeUseCase.self)
+        
+        given(await updatePlayedTimeUseCase.updatePlayedTime(for: any(), time: any()))
+            .willReturn(.success(()))
+        
+        given(updatePlayedTimeUseCaseFactory.make())
+            .willReturn(updatePlayedTimeUseCase)
+        
         let controller = PlayingPlayMediaUseCaseStateController(
             mediaId: mediaId,
             audioPlayer: audioPlayer,
-            delegate: delegate
+            delegate: delegate,
+            updatePlayedTimeUseCaseFactory: updatePlayedTimeUseCaseFactory
         )
         
         detectMemoryLeak(instance: controller)
         
         releaseMocks(
             delegate,
-            audioPlayer
+            audioPlayer,
+            updatePlayedTimeUseCase,
+            updatePlayedTimeUseCaseFactory
         )
         
         return (
@@ -62,10 +75,16 @@ class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
         // Given
         let mediaId = UUID()
         
-        let sut = createSUT(mediaId: mediaId)
+        let sut = await createSUT(mediaId: mediaId)
         
         given(sut.delegate.pause(mediaId: any(), audioPlayer: any()))
             .willReturn(.success(()))
+        
+        let playerTime: TimeInterval = 1234
+        let audioPlayer = sut.audioPlayer
+        
+        given(audioPlayer.currentTime)
+            .willReturn(playerTime)
 
         // When
         let result = sut.controller.pause()
@@ -85,7 +104,13 @@ class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
         // Given
         let loadedMediaId = UUID()
         
-        let sut = createSUT(mediaId: loadedMediaId)
+        let sut = await createSUT(mediaId: loadedMediaId)
+        
+        let playerTime: TimeInterval = 1234
+        let audioPlayer = sut.audioPlayer
+        
+        given(audioPlayer.currentTime)
+            .willReturn(playerTime)
 
         // When
         sut.audioPlayerState.value = .finished(session: .init(fileId: loadedMediaId.uuidString))
@@ -103,7 +128,13 @@ class PlayingPlayMediaUseCaseStateControllerTests: XCTestCase {
 
         // Given
         let loadedMediaId = UUID()
-        let sut = createSUT(mediaId: loadedMediaId)
+        let sut = await createSUT(mediaId: loadedMediaId)
+        
+        let playerTime: TimeInterval = 1234
+        let audioPlayer = sut.audioPlayer
+        
+        given(audioPlayer.currentTime)
+            .willReturn(playerTime)
         
         given(sut.audioPlayer.play(atTime: 0))
             .willReturn(.success(()))

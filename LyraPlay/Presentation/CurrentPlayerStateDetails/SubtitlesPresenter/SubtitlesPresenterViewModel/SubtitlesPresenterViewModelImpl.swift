@@ -9,32 +9,45 @@ import Foundation
 import Combine
 
 public final class SubtitlesPresenterViewModelImpl: SubtitlesPresenterViewModel {
-
+    
     // MARK: - Properties
     
-    public let state: CurrentValueSubject<SubtitlesPresentationState, Never>
+    public let position = CurrentValueSubject<SubtitlesPosition?, Never>(nil)
+    
+    private var sentences: [SentenceViewModel]
+    
+    public var numberOfRows: Int
     
     // MARK: - Initializers
     
     public init(subtitles: Subtitles) {
         
-        state = .init(
-            .init(
-                activeSentenceIndex: nil,
-                rows: Self.getInitialModels(subtitles: subtitles, position: nil)
-            )
-        )
-    }
-
-    public func getSentenceViewModel(at index: Int) -> SentenceViewModel? {
-
-        let rows = state.value.rows
+        let toggleWord: ToggleWordCallback = { index, range in
+            
+            // FIXME: Add implementation    ppppp
+        }
         
-        guard index < rows.count else {
+        sentences = subtitles.sentences.indices.map { sentenceIndex in
+            
+            let sentence = subtitles.sentences[sentenceIndex]
+            
+            return SentenceViewModelImpl(
+                id: sentenceIndex,
+                text: sentence.text,
+                toggleWord: toggleWord
+            )
+        }
+        
+        self.numberOfRows = sentences.count
+    }
+    
+    public func getSentenceViewModel(at index: Int) -> SentenceViewModel? {
+        
+        guard index < sentences.count else {
             return nil
         }
-
-        return rows[index]
+        
+        return sentences[index]
     }
 }
 
@@ -54,43 +67,30 @@ extension SubtitlesPresenterViewModelImpl {
 
 extension SubtitlesPresenterViewModelImpl {
     
-    private func updatePosition(_ position: SubtitlesPosition?) {
-    
-        let prevState = state.value
-        var rows = prevState.rows
+    private func updatePosition(_ newPosition: SubtitlesPosition?) {
         
-        if let prevActiveSentenceIndex = prevState.activeSentenceIndex {
-            rows[prevActiveSentenceIndex].isActive.value = false
-        }
-        
-        if let newActiveSentenceIndex = position?.sentenceIndex {
-            rows[newActiveSentenceIndex].isActive.value = true
-        }
-        
-        state.value = .init(
-            activeSentenceIndex: position?.sentenceIndex,
-            rows: rows
-        )
-    }
-    
-    private static func getInitialModels(subtitles: Subtitles, position: SubtitlesPosition?) -> [SentenceViewModel] {
-        
-        let sentences = subtitles.sentences
-        
-        let toggleWord: ToggleWordCallback = { index, range in
-
-            // FIXME: Add implementation
-        }
-        
-        return sentences.indices.map { sentenceIndex in
+        DispatchQueue.main.async {
             
-            let sentence = sentences[sentenceIndex]
+            let prevPosition = self.position.value
             
-            return SentenceViewModelImpl(
-                id: sentenceIndex,
-                text: sentence.text,
-                toggleWord: toggleWord
-            )
+            if prevPosition == newPosition {
+                return
+            }
+            
+            if let prevSentenceIndex = prevPosition?.sentenceIndex {
+                
+                var sentence = self.sentences[prevSentenceIndex]
+                sentence.isActive = false
+                self.sentences[prevSentenceIndex] = sentence
+            }
+            
+            if let newSentenceIndex = newPosition?.sentenceIndex {
+                var sentence = self.sentences[newSentenceIndex]
+                sentence.isActive = true
+                self.sentences[newSentenceIndex] = sentence
+            }
+            
+            self.position.value = newPosition
         }
     }
 }

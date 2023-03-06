@@ -17,7 +17,7 @@ public protocol SentenceViewModel {
     
     var id: RowId { get }
     
-    var isActive: Observable<Bool> { get }
+    var isActive: Bool { get set }
     
     var text: String { get }
     
@@ -32,7 +32,7 @@ public struct SentenceViewModelImpl: SentenceViewModel {
     
     public var id: RowId
     
-    public var isActive: Observable<Bool> = Observable(false)
+    public var isActive: Bool = false
     
     public var text: String
     

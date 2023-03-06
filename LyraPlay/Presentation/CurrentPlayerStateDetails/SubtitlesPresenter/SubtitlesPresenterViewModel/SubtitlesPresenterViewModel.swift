@@ -10,24 +10,11 @@ import Combine
 
 // MARK: - Interfaces
 
-public struct SubtitlesPresentationState {
-    
-    public var activeSentenceIndex: Int?
-    public var rows: [SentenceViewModel]
-    
-    public init(
-        activeSentenceIndex: Int? = nil,
-        rows: [SentenceViewModel]
-    ) {
-        
-        self.activeSentenceIndex = activeSentenceIndex
-        self.rows = rows
-    }
-}
-
 public protocol SubtitlesPresenterViewModelOutput {
     
-    var state: CurrentValueSubject<SubtitlesPresentationState, Never> { get }
+    var numberOfRows: Int { get }
+    
+    var position: CurrentValueSubject<SubtitlesPosition?, Never> { get }
     
     func getSentenceViewModel(at index: Int) -> SentenceViewModel?
 }
