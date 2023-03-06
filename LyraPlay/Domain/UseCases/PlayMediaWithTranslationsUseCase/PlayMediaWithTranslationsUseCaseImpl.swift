@@ -89,6 +89,11 @@ extension PlayMediaWithTranslationsUseCaseImpl {
         
         return currentController.togglePlay()
     }
+    
+    public func set(currentTime: TimeInterval) {
+        
+        currentController.set(currentTime: currentTime)
+    }
 }
 
 // MARK: - Update state
