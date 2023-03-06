@@ -108,6 +108,15 @@ public class LoadingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
             audioPlayer.set(currentTime: playedTime)
         }
         
+        if audioPlayer.currentTime == audioPlayer.duration {
+            
+            delegate?.didFinish(
+                mediaId: mediaId,
+                audioPlayer: audioPlayer
+            )
+            return .success(())
+        }
+        
         delegate?.didLoad(
             mediaId: mediaId,
             audioPlayer: audioPlayer

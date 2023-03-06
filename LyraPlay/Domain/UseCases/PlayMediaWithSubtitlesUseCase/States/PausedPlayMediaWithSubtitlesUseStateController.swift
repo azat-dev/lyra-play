@@ -20,7 +20,6 @@ public class PausedPlayMediaWithSubtitlesUseStateController: LoadedPlayMediaWith
         return delegate.play(atTime: atTime, session: session)
     }
     
-
     public override func resume() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         
         guard let delegate = delegate else {

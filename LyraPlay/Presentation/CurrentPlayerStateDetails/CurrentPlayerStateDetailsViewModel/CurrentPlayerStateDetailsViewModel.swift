@@ -23,6 +23,10 @@ public enum CurrentPlayerStateDetailsViewModelState {
 public protocol CurrentPlayerStateDetailsViewModelInput: AnyObject {
 
     func togglePlay()
+    
+    func moveBackward()
+    
+    func moveForward()
 
     func dispose()
 }

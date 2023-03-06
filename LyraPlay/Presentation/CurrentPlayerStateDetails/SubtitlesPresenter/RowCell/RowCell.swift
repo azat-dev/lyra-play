@@ -60,7 +60,6 @@ extension RowCell {
 
     func disconnect(viewModel: SentenceViewModel) {
         
-        viewModel.isActive.remove(observer: self)
         viewModel.selectedWordRange.remove(observer: self)
     }
     
@@ -68,9 +67,7 @@ extension RowCell {
         
         textView.text = viewModel.text
         
-        viewModel.isActive.observe(on: self, queue: .main) { [weak self] isActive in
-            self?.updateActive(isActive)
-        }
+        updateActive(viewModel.isActive)
         
         viewModel.selectedWordRange.observe(on: self, queue: .main) { [weak self] activeRange in
             

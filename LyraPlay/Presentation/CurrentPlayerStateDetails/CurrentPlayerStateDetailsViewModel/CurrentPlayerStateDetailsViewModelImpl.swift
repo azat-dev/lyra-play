@@ -132,6 +132,14 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
                 self?.updateSubtitlesPresenter(subtitlesState: subtitlesState)
             }.store(in: &observers)
     }
+    
+    public func moveForward() {
+        fatalError()
+    }
+    
+    public func moveBackward() {
+        fatalError()
+    }
 }
 
 // MARK: - Input Methods

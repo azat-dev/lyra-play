@@ -25,8 +25,6 @@ public final class SubtitlesPresenterView: UIView, UICollectionViewDelegate {
         }
     }
     
-    private var prevState: SubtitlesPresentationState? = nil
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -55,23 +53,42 @@ extension SubtitlesPresenterView {
     
     private func bind(to viewModel: SubtitlesPresenterViewModel) {
         
-        viewModelObserver = viewModel.state
+        var prevPosition: SubtitlesPosition?
+        
+        viewModelObserver = viewModel.position
             .receive(on: RunLoop.main)
-            .sink { [weak self] newState in
+            .sink { [weak self] newPosition in
                 
                 guard let self = self else {
                     return
                 }
                 
-                if let activeSentenceIndex = newState.activeSentenceIndex {
-                    
-                    guard self.collectionView.numberOfItems(inSection: 0) > activeSentenceIndex else {
-                        return
-                    }
-                    
-                    let indexPath = IndexPath(row: activeSentenceIndex, section: 0)
-                    self.collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+                var indexesToReload = [IndexPath]()
+                
+                if let prevPosition = prevPosition {
+                    indexesToReload.append(
+                        .init(item: prevPosition.sentenceIndex, section: 0)
+                    )
                 }
+                
+                if let newPosition = newPosition {
+                    indexesToReload.append(
+                        .init(item: newPosition.sentenceIndex, section: 0)
+                    )
+                }
+                
+                self.collectionView.reloadItems(at: indexesToReload)
+                    
+                if let newPosition = newPosition {
+                    
+                    self.collectionView.scrollToItem(
+                        at: .init(item: newPosition.sentenceIndex, section: 0),
+                        at: .centeredVertically,
+                        animated: true
+                    )
+                }
+                
+                prevPosition = newPosition
             }
     }
 }
@@ -81,14 +98,8 @@ extension SubtitlesPresenterView {
     private func createLayout() -> UICollectionViewLayout {
         
         let layout = UICollectionViewCompositionalLayout {
-            [weak self] (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
+            (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
 
-            guard let self = self else {
-                return nil
-            }
-
-//            let insets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
-            
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
                 heightDimension: .estimated(50)
@@ -96,23 +107,12 @@ extension SubtitlesPresenterView {
             
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             
-//            let groupSize = NSCollectionLayoutSize(
-//                widthDimension: .fractionalWidth(1.0),
-//                heightDimension: .estimated(20)
-//            )
-            
             let group = NSCollectionLayoutGroup.horizontal(
                 layoutSize: itemSize,
                 subitems: [item]
             )
             
-//            group.interItemSpacing = .fixed(10)
-            
             let section = NSCollectionLayoutSection(group: group)
-//            section.contentInsets = insets
-            
-//            section.interGroupSpacing = verticalSpacing
-            
             
             return section
         }
@@ -167,7 +167,6 @@ extension SubtitlesPresenterView {
 extension SubtitlesPresenterView: UICollectionViewDataSource {
     
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        
         return 1
     }
     
@@ -184,16 +183,12 @@ extension SubtitlesPresenterView: UICollectionViewDataSource {
             fatalError("Can't dequee a cell")
         }
         
-        guard let rows = viewModel?.state.value.rows else {
-            fatalError("Can't find row at: \(indexPath.item)")
-        }
-        
-        cell.viewModel = rows[indexPath.item]
+        cell.viewModel = viewModel?.getSentenceViewModel(at: indexPath.item)
         return cell
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 
-        return viewModel?.state.value.rows.count ?? 0
+        return viewModel?.numberOfRows ?? 0
     }
 }

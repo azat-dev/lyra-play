@@ -127,8 +127,6 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
             return
         }
         
-        self.startedAt = Date.now
-        
         delegate?.didStartExecuting(withController: self)
         
         let timeOffset = max(nextTimeMark - elapsedTime, 0)

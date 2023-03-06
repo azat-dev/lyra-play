@@ -180,6 +180,18 @@ extension CurrentPlayerStateDetailsViewController {
         viewModel.togglePlay()
     }
     
+    @objc
+    private func didTapForwardButton() {
+        
+        viewModel.moveForward()
+    }
+    
+    @objc
+    private func didTapBackwardButton() {
+        
+        viewModel.moveBackward()
+    }
+    
     private func setupTogglePlayButton() {
         
         let tapRecognizer = UITapGestureRecognizer(

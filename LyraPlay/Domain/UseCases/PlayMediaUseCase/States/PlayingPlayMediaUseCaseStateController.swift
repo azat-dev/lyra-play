@@ -54,10 +54,13 @@ public class PlayingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
                 return
             }
             
+            self.updatePlayedTime()
+            
             delegate.didFinish(
                 mediaId: self.mediaId,
                 audioPlayer: self.audioPlayer
             )
+            
             
         }.store(in: &observers)
     }

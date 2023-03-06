@@ -93,6 +93,7 @@ public class PausedPlayMediaWithTranslationsUseCaseStateController: PlayMediaWit
             return pause.mapResult()
         }
         
+        delegate?.didPause(controller: self)
         return .success(())
     }
 }
