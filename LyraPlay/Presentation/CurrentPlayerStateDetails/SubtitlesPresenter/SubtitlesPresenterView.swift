@@ -102,7 +102,7 @@ extension SubtitlesPresenterView {
 
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
-                heightDimension: .estimated(50)
+                heightDimension: .estimated(80)
             )
             
             let item = NSCollectionLayoutItem(layoutSize: itemSize)

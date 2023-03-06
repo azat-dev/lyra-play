@@ -10,6 +10,7 @@ import Combine
 
 public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDetailsViewModel {
     
+    private static let playBackTimeStep: TimeInterval = 5
     
     // MARK: - Properties
     
@@ -177,12 +178,15 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
     }
     
     public func moveForward() {
-        
-        print("Implement me")
+
+        let nextTime = min(playMediaUseCase.currentTime + Self.playBackTimeStep, playMediaUseCase.duration)
+        playMediaUseCase.setTime(nextTime)
     }
     
     public func moveBackward() {
-        print("Implement me")
+        
+        let nextTime = max(playMediaUseCase.currentTime - Self.playBackTimeStep, 0)
+        playMediaUseCase.setTime(nextTime)
     }
     
     public func seek(time: Float) {
