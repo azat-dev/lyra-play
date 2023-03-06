@@ -68,6 +68,11 @@ extension TimelineSchedulerImpl {
         
         self.currentController.execute(from: time)
     }
+    
+    public func setTime(_ time: TimeInterval) {
+        
+        self.currentController.setTime(time)
+    }
 }
 
 // MARK: - Delegate

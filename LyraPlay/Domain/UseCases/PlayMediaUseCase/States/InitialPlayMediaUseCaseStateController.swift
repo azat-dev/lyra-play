@@ -56,4 +56,7 @@ public class InitialPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
     public func togglePlay() -> Result<Void, PlayMediaUseCaseError> {
         return .failure(.noActiveTrack)
     }
+    
+    public func setTime(_ time: TimeInterval) {
+    }
 }

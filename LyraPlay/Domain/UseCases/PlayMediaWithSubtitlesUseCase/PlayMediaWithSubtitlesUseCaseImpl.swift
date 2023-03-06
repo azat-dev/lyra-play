@@ -86,6 +86,11 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseCaseInput 
         
         return currentStateController.togglePlay()
     }
+    
+    public func setTime(_ time: TimeInterval) {
+        
+        currentStateController.setTime(time)
+    }
 }
 
 extension PlayMediaWithSubtitlesUseCaseImpl: PlaySubtitlesUseCaseDelegate {

@@ -95,8 +95,13 @@ public final class PlayingTranslationsPlayMediaWithTranslationsUseCaseStateContr
         }
     }
     
-    public func set(currentTime: TimeInterval) {
-        print("Implement")
+    public func setTime(_ time: TimeInterval) {
+        
+        session.pronounceTranslationsUseCase.stop()
+        let _ = delegate?.play(
+            atTime: time,
+            session: session
+        )
     }
     
     public func run() async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {

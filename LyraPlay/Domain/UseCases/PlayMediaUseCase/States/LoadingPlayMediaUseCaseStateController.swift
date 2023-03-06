@@ -105,7 +105,7 @@ public class LoadingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
             let playedTime = playedTime
         {
             
-            audioPlayer.set(currentTime: playedTime)
+            audioPlayer.setTime(playedTime)
         }
         
         if audioPlayer.currentTime == audioPlayer.duration {
@@ -123,5 +123,8 @@ public class LoadingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
         )
         
         return .success(())
+    }
+    
+    public func setTime(_ time: TimeInterval) {
     }
 }

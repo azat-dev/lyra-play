@@ -37,8 +37,6 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     
     private var observers = Set<AnyCancellable>()
     
-    private var timer: Timer?
-    
     // MARK: - Initializers
     
     public init(
@@ -55,7 +53,6 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     
     deinit {
         observers.removeAll()
-        timer?.invalidate()
     }
     
     // MARK: - Methods
@@ -85,29 +82,9 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
 
 extension CurrentPlayerStateDetailsViewController {
     
-    private func updateSlider() {
+    private func updateSlider(value: Float) {
         
-        sliderView.value = viewModel.currentTime
-    }
-    
-    private func updateTimer(isPlaying: Bool) {
-        
-        guard isPlaying else {
-            timer?.invalidate()
-            timer = nil
-            return
-        }
-        
-        guard timer == nil else {
-            return
-        }
-        
-        let timer = Timer(timeInterval: 0.8, repeats: true) { [weak self] _ in
-            self?.updateSlider()
-        }
-        
-        self.timer = timer
-        RunLoop.main.add(timer, forMode: .default)
+        sliderView.value = value
     }
     
     private func updateToggleButton(isPlaying: Bool) {
@@ -143,7 +120,6 @@ extension CurrentPlayerStateDetailsViewController {
         updateToggleButton(isPlaying: isPlaying)
         
         sliderView.maximumValue = viewModel.duration
-        updateTimer(isPlaying: isPlaying)
     }
     
     private func updateLoadingState() {
@@ -173,6 +149,12 @@ extension CurrentPlayerStateDetailsViewController {
             .receive(on: RunLoop.main)
             .sink {  [weak self] state in self?.updateState(state) }
             .store(in: &observers)
+        
+        viewModel.sliderValue
+            .receive(on: RunLoop.main)
+            .sink { [weak self] newValue in
+                self?.updateSlider(value: newValue)
+            }.store(in: &observers)
     }
 }
 
@@ -238,13 +220,38 @@ extension CurrentPlayerStateDetailsViewController {
         viewModel.seek(time: time)
     }
     
+    @objc
+    private func didStartChangeSlider() {
+        
+        viewModel.startSeeking()
+    }
+    
+    @objc
+    private func didEndChangeSlider() {
+        
+        viewModel.endSeeking(time: sliderView.value)
+    }
+    
     private func setupSlider() {
         
-        sliderView.minimumValue = 0
+        sliderView.isContinuous = true
+        
         sliderView.addTarget(
             self,
             action: #selector(self.didChangeSliderView),
             for: .valueChanged
+        )
+        
+        sliderView.addTarget(
+            self,
+            action: #selector(self.didStartChangeSlider),
+            for: .touchDown
+        )
+        
+        sliderView.addTarget(
+            self,
+            action: #selector(self.didEndChangeSlider),
+            for: [.touchUpInside, .touchUpOutside]
         )
     }
     

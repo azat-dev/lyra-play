@@ -91,6 +91,10 @@ public class PausedPlayMediaUseCaseStateController: PlayMediaUseCaseStateControl
         return resume()
     }
     
+    public func setTime(_ time: TimeInterval) {
+        audioPlayer.setTime(time)
+    }
+    
     public func runPausing() -> Result<Void, PlayMediaUseCaseError> {
         
         let result = audioPlayer.pause()

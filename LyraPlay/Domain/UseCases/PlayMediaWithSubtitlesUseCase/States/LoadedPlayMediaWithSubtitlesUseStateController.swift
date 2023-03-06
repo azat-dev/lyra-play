@@ -79,4 +79,9 @@ public class LoadedPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubtit
         
         return resume()
     }
+    
+    public func setTime(_ time: TimeInterval) {
+        
+        session.playMediaUseCase.setTime(time)
+    }
 }

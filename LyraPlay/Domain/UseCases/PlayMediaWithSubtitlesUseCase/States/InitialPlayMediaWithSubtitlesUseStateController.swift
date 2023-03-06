@@ -53,4 +53,7 @@ public class InitialPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubti
     public func togglePlay() -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
         return .failure(.noActiveMedia)
     }
+    
+    public func setTime(_ time: TimeInterval) {
+    }
 }

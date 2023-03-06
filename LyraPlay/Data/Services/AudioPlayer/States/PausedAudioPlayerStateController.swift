@@ -80,7 +80,7 @@ public class PausedAudioPlayerStateController: AudioPlayerStateController {
         return delegate.stop(session: session)
     }
     
-    public func set(currentTime: TimeInterval) {
+    public func setTime(_ time: TimeInterval) {
         
         session.systemPlayer.currentTime = currentTime
     }

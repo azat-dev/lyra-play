@@ -102,4 +102,7 @@ public final class LoadingPlayMediaWithSubtitlesUseStateController: InitialPlayM
         
         return .success(())
     }
+    
+    public override func setTime(_ time: TimeInterval) {
+    }
 }

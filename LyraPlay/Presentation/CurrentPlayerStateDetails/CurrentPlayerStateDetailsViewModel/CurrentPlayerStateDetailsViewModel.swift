@@ -29,6 +29,10 @@ public protocol CurrentPlayerStateDetailsViewModelInput: AnyObject {
     func moveForward()
     
     func seek(time: Float)
+    
+    func startSeeking()
+    
+    func endSeeking(time: Float)
 
     func dispose()
 }
@@ -37,7 +41,7 @@ public protocol CurrentPlayerStateDetailsViewModelOutput: AnyObject {
 
     var state: CurrentValueSubject<CurrentPlayerStateDetailsViewModelState, Never> { get }
     
-    var currentTime: Float { get }
+    var sliderValue: CurrentValueSubject<Float, Never> { get }
     
     var duration: Float { get }
 }

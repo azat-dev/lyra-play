@@ -133,8 +133,8 @@ public final class AudioPlayerImpl: NSObject, AudioPlayer {
         return currentStateController.stop()
     }
     
-    public func set(currentTime: TimeInterval) {
-        return currentStateController.set(currentTime: currentTime)
+    public func setTime(_ time: TimeInterval) {
+        return currentStateController.setTime(time)
     }
 }
 

@@ -22,4 +22,12 @@ public final class FinishedPlayMediaWithTranslationsUseCaseStateController: Paus
         
         return resume()
     }
+    
+    public override func setTime(_ time: TimeInterval) {
+        
+        delegate?.pause(
+            elapsedTime: time,
+            session: session
+        )
+    }
 }

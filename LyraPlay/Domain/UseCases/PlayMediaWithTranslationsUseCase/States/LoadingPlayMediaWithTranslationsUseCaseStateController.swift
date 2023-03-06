@@ -78,7 +78,7 @@ public final class LoadingPlayMediaWithTranslationsUseCaseStateController: PlayM
         return .failure(.noActiveMedia)
     }
     
-    public func set(currentTime: TimeInterval) {
+    public func setTime(_ time: TimeInterval) {
     }
     
     public func load() async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {

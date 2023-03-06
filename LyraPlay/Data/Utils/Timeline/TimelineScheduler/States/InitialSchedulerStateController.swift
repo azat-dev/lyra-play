@@ -49,6 +49,9 @@ public final class InitialSchedulerStateController: TimelineSchedulerStateContro
         )
     }
     
+    public func setTime(_ time: TimeInterval) {
+    }
+    
     public func runStop() {
         
         let _ = timeline.beginNextExecution(from: 0)

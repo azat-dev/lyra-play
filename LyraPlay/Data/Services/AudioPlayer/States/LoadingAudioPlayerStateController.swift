@@ -67,7 +67,7 @@ public class LoadingAudioPlayerStateController: AudioPlayerStateController {
         return .failure(.noActiveFile)
     }
     
-    public func set(currentTime: TimeInterval) {
+    public func setTime(_ time: TimeInterval) {
     }
     
     public func runLoading() -> Result<Void, AudioPlayerError> {
