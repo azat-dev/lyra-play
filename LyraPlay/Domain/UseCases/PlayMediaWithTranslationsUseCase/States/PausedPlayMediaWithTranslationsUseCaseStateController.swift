@@ -83,6 +83,10 @@ public class PausedPlayMediaWithTranslationsUseCaseStateController: PlayMediaWit
         return delegate.stop(activeSession: session)
     }
     
+    public func set(currentTime: TimeInterval) {
+        print("Implement")
+    }
+    
     public func run() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         session.playMediaUseCase.delegate = nil

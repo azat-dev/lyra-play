@@ -55,6 +55,8 @@ public protocol PlayMediaWithTranslationsUseCaseInput {
     func stop() -> Result<Void, PlayMediaWithTranslationsUseCaseError>
     
     func togglePlay() -> Result<Void, PlayMediaWithTranslationsUseCaseError>
+    
+    func set(currentTime: TimeInterval)
 }
 
 public protocol PlayMediaWithTranslationsUseCaseOutput {

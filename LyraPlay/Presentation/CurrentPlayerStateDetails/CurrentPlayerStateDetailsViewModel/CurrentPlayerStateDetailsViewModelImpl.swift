@@ -10,6 +10,7 @@ import Combine
 
 public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDetailsViewModel {
     
+    
     // MARK: - Properties
     
     private weak var delegate: CurrentPlayerStateDetailsViewModelDelegate?
@@ -134,11 +135,15 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
     }
     
     public func moveForward() {
-        fatalError()
+        
+        print("Implement me")
     }
     
     public func moveBackward() {
-        fatalError()
+        print("Implement me")
+    }
+    
+    public func seek(time: Float) {
     }
 }
 

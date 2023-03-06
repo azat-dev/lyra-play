@@ -27,6 +27,8 @@ public protocol CurrentPlayerStateDetailsViewModelInput: AnyObject {
     func moveBackward()
     
     func moveForward()
+    
+    func seek(time: Float)
 
     func dispose()
 }

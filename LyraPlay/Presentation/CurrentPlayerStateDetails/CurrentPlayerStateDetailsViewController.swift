@@ -66,6 +66,12 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
         setup()
     }
     
+    public override func viewDidDisappear(_ animated: Bool) {
+
+        super.viewDidDisappear(animated)
+        viewModel.dispose()
+    }
+    
     private func setup() {
         
         setupViews()
@@ -183,13 +189,14 @@ extension CurrentPlayerStateDetailsViewController {
     @objc
     private func didTapForwardButton() {
         
-        viewModel.moveForward()
+        dismiss(animated: true)
+//        viewModel.moveForward()
     }
     
     @objc
     private func didTapBackwardButton() {
-        
-        viewModel.moveBackward()
+        dismiss(animated: true)
+//        viewModel.moveBackward()
     }
     
     private func setupTogglePlayButton() {
@@ -202,14 +209,50 @@ extension CurrentPlayerStateDetailsViewController {
         togglePlayButton.addGestureRecognizer(tapRecognizer)
     }
     
+    private func setupForwardButton() {
+        
+        let tapRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.didTapForwardButton)
+        )
+        
+        goForwardButton.addGestureRecognizer(tapRecognizer)
+        goForwardButton.isUserInteractionEnabled = true
+    }
+    
+    private func setupBackwardButton() {
+        
+        let tapRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.didTapBackwardButton)
+        )
+        
+        goBackwardButton.addGestureRecognizer(tapRecognizer)
+        goBackwardButton.isUserInteractionEnabled = true
+    }
+    
+    @objc
+    private func didChangeSliderView() {
+        
+        let time = sliderView.value
+        viewModel.seek(time: time)
+    }
+    
     private func setupSlider() {
         
         sliderView.minimumValue = 0
+        sliderView.addTarget(
+            self,
+            action: #selector(self.didChangeSliderView),
+            for: .valueChanged
+        )
     }
     
     private func setupViews() {
         
         setupTogglePlayButton()
+        setupForwardButton()
+        setupBackwardButton()
         setupSlider()
         
         view.addSubview(backgroundImageView)

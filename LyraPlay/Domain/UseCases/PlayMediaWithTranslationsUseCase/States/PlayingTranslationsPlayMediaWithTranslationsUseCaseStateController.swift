@@ -95,6 +95,10 @@ public final class PlayingTranslationsPlayMediaWithTranslationsUseCaseStateContr
         }
     }
     
+    public func set(currentTime: TimeInterval) {
+        print("Implement")
+    }
+    
     public func run() async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         do {
