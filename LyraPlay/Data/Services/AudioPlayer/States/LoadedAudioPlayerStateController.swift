@@ -82,6 +82,6 @@ public class LoadedAudioPlayerStateController: NSObject, AudioPlayerStateControl
     
     public func setTime(_ time: TimeInterval) {
         
-        session.systemPlayer.currentTime = currentTime
+        session.systemPlayer.currentTime = time
     }
 }

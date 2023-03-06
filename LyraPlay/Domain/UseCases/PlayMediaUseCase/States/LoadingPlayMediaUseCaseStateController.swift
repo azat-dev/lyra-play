@@ -92,16 +92,16 @@ public class LoadingPlayMediaUseCaseStateController: PlayMediaUseCaseStateContro
         
         let prepareResult = audioPlayer.prepare(fileId: mediaId.uuidString, data: trackData)
         
+        async let timeResult = getPlayedTimeUseCase.getPlayedTime(for: mediaId)
+        
         guard case .success = prepareResult else {
             
             delegate?.didFailLoad(mediaId: mediaId)
             return .failure(.internalError(nil))
         }
         
-        let timeResult = await getPlayedTimeUseCase.getPlayedTime(for: mediaId)
-        
         if
-            case .success(let playedTime) = timeResult,
+            case .success(let playedTime) = await timeResult,
             let playedTime = playedTime
         {
             
