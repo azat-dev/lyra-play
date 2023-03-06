@@ -195,7 +195,7 @@ extension CurrentPlayerStateDetailsViewController {
             NSLayoutConstraint.activate([
                 controlsGroup.leftAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leftAnchor, constant: 10),
                 controlsGroup.rightAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.rightAnchor, constant: -10),
-                controlsGroup.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor),
+                controlsGroup.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -10),
             ])
         }
     }
