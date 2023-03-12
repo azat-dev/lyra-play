@@ -8,7 +8,7 @@
 import Foundation
 
 
-public class ImportDictionaryArchiveRouteHandler: DeepLinkRouteHandler {
+public final class ImportDictionaryArchiveRouteHandler: DeepLinkRouteHandler {
     
     // MARK: - Initializers
     

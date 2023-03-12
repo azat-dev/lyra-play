@@ -12,14 +12,17 @@ public final class DeepLinksHandlerFlowModelImplFactory: DeepLinksHandlerFlowMod
     // MARK: - Initializers
     
     private let dictionaryArchiveExtension: String
+    private let mediaFilesExtensions: [String]
     
     // MARK: - Initializers
 
     public init(
-        dictionaryArchiveExtension: String
+        dictionaryArchiveExtension: String,
+        mediaFilesExtensions: [String]
     ) {
         
         self.dictionaryArchiveExtension = dictionaryArchiveExtension
+        self.mediaFilesExtensions = mediaFilesExtensions
     }
 
     // MARK: - Methods
@@ -28,6 +31,10 @@ public final class DeepLinksHandlerFlowModelImplFactory: DeepLinksHandlerFlowMod
         
         let router = DeepLinkRouterImpl(
             routes: [
+                .init(
+                    matcher: ExtensionDeepLinkRouteMatcher(dictionaryArchiveExtension),
+                    handler: ImportDictionaryArchiveRouteHandler()
+                ),
                 .init(
                     matcher: ExtensionDeepLinkRouteMatcher(dictionaryArchiveExtension),
                     handler: ImportDictionaryArchiveRouteHandler()

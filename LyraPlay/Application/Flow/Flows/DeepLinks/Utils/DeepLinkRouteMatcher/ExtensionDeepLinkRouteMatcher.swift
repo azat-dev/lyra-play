@@ -11,19 +11,24 @@ public struct ExtensionDeepLinkRouteMatcher: DeepLinkRouteMatcher {
     
     // MARK: - Properties
     
-    private let linkExtension: String
+    private let linkExtensions: [String]
     
     // MARK: - Initializers
     
     public init(_ linkExtension: String) {
         
-        self.linkExtension = linkExtension.lowercased()
+        self.linkExtensions = [linkExtension.lowercased()]
+    }
+    
+    public init(_ linkExtensions: [String]) {
+        
+        self.linkExtensions = linkExtensions.map { $0.lowercased() }
     }
     
     // MARK: - Methods
     
     public func match(deepLink: DeepLink) -> Bool {
         
-        return deepLink.pathExtension.lowercased() == linkExtension
+        return linkExtensions.contains(deepLink.pathExtension.lowercased())
     }
 }

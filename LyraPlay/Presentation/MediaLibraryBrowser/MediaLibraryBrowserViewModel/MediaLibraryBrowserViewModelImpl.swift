@@ -150,7 +150,7 @@ extension MediaLibraryBrowserViewModelImpl {
     
     public func addNewItem() -> Void {
         
-        delegate?.runAddMediaLibratyItemFlow(folderId: folderId)
+        delegate?.runAddMediaLibratyItemFlow(targetFolderId: folderId)
     }
     
     public func deleteItem(_ id: UUID) {

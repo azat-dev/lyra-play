@@ -29,6 +29,8 @@ public protocol LibraryFolderFlowModelOutput: AnyObject {
     var deleteMediaLibraryItemFlow: CurrentValueSubject<DeleteMediaLibraryItemFlowModel?, Never> { get }
     
     func runOpenLibraryItemFlow(itemId: UUID)
+    
+    func runAddMediaLibratyItemFlow(targetFolderId: UUID?)
 }
 
 public protocol LibraryFolderFlowModel: LibraryFolderFlowModelOutput, LibraryFolderFlowModelInput {}
