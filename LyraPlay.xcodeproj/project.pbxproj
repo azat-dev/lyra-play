@@ -589,6 +589,7 @@
 		AAF58C8C2985A07400008260 /* MainFlowPresenterImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF58C8B2985A07400008260 /* MainFlowPresenterImplFactory.swift */; };
 		AAF58C902985B25300008260 /* DeepLinksHandlerFlowModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF58C8F2985B25300008260 /* DeepLinksHandlerFlowModel.swift */; };
 		AAF76BB028C0CBE20067FE91 /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF76BAF28C0CBE20067FE91 /* String+Utils.swift */; };
+		AAF998E429B9301E00EAB15D /* MediaFileRouteHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF998E329B9301E00EAB15D /* MediaFileRouteHandler.swift */; };
 		AAFB979328759C45007A76A7 /* MessageChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB979228759C45007A76A7 /* MessageChannelTests.swift */; };
 		AAFB979528759D45007A76A7 /* MessageChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB979428759D45007A76A7 /* MessageChannel.swift */; };
 		AAFB97972875BCAD007A76A7 /* Subtitles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB97962875BCAD007A76A7 /* Subtitles.swift */; };
@@ -1316,6 +1317,7 @@
 		AAF58C8B2985A07400008260 /* MainFlowPresenterImplFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainFlowPresenterImplFactory.swift; sourceTree = "<group>"; };
 		AAF58C8F2985B25300008260 /* DeepLinksHandlerFlowModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeepLinksHandlerFlowModel.swift; sourceTree = "<group>"; };
 		AAF76BAF28C0CBE20067FE91 /* String+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
+		AAF998E329B9301E00EAB15D /* MediaFileRouteHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaFileRouteHandler.swift; sourceTree = "<group>"; };
 		AAFB979228759C45007A76A7 /* MessageChannelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageChannelTests.swift; sourceTree = "<group>"; };
 		AAFB979428759D45007A76A7 /* MessageChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageChannel.swift; sourceTree = "<group>"; };
 		AAFB97962875BCAD007A76A7 /* Subtitles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subtitles.swift; sourceTree = "<group>"; };
@@ -2299,6 +2301,7 @@
 			isa = PBXGroup;
 			children = (
 				AA07BDF02987A0B80044B3CD /* ImportDictionaryArchiveRouteHandler.swift */,
+				AAF998E329B9301E00EAB15D /* MediaFileRouteHandler.swift */,
 			);
 			path = Routes;
 			sourceTree = "<group>";
@@ -4344,6 +4347,7 @@
 				7C30E902EBEE5E8AD5956C48 /* DictionaryListBrowserViewControllerFactory.swift in Sources */,
 				DB59C881ADF58A2F89917D57 /* DictionaryListBrowserViewModelFactory.swift in Sources */,
 				4476EACDB5D2E6A892E878DD /* DictionaryListBrowserViewModel.swift in Sources */,
+				AAF998E429B9301E00EAB15D /* MediaFileRouteHandler.swift in Sources */,
 				AAEE5AC82994C74300E85A39 /* PlayMediaUseCaseStateController.swift in Sources */,
 				5BD969A13A41F36E1BB2654B /* DictionaryListBrowserViewModelImpl.swift in Sources */,
 				EC5CC0EDD67A7CD171F53803 /* DictionaryListBrowserViewModelImplFactory.swift in Sources */,

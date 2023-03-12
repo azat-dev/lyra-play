@@ -84,7 +84,7 @@ extension LibraryFolderFlowModelImpl: DeleteMediaLibraryItemFlowDelegate {
 
 extension LibraryFolderFlowModelImpl: MediaLibraryBrowserViewModelDelegate {
     
-    public func runAddMediaLibratyItemFlow(folderId: UUID?) {
+    public func runAddMediaLibratyItemFlow(targetFolderId: UUID?) {
         
         let addMediaLibraryItemFlow = addMediaLibraryItemFlowModelFactory.make(
             targetFolderId: folderId,

@@ -19,4 +19,5 @@ public struct ApplicationSettings {
     let allowedMediaDocumentTypes: [String]
     let defaultDictionaryArchiveName: String
     let dictionaryArchiveExtension: String
+    let mediaFilesExtensions: [String]
 }

@@ -32,7 +32,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             allowedSubtitlesDocumentTypes: ["com.azatkaiumov.subtitles"],
             allowedMediaDocumentTypes: ["public.audio"],
             defaultDictionaryArchiveName: "dictionary.lyraplay",
-            dictionaryArchiveExtension: "lyraplay"
+            dictionaryArchiveExtension: "lyraplay",
+            mediaFilesExtensions: ["mp3"]
         )
         
         application = Application(
@@ -40,7 +41,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             flowModelFactory: ApplicationFlowModelImplFactory(settings: settings),
             flowPresenterFactory: ApplicationFlowPresenterImplFactory(),
             deepLinksModelFactory: DeepLinksHandlerFlowModelImplFactory(
-                dictionaryArchiveExtension: settings.dictionaryArchiveExtension
+                dictionaryArchiveExtension: settings.dictionaryArchiveExtension,
+                mediaFilesExtensions: settings.mediaFilesExtensions
             )
         )
         
