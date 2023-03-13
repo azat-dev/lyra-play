@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class LyricsParserFactory: SubtitlesParserFactory {
+public final class VttParserFactory: SubtitlesParserFactory {
 
     // MARK: - Properties
 
@@ -25,6 +25,6 @@ public final class LyricsParserFactory: SubtitlesParserFactory {
     public func make() -> SubtitlesParser {
 
         let textSplitter = textSplitterFactory.make()
-        return LyricsParser(textSplitter: textSplitter)
+        return VttParser(textSplitter: textSplitter)
     }
 }

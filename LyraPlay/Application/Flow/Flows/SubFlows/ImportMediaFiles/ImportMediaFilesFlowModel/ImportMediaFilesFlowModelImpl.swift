@@ -26,6 +26,7 @@ public final class ImportMediaFilesFlowModelImpl: ImportMediaFilesFlowModel {
     public init(
         targetFolderId: UUID?,
         allowedDocumentTypes: [String],
+        fileUrl: URL?,
         delegate: ImportMediaFilesFlowModelDelegate,
         filesPickerViewModelFactory: FilesPickerViewModelFactory,
         importAudioFileUseCaseFactory: ImportAudioFileUseCaseFactory
@@ -37,11 +38,19 @@ public final class ImportMediaFilesFlowModelImpl: ImportMediaFilesFlowModel {
         self.filesPickerViewModelFactory = filesPickerViewModelFactory
         self.importAudioFileUseCaseFactory = importAudioFileUseCaseFactory
         
-        self.filesPickerViewModel.value = filesPickerViewModelFactory.make(
-            documentTypes: allowedDocumentTypes,
-            allowsMultipleSelection: true,
-            delegate: self
-        )
+        guard let fileUrl = fileUrl else {
+
+            self.filesPickerViewModel.value = filesPickerViewModelFactory.make(
+                documentTypes: allowedDocumentTypes,
+                allowsMultipleSelection: true,
+                delegate: self
+            )
+            return
+        }
+        
+        Task {
+            await importAudioFiles(urls: [fileUrl])
+        }
     }
 }
 

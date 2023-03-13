@@ -36,8 +36,8 @@ public final class DeepLinksHandlerFlowModelImplFactory: DeepLinksHandlerFlowMod
                     handler: ImportDictionaryArchiveRouteHandler()
                 ),
                 .init(
-                    matcher: ExtensionDeepLinkRouteMatcher(dictionaryArchiveExtension),
-                    handler: ImportDictionaryArchiveRouteHandler()
+                    matcher: ExtensionDeepLinkRouteMatcher(mediaFilesExtensions),
+                    handler: MediaFileRouteHandler()
                 )
             ],
             applicationFlowModel: applicationFlowModel

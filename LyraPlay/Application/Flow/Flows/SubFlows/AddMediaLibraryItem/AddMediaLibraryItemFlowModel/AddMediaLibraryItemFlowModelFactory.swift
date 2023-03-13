@@ -11,6 +11,7 @@ public protocol AddMediaLibraryItemFlowModelFactory {
 
     func make(
         targetFolderId: UUID?,
+        fileUrl: URL?,
         delegate: AddMediaLibraryItemFlowModelDelegate
     ) -> AddMediaLibraryItemFlowModel
 }

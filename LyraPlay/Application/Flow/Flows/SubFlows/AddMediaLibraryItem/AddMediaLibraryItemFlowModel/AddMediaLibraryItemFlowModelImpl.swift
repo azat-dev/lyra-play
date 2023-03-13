@@ -33,6 +33,7 @@ public final class AddMediaLibraryItemFlowModelImpl: AddMediaLibraryItemFlowMode
 
     public init(
         targetFolderId: UUID?,
+        fileUrl: URL?,
         delegate: AddMediaLibraryItemFlowModelDelegate,
         chooseDialogViewModelFactory: ChooseDialogViewModelFactory,
         importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory,
@@ -45,7 +46,12 @@ public final class AddMediaLibraryItemFlowModelImpl: AddMediaLibraryItemFlowMode
         self.importMediaFilesFlowModelFactory = importMediaFilesFlowModelFactory
         self.addMediaLibraryFolderFlowModelFactory = addMediaLibraryFolderFlowModelFactory
         
-        showChooseTypeDialog()
+        guard let fileUrl = fileUrl else {
+            showChooseTypeDialog()
+            return
+        }
+        
+        runImportMediaFilesFlow(fileUrl: fileUrl)
     }
     
     private func showChooseTypeDialog() {
@@ -114,7 +120,7 @@ extension AddMediaLibraryItemFlowModelImpl: ChooseDialogViewModelDelegate {
         self.addMediaLibraryFolderFlow.value = addMediaLibraryFolderFlow
     }
     
-    private func runImportMediaFilesFlow() {
+    private func runImportMediaFilesFlow(fileUrl: URL?) {
     
         guard self.importMediaFilesFlow.value == nil else {
             return
@@ -122,6 +128,7 @@ extension AddMediaLibraryItemFlowModelImpl: ChooseDialogViewModelDelegate {
         
         let importMediaFilesFlow = importMediaFilesFlowModelFactory.make(
             targetFolderId: targetFolderId,
+            fileUrl: fileUrl,
             delegate: self
         )
         
@@ -138,7 +145,7 @@ extension AddMediaLibraryItemFlowModelImpl: ChooseDialogViewModelDelegate {
             runAddMediaLibraryFolderFlow()
             
         case .importMediaFiles:
-            runImportMediaFilesFlow()
+            runImportMediaFilesFlow(fileUrl: nil)
             
         default:
             fatalError("Not implemented")

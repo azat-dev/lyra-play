@@ -9,5 +9,9 @@ import Foundation
 
 public protocol ImportMediaFilesFlowModelFactory {
 
-    func make(targetFolderId: UUID?, delegate: ImportMediaFilesFlowModelDelegate) -> ImportMediaFilesFlowModel
+    func make(
+        targetFolderId: UUID?,
+        fileUrl: URL?,
+        delegate: ImportMediaFilesFlowModelDelegate
+    ) -> ImportMediaFilesFlowModel
 }

@@ -132,8 +132,7 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
         
         let subtitlesParserFactory = SubtitlesParserImplFactory(
             parsers: [
-                ".srt": SubRipFileFormatParserFactory(textSplitterFactory: textSplitterFactory),
-                ".lrc": LyricsParserFactory(textSplitterFactory: textSplitterFactory)
+                ".vtt": VttParserFactory(textSplitterFactory: textSplitterFactory)
             ]
         )
         
