@@ -93,8 +93,9 @@ public final class LoadingPlayMediaWithSubtitlesUseStateController: InitialPlayM
                 playSubtitlesUseCase: playSubtitlesUseCase,
                 subtitlesState: .init(
                     .init(
-                        position: playSubtitlesUseCase.subtitlesPosition.value,
-                        subtitles: subtitles
+                        timeSlot: playSubtitlesUseCase.subtitlesTimeSlot.value,
+                        subtitles: subtitles,
+                        timeSlots: playSubtitlesUseCase.timeSlots
                     )
                 )
             )

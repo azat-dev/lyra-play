@@ -12,42 +12,58 @@ public final class SubtitlesPresenterViewModelImpl: SubtitlesPresenterViewModel 
     
     // MARK: - Properties
     
-    public let position = CurrentValueSubject<SubtitlesPosition?, Never>(nil)
+    public let position = CurrentValueSubject<SubtitlesTimeSlot?, Never>(nil)
     
-    private var sentences: [SentenceViewModel]
+    private var rows: [SubtitlesPresenterRowViewModel]
     
     public var numberOfRows: Int
     
     // MARK: - Initializers
     
-    public init(subtitles: Subtitles) {
+    public init(subtitles: Subtitles, timeSlots: [SubtitlesTimeSlot]) {
         
         let toggleWord: ToggleWordCallback = { index, range in
             
-            // FIXME: Add implementation    ppppp
+            // FIXME: Add implementation
         }
         
-        sentences = subtitles.sentences.indices.map { sentenceIndex in
+        rows = timeSlots.map { timeSlot in
+
+            guard let position = timeSlot.subtitlesPosition else {
+                
+                return SubtitlesPresenterRowViewModelImpl(
+                    id: timeSlot.index,
+                    isActive: false,
+                    data: .empty,
+                    delegateChanges: nil
+                )
+            }
             
-            let sentence = subtitles.sentences[sentenceIndex]
+            let sentence = subtitles.sentences[position.sentenceIndex]
             
-            return SentenceViewModelImpl(
-                id: sentenceIndex,
-                text: sentence.text,
-                toggleWord: toggleWord
+            return SubtitlesPresenterRowViewModelImpl(
+                id: timeSlot.index,
+                isActive: false,
+                data: .sentence(
+                    SubtitlesPresenterRowViewModelSentenceDataImpl(
+                        text: sentence.text,
+                        toggleWord: toggleWord
+                    )
+                ),
+                delegateChanges: nil
             )
         }
         
-        self.numberOfRows = sentences.count
+        self.numberOfRows = rows.count
     }
     
-    public func getSentenceViewModel(at index: Int) -> SentenceViewModel? {
+    public func getRowViewModel(at index: Int) -> SubtitlesPresenterRowViewModel? {
         
-        guard index < sentences.count else {
+        guard index < rows.count else {
             return nil
         }
         
-        return sentences[index]
+        return rows[index]
     }
 }
 
@@ -55,7 +71,7 @@ public final class SubtitlesPresenterViewModelImpl: SubtitlesPresenterViewModel 
 
 extension SubtitlesPresenterViewModelImpl {
     
-    public func update(position: SubtitlesPosition?) {
+    public func update(position: SubtitlesTimeSlot?) {
         
         DispatchQueue.main.async { [weak self] in
             self?.updatePosition(position)
@@ -67,27 +83,28 @@ extension SubtitlesPresenterViewModelImpl {
 
 extension SubtitlesPresenterViewModelImpl {
     
-    private func updatePosition(_ newPosition: SubtitlesPosition?) {
+    private func updatePosition(_ newPosition: SubtitlesTimeSlot?) {
         
         DispatchQueue.main.async {
-            
+
             let prevPosition = self.position.value
-            
+
             if prevPosition == newPosition {
                 return
             }
-            
-            if let prevSentenceIndex = prevPosition?.sentenceIndex {
-                
-                var sentence = self.sentences[prevSentenceIndex]
-                sentence.isActive = false
-                self.sentences[prevSentenceIndex] = sentence
+
+            if
+                let prevIndex = prevPosition?.index,
+                prevIndex < self.rows.count
+            {
+                self.rows[prevIndex].deactivate()
             }
-            
-            if let newSentenceIndex = newPosition?.sentenceIndex {
-                var sentence = self.sentences[newSentenceIndex]
-                sentence.isActive = true
-                self.sentences[newSentenceIndex] = sentence
+
+            if
+                let newIndex = newPosition?.index,
+                newIndex < self.rows.count
+            {
+                self.rows[newIndex].activate()
             }
             
             self.position.value = newPosition

@@ -11,12 +11,12 @@ import Combine
 public protocol PlaySubtitlesUseCaseDelegate: AnyObject {
     
     func playSubtitlesUseCaseWillChange(
-        fromPosition: SubtitlesPosition?,
-        toPosition: SubtitlesPosition?,
+        from: SubtitlesTimeSlot?,
+        to: SubtitlesTimeSlot?,
         interrupt: inout Bool
     )
     
-    func playSubtitlesUseCaseDidChange(position: SubtitlesPosition?)
+    func playSubtitlesUseCaseDidChange(timeSlot: SubtitlesTimeSlot?)
     
     func playSubtitlesUseCaseDidFinish()
 }
@@ -47,9 +47,11 @@ public protocol PlaySubtitlesUseCaseOutput: AnyObject {
 
     var state: CurrentValueSubject<PlaySubtitlesUseCaseState, Never> { get }
     
-    var subtitlesPosition: CurrentValueSubject<SubtitlesPosition?, Never> { get }
-
+    var subtitlesTimeSlot: CurrentValueSubject<SubtitlesTimeSlot?, Never> { get }
+    
     var delegate: PlaySubtitlesUseCaseDelegate? { get set }
+    
+    var timeSlots: [SubtitlesTimeSlot] { get }
 }
 
 public protocol PlaySubtitlesUseCase: PlaySubtitlesUseCaseOutput, PlaySubtitlesUseCaseInput {

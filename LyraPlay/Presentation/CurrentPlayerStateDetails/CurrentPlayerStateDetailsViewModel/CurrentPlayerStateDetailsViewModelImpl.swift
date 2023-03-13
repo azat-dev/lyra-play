@@ -92,10 +92,13 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
         
         if let subtitlesState = playMediaUseCase.subtitlesState.value {
             
-            subtitlesPresenterViewModel = subtitlesPresenterViewModelFactory.make(subtitles: subtitlesState.subtitles)
+            subtitlesPresenterViewModel = subtitlesPresenterViewModelFactory.make(
+                subtitles: subtitlesState.subtitles,
+                timeSlots: subtitlesState.timeSlots
+            )
             currentSubtitles = subtitlesState.subtitles
             
-            subtitlesPresenterViewModel?.update(position: subtitlesState.position)
+            subtitlesPresenterViewModel?.update(position: subtitlesState.timeSlot)
         }
         
         let isPlaying = playerState.isPlaying
@@ -158,7 +161,7 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
             return
         }
         
-        subtitlesPresenterViewModel.update(position: subtitlesState.position)
+        subtitlesPresenterViewModel.update(position: subtitlesState.timeSlot)
     }
     
     private func bind(to playMediaUseCase: PlayMediaWithInfoUseCase) {

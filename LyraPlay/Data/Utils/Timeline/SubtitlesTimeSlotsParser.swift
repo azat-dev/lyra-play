@@ -9,17 +9,23 @@ import Foundation
 
 public struct SubtitlesTimeSlot: Equatable {
     
-    public var timeRange: Range<TimeInterval>
-    public var subtitlesPosition: SubtitlesPosition?
+    public let index: Int
+    public let timeRange: Range<TimeInterval>
+    public let subtitlesPosition: SubtitlesPosition?
     
-    public init(timeRange: Range<TimeInterval>, subtitlesPosition: SubtitlesPosition? = nil) {
+    public init(
+        index: Int,
+        timeRange: Range<TimeInterval>,
+        subtitlesPosition: SubtitlesPosition? = nil
+    ) {
         
+        self.index = index
         self.timeRange = timeRange
         self.subtitlesPosition = subtitlesPosition
     }
 }
 
-public class SubtitlesTimeSlotsParser {
+public final class SubtitlesTimeSlotsParser {
     
     public init() {}
     
@@ -80,6 +86,7 @@ public class SubtitlesTimeSlotsParser {
         let appendSentenceSlot = { (sentenceIndex: Int, range: Range<TimeInterval>) -> Void in
             
             let sentenceSlot = SubtitlesTimeSlot(
+                index: timeSlots.count,
                 timeRange: range,
                 subtitlesPosition: .sentence(sentenceIndex)
             )
@@ -95,6 +102,7 @@ public class SubtitlesTimeSlotsParser {
             if lastEndTime < startTime {
             
                 let emptySlot = SubtitlesTimeSlot(
+                    index: timeSlots.count,
                     timeRange: (lastEndTime..<startTime),
                     subtitlesPosition: nil
                 )
@@ -135,6 +143,7 @@ public class SubtitlesTimeSlotsParser {
                 }
 
                 let timeMarkSlot = SubtitlesTimeSlot(
+                    index: timeSlots.count,
                     timeRange: (timeMarkStartTime..<timeMarkEndTime),
                     subtitlesPosition: .init(
                         sentenceIndex: sentenceIndex,
@@ -157,7 +166,10 @@ public class SubtitlesTimeSlotsParser {
         
         if lastSlot == nil || lastSlot!.timeRange.upperBound < subtitles.duration {
             
-            let emptySlot = SubtitlesTimeSlot(timeRange: lastEndTime..<subtitles.duration)
+            let emptySlot = SubtitlesTimeSlot(
+                index: timeSlots.count,
+                timeRange: lastEndTime..<subtitles.duration
+            )
             timeSlots.append(emptySlot)
         }
         

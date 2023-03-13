@@ -53,7 +53,7 @@ extension SubtitlesPresenterView {
     
     private func bind(to viewModel: SubtitlesPresenterViewModel) {
         
-        var prevPosition: SubtitlesPosition?
+        var prevPosition: SubtitlesTimeSlot?
         
         viewModelObserver = viewModel.position
             .receive(on: DispatchQueue.main)
@@ -67,13 +67,13 @@ extension SubtitlesPresenterView {
                 
                 if let prevPosition = prevPosition {
                     indexesToReload.append(
-                        .init(item: prevPosition.sentenceIndex, section: 0)
+                        .init(item: prevPosition.index, section: 0)
                     )
                 }
                 
                 if let newPosition = newPosition {
                     indexesToReload.append(
-                        .init(item: newPosition.sentenceIndex, section: 0)
+                        .init(item: newPosition.index, section: 0)
                     )
                 }
                 
@@ -82,7 +82,7 @@ extension SubtitlesPresenterView {
                 if let newPosition = newPosition {
                     
                     self.collectionView.scrollToItem(
-                        at: .init(item: newPosition.sentenceIndex, section: 0),
+                        at: .init(item: newPosition.index, section: 0),
                         at: .centeredVertically,
                         animated: true
                     )
@@ -183,7 +183,9 @@ extension SubtitlesPresenterView: UICollectionViewDataSource {
             fatalError("Can't dequee a cell")
         }
         
-        cell.viewModel = viewModel?.getSentenceViewModel(at: indexPath.item)
+        cell.viewModel = viewModel?.getRowViewModel(at: indexPath.item)
+        cell.viewModel?.delegateChanges = cell
+        
         return cell
     }
     

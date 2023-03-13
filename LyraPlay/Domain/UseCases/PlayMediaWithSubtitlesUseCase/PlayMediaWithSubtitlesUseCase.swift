@@ -59,12 +59,12 @@ public protocol PlayMediaWithSubtitlesUseCaseInput: AnyObject {
 public protocol PlayMediaWithSubtitlesUseCaseDelegate: AnyObject {
     
     func playMediaWithSubtitlesUseCaseWillChange(
-        from: SubtitlesPosition?,
-        to: SubtitlesPosition?,
+        from: SubtitlesTimeSlot?,
+        to: SubtitlesTimeSlot?,
         interrupt: inout Bool
     )
     
-    func playMediaWithSubtitlesUseCaseDidChange(position: SubtitlesPosition?)
+    func playMediaWithSubtitlesUseCaseDidChange(timeSlot: SubtitlesTimeSlot?)
     
     func playMediaWithSubtitlesUseCaseDidFinish()
 }
@@ -72,12 +72,12 @@ public protocol PlayMediaWithSubtitlesUseCaseDelegate: AnyObject {
 public extension PlayMediaWithSubtitlesUseCaseDelegate {
     
     func playMediaWithSubtitlesUseCaseWillChange(
-        from: SubtitlesPosition?,
-        to: SubtitlesPosition?,
+        from: SubtitlesTimeSlot?,
+        to: SubtitlesTimeSlot?,
         interrupt: inout Bool
     ) {}
     
-    func playMediaWithSubtitlesUseCaseDidChange(position: SubtitlesPosition?) {}
+    func playMediaWithSubtitlesUseCaseDidChange(timeSlot: SubtitlesTimeSlot?) {}
     
     func playMediaWithSubtitlesUseCaseDidFinish() {}
 }
