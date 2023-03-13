@@ -7,6 +7,15 @@
       "state" : {
         "revision" : "85d8eae902c49f39d106318bd517ad8357ffd766"
       }
+    },
+    {
+      "identity" : "swiftwebvtt",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/azat-dev/SwiftWebVTT",
+      "state" : {
+        "branch" : "main",
+        "revision" : "a02faf7e8ba5d1369e390661768482618581c192"
+      }
     }
   ],
   "version" : 2

@@ -32,12 +32,14 @@ public final class ImportMediaFilesFlowModelImplFactory: ImportMediaFilesFlowMod
 
     public func make(
         targetFolderId: UUID?,
+        fileUrl: URL?,
         delegate: ImportMediaFilesFlowModelDelegate
     ) -> ImportMediaFilesFlowModel {
 
         return ImportMediaFilesFlowModelImpl(
             targetFolderId: targetFolderId,
             allowedDocumentTypes: allowedDocumentTypes,
+            fileUrl: fileUrl,
             delegate: delegate,
             filesPickerViewModelFactory: filesPickerViewModelFactory,
             importAudioFileUseCaseFactory: importAudioFileUseCaseFactory

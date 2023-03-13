@@ -86,8 +86,14 @@ extension LibraryFolderFlowModelImpl: MediaLibraryBrowserViewModelDelegate {
     
     public func runAddMediaLibratyItemFlow(targetFolderId: UUID?) {
         
+        runAddMediaLibratyItemFlow(targetFolderId: targetFolderId, fileUrl: nil)
+    }
+    
+    public func runAddMediaLibratyItemFlow(targetFolderId: UUID?, fileUrl: URL?) {
+        
         let addMediaLibraryItemFlow = addMediaLibraryItemFlowModelFactory.make(
             targetFolderId: folderId,
+            fileUrl: fileUrl,
             delegate: self
         )
         self.addMediaLibraryItemFlow.value = addMediaLibraryItemFlow

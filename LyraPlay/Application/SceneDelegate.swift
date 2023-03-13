@@ -27,7 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             imagesFolderName: "mediafiles_images",
             audioFilesFolderName: "mediafiles_data",
             subtitlesFolderName: "subtitles",
-            supportedSubtitlesExtensions: [".srt", ".lrc"],
+            supportedSubtitlesExtensions: [".vtt"],
             coverPlaceholderName: "Image.CoverPlaceholder",
             allowedSubtitlesDocumentTypes: ["com.azatkaiumov.subtitles"],
             allowedMediaDocumentTypes: ["public.audio"],

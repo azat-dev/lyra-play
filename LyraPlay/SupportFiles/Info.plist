@@ -104,8 +104,6 @@
 			<dict>
 				<key>public.filename-extension</key>
 				<array>
-					<string>srt</string>
-					<string>lrc</string>
 					<string>vtt</string>
 				</array>
 				<key>public.mime-type</key>
@@ -132,21 +130,6 @@
 				<array>
 					<string>lyraplay</string>
 				</array>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array/>
-			<key>UTTypeDescription</key>
-			<string></string>
-			<key>UTTypeIconFiles</key>
-			<array/>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array/>
-				<key>public.mime-type</key>
-				<array/>
 			</dict>
 		</dict>
 	</array>
