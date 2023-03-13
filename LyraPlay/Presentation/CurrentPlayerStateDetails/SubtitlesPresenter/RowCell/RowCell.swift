@@ -16,7 +16,7 @@ final class RowCell: UICollectionViewCell, NSLayoutManagerDelegate {
     private var textLayoutManager = EnhancedLayoutManager()
     private var highlights: Observable<HighLights?> = Observable(nil)
     
-    public var viewModel: SentenceViewModel! {
+    public var viewModel: SubtitlesPresenterRowViewModel? {
 
         didSet {
             
@@ -35,6 +35,13 @@ final class RowCell: UICollectionViewCell, NSLayoutManagerDelegate {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        viewModel?.delegateChanges = nil
+        viewModel = nil
     }
     
     private func setup() {
@@ -58,31 +65,59 @@ extension RowCell {
         }
     }
 
-    func disconnect(viewModel: SentenceViewModel) {
+    func disconnect(viewModel: SubtitlesPresenterRowViewModel) {
         
-        viewModel.selectedWordRange.remove(observer: self)
+//        viewModel.selectedWordRange.remove(observer: self)
     }
     
-    func bind(to viewModel: SentenceViewModel) {
+    func setupEmpty() {
         
-        textView.text = viewModel.text
+        textView.text = ""
+    }
+    
+    func setupSentence(data: SubtitlesPresenterRowViewModelSentenceData) {
+     
+        textView.text = data.text
+    }
+    
+    func bind(to viewModel: SubtitlesPresenterRowViewModel?) {
+        
+        guard let viewModel = viewModel else {
+            return
+        }
+        
+        switch viewModel.data {
+            
+        case .empty:
+            setupEmpty()
+            
+        case .sentence(let sentenceData):
+            setupSentence(data: sentenceData)
+        }
         
         updateActive(viewModel.isActive)
         
-        viewModel.selectedWordRange.observe(on: self, queue: .main) { [weak self] activeRange in
-            
-            guard let self = self else {
-                return
-            }
-            
-            guard let activeRange = activeRange else {
-                self.highlights.value = nil
-                return
-            }
-            
-            let nsRange = NSRange(activeRange, in: viewModel.text)
-            self.highlights.value = [nsRange: UIColor.red]
-        }
+//        viewModel.selectedWordRange.observe(on: self, queue: .main) { [weak self] activeRange in
+//
+//            guard let self = self else {
+//                return
+//            }
+//
+//            guard let activeRange = activeRange else {
+//                self.highlights.value = nil
+//                return
+//            }
+//
+//            let nsRange = NSRange(activeRange, in: viewModel.text)
+//            self.highlights.value = [nsRange: UIColor.red]
+//        }
+    }
+}
+
+extension RowCell: SubtitlesPresenterRowViewModelDelegate {
+    
+    func subtitlesPresenterRowViewModelDidChange(isActive: Bool) {
+        updateActive(isActive)
     }
 }
 
@@ -92,25 +127,25 @@ extension RowCell {
     
     private func didTapOutside() {
 
-        guard let viewModel = viewModel else {
-            return
-        }
-        
-        viewModel.toggleWord(viewModel.id, nil)
+//        guard let viewModel = viewModel else {
+//            return
+//        }
+//
+//        viewModel.toggleWord(viewModel.id, nil)
     }
     
     private func didTap(range: UITextRange) {
 
-        guard let viewModel = viewModel else {
-            return
-        }
-        
-        let nsRange = range.toNSRange(textView: textView)
-        guard let range = Range(nsRange, in: viewModel.text) else {
-            return
-        }
-        
-        viewModel.toggleWord(viewModel.id, range)
+//        guard let viewModel = viewModel else {
+//            return
+//        }
+//
+//        let nsRange = range.toNSRange(textView: textView)
+//        guard let range = Range(nsRange, in: viewModel.text) else {
+//            return
+//        }
+//
+//        viewModel.toggleWord(viewModel.id, range)
     }
 
     @objc

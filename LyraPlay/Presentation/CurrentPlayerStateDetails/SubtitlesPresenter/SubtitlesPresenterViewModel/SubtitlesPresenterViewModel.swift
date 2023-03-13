@@ -14,14 +14,14 @@ public protocol SubtitlesPresenterViewModelOutput {
     
     var numberOfRows: Int { get }
     
-    var position: CurrentValueSubject<SubtitlesPosition?, Never> { get }
+    var position: CurrentValueSubject<SubtitlesTimeSlot?, Never> { get }
     
-    func getSentenceViewModel(at index: Int) -> SentenceViewModel?
+    func getRowViewModel(at index: Int) -> SubtitlesPresenterRowViewModel?
 }
 
 public protocol SubtitlesPresenterViewModelInput {
     
-    func update(position: SubtitlesPosition?)
+    func update(position: SubtitlesTimeSlot?)
 }
 
 public protocol SubtitlesPresenterViewModel: SubtitlesPresenterViewModelOutput, SubtitlesPresenterViewModelInput {

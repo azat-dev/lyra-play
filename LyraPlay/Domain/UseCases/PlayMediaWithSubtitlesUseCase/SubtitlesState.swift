@@ -11,24 +11,29 @@ public struct SubtitlesState: Equatable {
 
     // MARK: - Properties
 
-    public var position: SubtitlesPosition?
-    public var subtitles: Subtitles
+    public let timeSlot: SubtitlesTimeSlot?
+    public let subtitles: Subtitles
+    public let timeSlots: [SubtitlesTimeSlot]
 
     // MARK: - Initializers
 
     public init(
-        position: SubtitlesPosition?,
-        subtitles: Subtitles
+        timeSlot: SubtitlesTimeSlot?,
+        subtitles: Subtitles,
+        timeSlots: [SubtitlesTimeSlot]
     ) {
 
-        self.position = position
+        self.timeSlot = timeSlot
         self.subtitles = subtitles
+        self.timeSlots = timeSlots
     }
     
-    public func positioned(_ position: SubtitlesPosition?) -> SubtitlesState {
+    public func positioned(_ timeSlot: SubtitlesTimeSlot?) -> SubtitlesState {
         
-        var newState = self
-        newState.position = position
-        return newState
+        return SubtitlesState(
+            timeSlot: timeSlot,
+            subtitles: subtitles,
+            timeSlots: timeSlots
+        )
     }
 }

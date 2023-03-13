@@ -95,11 +95,11 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseCaseInput 
 
 extension PlayMediaWithSubtitlesUseCaseImpl: PlaySubtitlesUseCaseDelegate {
     
-    public func playSubtitlesUseCaseWillChange(fromPosition: SubtitlesPosition?, toPosition: SubtitlesPosition?, interrupt: inout Bool) {
+    public func playSubtitlesUseCaseWillChange(from: SubtitlesTimeSlot?, to: SubtitlesTimeSlot?, interrupt: inout Bool) {
         
         delegate?.playMediaWithSubtitlesUseCaseWillChange(
-            from: fromPosition,
-            to: toPosition,
+            from: from,
+            to: to,
             interrupt: &interrupt
         )
         
@@ -108,10 +108,10 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlaySubtitlesUseCaseDelegate {
         }
     }
     
-    public func playSubtitlesUseCaseDidChange(position: SubtitlesPosition?) {
+    public func playSubtitlesUseCaseDidChange(timeSlot: SubtitlesTimeSlot?) {
         
-        subtitlesState.value = subtitlesState.value?.positioned(position)
-        delegate?.playMediaWithSubtitlesUseCaseDidChange(position: position)
+        subtitlesState.value = subtitlesState.value?.positioned(timeSlot)
+        delegate?.playMediaWithSubtitlesUseCaseDidChange(timeSlot: timeSlot)
         
     }
     

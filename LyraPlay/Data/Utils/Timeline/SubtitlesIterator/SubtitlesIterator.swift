@@ -21,9 +21,11 @@ public struct SubtitlesItem {
 
 public protocol SubtitlesIterator: TimeLineIterator {
     
-    var currentPosition: SubtitlesPosition? { get }
+    var currentTimeSlot: SubtitlesTimeSlot? { get }
     
     var currentTimeRange: Range<TimeInterval>? { get }
     
-    func getNextPosition() -> SubtitlesPosition?
+    var timeSlots: [SubtitlesTimeSlot] { get }
+    
+    func getNextTimeSlot() -> SubtitlesTimeSlot?
 }

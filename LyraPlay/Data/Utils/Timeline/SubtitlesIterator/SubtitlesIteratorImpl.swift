@@ -10,35 +10,53 @@ import Foundation
 public final class SubtitlesIteratorImpl: SubtitlesIterator {
     
     // MARK: - Properties
-    
-    private let subtitlesTimeSlots: [SubtitlesTimeSlot]
-    
-    private var currentIndex = -1
-    
-    private lazy var endIndex: Int = {
-        subtitlesTimeSlots.count
-    }()
-    
-    private lazy var lastItem: SubtitlesTimeSlot = {
-        return .init(timeRange: endTime..<endTime)
-    }()
-    
-    private var currentIteratorItem: SubtitlesTimeSlot? {
 
-        if currentIndex < 0 || currentIndex > endIndex {
+    public var currentTimeSlot: SubtitlesTimeSlot? {
+        
+        guard let currentTimeSlotIndex = currentTimeSlotIndex else {
             return nil
         }
         
-        if currentIndex == endIndex {
+        if currentTimeSlotIndex == endIndex {
             return lastItem
         }
         
-        return subtitlesTimeSlots[currentIndex]
+        return timeSlots[currentTimeSlotIndex]
+    }
+    
+    public let timeSlots: [SubtitlesTimeSlot]
+    
+    private lazy var endIndex: Int = {
+        timeSlots.count
+    }()
+    
+    private lazy var lastItem: SubtitlesTimeSlot = {
+        return .init(
+            index: timeSlots.count,
+            timeRange: endTime..<endTime
+        )
+    }()
+    
+    private var currentIteratorItem: SubtitlesTimeSlot? {
+        
+        guard let timeSlotIndex = currentTimeSlotIndex else {
+            return nil
+        }
+
+        if timeSlotIndex > endIndex {
+            return nil
+        }
+        
+        if timeSlotIndex == endIndex {
+            return lastItem
+        }
+        
+        return timeSlots[timeSlotIndex]
     }
     
     private lazy var endTime: TimeInterval = {
         
-        guard let lastSlot = subtitlesTimeSlots.last else {
+        guard let lastSlot = timeSlots.last else {
             return 0
         }
         
@@ -51,12 +69,14 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
     
     public var currentTimeRange: Range<TimeInterval>? { currentIteratorItem?.timeRange }
     
+    public var currentTimeSlotIndex: Int?
+    
     
     // MARK: - Initializers
     
     public init(subtitlesTimeSlots: [SubtitlesTimeSlot]) {
         
-        self.subtitlesTimeSlots = subtitlesTimeSlots
+        self.timeSlots = subtitlesTimeSlots
     }
     
     // MARK: - Methods
@@ -67,15 +87,15 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
         
         if time >= subtitlesEndTime {
             
-            currentIndex = endIndex - 1
+            currentTimeSlotIndex = endIndex - 1
             return lastEventTime
         }
         
-        let numberOfItems = subtitlesTimeSlots.count
+        let numberOfItems = timeSlots.count
         
         for index in 0..<numberOfItems {
             
-            let item = subtitlesTimeSlots[index]
+            let item = timeSlots[index]
             
             if item.timeRange.lowerBound >= time {
                 
@@ -83,18 +103,22 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
                     return nil
                 }
                 
-                currentIndex = index - 1
+                currentTimeSlotIndex = index - 1
                 return lastEventTime
             }
         }
         
-        currentIndex = endIndex - 1
+        currentTimeSlotIndex = endIndex - 1
         return lastEventTime
     }
     
     private func getNextIndex() -> Int? {
         
-        let nextIndex = currentIndex + 1
+        guard let timeSlotIndex = currentTimeSlotIndex else {
+            return nil
+        }
+        
+        let nextIndex = timeSlotIndex + 1
 
         if nextIndex > endIndex {
             return nil
@@ -117,10 +141,10 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
             return endTime
         }
 
-        return subtitlesTimeSlots[nextIndex].timeRange.lowerBound
+        return timeSlots[nextIndex].timeRange.lowerBound
     }
     
-    public func getNextPosition() -> SubtitlesPosition? {
+    public func getNextTimeSlot() -> SubtitlesTimeSlot? {
         
         guard let nextIndex = getNextIndex() else {
             return nil
@@ -130,7 +154,7 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
             return nil
         }
         
-        return subtitlesTimeSlots[nextIndex].subtitlesPosition
+        return timeSlots[nextIndex]
     }
     
     public func moveToNextEvent() -> TimeInterval? {
@@ -140,11 +164,11 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
         }
 
         if nextIndex == endIndex {
-            currentIndex = nextIndex
+            currentTimeSlotIndex = nextIndex
             return nil
         }
         
-        currentIndex = nextIndex
+        currentTimeSlotIndex = nextIndex
         return lastEventTime
     }
 }

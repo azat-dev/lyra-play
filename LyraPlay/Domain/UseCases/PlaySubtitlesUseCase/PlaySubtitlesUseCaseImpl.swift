@@ -14,13 +14,18 @@ public final class PlaySubtitlesUseCaseImpl: PlaySubtitlesUseCase {
     
     public var state =  CurrentValueSubject<PlaySubtitlesUseCaseState, Never>(.initial)
     
-    public let subtitlesPosition = CurrentValueSubject<SubtitlesPosition?, Never>(nil)
+    public let subtitlesTimeSlot = CurrentValueSubject<SubtitlesTimeSlot?, Never>(nil)
     
     public weak var delegate: PlaySubtitlesUseCaseDelegate?
     
     private let subtitlesIterator: SubtitlesIterator
     
     private let schedulerFactory: TimelineSchedulerFactory
+    
+    public var timeSlots: [SubtitlesTimeSlot] {
+        
+        return subtitlesIterator.timeSlots
+    }
     
     private lazy var scheduler: TimelineScheduler = {
         
@@ -49,8 +54,8 @@ extension PlaySubtitlesUseCaseImpl: TimelineSchedulerDelegateChanges {
     public func schedulerWillChange(from: TimeInterval?, to: TimeInterval?, interrupt: inout Bool) {
         
         delegate?.playSubtitlesUseCaseWillChange(
-            fromPosition: subtitlesIterator.currentPosition,
-            toPosition: subtitlesIterator.getNextPosition(),
+            from: subtitlesTimeSlot.value,
+            to: subtitlesIterator.getNextTimeSlot(),
             interrupt: &interrupt
         )
         
@@ -62,10 +67,10 @@ extension PlaySubtitlesUseCaseImpl: TimelineSchedulerDelegateChanges {
     
     public func schedulerDidChange(time: TimeInterval) {
         
-        subtitlesPosition.value = subtitlesIterator.currentPosition
+        subtitlesTimeSlot.value = subtitlesIterator.currentTimeSlot
         
         delegate?.playSubtitlesUseCaseDidChange(
-            position: subtitlesIterator.currentPosition
+            timeSlot: subtitlesIterator.currentTimeSlot
         )
     }
     
