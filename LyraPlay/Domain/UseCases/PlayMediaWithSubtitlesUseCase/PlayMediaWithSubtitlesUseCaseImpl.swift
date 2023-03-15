@@ -16,6 +16,8 @@ public final class PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseC
     
     public let subtitlesState = CurrentValueSubject<SubtitlesState?, Never>(nil)
     
+    private var playerState = CurrentValueSubject<PlayMediaWithSubtitlesUseCasePlayerState, Never>(.initial)
+    
     private lazy var currentStateController: PlayMediaWithSubtitlesUseStateController = {
         return InitialPlayMediaWithSubtitlesUseStateController(delegate: self)
     } ()
@@ -135,7 +137,9 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseStateContr
         )
         
         currentStateController = controller
-        state.value = .activeSession(params, .loading)
+        
+        playerState.value = .loading
+        state.value = .activeSession(params, playerState)
         
         return await controller.load()
     }
@@ -154,7 +158,7 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseStateContr
             .store(in: &observers)
         
         currentStateController = controller
-        state.value = .activeSession(session.params, .loaded)
+        playerState.value = .loaded
     }
     
     public func didFailLoad(params: PlayMediaWithSubtitlesSessionParams) {
@@ -164,7 +168,7 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseStateContr
         )
         
         currentStateController = controller
-        state.value = .activeSession(params, .loadFailed)
+        playerState.value = .loadFailed
     }
     
     public func didFinish(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) {
@@ -174,7 +178,7 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseStateContr
             delegate: self
         )
         
-        state.value = .activeSession(session.params, .finished)
+        playerState.value = .finished
     }
     
     public func pause(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
@@ -190,7 +194,7 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseStateContr
     public func didPause(controller: PausedPlayMediaWithSubtitlesUseStateController) {
         
         currentStateController = controller
-        state.value = .activeSession(controller.session.params, .paused)
+        playerState.value = .paused
     }
     
     public func resumePlaying(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
@@ -206,7 +210,7 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseStateContr
     public func didResumePlaying(withController controller: PlayingPlayMediaWithSubtitlesUseStateController) {
         
         currentStateController = controller
-        state.value = .activeSession(controller.session.params, .playing)
+        playerState.value = .playing
     }
     
     public func play(
@@ -225,7 +229,7 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseStateContr
     public func didStartPlaying(withController: PlayingPlayMediaWithSubtitlesUseStateController) {
         
         currentStateController = withController
-        state.value = .activeSession(withController.session.params, .playing)
+        playerState.value = .playing
     }
     
     public func stop(session: PlayMediaWithSubtitlesUseStateControllerActiveSession) -> Result<Void, PlayMediaWithSubtitlesUseCaseError> {
