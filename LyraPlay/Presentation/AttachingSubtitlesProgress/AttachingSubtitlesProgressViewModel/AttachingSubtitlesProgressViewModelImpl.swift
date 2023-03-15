@@ -45,6 +45,7 @@ extension AttachingSubtitlesProgressViewModelImpl {
         DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.3) {
             
             self.delegate?.attachingSubtitlesProgressViewModelDidFinish()
+            completion()
         }
     }
 }
