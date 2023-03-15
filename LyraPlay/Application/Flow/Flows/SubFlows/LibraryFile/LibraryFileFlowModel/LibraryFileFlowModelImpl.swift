@@ -67,18 +67,29 @@ extension LibraryFileFlowModelImpl: LibraryItemViewModelDelegate {
 
 extension LibraryFileFlowModelImpl: AttachSubtitlesFlowModelDelegate {
     
-    public func attachSubtitlesFlowDidAttach() {
+    public func attachSubtitlesFlowDidAttach(for mediaId: UUID) {
         
         attachSubtitlesFlow.value = nil
     }
     
-    public func attachSubtitlesFlowDidFinish() {
+    public func attachSubtitlesFlowDidStart(for mediaId: UUID) {
+        
+        guard self.mediaId == mediaId else {
+            return
+        }
+        
+        viewModel.isAttachingSubtitles.value = true
+    }
+    
+    public func attachSubtitlesFlowDidFinish(for mediaId: UUID) {
         
         attachSubtitlesFlow.value = nil
+        viewModel.isAttachingSubtitles.value = false
     }
     
     public func attachSubtitlesFlowDidCancel() {
         
         attachSubtitlesFlow.value = nil
+        viewModel.isAttachingSubtitles.value = false
     }
 }

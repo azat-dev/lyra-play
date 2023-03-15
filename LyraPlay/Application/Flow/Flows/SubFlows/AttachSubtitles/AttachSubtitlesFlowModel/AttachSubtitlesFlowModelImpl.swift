@@ -72,6 +72,8 @@ extension AttachSubtitlesFlowModelImpl: FilesPickerViewModelDelegate {
     
     private func attachSubtitles(url: URL) async {
         
+        delegate?.attachSubtitlesFlowDidStart(for: mediaId)
+        
         let progressViewModel = attachingSubtitlesProgressViewModelFactory.make(delegate: self)
         progressViewModel.state.value = .processing
         
@@ -95,13 +97,17 @@ extension AttachSubtitlesFlowModelImpl: FilesPickerViewModelDelegate {
 
         guard case .success = importResult else {
 
-            delegate?.attachSubtitlesFlowDidFinish()
+            delegate?.attachSubtitlesFlowDidFinish(for: mediaId)
             return
         }
 
-        progressViewModel.showSuccess(completion: {
+        progressViewModel.showSuccess(completion: { [weak self] in
 
-            self.delegate?.attachSubtitlesFlowDidAttach()
+            guard let self = self else {
+                return
+            }
+            
+            self.delegate?.attachSubtitlesFlowDidAttach(for: self.mediaId)
         })
     }
     
@@ -118,7 +124,7 @@ extension AttachSubtitlesFlowModelImpl: FilesPickerViewModelDelegate {
     
     public func filesPickerDidDispose() {
         
-        delegate?.attachSubtitlesFlowDidFinish()
+        delegate?.attachSubtitlesFlowDidFinish(for: mediaId)
     }
 }
 

@@ -12,9 +12,11 @@ public protocol AttachSubtitlesFlowModelDelegate: AnyObject {
     
     func attachSubtitlesFlowDidCancel()
     
-    func attachSubtitlesFlowDidFinish()
+    func attachSubtitlesFlowDidStart(for mediaId: UUID)
     
-    func attachSubtitlesFlowDidAttach()
+    func attachSubtitlesFlowDidFinish(for mediaId: UUID)
+    
+    func attachSubtitlesFlowDidAttach(for mediaId: UUID)
 }
 
 public protocol AttachSubtitlesFlowModelInput: AnyObject {}

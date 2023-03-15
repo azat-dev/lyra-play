@@ -135,5 +135,10 @@ extension LibraryItemViewController {
 
             button.configuration = config
         }
+        
+        static func apply(activityIndicatorAttachingSubtitles: UIActivityIndicatorView) {
+            
+            activityIndicatorAttachingSubtitles.hidesWhenStopped = true
+        }
     }
 }

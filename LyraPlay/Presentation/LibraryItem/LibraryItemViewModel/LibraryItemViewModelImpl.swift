@@ -26,9 +26,12 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
     private let playMediaUseCase: PlayMediaWithInfoUseCase
     
     public var isPlaying: Observable<Bool> = .init(false)
+    public var isAttachingSubtitles = CurrentValueSubject<Bool, Never>(false)
+    
     public var info: Observable<LibraryItemInfoPresentation?> = .init(nil)
     
     private var observers = Set<AnyCancellable>()
+    
     
     // MARK: - Initializers
     
