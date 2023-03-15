@@ -21,8 +21,7 @@ extension LibraryItemViewController {
             artistLabel: UILabel,
             durationLabel: UILabel,
             playButton: UIButton,
-            attachSubtitlesButton: UIButton,
-            activityIndicatorAttachingSubtitles: UIActivityIndicatorView
+            attachSubtitlesButton: UIButton
         ) {
             
             mainGroup.translatesAutoresizingMaskIntoConstraints = false
@@ -56,7 +55,6 @@ extension LibraryItemViewController {
             NSLayoutConstraint.activate([
                 
                 titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10),
-//                titleLabel.widthAnchor.constraint(lessThanOrEqualTo: imageView.widthAnchor, multiplier: 0.9),
                 artistLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0),
                 durationLabel.topAnchor.constraint(equalTo: artistLabel.bottomAnchor, constant: 0),
                 playButton.topAnchor.constraint(equalTo: durationLabel.bottomAnchor, constant: 0),
@@ -64,13 +62,18 @@ extension LibraryItemViewController {
             ])
             
             activityIndicator.constraintToCenter(of: view)
-            
-            activityIndicatorAttachingSubtitles.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        static func apply(
+            button: UIButton,
+            activityIndicator: UIActivityIndicatorView
+        ) {
+            activityIndicator.translatesAutoresizingMaskIntoConstraints = false
             
             NSLayoutConstraint.activate([
             
-                activityIndicatorAttachingSubtitles.centerXAnchor.constraint(equalTo: attachSubtitlesButton.imageView!.centerXAnchor),
-                activityIndicatorAttachingSubtitles.centerYAnchor.constraint(equalTo: attachSubtitlesButton.imageView!.centerYAnchor)
+                activityIndicator.rightAnchor.constraint(equalTo: button.titleLabel!.leftAnchor, constant: -10),
+                activityIndicator.centerYAnchor.constraint(equalTo: button.titleLabel!.centerYAnchor)
             ])
         }
     }
