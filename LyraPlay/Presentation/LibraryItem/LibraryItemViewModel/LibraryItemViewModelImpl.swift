@@ -27,6 +27,7 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
     
     public var isPlaying: Observable<Bool> = .init(false)
     public var isAttachingSubtitles = CurrentValueSubject<Bool, Never>(false)
+    public var isPreparingToPlay = CurrentValueSubject<Bool, Never>(false)
     
     public var info: Observable<LibraryItemInfoPresentation?> = .init(nil)
     
@@ -114,6 +115,9 @@ extension LibraryItemViewModelImpl {
     }
     
     private func startNewSession() async {
+        
+        defer { isPreparingToPlay.value = false }
+        isPreparingToPlay.value = true
         
         let prepareResult = await playMediaUseCase.prepare(
             session: .init(

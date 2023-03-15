@@ -24,6 +24,8 @@ public protocol LibraryItemViewModelOutput {
     var isPlaying: Observable<Bool> { get }
     
     var isAttachingSubtitles: CurrentValueSubject<Bool, Never> { get }
+    
+    var isPreparingToPlay: CurrentValueSubject<Bool, Never> { get }
 
     var info: Observable<LibraryItemInfoPresentation?> { get }
 }

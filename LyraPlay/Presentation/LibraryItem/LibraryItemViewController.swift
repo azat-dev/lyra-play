@@ -15,17 +15,18 @@ public final class LibraryItemViewController: UIViewController, LibraryItemView 
     
     private let viewModel: LibraryItemViewModel
     
-    private var activityIndicator = UIActivityIndicatorView()
-    private var activityIndicatorAttachingSubtitles = UIActivityIndicatorView()
+    private let activityIndicator = UIActivityIndicatorView()
+    private let activityIndicatorAttachingSubtitles = UIActivityIndicatorView()
+    private let activityIndicatorPrepareToPlay = UIActivityIndicatorView()
     
-    private var imageView = ImageViewShadowed()
-    private var titleLabel = UILabel()
-    private var artistLabel = UILabel()
-    private var durationLabel = UILabel()
-    private var playButton = UIButton()
-    private var addSubtitlesButton = UIButton()
+    private let imageView = ImageViewShadowed()
+    private let titleLabel = UILabel()
+    private let artistLabel = UILabel()
+    private let durationLabel = UILabel()
+    private let playButton = UIButton()
+    private let addSubtitlesButton = UIButton()
     
-    private var mainGroup = UIView()
+    private let mainGroup = UIView()
     
     private var observers = Set<AnyCancellable>()
     
@@ -150,6 +151,26 @@ extension LibraryItemViewController {
                 self.addSubtitlesButton.imageView?.isHidden = false
                 self.addSubtitlesButton.isUserInteractionEnabled = true
             }.store(in: &observers)
+        
+        viewModel.isPreparingToPlay
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isPreparing in
+                
+                guard let self = self else {
+                    return
+                }
+                
+                if isPreparing {
+                    self.activityIndicatorPrepareToPlay.startAnimating()
+                    self.playButton.imageView?.isHidden = true
+                    self.playButton.isUserInteractionEnabled = false
+                    return
+                }
+                
+                self.activityIndicatorPrepareToPlay.stopAnimating()
+                self.playButton.imageView?.isHidden = false
+                self.playButton.isUserInteractionEnabled = true
+            }.store(in: &observers)
     }
 }
 
@@ -193,6 +214,10 @@ extension LibraryItemViewController {
             for: .touchUpInside
         )
         
+        playButton.addSubview(
+            activityIndicatorPrepareToPlay
+        )
+        
         addSubtitlesButton.addTarget(
             self,
             action: #selector(Self.didTapAttachSubtitles),
@@ -219,8 +244,17 @@ extension LibraryItemViewController {
             artistLabel: artistLabel,
             durationLabel: durationLabel,
             playButton: playButton,
-            attachSubtitlesButton: addSubtitlesButton,
-            activityIndicatorAttachingSubtitles: activityIndicatorAttachingSubtitles
+            attachSubtitlesButton: addSubtitlesButton
+        )
+        
+        Layout.apply(
+            button: playButton,
+            activityIndicator: activityIndicatorPrepareToPlay
+        )
+        
+        Layout.apply(
+            button: addSubtitlesButton,
+            activityIndicator: activityIndicatorAttachingSubtitles
         )
     }
 }
@@ -239,6 +273,7 @@ extension LibraryItemViewController {
         Styles.apply(playButton: playButton)
         Styles.apply(attachSubtitlesButton: addSubtitlesButton)
         Styles.apply(activityIndicatorAttachingSubtitles: activityIndicatorAttachingSubtitles)
+        Styles.apply(activityIndicatorPrepareToPlay: activityIndicatorPrepareToPlay)
     }
 }
 
