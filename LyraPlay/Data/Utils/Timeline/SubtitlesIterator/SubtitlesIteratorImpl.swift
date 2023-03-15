@@ -17,18 +17,10 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
             return nil
         }
         
-        if currentTimeSlotIndex == endIndex {
-            return lastItem
-        }
-        
         return timeSlots[currentTimeSlotIndex]
     }
     
     public let timeSlots: [SubtitlesTimeSlot]
-    
-    private lazy var endIndex: Int = {
-        timeSlots.count
-    }()
     
     private lazy var lastItem: SubtitlesTimeSlot = {
         return .init(
@@ -42,15 +34,11 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
         guard let timeSlotIndex = currentTimeSlotIndex else {
             return nil
         }
-
-        if timeSlotIndex > endIndex {
+        
+        guard timeSlotIndex < timeSlots.count else {
             return nil
         }
-        
-        if timeSlotIndex == endIndex {
-            return lastItem
-        }
-        
+
         return timeSlots[timeSlotIndex]
     }
     
@@ -87,7 +75,7 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
         
         if time >= subtitlesEndTime {
             
-            currentTimeSlotIndex = endIndex - 1
+            currentTimeSlotIndex = timeSlots.count
             return lastEventTime
         }
         
@@ -108,7 +96,7 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
             }
         }
         
-        currentTimeSlotIndex = endIndex - 1
+        currentTimeSlotIndex = timeSlots.count
         return lastEventTime
     }
     
@@ -120,14 +108,10 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
         
         let nextIndex = timeSlotIndex + 1
 
-        if nextIndex > endIndex {
+        if nextIndex >= timeSlots.count {
             return nil
         }
 
-        if nextIndex == endIndex {
-            return nextIndex
-        }
-        
         return nextIndex
     }
     
@@ -135,10 +119,6 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
         
         guard let nextIndex = getNextIndex() else {
             return nil
-        }
-
-        if nextIndex == endIndex {
-            return endTime
         }
 
         return timeSlots[nextIndex].timeRange.lowerBound
@@ -150,7 +130,7 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
             return nil
         }
 
-        if nextIndex == endIndex {
+        if nextIndex == timeSlots.count {
             return nil
         }
         
@@ -163,7 +143,7 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
             return nil
         }
 
-        if nextIndex == endIndex {
+        if nextIndex == timeSlots.count {
             currentTimeSlotIndex = nextIndex
             return nil
         }

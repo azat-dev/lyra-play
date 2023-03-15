@@ -17,10 +17,6 @@ public final class SubtitlesPresenterView: UIView, UICollectionViewDelegate {
     public var viewModel: SubtitlesPresenterViewModel? {
         
         didSet {
-            guard let viewModel = viewModel else {
-                return
-            }
-            
             bind(to: viewModel)
         }
     }
@@ -51,44 +47,33 @@ public final class SubtitlesPresenterView: UIView, UICollectionViewDelegate {
 
 extension SubtitlesPresenterView {
     
-    private func bind(to viewModel: SubtitlesPresenterViewModel) {
+    private func update(position: SubtitlesTimeSlot?) {
         
-        var prevPosition: SubtitlesTimeSlot?
+        guard let newPosition = position else {
+            return
+        }
+        
+        collectionView.scrollToItem(
+            at: .init(item: newPosition.index, section: 0),
+            at: .centeredVertically,
+            animated: true
+        )
+    }
+    
+    private func bind(to viewModel: SubtitlesPresenterViewModel?) {
+        
+        collectionView.reloadData()
+        
+        guard let viewModel = viewModel else {
+            viewModelObserver = nil
+            return
+        }
         
         viewModelObserver = viewModel.position
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newPosition in
                 
-                guard let self = self else {
-                    return
-                }
-                
-                var indexesToReload = [IndexPath]()
-                
-                if let prevPosition = prevPosition {
-                    indexesToReload.append(
-                        .init(item: prevPosition.index, section: 0)
-                    )
-                }
-                
-                if let newPosition = newPosition {
-                    indexesToReload.append(
-                        .init(item: newPosition.index, section: 0)
-                    )
-                }
-                
-                self.collectionView.reloadItems(at: indexesToReload)
-                    
-                if let newPosition = newPosition {
-                    
-                    self.collectionView.scrollToItem(
-                        at: .init(item: newPosition.index, section: 0),
-                        at: .centeredVertically,
-                        animated: true
-                    )
-                }
-                
-                prevPosition = newPosition
+                self?.update(position: newPosition)
             }
     }
 }
