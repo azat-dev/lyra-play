@@ -31,12 +31,12 @@ public enum PlayMediaWithTranslationsUseCasePlayerState: Equatable {
     case finished
 }
 
-public enum PlayMediaWithTranslationsUseCaseState: Equatable {
+public enum PlayMediaWithTranslationsUseCaseState {
     
     case noActiveSession
     case activeSession(
         PlayMediaWithTranslationsSession,
-        PlayMediaWithTranslationsUseCasePlayerState
+        CurrentValueSubject<PlayMediaWithTranslationsUseCasePlayerState, Never>
     )
 }
 
