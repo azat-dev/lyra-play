@@ -142,11 +142,13 @@ extension LibraryItemViewController {
                 if isAttachingSubtitles {
                     self.activityIndicatorAttachingSubtitles.startAnimating()
                     self.addSubtitlesButton.imageView?.isHidden = true
+                    self.addSubtitlesButton.isUserInteractionEnabled = false
                     return
                 }
                 
                 self.activityIndicatorAttachingSubtitles.stopAnimating()
                 self.addSubtitlesButton.imageView?.isHidden = false
+                self.addSubtitlesButton.isUserInteractionEnabled = true
             }.store(in: &observers)
     }
 }

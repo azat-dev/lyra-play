@@ -101,11 +101,11 @@ extension AttachSubtitlesFlowModelImpl: FilesPickerViewModelDelegate {
             return
         }
 
-        progressViewModel.showSuccess(completion: { [weak self] in
+        progressViewModel.showSuccess(completion: {
 
-            guard let self = self else {
-                return
-            }
+//            guard let self = self else {
+//                return
+//            }
             
             self.delegate?.attachSubtitlesFlowDidAttach(for: self.mediaId)
         })
@@ -134,7 +134,7 @@ extension AttachSubtitlesFlowModelImpl: AttachingSubtitlesProgressViewModelDeleg
     
     public func attachingSubtitlesProgressViewModelDidFinish() {
         
-        progressViewModel.value = nil
+//        progressViewModel.value = nil
     }
     
     public func attachingSubtitlesProgressViewModelDidCancel() {
