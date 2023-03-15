@@ -94,7 +94,10 @@ public final class LoadingPlayMediaWithTranslationsUseCaseStateController: PlayM
             return result.mapResult()
         }
         
-        guard case .activeSession(_, .loaded) = playMediaWithSubtitlesUseCase.state.value else {
+        guard
+            case .activeSession(_, let playerState) = playMediaWithSubtitlesUseCase.state.value,
+            case .loaded = playerState.value
+        else {
             delegate?.didFailLoad(session: session)
             return .failure(.internalError(nil))
         }

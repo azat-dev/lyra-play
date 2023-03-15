@@ -28,12 +28,12 @@ public enum PlayMediaWithSubtitlesUseCasePlayerState: Equatable {
 }
 
 
-public enum PlayMediaWithSubtitlesUseCaseState: Equatable {
+public enum PlayMediaWithSubtitlesUseCaseState {
 
     case noActiveSession
     case activeSession(
         PlayMediaWithSubtitlesSessionParams,
-        PlayMediaWithSubtitlesUseCasePlayerState
+        CurrentValueSubject<PlayMediaWithSubtitlesUseCasePlayerState, Never>
     )
 }
 
