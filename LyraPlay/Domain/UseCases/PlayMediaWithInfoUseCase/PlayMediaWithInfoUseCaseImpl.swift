@@ -22,6 +22,7 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
     private var currentMediaInfo: MediaInfo?
     private var currentSession: PlayMediaWithInfoSession?
     
+    
     private var observers = Set<AnyCancellable>()
     
     public var currentTime: TimeInterval {
@@ -101,7 +102,7 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
             self.state.value = .noActiveSession
             
         case .activeSession(let session, let playerState):
-            self.state.value = .activeSession(session.map(), playerState.map(withMediaInfo: mediaInfo))
+            self.state.value = .activeSession(session.map(), playerState.value.map(withMediaInfo: mediaInfo))
         }
     }
     

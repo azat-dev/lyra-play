@@ -35,6 +35,8 @@ public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslatio
     private let provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory
     private let pronounceTranslationsUseCaseFactory: PronounceTranslationsUseCaseFactory
     
+    private let playerState = CurrentValueSubject<PlayMediaWithTranslationsUseCasePlayerState, Never>(.initial)
+    
     private var observers = Set<AnyCancellable>()
 
     // MARK: - Initializers
@@ -111,7 +113,8 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
         )
         
         currentController = newController
-        state.value = .activeSession(session, .loading)
+        playerState.value = .loading
+        state.value = .activeSession(session, playerState)
         
         return await newController.load()
     }
@@ -134,7 +137,7 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
             .store(in: &observers)
         
         currentController = newController
-        state.value = .activeSession(session.session, .loaded)
+        playerState.value = .loaded
     }
     
     public func didFailLoad(session: PlayMediaWithTranslationsSession) {
@@ -144,7 +147,7 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
         )
         
         currentController = newController
-        state.value = .activeSession(session, .loadFailed)
+        playerState.value = .loadFailed
     }
     
     public func play(
@@ -167,7 +170,7 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
         let session = playingController.session
         currentController = playingController
         
-        state.value = .activeSession(session.session, .playing)
+        playerState.value = .playing
     }
     
     public func resumePlaying(session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
@@ -183,7 +186,7 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
     public func didResumePlaying(withController controller: PlayingPlayMediaWithTranslationsUseCaseStateController) {
         
         currentController = controller
-        state.value = .activeSession(controller.session.session, .playing)
+        playerState.value = .playing
     }
     
     public func pronounce(
@@ -198,12 +201,8 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
         )
         
         currentController = newController
+        playerState.value = .pronouncingTranslations
         
-        state.value = .activeSession(
-            session.session,
-            .pronouncingTranslations
-        )
-
         return await newController.run()
     }
     
@@ -224,7 +223,7 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
     public func didPause(controller: PausedPlayMediaWithTranslationsUseCaseStateController) {
         
         currentController = controller
-        state.value = .activeSession(controller.session.session, .paused)
+        playerState.value = .paused
     }
     
     public func stop(activeSession: PlayMediaWithTranslationsUseCaseStateControllerActiveSession) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
@@ -266,7 +265,7 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
             delegate: self
         )
         
-        state.value = .activeSession(session.session, .finished)
+        playerState.value = .finished
     }
 }
     
