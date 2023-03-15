@@ -173,6 +173,13 @@ public final class SubtitlesTimeSlotsParser {
             timeSlots.append(emptySlot)
         }
         
+        timeSlots.append(
+            .init(
+                index: timeSlots.count,
+                timeRange: subtitles.duration..<subtitles.duration
+            )
+        )
+        
         return timeSlots
     }
 }
