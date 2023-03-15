@@ -21,7 +21,8 @@ extension LibraryItemViewController {
             artistLabel: UILabel,
             durationLabel: UILabel,
             playButton: UIButton,
-            attachSubtitlesButton: UIButton
+            attachSubtitlesButton: UIButton,
+            activityIndicatorAttachingSubtitles: UIActivityIndicatorView
         ) {
             
             mainGroup.translatesAutoresizingMaskIntoConstraints = false
@@ -63,6 +64,14 @@ extension LibraryItemViewController {
             ])
             
             activityIndicator.constraintToCenter(of: view)
+            
+            activityIndicatorAttachingSubtitles.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([
+            
+                activityIndicatorAttachingSubtitles.centerXAnchor.constraint(equalTo: attachSubtitlesButton.imageView!.centerXAnchor),
+                activityIndicatorAttachingSubtitles.centerYAnchor.constraint(equalTo: attachSubtitlesButton.imageView!.centerYAnchor)
+            ])
         }
     }
 }

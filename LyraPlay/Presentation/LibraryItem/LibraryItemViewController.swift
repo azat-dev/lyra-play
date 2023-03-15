@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Combine
 
 public final class LibraryItemViewController: UIViewController, LibraryItemView {
     
@@ -15,6 +16,8 @@ public final class LibraryItemViewController: UIViewController, LibraryItemView 
     private let viewModel: LibraryItemViewModel
     
     private var activityIndicator = UIActivityIndicatorView()
+    private var activityIndicatorAttachingSubtitles = UIActivityIndicatorView()
+    
     private var imageView = ImageViewShadowed()
     private var titleLabel = UILabel()
     private var artistLabel = UILabel()
@@ -23,6 +26,8 @@ public final class LibraryItemViewController: UIViewController, LibraryItemView 
     private var addSubtitlesButton = UIButton()
     
     private var mainGroup = UIView()
+    
+    private var observers = Set<AnyCancellable>()
     
     // MARK: - Initializers
     
@@ -34,6 +39,10 @@ public final class LibraryItemViewController: UIViewController, LibraryItemView 
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        observers.removeAll()
     }
     
     // MARK: - Methods
@@ -85,7 +94,6 @@ extension LibraryItemViewController {
         }
         
         mainGroup.isHidden = isLoading
-        activityIndicator.isHidden = !isLoading
     }
     
     private func bind(to viewModel: LibraryItemViewModel) {
@@ -122,6 +130,24 @@ extension LibraryItemViewController {
 
             Styles.apply(pauseButton: self.playButton)
         }
+        
+        viewModel.isAttachingSubtitles
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isAttachingSubtitles in
+                
+                guard let self = self else {
+                    return
+                }
+                
+                if isAttachingSubtitles {
+                    self.activityIndicatorAttachingSubtitles.startAnimating()
+                    self.addSubtitlesButton.imageView?.isHidden = true
+                    return
+                }
+                
+                self.activityIndicatorAttachingSubtitles.stopAnimating()
+                self.addSubtitlesButton.imageView?.isHidden = false
+            }.store(in: &observers)
     }
 }
 
@@ -147,6 +173,8 @@ extension LibraryItemViewController {
     
     private func setupViews() {
         
+        activityIndicator.hidesWhenStopped = true
+        
         mainGroup.addSubview(imageView)
         mainGroup.addSubview(titleLabel)
         mainGroup.addSubview(artistLabel)
@@ -154,8 +182,8 @@ extension LibraryItemViewController {
         mainGroup.addSubview(playButton)
         mainGroup.addSubview(addSubtitlesButton)
         
-        view.addSubview(activityIndicator)
         view.addSubview(mainGroup)
+        view.addSubview(activityIndicator)
         
         playButton.addTarget(
             self,
@@ -167,6 +195,10 @@ extension LibraryItemViewController {
             self,
             action: #selector(Self.didTapAttachSubtitles),
             for: .touchUpInside
+        )
+        
+        addSubtitlesButton.addSubview(
+            activityIndicatorAttachingSubtitles
         )
     }
 }
@@ -185,7 +217,8 @@ extension LibraryItemViewController {
             artistLabel: artistLabel,
             durationLabel: durationLabel,
             playButton: playButton,
-            attachSubtitlesButton: addSubtitlesButton
+            attachSubtitlesButton: addSubtitlesButton,
+            activityIndicatorAttachingSubtitles: activityIndicatorAttachingSubtitles
         )
     }
 }
@@ -203,6 +236,7 @@ extension LibraryItemViewController {
         Styles.apply(durationLabel: durationLabel)
         Styles.apply(playButton: playButton)
         Styles.apply(attachSubtitlesButton: addSubtitlesButton)
+        Styles.apply(activityIndicatorAttachingSubtitles: activityIndicatorAttachingSubtitles)
     }
 }
 
