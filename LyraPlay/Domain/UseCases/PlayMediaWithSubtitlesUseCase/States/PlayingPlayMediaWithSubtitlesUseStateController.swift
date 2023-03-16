@@ -109,7 +109,12 @@ public class PlayingPlayMediaWithSubtitlesUseStateController: LoadedPlayMediaWit
             return result.mapResult()
         }
         
-        session.playSubtitlesUseCase?.play(atTime: currentTime)
+        if case .paused = session.playSubtitlesUseCase?.state.value {
+            session.playSubtitlesUseCase?.resume()
+        } else {
+            session.playSubtitlesUseCase?.play(atTime: session.playMediaUseCase.currentTime)
+        }
+        
         delegate?.didResumePlaying(withController: self)
         
         return .success(())

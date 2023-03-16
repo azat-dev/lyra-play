@@ -54,7 +54,7 @@ extension PlaySubtitlesUseCaseImpl: TimelineSchedulerDelegateChanges {
     public func schedulerWillChange(from: TimeInterval?, to: TimeInterval?, interrupt: inout Bool) {
         
         delegate?.playSubtitlesUseCaseWillChange(
-            from: subtitlesTimeSlot.value,
+            from: subtitlesIterator.currentTimeSlot,
             to: subtitlesIterator.getNextTimeSlot(),
             interrupt: &interrupt
         )
