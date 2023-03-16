@@ -23,7 +23,11 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
     private var currentSession: PlayMediaWithInfoSession?
     
     
+    private let playerState = CurrentValueSubject<PlayMediaWithInfoUseCasePlayerState, Never>(.initial)
+    private let loadState = CurrentValueSubject<PlayMediaWithInfoUseCaseLoadState, Never>(.loading)
+    
     private var observers = Set<AnyCancellable>()
+    private var playerStateObserver: AnyCancellable?
     
     public var currentTime: TimeInterval {
         return playMediaWithTranslationsUseCase.currentTime
@@ -48,6 +52,7 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
     
     deinit {
         observers.removeAll()
+        playerStateObserver = nil
     }
     
     // MARK: - Methods
@@ -56,7 +61,8 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
         
         observers.removeAll()
         
-        state.value = .activeSession(session, .loading)
+        loadState.value = .loading
+        state.value = .activeSession(session, loadState)
         
         async let loadingTranslationsPromise = playMediaWithTranslationsUseCase.prepare(
             session: .init(
@@ -74,23 +80,61 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
         let resultLoadingInfo = await loadingInfoPromise
         
         guard case .success(let info) = resultLoadingInfo else {
-            state.value = .activeSession(session, .loadFailed)
+            loadState.value = .loadFailed
             return .failure(resultLoadingInfo.error!.map())
         }
         
         if case .failure(let error) = await loadingTranslationsPromise {
-            state.value = .activeSession(session, .loadFailed)
+            loadState.value = .loadFailed
             return .failure(error.map())
         }
 
         currentMediaInfo = info
-        state.value = .activeSession(session, .loaded(.initial, info))
+        
+        playerState.value = .initial
+        loadState.value = .loaded(playerState, info)
         
         startObservingState()
         return .success(())
     }
     
+    private func pipePlayingState(
+        from state: CurrentValueSubject<PlayMediaWithTranslationsUseCasePlayerState, Never>,
+        withMediaInfo mediaInfo: MediaInfo
+    ) {
+        
+        playerStateObserver = state.sink { [weak self] newState in
+         
+            guard let self = self else {
+                return
+            }
+
+            switch newState {
+                
+            case .initial, .loading, .loaded, .loadFailed:
+                self.playerState.value = .initial
+
+            case .playing:
+                self.playerState.value = .playing
+                
+            case .pronouncingTranslations:
+                self.playerState.value = .pronouncingTranslations
+                
+            case .paused:
+                self.playerState.value = .paused
+                
+            case .stopped:
+                self.playerState.value = .stopped
+                
+            case .finished:
+                self.playerState.value = .finished
+            }
+        }
+    }
+    
     private func update(state: PlayMediaWithTranslationsUseCaseState) {
+        
+        playerStateObserver = nil
         
         guard let mediaInfo = currentMediaInfo else {
             return
@@ -101,8 +145,10 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
         case .noActiveSession:
             self.state.value = .noActiveSession
             
-        case .activeSession(let session, let playerState):
-            self.state.value = .activeSession(session.map(), playerState.value.map(withMediaInfo: mediaInfo))
+        case .activeSession(let session, let sourcePlayerState):
+            
+            pipePlayingState(from: sourcePlayerState, withMediaInfo: mediaInfo)
+            self.state.value = .activeSession(session.map(), loadState)
         }
     }
     
@@ -189,42 +235,6 @@ extension ShowMediaInfoUseCaseError {
             
         case .internalError(let error):
             return .internalError(error)
-        }
-    }
-}
-
-extension PlayMediaWithTranslationsUseCasePlayerState {
-    
-    func map(withMediaInfo mediaInfo: MediaInfo) -> PlayMediaWithInfoUseCaseLoadState {
-        
-        switch self {
-        
-        case .initial:
-            return .loaded(.initial, mediaInfo)
-        
-        case .playing:
-            return .loaded(.playing, mediaInfo)
-            
-        case .pronouncingTranslations:
-            return .loaded(.pronouncingTranslations, mediaInfo)
-            
-        case .paused:
-            return .loaded(.paused, mediaInfo)
-            
-        case .stopped:
-            return .loaded(.stopped, mediaInfo)
-            
-        case .finished:
-            return .loaded(.finished, mediaInfo)
-            
-        case .loading:
-            return .loading
-            
-        case .loaded:
-            return .loaded(.initial, mediaInfo)
-            
-        case .loadFailed:
-            return .loadFailed
         }
     }
 }

@@ -28,17 +28,23 @@ public enum PlayMediaWithInfoUseCasePlayerState: Equatable {
     case finished
 }
 
-public enum PlayMediaWithInfoUseCaseLoadState: Equatable {
+public enum PlayMediaWithInfoUseCaseLoadState {
     
     case loading
     case loadFailed
-    case loaded(PlayMediaWithInfoUseCasePlayerState, MediaInfo)
+    case loaded(
+        CurrentValueSubject<PlayMediaWithInfoUseCasePlayerState, Never>,
+        MediaInfo
+    )
 }
 
-public enum PlayMediaWithInfoUseCaseState: Equatable {
+public enum PlayMediaWithInfoUseCaseState {
     
     case noActiveSession
-    case activeSession(PlayMediaWithInfoSession, PlayMediaWithInfoUseCaseLoadState)
+    case activeSession(
+        PlayMediaWithInfoSession,
+        CurrentValueSubject<PlayMediaWithInfoUseCaseLoadState, Never>
+    )
 }
 
 // MARK: - Protocols

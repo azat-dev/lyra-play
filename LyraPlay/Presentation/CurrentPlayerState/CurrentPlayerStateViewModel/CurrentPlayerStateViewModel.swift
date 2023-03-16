@@ -24,7 +24,10 @@ public enum CurrentPlayerStateViewModelState {
 
     case loading
     case notActive
-    case active(mediaInfo: MediaInfo, state: PlayerState)
+    case active(
+        mediaInfo: MediaInfo,
+        state: CurrentValueSubject<PlayerState, Never>
+    )
 }
 
 extension CurrentPlayerStateViewModelState {

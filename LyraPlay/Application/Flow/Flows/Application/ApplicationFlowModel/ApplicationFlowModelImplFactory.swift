@@ -132,7 +132,8 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
         
         let subtitlesParserFactory = SubtitlesParserImplFactory(
             parsers: [
-                ".vtt": VttParserFactory(textSplitterFactory: textSplitterFactory)
+                ".vtt": VttParserFactory(textSplitterFactory: textSplitterFactory),
+                ".json": JsonSubtitlesParserFactory(textSplitterFactory: textSplitterFactory)
             ]
         )
         

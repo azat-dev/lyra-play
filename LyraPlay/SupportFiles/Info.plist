@@ -104,6 +104,7 @@
 			<dict>
 				<key>public.filename-extension</key>
 				<array>
+					<string>json</string>
 					<string>vtt</string>
 				</array>
 				<key>public.mime-type</key>
