@@ -35,6 +35,7 @@ extension EditDictionaryItemViewController {
             input.backgroundColor = colorGroupBackground
             input.font = fontOriginalText
             input.textColor = .white
+            input.autocapitalizationType = .none
         }
         
         static func apply(groupLabel label: UILabel) {
@@ -47,6 +48,7 @@ extension EditDictionaryItemViewController {
             
             apply(groupTextInput: input)
             input.placeholder = "Add a word"
+            input.autocorrectionType = .yes
         }
         
         static func apply(originalLanguageLabel label: UILabel) {
@@ -59,6 +61,7 @@ extension EditDictionaryItemViewController {
             
             apply(groupTextInput: input)
             input.placeholder = "Add translation"
+            input.autocorrectionType = .yes
         }
         
         static func apply(translationLanguageLabel label: UILabel) {
