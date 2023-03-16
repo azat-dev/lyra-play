@@ -38,18 +38,6 @@ extension ImportDictionaryArchiveUseCaseImpl {
             return .failure(.wrongDataFormat)
         }
         
-        let searchResult = await dictionaryRepository.searchItems(with: exportedItems.map { .originalText($0.original) })
-        
-        guard case .success(let foundItems) = searchResult else {
-            return .failure(.internalError(nil))
-        }
-        
-        let foundItemsByOriginalText = foundItems.reduce(into: [String: DictionaryItem]()) {
-            partialResult, item in
-            
-            partialResult[item.originalText.lowercased()] = item
-        }
-        
         for item in exportedItems {
             
             var itemToSave: DictionaryItem
@@ -57,7 +45,13 @@ extension ImportDictionaryArchiveUseCaseImpl {
                 TranslationItem(id: UUID(), text: $0)
             }
             
-            if let foundItem = foundItemsByOriginalText[item.original.lowercased()] {
+            let searchResult = await dictionaryRepository.searchItems(with: [.originalText(item.original)])
+            
+            guard case .success(let foundItems) = searchResult else {
+                return .failure(.internalError(nil))
+            }
+            
+            if let foundItem = foundItems.first {
                 
                 itemToSave = foundItem
                 itemToSave.originalText = item.original
