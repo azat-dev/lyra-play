@@ -24,6 +24,10 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
     
     private var observers = Set<AnyCancellable>()
     
+    private var loadStateObserver: AnyCancellable?
+    
+    private var playerStateObserver: AnyCancellable?
+    
     private var currentSubtitles: Subtitles?
 
     public var sliderValue: CurrentValueSubject<Float, Never>
@@ -48,6 +52,12 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
         self.sliderValue = .init(Float(playMediaUseCase.currentTime))
         
         bind(to: playMediaUseCase)
+    }
+    
+    deinit {
+        observers.removeAll()
+        playerStateObserver = nil
+        loadStateObserver = nil
     }
     
     // MARK: - Methods
@@ -83,7 +93,7 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
         startUpdatingSlider()
     }
     
-    private func updateLoadedState(
+    private func updatePlayerState(
         playerState: PlayMediaWithInfoUseCasePlayerState,
         mediaInfo: MediaInfo
     ) {
@@ -116,29 +126,55 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
         )
     }
     
+    private func pipePlayerState(
+        from state: CurrentValueSubject<PlayMediaWithInfoUseCasePlayerState, Never>,
+        withMediaInfo mediaInfo: MediaInfo
+    ) {
+        
+        playerStateObserver = state.sink { [weak self] newState in
+            
+            self?.updatePlayerState(
+                playerState: newState,
+                mediaInfo: mediaInfo
+            )
+        }
+    }
+    
+    private func pipeLoadState(from state: CurrentValueSubject<PlayMediaWithInfoUseCaseLoadState, Never>) {
+        
+        loadStateObserver = state.sink { [weak self] newState in
+            
+            guard let self = self else {
+                return
+            }
+            
+            switch newState {
+                
+            case .loading:
+                state.value = .loading
+                
+            case .loadFailed:
+                state.value = .loadFailed
+                
+            case .loaded(let sourcePlayerState, let mediaInfo):
+                self.pipePlayerState(from: sourcePlayerState, withMediaInfo: mediaInfo)
+            }
+        }
+    }
+    
     private func updateState(_ newState: PlayMediaWithInfoUseCaseState) {
+        
+        loadStateObserver = nil
+        playerStateObserver = nil
         
         switch newState {
             
         case .noActiveSession:
             state.value = .notActive
             
-        case .activeSession(_, let loadState):
+        case .activeSession(_, let sourceLoadState):
             
-            switch loadState {
-                
-            case .loading:
-                state.value = .loading
-                
-            case .loadFailed:
-                state.value = .notActive
-                
-            case .loaded(let playerState, let mediaInfo):
-                updateLoadedState(
-                    playerState: playerState,
-                    mediaInfo: mediaInfo
-                )
-            }
+            pipeLoadState(from: sourceLoadState)
         }
     }
     

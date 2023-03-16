@@ -103,7 +103,7 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
     private func getNextIndex() -> Int? {
         
         guard let timeSlotIndex = currentTimeSlotIndex else {
-            return nil
+            return 0
         }
         
         let nextIndex = timeSlotIndex + 1

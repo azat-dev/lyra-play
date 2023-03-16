@@ -33,6 +33,9 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
     
     private var observers = Set<AnyCancellable>()
     
+    private var playerStateObserver: AnyCancellable?
+    private var loadStateObserver: AnyCancellable?
+    
     
     // MARK: - Initializers
     
@@ -53,29 +56,66 @@ public final class LibraryItemViewModelImpl: LibraryItemViewModel {
     
     deinit {
         observers.removeAll()
+        playerStateObserver = nil
+        loadStateObserver = nil
+    }
+    
+    private func pipePlayerState(_ state: CurrentValueSubject<PlayMediaWithInfoUseCasePlayerState, Never>) {
+        
+        playerStateObserver = state.sink { [weak self] newState in
+
+            guard let self = self else {
+                return
+            }
+            
+            switch newState {
+                
+            case .playing, .pronouncingTranslations:
+                self.isPlaying.value = true
+                
+            default:
+                self.isPlaying.value = false
+            }
+        }
+    }
+    
+    private func pipeLoadState(_ state: CurrentValueSubject<PlayMediaWithInfoUseCaseLoadState, Never>) {
+        
+        loadStateObserver = state.sink { [weak self] newState in
+
+            guard let self = self else {
+                return
+            }
+            
+            guard case .loaded(let playerState, _) = newState else {
+                self.isPlaying.value = false
+                return
+            }
+            
+            self.pipePlayerState(playerState)
+        }
     }
     
     private func updateState(_ state: PlayMediaWithInfoUseCaseState) {
         
-        var isPlaying = false
+        playerStateObserver = nil
+        loadStateObserver = nil
         
-        switch state {
+        guard
+            case .activeSession(let session, let loadState) = state,
+            session.mediaId == trackId
+        else {
             
-        case .activeSession(let session, .loaded(.playing, _)),
-                .activeSession(let session, .loaded(.pronouncingTranslations, _)):
-            
-            isPlaying = session.mediaId == trackId
-            
-        default:
-            isPlaying = false
+            isPlaying.value = false
+            return
         }
         
-        if self.isPlaying.value != isPlaying {
-            self.isPlaying.value = isPlaying
-        }
+        pipeLoadState(loadState)
     }
     
     private func bind(to playMediaUseCase: PlayMediaWithInfoUseCase) {
+        
+        observers.removeAll()
         
         playMediaUseCase.state.sink { [weak self] state in
             

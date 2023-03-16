@@ -24,6 +24,7 @@ public final class CurrentPlayerStateView: UIView {
     private let separatorView = UIView()
     
     private var observers = Set<AnyCancellable>()
+    private var playerStateObserver: AnyCancellable?
     
     public init(viewModel: CurrentPlayerStateViewModel) {
         
@@ -47,6 +48,7 @@ public final class CurrentPlayerStateView: UIView {
     
     deinit {
         observers.removeAll()
+        playerStateObserver = nil
     }
 }
 
@@ -62,13 +64,16 @@ extension CurrentPlayerStateView {
             .store(in: &observers)
     }
     
-    private func updateActiveState(mediaInfo: MediaInfo, state: PlayerState) {
+    private func updateMediaInfo(_ mediaInfo: MediaInfo) {
         
         imageView.image = UIImage(data: mediaInfo.coverImage)!
         titleLabel.text = mediaInfo.title
         descriptionLabel.text = mediaInfo.artist
+    }
+    
+    private func updatePlayerState(_ newState: PlayerState) {
         
-        switch state {
+        switch newState {
 
         case .stopped, .paused:
             Styles.apply(playButton: togglePlayButton)
@@ -78,7 +83,19 @@ extension CurrentPlayerStateView {
         }
     }
     
+    private func observePlayerState(from state: CurrentValueSubject<PlayerState, Never>) {
+        
+        playerStateObserver = state
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newState in
+            
+            self?.updatePlayerState(newState)
+        }
+    }
+    
     private func updateState(_ state: CurrentPlayerStateViewModelState) {
+        
+        playerStateObserver = nil
         
         switch state {
         
@@ -90,9 +107,11 @@ extension CurrentPlayerStateView {
             isHidden = true
             break
             
-        case .active(let mediaInfo, let state):
+        case .active(let mediaInfo, let playerState):
             isHidden = false
-            updateActiveState(mediaInfo: mediaInfo, state: state)
+            updateMediaInfo(mediaInfo)
+            observePlayerState(from: playerState)
+            
         }
     }
 }
