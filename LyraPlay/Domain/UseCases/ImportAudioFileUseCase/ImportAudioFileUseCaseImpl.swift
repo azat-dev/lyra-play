@@ -8,37 +8,40 @@
 import Foundation
 
 public final class ImportAudioFileUseCaseImpl: ImportAudioFileUseCase {
-
+    
     // MARK: - Properties
-
+    
     private let mediaLibraryRepository: MediaLibraryRepository
     private let audioFilesRepository: FilesRepository
     private let imagesRepository: FilesRepository
     private let tagsParser: TagsParser
     private let fileNameGenerator: ImportAudioFileUseCaseFileNameGenerator
-
+    private let importSubtitlesUseCaseFactory: ImportSubtitlesUseCaseFactory
+    
     // MARK: - Initializers
-
+    
     public init(
         mediaLibraryRepository: MediaLibraryRepository,
         audioFilesRepository: FilesRepository,
         imagesRepository: FilesRepository,
         tagsParser: TagsParser,
-        fileNameGenerator: ImportAudioFileUseCaseFileNameGenerator
+        fileNameGenerator: ImportAudioFileUseCaseFileNameGenerator,
+        importSubtitlesUseCaseFactory: ImportSubtitlesUseCaseFactory
     ) {
-
+        
         self.mediaLibraryRepository = mediaLibraryRepository
         self.audioFilesRepository = audioFilesRepository
         self.imagesRepository = imagesRepository
         self.tagsParser = tagsParser
         self.fileNameGenerator = fileNameGenerator
+        self.importSubtitlesUseCaseFactory = importSubtitlesUseCaseFactory
     }
 }
 
 // MARK: - Input Methods
 
 extension ImportAudioFileUseCaseImpl {
-
+    
     public func importFile(
         targetFolderId: UUID?,
         originalFileName: String,
@@ -92,6 +95,18 @@ extension ImportAudioFileUseCaseImpl {
         
         guard case .success(let savedFileInfo) = resulSaveFile else {
             return .failure(.internalError(nil))
+        }
+        
+        if let subtitlesData = tags.jsonSubtitles?.data(using: .utf8) {
+            
+            let importSubtitlesUseCase = importSubtitlesUseCaseFactory.make()
+            
+            let _ = await importSubtitlesUseCase.importFile(
+                trackId: savedFileInfo.id,
+                language: "English",
+                fileName: "subtitles.json",
+                data: subtitlesData
+            )
         }
         
         return .success(savedFileInfo)

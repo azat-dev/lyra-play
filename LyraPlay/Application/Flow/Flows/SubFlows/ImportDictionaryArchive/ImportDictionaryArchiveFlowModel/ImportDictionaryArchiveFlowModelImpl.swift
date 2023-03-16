@@ -56,7 +56,6 @@ extension ImportDictionaryArchiveFlowModelImpl {
             let importDictionaryArchiveUseCase = self.importDictionaryArchiveUseCaseFactory.make()
             
             let result = await importDictionaryArchiveUseCase.importArchive(data: data)
-            print(result)
             
             await dictionaryFlow?.listViewModel.load()
             delegate?.importDictionaryArchiveFlowModelDidDispose()

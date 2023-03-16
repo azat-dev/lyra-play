@@ -206,20 +206,22 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
         
         let tagsParserFactory = TagsParserFactoryImpl()
         
-        let imporAudioFileUseCaseFactory = ImportAudioFileUseCaseImplFactory(
-            mediaLibraryRepository: mediaLibraryRepository,
-            audioFilesRepository: audioFilesRepository,
-            imagesRepository: imagesRepository,
-            tagsParserFactory: tagsParserFactory,
-            fileNameGenerator: ImportAudioFileUseCaseFileNameGeneratorImpl()
-        )
-        
         let importSubtitlesUseCaseFactory = ImportSubtitlesUseCaseImplFactory(
             supportedExtensions: settings.supportedSubtitlesExtensions,
             subtitlesRepositoryFactory: subtitlesRepositoryFactory,
             subtitlesParserFactory: subtitlesParserFactory,
             subtitlesFilesRepository: subtitlesFilesRepository
         )
+        
+        let imporAudioFileUseCaseFactory = ImportAudioFileUseCaseImplFactory(
+            mediaLibraryRepository: mediaLibraryRepository,
+            audioFilesRepository: audioFilesRepository,
+            imagesRepository: imagesRepository,
+            tagsParserFactory: tagsParserFactory,
+            fileNameGenerator: ImportAudioFileUseCaseFileNameGeneratorImpl(),
+            importSubtitlesUseCaseFactory: importSubtitlesUseCaseFactory
+        )
+        
 
         let libraryViewModelFactory = MediaLibraryBrowserViewModelImplFactory(
             browseMediaLibraryUseCaseFactory: browseMediaLibraryUseCaseFactory,
