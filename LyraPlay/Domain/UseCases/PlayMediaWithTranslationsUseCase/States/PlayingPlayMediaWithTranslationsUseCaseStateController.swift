@@ -98,14 +98,19 @@ public final class PlayingPlayMediaWithTranslationsUseCaseStateController: Loade
 
 extension PlayingPlayMediaWithTranslationsUseCaseStateController: PlayMediaWithSubtitlesUseCaseDelegate {
     
+    public func playMediaWithSubtitlesUseCaseDidChange(timeSlot: SubtitlesTimeSlot?) {}
+    
+    public func playMediaWithSubtitlesUseCaseDidFinish() {}
+    
+    
     public func playMediaWithSubtitlesUseCaseWillChange(
-        from fromPosition: SubtitlesPosition?,
-        to: SubtitlesPosition?,
+        from fromPosition: SubtitlesTimeSlot?,
+        to: SubtitlesTimeSlot?,
         interrupt stopPlaying: inout Bool
     ) {
         
         guard
-            let fromPosition = fromPosition,
+            let fromPosition = fromPosition?.subtitlesPosition,
             let translationsData = session.provideTranslationsToPlayUseCase.getTranslationsToPlay(for: fromPosition)
         else {
             return
@@ -113,7 +118,7 @@ extension PlayingPlayMediaWithTranslationsUseCaseStateController: PlayMediaWithS
         
         stopPlaying = true
         
-        Task {
+        Task(priority: .userInitiated) {
             
             let _ = await delegate?.pronounce(
                 translationData: translationsData,

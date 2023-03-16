@@ -167,7 +167,6 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
         withController playingController: PlayingPlayMediaWithTranslationsUseCaseStateController
     ) {
         
-        let session = playingController.session
         currentController = playingController
         
         playerState.value = .playing
