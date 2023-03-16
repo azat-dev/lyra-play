@@ -48,7 +48,6 @@ extension JsonSubtitlesParser {
         
         let decoder = JSONDecoder()
         
-        
         guard
             let data = text.data(using: .utf8)
         else {

@@ -16,6 +16,7 @@ public final class ImportAudioFileUseCaseImplFactory: ImportAudioFileUseCaseFact
     private let imagesRepository: FilesRepository
     private let tagsParserFactory: TagsParserFactory
     private let fileNameGenerator: ImportAudioFileUseCaseFileNameGenerator
+    private let importSubtitlesUseCaseFactory: ImportSubtitlesUseCaseFactory
 
     // MARK: - Initializers
 
@@ -24,7 +25,8 @@ public final class ImportAudioFileUseCaseImplFactory: ImportAudioFileUseCaseFact
         audioFilesRepository: FilesRepository,
         imagesRepository: FilesRepository,
         tagsParserFactory: TagsParserFactory,
-        fileNameGenerator: ImportAudioFileUseCaseFileNameGenerator
+        fileNameGenerator: ImportAudioFileUseCaseFileNameGenerator,
+        importSubtitlesUseCaseFactory: ImportSubtitlesUseCaseFactory
     ) {
 
         self.mediaLibraryRepository = mediaLibraryRepository
@@ -32,6 +34,7 @@ public final class ImportAudioFileUseCaseImplFactory: ImportAudioFileUseCaseFact
         self.imagesRepository = imagesRepository
         self.tagsParserFactory = tagsParserFactory
         self.fileNameGenerator = fileNameGenerator
+        self.importSubtitlesUseCaseFactory = importSubtitlesUseCaseFactory
     }
 
     // MARK: - Methods
@@ -45,7 +48,8 @@ public final class ImportAudioFileUseCaseImplFactory: ImportAudioFileUseCaseFact
             audioFilesRepository: audioFilesRepository,
             imagesRepository: imagesRepository,
             tagsParser: tagsParser,
-            fileNameGenerator: fileNameGenerator
+            fileNameGenerator: fileNameGenerator,
+            importSubtitlesUseCaseFactory: importSubtitlesUseCaseFactory
         )
     }
 }

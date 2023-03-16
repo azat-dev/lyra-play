@@ -30,6 +30,7 @@ public struct AudioFileTags {
     public var artist: String?
     public var duration: Double
     public var lyrics: String?
+    public var jsonSubtitles: String?
     
     public init(
         title: String? = nil,
@@ -37,7 +38,8 @@ public struct AudioFileTags {
         coverImage: TagsImageData? = nil,
         artist: String? = nil,
         duration: Double,
-        lyrics: String? = nil
+        lyrics: String? = nil,
+        jsonSubtitles: String? = nil
     ) {
         
         self.title = title
@@ -46,6 +48,7 @@ public struct AudioFileTags {
         self.artist = artist
         self.lyrics = lyrics
         self.duration = duration
+        self.jsonSubtitles = jsonSubtitles
     }
 }
 
@@ -68,6 +71,20 @@ public final class TagsParserImpl: TagsParser {
         let artistMeta = asset.metadata.first { $0.commonKey == .commonKeyArtist }
         let genreMeta = asset.metadata.first { $0.commonKey == .commonKeyType }
         
+        let jsonSubtitlesMeta = asset.metadata.first { item in
+            
+            guard
+                let key = item.key as? String,
+                key == "TXXX",
+                let infoName = item.extraAttributes?[.info] as? String,
+                infoName == "json_subtitles"
+            else {
+                return false
+            }
+
+            return true
+        }
+        
         var coverImage: TagsImageData?
         
         if let artworkMeta = artworkMeta {
@@ -83,7 +100,8 @@ public final class TagsParserImpl: TagsParser {
             coverImage: coverImage,
             artist: artistMeta?.stringValue,
             duration: CMTimeGetSeconds(asset.duration),
-            lyrics: asset.lyrics
+            lyrics: asset.lyrics,
+            jsonSubtitles: jsonSubtitlesMeta?.stringValue
         )
         
         return .success(tags)
