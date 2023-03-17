@@ -81,8 +81,14 @@ extension JsonSubtitlesParser {
             )
         }
 
+        let duration = max(
+            ((parsedData.events.first?.tStartMs ?? 0) + (parsedData.events.first?.dDurationMs ?? 0)) / 1000,
+            ((parsedData.events.last?.tStartMs ?? 0) + (parsedData.events.last?.dDurationMs ?? 0)) / 1000
+        )
+        
+        print("duration = \(duration)")
         let subtitles = Subtitles(
-            duration: (parsedData.events.first?.dDurationMs ?? 0) / 1000,
+            duration: duration,
             sentences: items
         )
         
