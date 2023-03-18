@@ -62,7 +62,6 @@ public class RunningSchedulerStateController: TimelineSchedulerStateController {
     }
     
     public func resume() {
-        let a = 1
     }
     
     public func setTime(_ time: TimeInterval) {
