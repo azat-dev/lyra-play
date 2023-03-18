@@ -8,6 +8,12 @@
 import Foundation
 import Combine
 
+public protocol SubtitlesPresenterViewModelDelegate: AnyObject {
+    
+    func subtitlesPresenterViewModelDidTapWord(text: String)
+}
+
+
 // MARK: - Interfaces
 
 public protocol SubtitlesPresenterViewModelOutput {

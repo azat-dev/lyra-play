@@ -12,12 +12,14 @@ public final class SubtitlesPresenterViewModelImplFactory: SubtitlesPresenterVie
     
     public func make(
         subtitles: Subtitles,
-        timeSlots: [SubtitlesTimeSlot]
+        timeSlots: [SubtitlesTimeSlot],
+        delegate: SubtitlesPresenterViewModelDelegate
     ) -> SubtitlesPresenterViewModel {
         
         return SubtitlesPresenterViewModelImpl(
             subtitles: subtitles,
-            timeSlots: timeSlots
+            timeSlots: timeSlots,
+            delegate: delegate
         )
     }
 }

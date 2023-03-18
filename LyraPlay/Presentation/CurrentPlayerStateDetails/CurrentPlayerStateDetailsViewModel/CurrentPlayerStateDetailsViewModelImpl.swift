@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import UIKit
 
 public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDetailsViewModel {
     
@@ -106,7 +107,8 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
             
             subtitlesPresenterViewModel = subtitlesPresenterViewModelFactory.make(
                 subtitles: subtitlesState.subtitles,
-                timeSlots: subtitlesState.timeSlots
+                timeSlots: subtitlesState.timeSlots,
+                delegate: self
             )
             currentSubtitles = subtitlesState.subtitles
             
@@ -261,10 +263,16 @@ extension CurrentPlayerStateDetailsViewModelImpl {
     }
 }
 
-// MARK: - Output Methods
-
-extension CurrentPlayerStateDetailsViewModelImpl {
+extension CurrentPlayerStateDetailsViewModelImpl: SubtitlesPresenterViewModelDelegate {
     
+    public func subtitlesPresenterViewModelDidTapWord(text word: String) {
+
+        let encodedText = word.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        
+        if let url = URL(string: "googletranslate://?sl=en&tl=ru&text=\(encodedText)") {
+            UIApplication.shared.open(url)
+        }
+    }
 }
 
 // MARK: - Helpers
