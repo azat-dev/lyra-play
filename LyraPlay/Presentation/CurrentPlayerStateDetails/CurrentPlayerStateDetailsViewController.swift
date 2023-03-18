@@ -35,6 +35,8 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     
     private let blurView = UIVisualEffectView()
     
+    private var viewTranslation = CGPoint(x: 0, y: 0)
+    
     private var observers = Set<AnyCancellable>()
     
     // MARK: - Initializers
@@ -64,7 +66,7 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     }
     
     public override func viewDidDisappear(_ animated: Bool) {
-
+        
         super.viewDidDisappear(animated)
         viewModel.dispose()
     }
@@ -103,7 +105,7 @@ extension CurrentPlayerStateDetailsViewController {
         subtitleLabel.text = data.subtitle
         
         if let coverImage = data.coverImage {
-
+            
             let image = UIImage(data: coverImage)
             
             coverImageView.imageView.image = image
@@ -116,7 +118,7 @@ extension CurrentPlayerStateDetailsViewController {
         subtitlesPresenterView.viewModel = data.subtitlesPresenterViewModel
         
         let isPlaying = data.isPlaying
-
+        
         updateToggleButton(isPlaying: isPlaying)
         
         sliderView.maximumValue = viewModel.duration
@@ -253,8 +255,65 @@ extension CurrentPlayerStateDetailsViewController {
         )
     }
     
+    @objc
+    func handleDismiss(sender: UIPanGestureRecognizer) {
+        
+        switch sender.state {
+        case .changed:
+            
+            let translation = sender.translation(in: view)
+            
+            guard translation.y >= 0 else {
+                return
+            }
+            
+            viewTranslation = translation
+            
+            UIView.animate(
+                withDuration: 0.5,
+                delay: 0,
+                usingSpringWithDamping: 0.7,
+                initialSpringVelocity: 1,
+                options: .curveEaseOut
+            ) {
+                self.view.transform = CGAffineTransform(translationX: 0, y: self.viewTranslation.y)
+            }
+            
+        case .ended:
+            
+            guard viewTranslation.y < 200 else {
+                dismiss(animated: true, completion: nil)
+                return
+            }
+            
+            UIView.animate(
+                withDuration: 0.5,
+                delay: 0,
+                usingSpringWithDamping: 0.7,
+                initialSpringVelocity: 1,
+                options: .curveEaseOut
+            ) {
+                self.view.transform = .identity
+            }
+            
+        default:
+            break
+        }
+    }
+    
+    private func setupDismissGestureRecognizer() {
+        
+        let gestureRecognizer = UIPanGestureRecognizer(
+            target: self,
+            action: #selector(handleDismiss)
+        )
+        
+        view.addGestureRecognizer(gestureRecognizer)
+    }
+    
     private func setupViews() {
         
+        setupDismissGestureRecognizer()
         setupTogglePlayButton()
         setupForwardButton()
         setupBackwardButton()
@@ -265,7 +324,7 @@ extension CurrentPlayerStateDetailsViewController {
         
         view.addSubview(blurView)
         view.addSubview(subtitlesPresenterView)
-
+        
         infoGroup.addSubview(titleLabel)
         infoGroup.addSubview(subtitleLabel)
         infoGroup.addSubview(coverImageView)
@@ -297,7 +356,7 @@ extension CurrentPlayerStateDetailsViewController {
             contentView: view,
             infoGroup: infoGroup
         )
-
+        
         Layout.apply(
             contentView: view,
             backgroundImageView: backgroundImageView
@@ -309,7 +368,7 @@ extension CurrentPlayerStateDetailsViewController {
             controlsGroup: controlsGroup,
             subtitlesPresenterView: subtitlesPresenterView
         )
-
+        
         Layout.apply(
             contentView: view,
             activityIndicator: activityIndicator
