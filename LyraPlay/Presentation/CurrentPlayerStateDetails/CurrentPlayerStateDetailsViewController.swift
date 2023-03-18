@@ -63,6 +63,7 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
         super.viewDidLoad()
         
         setup()
+
     }
     
     public override func viewDidDisappear(_ animated: Bool) {

@@ -12,6 +12,7 @@ public protocol SubtitlesPresenterViewModelFactory {
     
     func make(
         subtitles: Subtitles,
-        timeSlots: [SubtitlesTimeSlot]
+        timeSlots: [SubtitlesTimeSlot],
+        delegate: SubtitlesPresenterViewModelDelegate
     ) -> SubtitlesPresenterViewModel
 }

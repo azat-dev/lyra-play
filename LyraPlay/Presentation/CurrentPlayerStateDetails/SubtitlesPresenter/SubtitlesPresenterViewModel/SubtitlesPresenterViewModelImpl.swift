@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import UIKit
 
 public final class SubtitlesPresenterViewModelImpl: SubtitlesPresenterViewModel {
     
@@ -20,11 +21,36 @@ public final class SubtitlesPresenterViewModelImpl: SubtitlesPresenterViewModel 
     
     // MARK: - Initializers
     
-    public init(subtitles: Subtitles, timeSlots: [SubtitlesTimeSlot]) {
+    public init(
+        subtitles: Subtitles,
+        timeSlots: [SubtitlesTimeSlot],
+        delegate: SubtitlesPresenterViewModelDelegate
+    ) {
         
-        let toggleWord: ToggleWordCallback = { index, range in
+        let toggleWord: ToggleWordCallback = { [weak delegate] index, range in
             
-            // FIXME: Add implementation
+            guard
+                let delegate,
+                let range = range,
+                let senteceIndex = timeSlots[index].subtitlesPosition?.sentenceIndex
+            else {
+                return
+            }
+            
+            let sentence = subtitles.sentences[senteceIndex]
+            let foundTextComponent = sentence.components.first { $0.range.overlaps(range) }
+            
+            guard
+                let foundTextComponent = foundTextComponent,
+                case .word = foundTextComponent.type
+            else {
+                return
+            }
+            
+            let substring = sentence.text[foundTextComponent.range]
+            let word = String(substring)
+            
+            delegate.subtitlesPresenterViewModelDidTapWord(text: word)
         }
         
         rows = timeSlots.map { timeSlot in

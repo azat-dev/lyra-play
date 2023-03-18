@@ -127,25 +127,32 @@ extension RowCell {
     
     private func didTapOutside() {
 
-//        guard let viewModel = viewModel else {
-//            return
-//        }
-//
-//        viewModel.toggleWord(viewModel.id, nil)
+        guard
+            let viewModel = viewModel,
+            case .sentence(let sentenceData) = viewModel.data
+        else {
+            return
+        }
+
+        sentenceData.toggleWord(viewModel.id, nil)
     }
     
     private func didTap(range: UITextRange) {
 
-//        guard let viewModel = viewModel else {
-//            return
-//        }
-//
-//        let nsRange = range.toNSRange(textView: textView)
-//        guard let range = Range(nsRange, in: viewModel.text) else {
-//            return
-//        }
-//
-//        viewModel.toggleWord(viewModel.id, range)
+        guard
+            let viewModel = viewModel,
+            case .sentence(let sentenceData) = viewModel.data
+        else {
+            return
+        }
+
+        let nsRange = range.toNSRange(textView: textView)
+        
+        guard let range = Range(nsRange, in: sentenceData.text) else {
+            return
+        }
+
+        sentenceData.toggleWord(viewModel.id, range)
     }
 
     @objc
@@ -202,14 +209,14 @@ extension RowCell {
             action: #selector(didTap(gesture:))
         )
         
-//        let textStorage = NSTextStorage()
-//        let textContainer = NSTextContainer(size: .zero)
+        let textStorage = NSTextStorage()
+        let textContainer = NSTextContainer(size: .zero)
         
-//        textLayoutManager.highlights = highlights
-//        textStorage.addLayoutManager(self.textLayoutManager)
-//
-//        textLayoutManager.addTextContainer(textContainer)
-//        textLayoutManager.delegate = self
+        textLayoutManager.highlights = highlights
+        textStorage.addLayoutManager(self.textLayoutManager)
+
+        textLayoutManager.addTextContainer(textContainer)
+        textLayoutManager.delegate = self
         
         textView = UITextView()
         textView.addGestureRecognizer(tapGestureRecognizer)
