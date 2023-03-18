@@ -39,7 +39,7 @@ extension CurrentPlayerStateDetailsFlowPresenterImpl {
         let view = currentPlayerStateDetailsViewControllerFactory.make(viewModel: flowModel.currentPlayerStateDetailsViewModel)
         activeView = view
 
-        view.modalPresentationStyle = .overFullScreen
+        view.modalPresentationStyle = .overCurrentContext
         view.modalTransitionStyle = .coverVertical
         
         container.present(view, animated: true)
