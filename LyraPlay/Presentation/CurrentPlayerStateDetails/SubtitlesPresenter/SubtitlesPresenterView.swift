@@ -53,14 +53,40 @@ extension SubtitlesPresenterView {
             return
         }
         
-        collectionView.scrollToItem(
-            at: .init(item: newPosition.index, section: 0),
-            at: .centeredVertically,
-            animated: animate
+        let indexPath = IndexPath(item: newPosition.index, section: 0)
+        
+        guard
+            let itemAttributes = collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)
+        else {
+            return
+        }
+        
+        let offset = max(
+            0,
+            min(
+                itemAttributes.frame.midY,
+                itemAttributes.frame.midY - collectionView.frame.size.height / 2
+            )
         )
+        
+        guard animate else {
+            collectionView.contentOffset = .init(x: 0, y: offset)
+            return
+        }
+        
+        UIView.animate(
+            withDuration: 0.4,
+            delay: 0,
+            options: .curveEaseInOut
+        ) {
+            
+            self.collectionView.contentOffset = .init(x: 0, y: offset)
+        }
     }
     
     private func bind(to viewModel: SubtitlesPresenterViewModel?) {
+        
+        collectionView.alpha = 0
         
         collectionView.reloadData()
         
@@ -70,6 +96,7 @@ extension SubtitlesPresenterView {
         }
         
         update(position: viewModel.position.value, animate: false)
+        collectionView.alpha = 1
         
         viewModelObserver = viewModel.position
             .dropFirst()
