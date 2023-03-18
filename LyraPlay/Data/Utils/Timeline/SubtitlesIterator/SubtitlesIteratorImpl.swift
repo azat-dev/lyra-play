@@ -88,6 +88,7 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
             if item.timeRange.lowerBound >= time {
                 
                 if index == 0 {
+                    currentTimeSlotIndex = nil
                     return nil
                 }
                 

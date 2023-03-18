@@ -173,12 +173,12 @@ extension CurrentPlayerStateDetailsViewController {
                 togglePlayButton.heightAnchor.constraint(equalTo: togglePlayButton.widthAnchor),
                 togglePlayButton.heightAnchor.constraint(equalToConstant: Self.buttonSize),
                 
-                goBackwardButton.rightAnchor.constraint(equalTo: togglePlayButton.leftAnchor, constant: -30),
+                goBackwardButton.rightAnchor.constraint(equalTo: togglePlayButton.leftAnchor, constant: -40),
                 goBackwardButton.heightAnchor.constraint(equalTo: goBackwardButton.widthAnchor),
                 goBackwardButton.heightAnchor.constraint(equalToConstant: Self.buttonSize),
                 goBackwardButton.centerYAnchor.constraint(equalTo: togglePlayButton.centerYAnchor),
                 
-                goForwardButton.leftAnchor.constraint(equalTo: togglePlayButton.rightAnchor, constant: 30),
+                goForwardButton.leftAnchor.constraint(equalTo: togglePlayButton.rightAnchor, constant: 40),
                 goForwardButton.heightAnchor.constraint(equalTo: goForwardButton.widthAnchor),
                 goForwardButton.heightAnchor.constraint(equalToConstant: Self.buttonSize),
                 goForwardButton.centerYAnchor.constraint(equalTo: togglePlayButton.centerYAnchor),

@@ -68,7 +68,9 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
             every: 0.8,
             on: .main,
             in: .default
-        ).sink { [weak self] _ in
+        )
+        .autoconnect()
+        .sink { [weak self] _ in
             
             guard let self = self else {
                 return

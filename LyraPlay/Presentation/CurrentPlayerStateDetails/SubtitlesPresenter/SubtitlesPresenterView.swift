@@ -47,7 +47,7 @@ public final class SubtitlesPresenterView: UIView, UICollectionViewDelegate {
 
 extension SubtitlesPresenterView {
     
-    private func update(position: SubtitlesTimeSlot?) {
+    private func update(position: SubtitlesTimeSlot?, animate: Bool) {
         
         guard let newPosition = position else {
             return
@@ -56,7 +56,7 @@ extension SubtitlesPresenterView {
         collectionView.scrollToItem(
             at: .init(item: newPosition.index, section: 0),
             at: .centeredVertically,
-            animated: true
+            animated: animate
         )
     }
     
@@ -69,11 +69,14 @@ extension SubtitlesPresenterView {
             return
         }
         
+        update(position: viewModel.position.value, animate: false)
+        
         viewModelObserver = viewModel.position
+            .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newPosition in
                 
-                self?.update(position: newPosition)
+                self?.update(position: newPosition, animate: true)
             }
     }
 }

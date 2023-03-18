@@ -22,8 +22,8 @@ extension CurrentPlayerStateDetailsViewController {
         static let iconPlay = UIImage(systemName: "play.fill")
         static let iconPause = UIImage(systemName: "pause.fill")
         
-        static let iconGoForward = UIImage(systemName: "goforward.30")
-        static let iconGoBackward = UIImage(systemName: "gobackward.30")
+        static let iconGoForward = UIImage(systemName: "goforward.15", withConfiguration: UIImage.SymbolConfiguration(weight: .light))
+        static let iconGoBackward = UIImage(systemName: "gobackward.15", withConfiguration: UIImage.SymbolConfiguration(weight: .light))
         
         static let fontTitle = Fonts.RedHatDisplay.bold.preferred(with: .headline)
         static let fontSubtitle = Fonts.RedHatDisplay.semiBold.preferred(with: .subheadline)
@@ -132,7 +132,7 @@ extension CurrentPlayerStateDetailsViewController {
         static func apply(goBackwardButton button: UIImageView) {
             
             apply(button: button)
-            button.image = iconGoForward
+            button.image = iconGoBackward
         }
         
         static func apply(slider: UISlider) {
