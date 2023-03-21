@@ -15,8 +15,6 @@ public final class AudioPlayerImpl: NSObject, AudioPlayer {
 
     // MARK: - Properties
     
-    private let audioSession: AudioSession
-    
     public var state: CurrentValueSubject<AudioPlayerState, Never> = .init(.initial)
     
     public var currentTime: TimeInterval {
@@ -34,21 +32,10 @@ public final class AudioPlayerImpl: NSObject, AudioPlayer {
     
     // MARK: - Initializers
 
-    public init(
-        audioSession: AudioSession
-    ) {
-        
-        self.audioSession = audioSession
+    public override init() {
+        super.init()
     }
-    
-    public func activateAudioSession() {
-        audioSession.activate()
-    }
-    
-    public func deactivateAudioSession() {
-        audioSession.deactivate()
-    }
-    
+
     public func prepare(fileId: String, data: Data) -> Result<Void, AudioPlayerError> {
         return currentStateController.prepare(fileId: fileId, data: data)
     }
@@ -173,7 +160,6 @@ extension AudioPlayerImpl: AudioPlayerStateControllerDelegate {
     
     public func didStop(withController controller: StoppedAudioPlayerStateController) {
         
-        deactivateAudioSession()
         currentStateController = controller
         state.value = .stopped
     }
@@ -185,7 +171,6 @@ extension AudioPlayerImpl: AudioPlayerStateControllerDelegate {
             delegate: self
         )
         
-        activateAudioSession()
         return controller.runResumePlaying()
     }
     
@@ -208,7 +193,6 @@ extension AudioPlayerImpl: AudioPlayerStateControllerDelegate {
     
     public func didPause(withController controller: PausedAudioPlayerStateController) {
         
-        deactivateAudioSession()
         currentStateController = controller
         
         state.value = .paused(session: controller.session.map(), time: 0)
@@ -221,7 +205,6 @@ extension AudioPlayerImpl: AudioPlayerStateControllerDelegate {
             delegate: self
         )
         
-        activateAudioSession()
         return controller.runPlaying(atTime: atTime)
     }
     
@@ -234,7 +217,6 @@ extension AudioPlayerImpl: AudioPlayerStateControllerDelegate {
     
     public func didFinishPlaying(session: ActiveAudioPlayerStateControllerSession) {
         
-        deactivateAudioSession()
         currentStateController = FinishedAudioPlayerStateController(
             session: session,
             delegate: self

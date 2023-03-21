@@ -110,7 +110,7 @@ class LibraryItemViewModelTests: XCTestCase {
                 learningLanguage: "",
                 nativeLanguage: ""
             ),
-            .loaded(.playing, mediaInfo)
+            .init(.loaded(.init(.playing), mediaInfo))
         )
     }
     

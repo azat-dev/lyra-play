@@ -12,18 +12,11 @@ public final class AudioPlayerImplSingleInstanceFactory: AudioPlayerFactory {
     // MARK: - Properties
     
     private var semaphore = DispatchSemaphore(value: 1)
-    
     private weak var instance: AudioPlayer?
-    
-    private let audioSessionFactory: AudioSessionFactory
     
     // MARK: - Initializers
     
-    public init(
-        audioSessionFactory: AudioSessionFactory
-    ) {
-        
-        self.audioSessionFactory = audioSessionFactory
+    public init() {
     }
     
     // MARK: - Methods
@@ -38,10 +31,7 @@ public final class AudioPlayerImplSingleInstanceFactory: AudioPlayerFactory {
             return instance
         }
         
-        let audioSession = audioSessionFactory.make()
-        let newInstance = AudioPlayerImpl(
-            audioSession: audioSession
-        )
+        let newInstance = AudioPlayerImpl()
         instance = newInstance
         
         return newInstance

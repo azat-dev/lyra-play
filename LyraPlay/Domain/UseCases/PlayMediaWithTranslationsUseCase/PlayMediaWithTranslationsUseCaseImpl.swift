@@ -38,10 +38,13 @@ public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslatio
     private let playerState = CurrentValueSubject<PlayMediaWithTranslationsUseCasePlayerState, Never>(.initial)
     
     private var observers = Set<AnyCancellable>()
+    
+    private let audioSession: AudioSession
 
     // MARK: - Initializers
 
     public init(
+        audioSession: AudioSession,
         playMediaUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactory,
         provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory,
         pronounceTranslationsUseCaseFactory: PronounceTranslationsUseCaseFactory
@@ -51,6 +54,7 @@ public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslatio
         self.playMediaUseCaseFactory = playMediaUseCaseFactory
         self.provideTranslationsToPlayUseCaseFactory = provideTranslationsToPlayUseCaseFactory
         self.pronounceTranslationsUseCaseFactory = pronounceTranslationsUseCaseFactory
+        self.audioSession = audioSession
     }
     
     deinit {
@@ -167,8 +171,8 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
         withController playingController: PlayingPlayMediaWithTranslationsUseCaseStateController
     ) {
         
+        audioSession.activate()
         currentController = playingController
-        
         playerState.value = .playing
     }
     
@@ -247,6 +251,7 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
     
     public func didStop() {
         
+        audioSession.deactivate()
         currentController = InitialPlayMediaWithTranslationsUseCaseStateController(delegate: self)
         state.value = .noActiveSession
     }
@@ -258,6 +263,7 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
     
     public func didFinish(session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession) {
         
+        audioSession.deactivate()
         currentController = FinishedPlayMediaWithTranslationsUseCaseStateController(
             elapsedTime: 0,
             session: session,

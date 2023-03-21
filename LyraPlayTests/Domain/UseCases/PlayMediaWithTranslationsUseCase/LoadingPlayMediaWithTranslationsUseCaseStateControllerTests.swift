@@ -99,10 +99,10 @@ class LoadingPlayMediaWithTranslationsUseCaseStateControllerTests: XCTestCase {
                 mediaId: session.mediaId,
                 subtitlesLanguage: session.learningLanguage
             ),
-            .loaded
+            .init(.loaded)
         )
         
-        sut.subtitlesState.value = .init(position: .sentence(1), subtitles: anySubtitles())
+        sut.subtitlesState.value = .init(timeSlot: nil, subtitles: anySubtitles(), timeSlots: [])
         
         // When
         let result = await sut.controller.load()

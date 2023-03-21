@@ -97,4 +97,9 @@ final class PlayMediaUseCaseMockStateble: PlayMediaUseCase {
         
         fatalError()
     }
+    
+    func setTime(_ time: TimeInterval) {
+        
+        currentTime = time
+    }
 }

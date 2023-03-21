@@ -8,6 +8,7 @@
 import Foundation
 import XCTest
 import Combine
+import Mockingbird
 
 import LyraPlay
 
@@ -17,7 +18,13 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
     
     func createSUT(subtitles: Subtitles) -> SUT {
         
-        let viewModel = SubtitlesPresenterViewModelImpl(subtitles: subtitles)
+        let delegate = mock(SubtitlesPresenterViewModelDelegate.self)
+        
+        let viewModel = SubtitlesPresenterViewModelImpl(
+            subtitles: subtitles,
+            timeSlots: [],
+            delegate: delegate
+        )
         detectMemoryLeak(instance: viewModel)
         
         return viewModel
@@ -38,21 +45,20 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         
         let statesPromise = watch(sut.position)
         
-        let positions: [SubtitlesPosition?] = [
+        let positions: [SubtitlesTimeSlot?] = [
             nil,
-            .sentence(0),
+            .init(index: 0, timeRange: 0..<1, subtitlesPosition: .sentence(0)),
             nil,
-            .sentence(1),
-            .sentence(2)
+            .init(index: 1, timeRange: 1..<2, subtitlesPosition: .sentence(1)),
+            .init(index: 2, timeRange: 2..<3, subtitlesPosition: .sentence(2)),
         ]
-        // When
         
+        // When
         positions.forEach { position in
             sut.update(position: position)
         }
         
         // Then
-        
         statesPromise.expect(positions, timeout: 1)
     }
 }

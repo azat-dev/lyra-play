@@ -100,7 +100,7 @@ class PlayingPlayMediaWithTranslationsUseCaseStateControllerImplTests: XCTestCas
         var stopPlaying = false
         
         sut.useCase.playMediaWithSubtitlesUseCaseWillChange(
-            from: .sentence(0),
+            from: .init(index: 0, timeRange: 0..<1, subtitlesPosition: .sentence(0)),
             to: nil,
             interrupt: &stopPlaying
         )
