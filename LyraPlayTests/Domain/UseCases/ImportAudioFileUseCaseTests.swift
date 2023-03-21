@@ -19,7 +19,8 @@ class ImportAudioFileUseCaseTests: XCTestCase {
         imagesRepository: FilesRepositoryMock,
         audioFilesRepository: FilesRepositoryMock,
         tagsParser: TagsParserMock,
-        fileNameGenerator: ImportAudioFileUseCaseFileNameGenerator
+        fileNameGenerator: ImportAudioFileUseCaseFileNameGenerator,
+        importSubtitlesUseCase: ImportSubtitlesUseCaseMock
     )
     
     func createSUT() async -> SUT {
@@ -44,12 +45,19 @@ class ImportAudioFileUseCaseTests: XCTestCase {
                 return name
             }
         
+        let importSubtitlesUseCaseFactory = mock(ImportSubtitlesUseCaseFactory.self)
+        let importSubtitlesUseCase = mock(ImportSubtitlesUseCase.self)
+        
+        given(importSubtitlesUseCaseFactory.make())
+            .willReturn(importSubtitlesUseCase)
+        
         let useCase = ImportAudioFileUseCaseImpl(
             mediaLibraryRepository: mediaLibraryRepository,
             audioFilesRepository: audioFilesRepository,
             imagesRepository: imagesRepository,
             tagsParser: tagsParser,
-            fileNameGenerator: fileNameGenerator
+            fileNameGenerator: fileNameGenerator,
+            importSubtitlesUseCaseFactory: importSubtitlesUseCaseFactory
         )
         
         detectMemoryLeak(instance: useCase)
@@ -60,7 +68,8 @@ class ImportAudioFileUseCaseTests: XCTestCase {
             imagesRepository,
             audioFilesRepository,
             tagsParser,
-            fileNameGenerator
+            fileNameGenerator,
+            importSubtitlesUseCase
         )
     }
     

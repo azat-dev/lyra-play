@@ -137,7 +137,7 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
         verify(await sut.getPlayedTimeUseCase.getPlayedTime(for: mediaId))
             .wasCalled(1)
         
-        verify(sut.audioPlayer.set(currentTime: expectedTime))
+        verify(sut.audioPlayer.setTime(expectedTime))
             .wasCalled(1)
     }
     

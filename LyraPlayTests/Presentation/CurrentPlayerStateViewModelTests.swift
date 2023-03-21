@@ -82,7 +82,7 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         // When
         sut.playerState.value = .activeSession(
             .init(mediaId: mediaId, learningLanguage: "", nativeLanguage: ""),
-            .loaded(.playing, mediaInfo)
+            .init(.loaded(.init(.playing), mediaInfo))
         )
 
         // Then
@@ -95,13 +95,11 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         let state = sut.viewModel.state.value
         
         guard case .active(_, let playerState) = state else {
-            
             XCTFail("Wrong state \(state)")
             return
         }
         
-        guard case .playing = playerState else {
-            
+        guard case .playing = playerState.value else {
             XCTFail("Wrong state \(playerState)")
             return
         }
@@ -121,7 +119,7 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         // When
         sut.playerState.value = .activeSession(
             .init(mediaId: mediaId, learningLanguage: "", nativeLanguage: ""),
-            .loaded(.paused, mediaInfo)
+            .init(.loaded(.init(.paused), mediaInfo))
         )
 
         // Then
@@ -139,7 +137,7 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
             return
         }
         
-        guard case .paused = playerState else {
+        guard case .paused = playerState.value else {
             
             XCTFail("Wrong state \(playerState)")
             return

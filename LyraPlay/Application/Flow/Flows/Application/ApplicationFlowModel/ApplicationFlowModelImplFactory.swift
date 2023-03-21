@@ -100,7 +100,7 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
         let subtitlesRepositoryFactory = CoreDataSubtitlesRepositoryFactory(coreDataStore: coreDataStore)
         
         let mainAudioSessionFactory = AudioSessionImplSingleInstanceFactory(mode: .mainAudio)
-        let secondaryAudioSessionFactory = AudioSessionImplSingleInstanceFactory(mode: .promptAudio)
+        let secondaryAudioSessionFactory = mainAudioSessionFactory
         
         let getPlayedTimeUseCaseFactory = GetPlayedTimeUseCaseImplFactory(
             mediaLibraryRepository: mediaLibraryRepository
@@ -110,11 +110,9 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
             mediaLibraryRepository: mediaLibraryRepository
         )
 
-        let mainAudioPlayerFactory = AudioPlayerImplSingleInstanceFactory(
-            audioSessionFactory: mainAudioSessionFactory
-        )
+        let mainAudioPlayerFactory = AudioPlayerImplSingleInstanceFactory()
         
-        let secondaryAudioPlayerFactory = AudioPlayerImplSingleInstanceFactory(audioSessionFactory: secondaryAudioSessionFactory)
+        let secondaryAudioPlayerFactory = AudioPlayerImplSingleInstanceFactory()
         
         let loadTrackUseCaseFactory = LoadTrackUseCaseImplFactory(
             mediaLibraryRepository: mediaLibraryRepository,
@@ -175,6 +173,7 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
         )
         
         let playMediaWithTranslationsUseCaseFactory = PlayMediaWithTranslationsUseCaseImplFactory(
+            audioSessionFactory: mainAudioSessionFactory,
             playMediaWithSubtitlesUseCaseFactory: playMediaWithSubtitlesUseCaseFactory,
             provideTranslationsToPlayUseCaseFactory: provideTranslationsToPlayUseCaseFactory,
             pronounceTranslationsUseCaseFactory: pronounceTranslationsUseCaseFactory

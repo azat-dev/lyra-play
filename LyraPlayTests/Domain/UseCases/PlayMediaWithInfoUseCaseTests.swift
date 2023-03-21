@@ -126,11 +126,23 @@ class PlayMediaWithInfoUseCaseTests: XCTestCase {
         // Then
         try AssertResultSucceded(result)
         
+        statePromise.expect(match: [
+        
+            StateMatcher()
+        ])
         statePromise.expect([
             .noActiveSession,
-            .activeSession(session, .loading),
-            .activeSession(session, .loaded(.initial, mediaInfo)),
+            .activeSession(session, .init(.loading)),
+            .activeSession(session, .init(.loaded(.init(.initial), mediaInfo))),
         ])
     }
 }
 
+struct StateMatcher: ValueMatcher {
+    
+    init(state: )
+    
+    func match(capturedValue: CapturedValue) -> Bool {
+        <#code#>
+    }
+}
