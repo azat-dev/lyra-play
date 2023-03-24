@@ -415,4 +415,26 @@ extension CoreDataMediaLibraryRepository {
             return .failure(.internalError(error))
         }
     }
+    
+    public func getLastPlayedFile() async -> Result<UUID?, MediaLibraryRepositoryError> {
+        
+        let request = ManagedLibraryItem.fetchRequest()
+        
+        request.predicate = NSPredicate(format: "lastPlayedAt != nil AND isFolder == false")
+        request.sortDescriptors = [NSSortDescriptor(key: "lastPlayedAt", ascending: false)]
+        request.fetchLimit = 1
+        
+        do {
+            
+            let managedItem = try coreDataStore.performSync { context -> ManagedLibraryItem? in
+                
+                return try context.fetch(request).first
+            }
+            
+            return .success(managedItem?.id)
+            
+        } catch {
+            return .failure(.internalError(error))
+        }
+    }
 }

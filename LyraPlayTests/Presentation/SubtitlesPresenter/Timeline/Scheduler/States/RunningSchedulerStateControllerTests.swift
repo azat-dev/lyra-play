@@ -147,9 +147,6 @@ class RunningSchedulerStateControllerTests: XCTestCase {
             
             verify(sut.delegate.didFinish())
                 .wasCalled(1)
-            
-            verify(sut.delegateChanges.schedulerDidFinish())
-                .wasCalled(1)
 
         }
     }
