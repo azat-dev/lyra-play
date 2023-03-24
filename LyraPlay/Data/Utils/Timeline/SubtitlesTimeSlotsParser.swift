@@ -164,11 +164,20 @@ public final class SubtitlesTimeSlotsParser {
         
         let lastSlot = timeSlots.last
         
-        if lastSlot == nil || lastSlot!.timeRange.lowerBound < subtitles.duration {
+        if lastEndTime < subtitles.duration {
             
             let emptySlot = SubtitlesTimeSlot(
                 index: timeSlots.count,
                 timeRange: lastEndTime..<subtitles.duration
+            )
+            timeSlots.append(emptySlot)
+        }
+        
+        if lastSlot == nil || lastSlot!.timeRange.lowerBound < subtitles.duration {
+            
+            let emptySlot = SubtitlesTimeSlot(
+                index: timeSlots.count,
+                timeRange: subtitles.duration..<subtitles.duration
             )
             timeSlots.append(emptySlot)
         }
