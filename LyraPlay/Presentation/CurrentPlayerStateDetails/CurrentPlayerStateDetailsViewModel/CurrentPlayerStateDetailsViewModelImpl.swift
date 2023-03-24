@@ -159,10 +159,10 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
             switch newState {
                 
             case .loading:
-                state.value = .loading
+                self.state.value = .loading
                 
             case .loadFailed:
-                state.value = .loadFailed
+                self.state.value = .notActive
                 
             case .loaded(let sourcePlayerState, let mediaInfo):
                 self.pipePlayerState(from: sourcePlayerState, withMediaInfo: mediaInfo)
