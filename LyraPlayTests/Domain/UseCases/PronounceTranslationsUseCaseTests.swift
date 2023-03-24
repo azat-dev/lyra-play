@@ -58,6 +58,7 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
         
         let expectedStateItems: [PronounceTranslationsUseCaseState] = [
             .stopped,
+            .loading(.single(translation: testTranslation)),
             .playing(.single(translation: testTranslation)),
             .finished
         ]
@@ -82,7 +83,9 @@ class PronounceTranslationsUseCaseTests: XCTestCase {
         
         let expectedStateItems: [PronounceTranslationsUseCaseState] = [
             .stopped,
+            .loading(.group(translations: testTranslations, currentTranslationIndex: 0)),
             .playing(.group(translations: testTranslations, currentTranslationIndex: 0)),
+            .loading(.group(translations: testTranslations, currentTranslationIndex: 1)),
             .playing(.group(translations: testTranslations, currentTranslationIndex: 1)),
             .finished
         ]
