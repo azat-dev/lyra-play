@@ -198,6 +198,9 @@ class LibraryItemViewModelTests: XCTestCase {
         await givenExistingMedia(sut: sut, mediaId: mediaId)
         givenUseCasePlayingMedia(sut: sut, id: secondMediaId)
         
+        given(sut.playMediaUseCase.resume())
+            .willReturn(.success(()))
+        
         await sut.viewModel.load()
         
         // When

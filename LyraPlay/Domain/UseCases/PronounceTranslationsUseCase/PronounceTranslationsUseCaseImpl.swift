@@ -160,28 +160,34 @@ extension PronounceTranslationsUseCaseImpl {
                     
                     switch state {
                     case .converting, .loading:
+                        self.state.value = .loading(.single(translation: translation))
                         continue
                         
                     case .failed:
+                        self.state.value = .stopped
                         continuation.finish(throwing: NSError())
                         return
 
                     case .playing:
-                        continuation.yield(.playing(.single(translation: translation)))
+                        let newState: PronounceTranslationsUseCaseState = .playing(.single(translation: translation))
+                        self.state.value = newState
+                        continuation.yield(newState)
                     
                     case .paused:
-                        continuation.yield(.paused(.single(translation: translation)))
+                        let newState: PronounceTranslationsUseCaseState = .paused(.single(translation: translation))
+                        self.state.value = newState
+                        continuation.yield(newState)
                         continuation.finish()
                         return
                     
                     case .stopped:
-                        
+                        self.state.value = .stopped
                         continuation.yield(.stopped)
                         continuation.finish()
                         return
                     
                     case .finished:
-                        
+                        self.state.value = .finished
                         continuation.yield(.finished)
                         continuation.finish()
                         return
@@ -204,20 +210,35 @@ extension PronounceTranslationsUseCaseImpl {
                     for try await state in pronounce(translation: translation) {
                         
                         switch state {
-                        case .converting, .loading, .finished, .playing:
+                        case .finished:
+                            continue
+                            
+                        case .converting, .loading:
+                            
+                            let newState: PronounceTranslationsUseCaseState = .loading(.group(translations: translations, currentTranslationIndex: translationIndex))
+                            continuation.yield(newState)
+                            continue
+                            
+                        case .playing:
+                            let newState: PronounceTranslationsUseCaseState = .playing(.group(translations: translations, currentTranslationIndex: translationIndex))
+                            self.state.value = newState
+                            continuation.yield(newState)
                             continue
                             
                         case .failed:
+                            self.state.value = .stopped
                             continuation.finish(throwing: NSError())
                             return
 
                         case .paused:
-                            continuation.yield(.paused(.group(translations: translations, currentTranslationIndex: translationIndex)))
+                            let newState: PronounceTranslationsUseCaseState = .paused(.group(translations: translations, currentTranslationIndex: translationIndex))
+                            self.state.value = newState
+                            continuation.yield(newState)
                             continuation.finish()
                             return
                         
                         case .stopped:
-                            
+                            self.state.value = .stopped
                             continuation.yield(.stopped)
                             continuation.finish()
                             return
@@ -225,6 +246,7 @@ extension PronounceTranslationsUseCaseImpl {
                     }
                 }
                 
+                self.state.value = .finished
                 continuation.yield(.finished)
                 continuation.finish()
             }
