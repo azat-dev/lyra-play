@@ -125,8 +125,13 @@ class AddMediaLibraryFolderFlowModelTests: XCTestCase {
         sut.flowModel.promptDialogViewModelDidSubmit(value: existingName)
         
         // Then
-        verify(sut.promptDialogViewModel.setErrorText(any()))
-            .wasCalled(1)
+        
+        eventually {
+            verify(sut.promptDialogViewModel.setErrorText(any()))
+                .wasCalled(1)
+        }
+        
+        await waitForExpectations(timeout: 1)
     }
     
     func test_submit_prompt() async throws {
