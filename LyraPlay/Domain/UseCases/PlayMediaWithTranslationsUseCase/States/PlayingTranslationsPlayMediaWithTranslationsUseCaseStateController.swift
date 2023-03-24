@@ -105,6 +105,11 @@ public final class PlayingTranslationsPlayMediaWithTranslationsUseCaseStateContr
         )
     }
     
+    public func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot? {
+        
+        return session.playMediaUseCase.getPosition(for: time)
+    }
+    
     public func run() async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         do {

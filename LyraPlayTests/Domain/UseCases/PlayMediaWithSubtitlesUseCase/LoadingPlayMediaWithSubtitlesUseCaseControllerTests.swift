@@ -8,6 +8,7 @@
 import Foundation
 import XCTest
 import Mockingbird
+import Combine
 
 import LyraPlay
 
@@ -119,6 +120,14 @@ class LoadingPlayMediaWithSubtitlesUseCaseControllerTests: XCTestCase {
         
         given(playSubtitlesUseCase.state)
             .willReturn(.init(.initial))
+        
+        given(playSubtitlesUseCase.timeSlots)
+            .willReturn([])
+        
+        let currentTimeSlot = CurrentValueSubject<SubtitlesTimeSlot?, Never>(nil)
+        
+        given(playSubtitlesUseCase.subtitlesTimeSlot)
+            .willReturn(currentTimeSlot)
 
         given(sut.playSubtitlesUseCaseFactory.make(subtitles: any(), delegate: any()))
             .willReturn(sut.playSubtitlesUseCase)

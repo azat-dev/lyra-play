@@ -88,6 +88,11 @@ public class PausedPlayMediaWithTranslationsUseCaseStateController: PlayMediaWit
         session.playMediaUseCase.setTime(time)
     }
     
+    public func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot? {
+        
+        return session.playMediaUseCase.getPosition(for: time)
+    }
+    
     public func run() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         session.playMediaUseCase.delegate = nil

@@ -41,11 +41,14 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
         let subtitlesPresenterViewModelFactory = mock(SubtitlesPresenterViewModelFactory.self)
         let subtitlesPresenterViewModel = mock(SubtitlesPresenterViewModel.self)
         
-        given(subtitlesPresenterViewModelFactory.make(subtitles: any()))
+        given(subtitlesPresenterViewModelFactory.make(subtitles: any(), timeSlots: any(), delegate: any()))
             .willReturn(subtitlesPresenterViewModel)
         
         given(playMediaUseCase.subtitlesState)
             .willReturn(subtitlesState)
+        
+        given(playMediaUseCase.currentTime)
+            .willReturn(0)
 
         let viewModel = CurrentPlayerStateDetailsViewModelImpl(
             delegate: delegate,
@@ -97,10 +100,9 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
         sut.viewModel.togglePlay()
         sut.viewModel.togglePlay()
         
-        sut.playerState.value = .activeSession(session, .loading)
-        sut.playerState.value = .activeSession(session, .loaded(.playing, mediaInfo))
-        
-        sut.playerState.value = .activeSession(session, .loaded(.paused, mediaInfo))
+        sut.playerState.value = .activeSession(session, .init(.loading))
+        sut.playerState.value = .activeSession(session, .init(.loaded(.init(.playing), mediaInfo)))
+        sut.playerState.value = .activeSession(session, .init(.loaded(.init(.paused), mediaInfo)))
 
         // Then
         verify(sut.playMediaUseCase.togglePlay())
@@ -142,29 +144,34 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
             ]
         )
         
-        let expectedSubtitlesIndexes = [0, 1, 3]
+        let expectedPositions: [SubtitlesTimeSlot] = [
+            .init(index: 0, timeRange: 0..<1),
+            .init(index: 1, timeRange: 0..<1),
+            .init(index: 2, timeRange: 0..<1),
+        ]
         
-        sut.subtitlesState.value = .init(position: nil, subtitles: subtitles)
+        sut.subtitlesState.value = .init(timeSlot: nil, subtitles: subtitles, timeSlots: [])
         sut.playerState.value = .activeSession(
             anySession(),
-            .loaded(.initial, anyMediaInfo())
+            .init(.loaded(.init(.initial), anyMediaInfo()))
         )
         
         
         // When
-        expectedSubtitlesIndexes.forEach({ index in
+        expectedPositions.forEach({ position in
             
             sut.subtitlesState.value = .init(
-                position: .sentence(index),
-                subtitles: subtitles
+                timeSlot: position,
+                subtitles: subtitles,
+                timeSlots: expectedPositions
             )
         })
         
         // Then
         eventually {
             inOrder {
-                expectedSubtitlesIndexes.forEach { sentenceIndex in
-                    verify(sut.subtitlesPresenterViewModel.update(position: .sentence(sentenceIndex)))
+                expectedPositions.forEach { position in
+                    verify(sut.subtitlesPresenterViewModel.update(position: position))
                         .wasCalled(1)
                 }
             }

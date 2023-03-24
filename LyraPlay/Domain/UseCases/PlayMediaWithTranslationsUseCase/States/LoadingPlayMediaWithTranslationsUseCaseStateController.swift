@@ -81,6 +81,11 @@ public final class LoadingPlayMediaWithTranslationsUseCaseStateController: PlayM
     public func setTime(_ time: TimeInterval) {
     }
     
+    public func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot? {
+        
+        return nil
+    }
+    
     public func load() async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         let playMediaWithSubtitlesUseCase = playMediaUseCaseFactory.make()

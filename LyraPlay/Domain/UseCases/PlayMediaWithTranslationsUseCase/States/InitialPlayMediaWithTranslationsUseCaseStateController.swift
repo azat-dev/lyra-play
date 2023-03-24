@@ -64,6 +64,11 @@ public class InitialPlayMediaWithTranslationsUseCaseStateController: PlayMediaWi
     public func setTime(_ time: TimeInterval) {
     }
     
+    public func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot? {
+        
+        return nil
+    }
+    
     public func run(activeSession: PlayMediaWithTranslationsUseCaseStateControllerActiveSession) -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         activeSession.pronounceTranslationsUseCase.stop()

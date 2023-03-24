@@ -56,4 +56,9 @@ public class InitialPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubti
     
     public func setTime(_ time: TimeInterval) {
     }
+    
+    public func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot? {
+        
+        return nil
+    }
 }

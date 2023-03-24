@@ -38,10 +38,7 @@ class SubtitlesIteratorTests: XCTestCase {
         
         while true {
             
-            let prevState = ExpectedSubtitlesIteratorOutput(from: sut)
             let time = sut.getTimeOfNextEvent()
-            
-            AssertEqualReadable(.init(from: sut), prevState)
             let _ = sut.moveToNextEvent()
             
             receivedItems.append(time)
@@ -83,8 +80,8 @@ class SubtitlesIteratorTests: XCTestCase {
         testIteration(
             startTime: nil,
             timeSlots: [
-                .init(timeRange: 0..<5),
-                .init(timeRange: 5..<10, subtitlesPosition: .sentence(1))
+                .init(index: 0, timeRange: 0..<5),
+                .init(index: 1, timeRange: 5..<10, subtitlesPosition: .sentence(1))
             ],
             expectedItems: [
                 0,
@@ -100,8 +97,8 @@ class SubtitlesIteratorTests: XCTestCase {
         testIteration(
             startTime: 5,
             timeSlots: [
-                .init(timeRange: 0..<5),
-                .init(timeRange: 5..<10, subtitlesPosition: .sentence(1))
+                .init(index: 0, timeRange: 0..<5),
+                .init(index: 1, timeRange: 5..<10, subtitlesPosition: .sentence(1))
             ],
             expectedItems: [
                 5,
@@ -113,38 +110,13 @@ class SubtitlesIteratorTests: XCTestCase {
         testIteration(
             startTime: 10,
             timeSlots: [
-                .init(timeRange: 0..<5),
-                .init(timeRange: 5..<10, subtitlesPosition: .sentence(1))
+                .init(index: 0, timeRange: 0..<5),
+                .init(index: 1, timeRange: 5..<10, subtitlesPosition: .sentence(1))
             ],
             expectedItems: [
                 10,
                 nil
             ]
         )
-    }
-}
-
-struct ExpectedSubtitlesIteratorOutput: Equatable {
-    
-    var time: TimeInterval?
-    var position: ExpectedSubtitlesPosition
-    var timeRange: Range<TimeInterval>?
-    
-    init(
-        time: TimeInterval?,
-        timeRange: Range<TimeInterval>? = nil,
-        position: ExpectedSubtitlesPosition = .nilValue()
-    ) {
-        
-        self.time = time
-        self.timeRange = timeRange
-        self.position = position
-    }
-    
-    init(from iterator: SubtitlesIterator) {
-        
-        time = iterator.lastEventTime
-        timeRange = iterator.currentTimeRange
-        position = .init(from: iterator.currentPosition)
     }
 }

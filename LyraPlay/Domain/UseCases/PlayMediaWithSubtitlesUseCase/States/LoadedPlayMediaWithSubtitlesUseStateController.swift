@@ -84,4 +84,9 @@ public class LoadedPlayMediaWithSubtitlesUseStateController: PlayMediaWithSubtit
         
         session.playMediaUseCase.setTime(time)
     }
+    
+    public func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot? {
+        
+        return session.playSubtitlesUseCase?.getPosition(for: time)
+    }
 }

@@ -100,6 +100,11 @@ extension PlayMediaWithTranslationsUseCaseImpl {
         
         currentController.setTime(time)
     }
+    
+    public func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot? {
+        
+        return currentController.getPosition(for: time)
+    }
 }
 
 // MARK: - Update state

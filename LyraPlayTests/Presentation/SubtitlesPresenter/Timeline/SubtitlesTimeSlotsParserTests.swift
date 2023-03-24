@@ -28,7 +28,7 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
         AssertEqualReadable(
             createSUT().parse(from: emptySubtitles),
             [
-                .init(timeRange: (0..<0))
+                .init(index: 0, timeRange: (0..<0))
             ]
         )
     }
@@ -43,6 +43,7 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
             createSUT().parse(from: subtitles),
             [
                 .init(
+                    index: 0,
                     timeRange: (0..<10),
                     subtitlesPosition: .init(
                         sentenceIndex: 0,
@@ -62,8 +63,9 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
         AssertEqualReadable(
             createSUT().parse(from: subtitles),
             [
-                .init(timeRange: (0..<1)),
+                .init(index: 0, timeRange: (0..<1)),
                 .init(
+                    index: 1,
                     timeRange: (1..<10),
                     subtitlesPosition: .init(
                         sentenceIndex: 0,
@@ -84,10 +86,12 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
             createSUT().parse(from: subtitles),
             [
                 .init(
+                    index: 0,
                     timeRange: (0..<5),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
                 ),
                 .init(
+                    index: 1,
                     timeRange: (5..<10)
                 )
 
@@ -107,14 +111,17 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
             createSUT().parse(from: subtitles),
             [
                 .init(
+                    index: 0,
                     timeRange: (0..<1),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
                 ),
                 .init(
+                    index: 1,
                     timeRange: (1..<4),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: 0)
                 ),
                 .init(
+                    index: 2,
                     timeRange: (4..<10),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
                 ),
@@ -134,18 +141,22 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
             createSUT().parse(from: subtitles),
             [
                 .init(
+                    index: 0,
                     timeRange: (0..<1),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
                 ),
                 .init(
+                    index: 1,
                     timeRange: (1..<4),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: 0)
                 ),
                 .init(
+                    index: 2,
                     timeRange: (4..<5),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
                 ),
                 .init(
+                    index: 3,
                     timeRange: (5..<10),
                     subtitlesPosition: nil
                 ),
@@ -165,26 +176,32 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
             createSUT().parse(from: subtitles),
             [
                 .init(
+                    index: 0,
                     timeRange: (0..<1),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
                 ),
                 .init(
+                    index: 1,
                     timeRange: (1..<2),
                     subtitlesPosition: nil
                 ),
                 .init(
+                    index: 2,
                     timeRange: (2..<3),
                     subtitlesPosition: .init(sentenceIndex: 1, timeMarkIndex: nil)
                 ),
                 .init(
+                    index: 3,
                     timeRange: (3..<4),
                     subtitlesPosition: nil
                 ),
                 .init(
+                    index: 4,
                     timeRange: (4..<5),
                     subtitlesPosition: .init(sentenceIndex: 2, timeMarkIndex: nil)
                 ),
                 .init(
+                    index: 5,
                     timeRange: (5..<10),
                     subtitlesPosition: nil
                 ),
@@ -204,18 +221,22 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
             createSUT().parse(from: subtitles),
             [
                 .init(
+                    index: 0,
                     timeRange: (0..<1),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
                 ),
                 .init(
+                    index: 1,
                     timeRange: (1..<2),
                     subtitlesPosition: .init(sentenceIndex: 1, timeMarkIndex: nil)
                 ),
                 .init(
+                    index: 2,
                     timeRange: (2..<3),
                     subtitlesPosition: .init(sentenceIndex: 2, timeMarkIndex: nil)
                 ),
                 .init(
+                    index: 3,
                     timeRange: (3..<10),
                     subtitlesPosition: nil
                 ),
@@ -235,10 +256,12 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
             createSUT().parse(from: subtitles),
             [
                 .init(
+                    index: 0,
                     timeRange: (0..<2),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: 0)
                 ),
                 .init(
+                    index: 1,
                     timeRange: (2..<10),
                     subtitlesPosition: nil
                 ),
@@ -258,14 +281,17 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
             createSUT().parse(from: subtitles),
             [
                 .init(
+                    index: 0,
                     timeRange: (0..<1),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
                 ),
                 .init(
+                    index: 1,
                     timeRange: (1..<2),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: 0)
                 ),
                 .init(
+                    index: 2,
                     timeRange: (2..<10),
                     subtitlesPosition: nil
                 ),
@@ -287,30 +313,37 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
             createSUT().parse(from: subtitles),
             [
                 .init(
+                    index: 0,
                     timeRange: (0..<1),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
                 ),
                 .init(
+                    index: 1,
                     timeRange: (1..<2),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: 0)
                 ),
                 .init(
+                    index: 2,
                     timeRange: (2..<3),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
                 ),
                 .init(
+                    index: 3,
                     timeRange: (3..<4),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: 1)
                 ),
                 .init(
+                    index: 4,
                     timeRange: (4..<5),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
                 ),
                 .init(
+                    index: 5,
                     timeRange: (5..<6),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: 2)
                 ),
                 .init(
+                    index: 6,
                     timeRange: (6..<10),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
                 ),
@@ -331,18 +364,22 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
             createSUT().parse(from: subtitles),
             [
                 .init(
+                    index: 0,
                     timeRange: (0..<1),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
                 ),
                 .init(
+                    index: 1,
                     timeRange: (1..<2),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: 0)
                 ),
                 .init(
+                    index: 2,
                     timeRange: (2..<3),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: 1)
                 ),
                 .init(
+                    index: 3,
                     timeRange: (3..<10),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
                 ),

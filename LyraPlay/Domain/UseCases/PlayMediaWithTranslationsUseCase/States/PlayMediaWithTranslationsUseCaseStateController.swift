@@ -12,4 +12,6 @@ public protocol PlayMediaWithTranslationsUseCaseStateController: AnyObject, Play
     var currentTime: TimeInterval { get }
     
     var duration: TimeInterval { get }
+    
+    func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot?
 }
