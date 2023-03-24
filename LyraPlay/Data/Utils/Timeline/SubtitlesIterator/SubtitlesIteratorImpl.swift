@@ -13,7 +13,10 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
 
     public var currentTimeSlot: SubtitlesTimeSlot? {
         
-        guard let currentTimeSlotIndex = currentTimeSlotIndex else {
+        guard
+            let currentTimeSlotIndex = currentTimeSlotIndex,
+            currentTimeSlotIndex < timeSlots.count
+        else {
             return nil
         }
         
@@ -147,6 +150,10 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
     public func getTimeOfNextEvent() -> TimeInterval? {
         
         guard let nextIndex = getNextIndex() else {
+            return nil
+        }
+        
+        guard nextIndex < timeSlots.count else {
             return nil
         }
 

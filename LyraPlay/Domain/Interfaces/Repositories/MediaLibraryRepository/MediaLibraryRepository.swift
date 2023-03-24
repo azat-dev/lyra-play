@@ -85,6 +85,8 @@ public protocol MediaLibraryRepositoryOutput {
     func listItems(folderId: UUID?) async -> Result<[MediaLibraryItem], MediaLibraryRepositoryError>
     
     func getItem(id: UUID) async -> Result<MediaLibraryItem, MediaLibraryRepositoryError>
+    
+    func getLastPlayedFile() async -> Result<UUID?, MediaLibraryRepositoryError>
 }
 
 public protocol MediaLibraryRepository: MediaLibraryRepositoryOutput, MediaLibraryRepositoryInput {}

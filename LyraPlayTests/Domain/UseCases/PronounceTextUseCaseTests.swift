@@ -54,7 +54,7 @@ class PronounceTextUseCaseTests: XCTestCase {
         
         statePromise.expect([
             .loading,
-            .loading,
+            .playing,
             .finished
         ])
     }

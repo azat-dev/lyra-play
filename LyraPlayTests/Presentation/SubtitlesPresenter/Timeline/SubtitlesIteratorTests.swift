@@ -57,7 +57,6 @@ class SubtitlesIteratorTests: XCTestCase {
             startTime: nil,
             timeSlots: [],
             expectedItems: [
-                0,
                 nil
             ]
         )
