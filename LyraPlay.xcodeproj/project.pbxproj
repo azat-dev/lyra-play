@@ -308,6 +308,7 @@
 		AA3785992885EFD300FF3B66 /* EnhancedLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3785982885EFD300FF3B66 /* EnhancedLayoutManager.swift */; };
 		AA3B59C82886EA0700F68AF8 /* CoreDataDictionaryRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3B59C72886EA0700F68AF8 /* CoreDataDictionaryRepositoryTests.swift */; };
 		AA3B59D02887035900F68AF8 /* ManagedDictionaryItem+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3B59CF2887035900F68AF8 /* ManagedDictionaryItem+Mapping.swift */; };
+		AA3B984A29CE4E5D00CBE176 /* Mockingbird in Frameworks */ = {isa = PBXBuildFile; productRef = AA3B984929CE4E5D00CBE176 /* Mockingbird */; };
 		AA3BAB1B286C7225005EE01E /* PlayerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB1A286C7225005EE01E /* PlayerState.swift */; };
 		AA3BAB1D286C728B005EE01E /* PlayerStateRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB1C286C728B005EE01E /* PlayerStateRepository.swift */; };
 		AA3BAB1F286C73A3005EE01E /* PlayerStateRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3BAB1E286C73A3005EE01E /* PlayerStateRepositoryImpl.swift */; };
@@ -462,7 +463,6 @@
 		AA7B0D7D28721A5E0067DDB5 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B0D7C28721A5E0067DDB5 /* Fonts.swift */; };
 		AA7B0D7F28721B050067DDB5 /* UIFont+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B0D7E28721B050067DDB5 /* UIFont+Utils.swift */; };
 		AA7B16BB28D32C9900D3DBE1 /* Library+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7B16BA28D32C9900D3DBE1 /* Library+Helpers.swift */; };
-		AA7B761B28C5C5BA00EC0BDA /* Mockingbird in Frameworks */ = {isa = PBXBuildFile; productRef = AA7B761A28C5C5BA00EC0BDA /* Mockingbird */; };
 		AA81426E28D509F3004A37C0 /* XCTest+Observers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA81426D28D509F3004A37C0 /* XCTest+Observers.swift */; };
 		AA889EB628D760B900F8131F /* MediaLibraryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA889EB528D760B900F8131F /* MediaLibraryItem.swift */; };
 		AA889EB828D762E100F8131F /* ManagedLibraryItem+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA889EB728D762E100F8131F /* ManagedLibraryItem+Mapping.swift */; };
@@ -1445,7 +1445,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA7B761B28C5C5BA00EC0BDA /* Mockingbird in Frameworks */,
+				AA3B984A29CE4E5D00CBE176 /* Mockingbird in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3910,7 +3910,7 @@
 			);
 			name = LyraPlayTests;
 			packageProductDependencies = (
-				AA7B761A28C5C5BA00EC0BDA /* Mockingbird */,
+				AA3B984929CE4E5D00CBE176 /* Mockingbird */,
 			);
 			productName = LyraPlayTests;
 			productReference = AA8BF75F28567A1F0010FA1E /* LyraPlayTests.xctest */;
@@ -3967,8 +3967,8 @@
 			);
 			mainGroup = AA8BF73D28567A1C0010FA1E;
 			packageReferences = (
-				AA7B761928C5C5BA00EC0BDA /* XCRemoteSwiftPackageReference "mockingbird" */,
 				AA9BA71529BFB946001AC09A /* XCRemoteSwiftPackageReference "SwiftWebVTT" */,
+				AA3B984829CE4E5D00CBE176 /* XCRemoteSwiftPackageReference "mockingbird" */,
 			);
 			productRefGroup = AA8BF74728567A1C0010FA1E /* Products */;
 			projectDirPath = "";
@@ -5072,12 +5072,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		AA7B761928C5C5BA00EC0BDA /* XCRemoteSwiftPackageReference "mockingbird" */ = {
+		AA3B984829CE4E5D00CBE176 /* XCRemoteSwiftPackageReference "mockingbird" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/birdrides/mockingbird";
+			repositoryURL = "https://github.com/azat-dev/mockingbird.git";
 			requirement = {
 				kind = revision;
-				revision = 85d8eae902c49f39d106318bd517ad8357ffd766;
+				revision = d0dd9d36b2c569741b4f0ee34776e037c1a77fa1;
 			};
 		};
 		AA9BA71529BFB946001AC09A /* XCRemoteSwiftPackageReference "SwiftWebVTT" */ = {
@@ -5091,9 +5091,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		AA7B761A28C5C5BA00EC0BDA /* Mockingbird */ = {
+		AA3B984929CE4E5D00CBE176 /* Mockingbird */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = AA7B761928C5C5BA00EC0BDA /* XCRemoteSwiftPackageReference "mockingbird" */;
+			package = AA3B984829CE4E5D00CBE176 /* XCRemoteSwiftPackageReference "mockingbird" */;
 			productName = Mockingbird;
 		};
 		AA9BA71629BFB946001AC09A /* SwiftWebVTT */ = {
