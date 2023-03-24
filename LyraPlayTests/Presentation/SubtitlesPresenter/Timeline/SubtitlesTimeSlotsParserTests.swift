@@ -49,6 +49,10 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
                         sentenceIndex: 0,
                         timeMarkIndex: nil
                     )
+                ),
+                .init(
+                    index: 1,
+                    timeRange: (10..<10)
                 )
             ]
         )
@@ -71,7 +75,8 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
                         sentenceIndex: 0,
                         timeMarkIndex: nil
                     )
-                )
+                ),
+                .init(index: 2, timeRange: (10..<10)),
             ]
         )
     }
@@ -93,8 +98,11 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
                 .init(
                     index: 1,
                     timeRange: (5..<10)
+                ),
+                .init(
+                    index: 2,
+                    timeRange: (10..<10)
                 )
-
             ]
         )
     }
@@ -124,6 +132,10 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
                     index: 2,
                     timeRange: (4..<10),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
+                ),
+                .init(
+                    index: 3,
+                    timeRange: (10..<10)
                 ),
             ]
         )
@@ -159,6 +171,10 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
                     index: 3,
                     timeRange: (5..<10),
                     subtitlesPosition: nil
+                ),
+                .init(
+                    index: 4,
+                    timeRange: (10..<10)
                 ),
             ]
         )
@@ -205,6 +221,10 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
                     timeRange: (5..<10),
                     subtitlesPosition: nil
                 ),
+                .init(
+                    index: 6,
+                    timeRange: (10..<10)
+                ),
             ]
         )
     }
@@ -240,6 +260,10 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
                     timeRange: (3..<10),
                     subtitlesPosition: nil
                 ),
+                .init(
+                    index: 4,
+                    timeRange: (10..<10)
+                ),
             ]
         )
     }
@@ -264,6 +288,10 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
                     index: 1,
                     timeRange: (2..<10),
                     subtitlesPosition: nil
+                ),
+                .init(
+                    index: 2,
+                    timeRange: (10..<10)
                 ),
             ]
         )
@@ -294,6 +322,10 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
                     index: 2,
                     timeRange: (2..<10),
                     subtitlesPosition: nil
+                ),
+                .init(
+                    index: 3,
+                    timeRange: (10..<10)
                 ),
             ]
         )
@@ -347,6 +379,10 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
                     timeRange: (6..<10),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
                 ),
+                .init(
+                    index: 7,
+                    timeRange: (10..<10)
+                ),
             ]
         )
     }
@@ -382,6 +418,10 @@ class SubtitlesTimeSlotsParserTests: XCTestCase {
                     index: 3,
                     timeRange: (3..<10),
                     subtitlesPosition: .init(sentenceIndex: 0, timeMarkIndex: nil)
+                ),
+                .init(
+                    index: 4,
+                    timeRange: (10..<10)
                 ),
             ]
         )
