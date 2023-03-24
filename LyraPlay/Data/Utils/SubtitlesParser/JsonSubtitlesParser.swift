@@ -67,14 +67,33 @@ extension JsonSubtitlesParser {
             var text = ""
             
             for segment in segments {
-                
                 text += segment.utf8
+            }
+            
+            text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            let startTime = event.tStartMs / 1000
+            let duration = (event.dDurationMs ?? 0) / 1000
+            
+            if
+                let lastItem = items.last,
+                text.isEmpty &&
+                lastItem.text.isEmpty
+            {
+                
+                items[items.count - 1] = .init(
+                    startTime: lastItem.startTime,
+                    duration: startTime - lastItem.startTime + duration,
+                    text: "",
+                    components: []
+                )
+                continue
             }
             
             items.append(
                 .init(
-                    startTime: event.tStartMs / 1000,
-                    duration: (event.dDurationMs ?? 0) / 1000,
+                    startTime: startTime,
+                    duration: duration,
                     text: text,
                     components: textSplitter.split(text: text)
                 )
@@ -86,7 +105,6 @@ extension JsonSubtitlesParser {
             ((parsedData.events.last?.tStartMs ?? 0) + (parsedData.events.last?.dDurationMs ?? 0)) / 1000
         )
         
-        print("duration = \(duration)")
         let subtitles = Subtitles(
             duration: duration,
             sentences: items

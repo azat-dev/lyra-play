@@ -30,7 +30,7 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
     private var playerStateObserver: AnyCancellable?
     
     private var currentSubtitles: Subtitles?
-
+    
     public var sliderValue: CurrentValueSubject<Float, Never>
     
     public var duration: Float {
@@ -102,6 +102,10 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
     ) {
         
         var subtitlesPresenterViewModel: SubtitlesPresenterViewModel?
+        
+        if case .active(let data) = state.value {
+            subtitlesPresenterViewModel = data.subtitlesPresenterViewModel
+        }
         
         if let subtitlesState = playMediaUseCase.subtitlesState.value {
             
@@ -221,7 +225,7 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
     }
     
     public func moveForward() {
-
+        
         let nextTime = min(playMediaUseCase.currentTime + Self.playBackTimeStep, playMediaUseCase.duration)
         playMediaUseCase.setTime(nextTime)
     }
@@ -235,6 +239,12 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
     public func seek(time: Float) {
         
         sliderValue.value = time
+        
+        if case .active(let data) = state.value {
+            
+            let position = playMediaUseCase.getPosition(for: TimeInterval(time))
+            data.subtitlesPresenterViewModel?.update(position: position)
+        }
     }
     
     public func startSeeking() {
@@ -266,7 +276,7 @@ extension CurrentPlayerStateDetailsViewModelImpl {
 extension CurrentPlayerStateDetailsViewModelImpl: SubtitlesPresenterViewModelDelegate {
     
     public func subtitlesPresenterViewModelDidTapWord(text word: String) {
-
+        
         let encodedText = word.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         
         if let url = URL(string: "googletranslate://?sl=en&tl=ru&text=\(encodedText)") {

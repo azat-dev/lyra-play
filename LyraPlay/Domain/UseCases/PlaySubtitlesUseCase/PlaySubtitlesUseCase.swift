@@ -52,6 +52,8 @@ public protocol PlaySubtitlesUseCaseOutput: AnyObject {
     var delegate: PlaySubtitlesUseCaseDelegate? { get set }
     
     var timeSlots: [SubtitlesTimeSlot] { get }
+    
+    func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot?
 }
 
 public protocol PlaySubtitlesUseCase: PlaySubtitlesUseCaseOutput, PlaySubtitlesUseCaseInput {

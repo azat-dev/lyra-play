@@ -12,4 +12,6 @@ public protocol PlayMediaWithSubtitlesUseStateController: PlayMediaWithSubtitles
     var currentTime: TimeInterval { get }
     
     var duration: TimeInterval { get }
+    
+    func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot?
 }

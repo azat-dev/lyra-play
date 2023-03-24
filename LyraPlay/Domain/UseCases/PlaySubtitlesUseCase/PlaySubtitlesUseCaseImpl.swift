@@ -124,4 +124,9 @@ extension PlaySubtitlesUseCaseImpl {
         
         scheduler.setTime(time)
     }
+    
+    public func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot? {
+        
+        return subtitlesIterator.getPosition(for: time)
+    }
 }

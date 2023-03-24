@@ -93,6 +93,11 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlayMediaWithSubtitlesUseCaseInput 
         
         currentStateController.setTime(time)
     }
+    
+    public func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot? {
+        
+        return currentStateController.getPosition(for: time)
+    }
 }
 
 extension PlayMediaWithSubtitlesUseCaseImpl: PlaySubtitlesUseCaseDelegate {

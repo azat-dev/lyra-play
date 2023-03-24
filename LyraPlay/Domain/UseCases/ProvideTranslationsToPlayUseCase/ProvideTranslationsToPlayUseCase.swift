@@ -10,6 +10,7 @@ import Foundation
 public enum TranslationsToPlayData: Equatable {
 
     case single(translation: SubtitlesTranslationItem)
+    
     case groupAfterSentence(items: [SubtitlesTranslationItem])
 }
 

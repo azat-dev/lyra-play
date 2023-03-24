@@ -198,6 +198,11 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
         
         playMediaWithTranslationsUseCase.setTime(time)
     }
+    
+    public func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot? {
+        
+        playMediaWithTranslationsUseCase.getPosition(for: time)
+    }
 }
 
 

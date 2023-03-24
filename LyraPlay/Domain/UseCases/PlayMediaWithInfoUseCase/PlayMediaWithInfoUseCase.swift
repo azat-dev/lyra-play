@@ -77,6 +77,8 @@ public protocol PlayMediaWithInfoUseCaseOutput: AnyObject {
     var currentTime: TimeInterval { get }
 
     var duration: TimeInterval { get }
+    
+    func getPosition(for: TimeInterval) -> SubtitlesTimeSlot?
 }
 
 public protocol PlayMediaWithInfoUseCase: PlayMediaWithInfoUseCaseOutput, PlayMediaWithInfoUseCaseInput {}

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 public typealias RowId = Int
 
@@ -19,7 +20,7 @@ public protocol SubtitlesPresenterRowViewModelSentenceData {
     
     var toggleWord: ToggleWordCallback { get }
     
-    var selectedWordRange: Observable<Range<String.Index>?> { get }
+    var dictionaryWordsRanges: CurrentValueSubject<[Range<String.Index>]?, Never> { get }
 }
 
 public enum SubtitlesPresenterRowViewModelData {
@@ -57,13 +58,13 @@ public protocol SubtitlesPresenterRowViewModel: AnyObject {
 
 public struct SubtitlesPresenterRowViewModelSentenceDataImpl: SubtitlesPresenterRowViewModelSentenceData {
     
-    public var text: String
+    public let text: String
     
-    public var toggleWord: ToggleWordCallback
+    public let toggleWord: ToggleWordCallback
     
-    public var selectedWordRange: Observable<Range<String.Index>?> = Observable(nil)
+    public let dictionaryWordsRanges = CurrentValueSubject<[Range<String.Index>]?, Never>(nil)
     
-    public var textComponents: [TextComponent] = []
+    public let textComponents: [TextComponent] = []
 }
 
 public final class SubtitlesPresenterRowViewModelImpl: SubtitlesPresenterRowViewModel {

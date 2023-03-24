@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Combine
 
 final class RowCell: UICollectionViewCell, NSLayoutManagerDelegate {
     
@@ -15,15 +16,11 @@ final class RowCell: UICollectionViewCell, NSLayoutManagerDelegate {
     private var textView: UITextView!
     private var textLayoutManager = EnhancedLayoutManager()
     private var highlights: Observable<HighLights?> = Observable(nil)
+    private var observers = Set<AnyCancellable>()
     
     public var viewModel: SubtitlesPresenterRowViewModel? {
 
         didSet {
-            
-            if let oldModel = oldValue {
-                disconnect(viewModel: oldModel)
-            }
-            
             bind(to: viewModel)
         }
     }
@@ -65,22 +62,20 @@ extension RowCell {
         }
     }
 
-    func disconnect(viewModel: SubtitlesPresenterRowViewModel) {
-        
-//        viewModel.selectedWordRange.remove(observer: self)
-    }
-    
     func setupEmpty() {
         
-        textView.text = ""
+        textView.text = "..."
     }
     
     func setupSentence(data: SubtitlesPresenterRowViewModelSentenceData) {
      
         textView.text = data.text
+        textView.accessibilityIdentifier = data.text
     }
     
     func bind(to viewModel: SubtitlesPresenterRowViewModel?) {
+        
+        observers.removeAll()
         
         guard let viewModel = viewModel else {
             return
@@ -93,24 +88,27 @@ extension RowCell {
             
         case .sentence(let sentenceData):
             setupSentence(data: sentenceData)
+            
+            sentenceData.dictionaryWordsRanges
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] ranges in
+                    
+                    guard let self = self else {
+                        return
+                    }
+                    
+                    var colorRanges = [NSRange: UIColor]()
+                    
+                    for range in ranges ?? [] {
+                        
+                        let nsRange = NSRange(range, in: sentenceData.text)
+                        colorRanges[nsRange] = UIColor.purple
+                    }
+                    self.highlights.value = colorRanges
+                }.store(in: &observers)
         }
         
         updateActive(viewModel.isActive)
-        
-//        viewModel.selectedWordRange.observe(on: self, queue: .main) { [weak self] activeRange in
-//
-//            guard let self = self else {
-//                return
-//            }
-//
-//            guard let activeRange = activeRange else {
-//                self.highlights.value = nil
-//                return
-//            }
-//
-//            let nsRange = NSRange(activeRange, in: viewModel.text)
-//            self.highlights.value = [nsRange: UIColor.red]
-//        }
     }
 }
 

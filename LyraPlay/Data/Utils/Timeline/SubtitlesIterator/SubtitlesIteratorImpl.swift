@@ -69,6 +69,34 @@ public final class SubtitlesIteratorImpl: SubtitlesIterator {
     
     // MARK: - Methods
     
+    public func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot? {
+        
+        let foundIndex = timeSlots.binarySearch(
+            range: 0..<timeSlots.count,
+            comparator: { value in
+                
+                if
+                    value.timeRange.contains(time) ||
+                    value.timeRange.lowerBound == time && value.timeRange.upperBound == time
+                {
+                    return .orderedSame
+                }
+                
+                if time < value.timeRange.lowerBound {
+                    return .orderedAscending
+                }
+                
+                return .orderedDescending
+            }
+        )
+        
+        guard let foundIndex = foundIndex else {
+            return nil
+        }
+
+        return timeSlots[foundIndex]
+    }
+    
     public func beginNextExecution(from time: TimeInterval) -> TimeInterval? {
         
         let subtitlesEndTime = self.endTime

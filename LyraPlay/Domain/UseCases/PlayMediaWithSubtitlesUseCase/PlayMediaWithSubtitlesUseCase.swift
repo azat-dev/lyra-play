@@ -80,6 +80,8 @@ public protocol PlayMediaWithSubtitlesUseCaseOutput: AnyObject {
     var currentTime: TimeInterval { get }
     
     var duration: TimeInterval { get }
+    
+    func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot?
 }
 
 public protocol PlayMediaWithSubtitlesUseCase: PlayMediaWithSubtitlesUseCaseOutput, PlayMediaWithSubtitlesUseCaseInput {

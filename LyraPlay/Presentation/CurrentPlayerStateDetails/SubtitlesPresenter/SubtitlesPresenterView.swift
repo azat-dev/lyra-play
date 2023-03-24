@@ -103,7 +103,7 @@ extension SubtitlesPresenterView {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newPosition in
                 
-                self?.update(position: newPosition, animate: true)
+                self?.update(position: newPosition, animate: false)
             }
     }
 }

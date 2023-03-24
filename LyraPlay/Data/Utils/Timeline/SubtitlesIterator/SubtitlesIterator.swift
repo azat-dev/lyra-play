@@ -28,4 +28,6 @@ public protocol SubtitlesIterator: TimeLineIterator {
     var timeSlots: [SubtitlesTimeSlot] { get }
     
     func getNextTimeSlot() -> SubtitlesTimeSlot?
+    
+    func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot?
 }

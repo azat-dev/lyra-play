@@ -78,6 +78,11 @@ public class LoadedPlayMediaWithTranslationsUseCaseStateController: PlayMediaWit
         return delegate.stop(activeSession: session)
     }
     
+    public func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot? {
+        
+        return session.playMediaUseCase.getPosition(for: time)
+    }
+    
     public func togglePlay() -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         return play(atTime: 0)
