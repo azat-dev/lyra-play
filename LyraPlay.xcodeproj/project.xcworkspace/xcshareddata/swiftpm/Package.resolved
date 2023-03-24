@@ -3,9 +3,9 @@
     {
       "identity" : "mockingbird",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/birdrides/mockingbird",
+      "location" : "https://github.com/azat-dev/mockingbird.git",
       "state" : {
-        "revision" : "85d8eae902c49f39d106318bd517ad8357ffd766"
+        "revision" : "d0dd9d36b2c569741b4f0ee34776e037c1a77fa1"
       }
     },
     {

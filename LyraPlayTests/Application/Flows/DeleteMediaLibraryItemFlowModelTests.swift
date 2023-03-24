@@ -83,8 +83,13 @@ class DeleteMediaLibraryItemFlowModelTests: XCTestCase {
         confirmViewModel.confirm()
         
         // Then
-        verify(await sut.editMediaLibraryListUseCase.deleteItem(id: mediaId))
-            .wasCalled(1)
+        eventually { () async -> Void in
+            
+            verify(await sut.editMediaLibraryListUseCase.deleteItem(id: mediaId))
+                .wasCalled(1)
+        }
+        
+        await waitForExpectations(timeout: 1)
     }
     
     func test__dispose() async throws {
