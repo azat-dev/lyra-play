@@ -14,7 +14,7 @@ extension CurrentPlayerStateDetailsViewController {
         
         // MARK: - Properties
         
-        private static let buttonSize: CGFloat = 38
+        private static let buttonSize: CGFloat = 44
         
         private static let contentGroupPadding = UIEdgeInsets(
             top: 10,
@@ -141,10 +141,11 @@ extension CurrentPlayerStateDetailsViewController {
         static func apply(
             controlsGroup: UIView,
             sliderView: UISlider,
-            togglePlayButton: UIImageView,
-            goBackwardButton: UIImageView,
-            goForwardButton: UIImageView
+            togglePlayButton: UIButton,
+            goBackwardButton: UIButton,
+            goForwardButton: UIButton
         ) {
+            
             
             sliderView.translatesAutoresizingMaskIntoConstraints = false
             togglePlayButton.translatesAutoresizingMaskIntoConstraints = false

@@ -105,34 +105,40 @@ extension CurrentPlayerStateDetailsViewController {
             imageView.clipsToBounds = true
         }
         
-        static func apply(button: UIImageView) {
+        static func apply(button: UIButton) {
             
             button.tintColor = .white
-            button.contentMode = .scaleAspectFit
+            button.contentVerticalAlignment = .fill
+            button.contentHorizontalAlignment = .fill
+            button.imageView?.contentMode = .scaleAspectFit
+            button.imageEdgeInsets = .init(top: 5, left: 5, bottom: 5, right: 5)
+            
+            button.imageView?.contentMode = .scaleAspectFit
+            button.setTitle(nil, for: .normal)
         }
         
-        static func apply(playButton button: UIImageView) {
+        static func apply(playButton button: UIButton) {
             
             apply(button: button)
-            button.image = iconPlay
+            button.setImage(iconPlay, for: .normal)
         }
         
-        static func apply(pauseButton button: UIImageView) {
+        static func apply(pauseButton button: UIButton) {
             
             apply(button: button)
-            button.image = iconPause
+            button.setImage(iconPause, for: .normal)
         }
         
-        static func apply(goForwardButton button: UIImageView) {
+        static func apply(goForwardButton button: UIButton) {
             
             apply(button: button)
-            button.image = iconGoForward
+            button.setImage(iconGoForward, for: .normal)
         }
         
-        static func apply(goBackwardButton button: UIImageView) {
+        static func apply(goBackwardButton button: UIButton) {
             
             apply(button: button)
-            button.image = iconGoBackward
+            button.setImage(iconGoBackward, for: .normal)
         }
         
         static func apply(slider: UISlider) {
