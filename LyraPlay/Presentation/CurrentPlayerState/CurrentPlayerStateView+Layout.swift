@@ -23,7 +23,7 @@ extension CurrentPlayerStateView {
             textGroup: UIStackView,
             titleLabel: UILabel,
             descriptionLabel: UILabel,
-            togglePlayButton: UIImageView,
+            togglePlayButton: UIButton,
             separatorView: UIView
         ) {
             

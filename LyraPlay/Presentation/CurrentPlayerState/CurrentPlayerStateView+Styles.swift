@@ -52,22 +52,23 @@ extension CurrentPlayerStateView {
             imageView.clipsToBounds = true
         }
         
-        static func apply(button: UIImageView) {
+        static func apply(button: UIButton) {
             
             button.tintColor = .white
             button.contentMode = .scaleAspectFit
+            button.setTitle(nil, for: .normal)
         }
         
-        static func apply(playButton button: UIImageView) {
+        static func apply(playButton button: UIButton) {
             
             apply(button: button)
-            button.image = iconPlay
+            button.setImage(iconPlay, for: .normal)
         }
         
-        static func apply(pauseButton button: UIImageView) {
+        static func apply(pauseButton button: UIButton) {
             
             apply(button: button)
-            button.image = iconPause
+            button.setImage(iconPause, for: .normal)
         }
         
         static func apply(separator: UIView) {
