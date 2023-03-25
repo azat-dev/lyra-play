@@ -26,6 +26,8 @@ public final class CurrentPlayerStateViewModelImpl: CurrentPlayerStateViewModel 
     
     private var loadStateObserver: AnyCancellable?
     
+    private var playMediaUseCaseObserver: AnyCancellable?
+    
     private let getLastPlayedMediaUseCaseFactory: GetLastPlayedMediaUseCaseFactory
     
     private let showMediaInfoUseCaseFactory: ShowMediaInfoUseCaseFactory
@@ -51,7 +53,9 @@ public final class CurrentPlayerStateViewModelImpl: CurrentPlayerStateViewModel 
     
     deinit {
         showLastPlayedMediaTask?.cancel()
-        observers.removeAll()
+        playMediaUseCaseObserver = nil
+        loadStateObserver = nil
+        playingStateObserver = nil
     }
     
     private func observeLoadingState(playMediaUseCase: PlayMediaWithInfoUseCase) {
@@ -65,9 +69,8 @@ public final class CurrentPlayerStateViewModelImpl: CurrentPlayerStateViewModel 
             }
         }
         
-        playMediaUseCase.state
+        playMediaUseCaseObserver = playMediaUseCase.state
             .sink { [weak self] state in self?.updateState(state) }
-            .store(in: &observers)
     }
     
     private func updatePlayerState(with newState: PlayMediaWithInfoUseCasePlayerState) {
@@ -93,6 +96,11 @@ public final class CurrentPlayerStateViewModelImpl: CurrentPlayerStateViewModel 
             switch newState {
                 
             case .loading:
+                
+                if case .active = self.state.value {
+                    return
+                }
+                
                 self.state.value = .loading
                 
             case .loadFailed:
@@ -172,7 +180,7 @@ extension CurrentPlayerStateViewModelImpl {
                             learningLanguage: "English",
                             nativeLanguage: "FIXME"
                         )
-                    )                    
+                    )
                 }
             }
         }
@@ -190,6 +198,7 @@ extension CurrentPlayerStateViewModelImpl {
             {
                 
                 Task {
+                    
                     let _ = await playMediaUseCase.prepare(
                         session: .init(
                             mediaId: mediaId,
