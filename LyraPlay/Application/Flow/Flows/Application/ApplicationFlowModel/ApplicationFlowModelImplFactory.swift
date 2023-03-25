@@ -190,8 +190,12 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
             showMediaInfoUseCaseFactory: showMediaInfoUseCaseFactory
         )
         
+        let getLastPlayedMediaUseCaseFactory = GetLastPlayedMediaUseCaseImplFactory(mediaLibraryRepository: mediaLibraryRepository)
+        
         let currentPlayerStateViewModelFactory = CurrentPlayerStateViewModelImplFactory(
-            playMediaUseCaseFactory: playMediaWithInfoUseCaseFactory
+            playMediaUseCaseFactory: playMediaWithInfoUseCaseFactory,
+            getLastPlayedMediaUseCaseFactory: getLastPlayedMediaUseCaseFactory,
+            showMediaInfoUseCaseFactory: showMediaInfoUseCaseFactory
         )
         
         let mainTabBarViewModelFactory = MainTabBarViewModelImplFactory(

@@ -26,20 +26,44 @@ public final class CurrentPlayerStateViewModelImpl: CurrentPlayerStateViewModel 
     
     private var loadStateObserver: AnyCancellable?
     
+    private let getLastPlayedMediaUseCaseFactory: GetLastPlayedMediaUseCaseFactory
+    
+    private let showMediaInfoUseCaseFactory: ShowMediaInfoUseCaseFactory
+    
+    private var showLastPlayedMediaTask: Task<Void, Never>?
+    
     // MARK: - Initializers
     
     public init(
         delegate: CurrentPlayerStateViewModelDelegate,
-        playMediaUseCase: PlayMediaWithInfoUseCase
+        playMediaUseCase: PlayMediaWithInfoUseCase,
+        getLastPlayedMediaUseCaseFactory: GetLastPlayedMediaUseCaseFactory,
+        showMediaInfoUseCaseFactory: ShowMediaInfoUseCaseFactory
     ) {
         
         self.delegate = delegate
         self.playMediaUseCase = playMediaUseCase
+        self.getLastPlayedMediaUseCaseFactory = getLastPlayedMediaUseCaseFactory
+        self.showMediaInfoUseCaseFactory = showMediaInfoUseCaseFactory
         
         observeLoadingState(playMediaUseCase: playMediaUseCase)
     }
     
+    deinit {
+        showLastPlayedMediaTask?.cancel()
+        observers.removeAll()
+    }
+    
     private func observeLoadingState(playMediaUseCase: PlayMediaWithInfoUseCase) {
+        
+        if case .noActiveSession = playMediaUseCase.state.value {
+            
+            showLastPlayedMediaTask?.cancel()
+            
+            showLastPlayedMediaTask = Task {
+                await showLastPlayedMedia()
+            }
+        }
         
         playMediaUseCase.state
             .sink { [weak self] state in self?.updateState(state) }
@@ -76,6 +100,8 @@ public final class CurrentPlayerStateViewModelImpl: CurrentPlayerStateViewModel 
                 
             case .loaded(let sourcePlayerState, let mediaInfo):
                 
+                self.showLastPlayedMediaTask?.cancel()
+                
                 self.pipePlayingState(from: sourcePlayerState)
                 self.state.value = .active(mediaInfo: mediaInfo, state: self.playerState)
             }
@@ -96,6 +122,34 @@ public final class CurrentPlayerStateViewModelImpl: CurrentPlayerStateViewModel 
         
         pipeLoadState(from: loadState)
     }
+    
+    private func showLastPlayedMedia() async {
+        
+        let getLastPlayedMediaUseCase = getLastPlayedMediaUseCaseFactory.make()
+        
+        let result = await getLastPlayedMediaUseCase.getLastPlayedMedia()
+        
+        guard
+            !Task.isCancelled,
+            case .success(let lastPlayedMediaId) = result,
+            let lastPlayedMediaId = lastPlayedMediaId
+        else {
+            return
+        }
+
+        let showMediaInfoUseCase = showMediaInfoUseCaseFactory.make()
+        
+        let mediaResult = await showMediaInfoUseCase.fetchInfo(trackId: lastPlayedMediaId)
+        
+        guard
+            !Task.isCancelled,
+            case .success(let mediaInfo) = mediaResult
+        else {
+            return
+        }
+
+        self.state.value = .active(mediaInfo: mediaInfo, state: .init(.stopped))
+    }
 }
 
 // MARK: - Input Methods
@@ -108,6 +162,29 @@ extension CurrentPlayerStateViewModelImpl {
     }
     
     public func togglePlay() {
+        
+        if case .noActiveSession = playMediaUseCase.state.value {
+            
+            if
+                case .active(let mediaInfo, _) = state.value,
+                let mediaId = UUID(uuidString: mediaInfo.id)
+            {
+                
+                Task {
+                    let _ = await playMediaUseCase.prepare(
+                        session: .init(
+                            mediaId: mediaId,
+                            learningLanguage: "English",
+                            nativeLanguage: "FIXME"
+                        )
+                    )
+                    
+                    let _ = playMediaUseCase.resume()
+                }
+                return
+            }
+            
+        }
         
         let _ = playMediaUseCase.togglePlay()
     }

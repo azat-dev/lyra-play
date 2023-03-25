@@ -214,6 +214,7 @@ extension CoreDataMediaLibraryRepository {
             }
             
             managedFile.playedTime = time
+            managedFile.lastPlayedAt = .now
             
             try context.save()
             return .success(())
@@ -420,8 +421,12 @@ extension CoreDataMediaLibraryRepository {
         
         let request = ManagedLibraryItem.fetchRequest()
         
-        request.predicate = NSPredicate(format: "lastPlayedAt != nil AND isFolder == false")
-        request.sortDescriptors = [NSSortDescriptor(key: "lastPlayedAt", ascending: false)]
+        request.predicate = NSPredicate(
+            format: "%K != nil AND %K == false",
+            #keyPath(ManagedLibraryItem.lastPlayedAt),
+            #keyPath(ManagedLibraryItem.isFolder)
+        )
+        request.sortDescriptors = [NSSortDescriptor(key: #keyPath(ManagedLibraryItem.lastPlayedAt), ascending: false)]
         request.fetchLimit = 1
         
         do {
