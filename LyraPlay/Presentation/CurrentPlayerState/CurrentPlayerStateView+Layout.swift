@@ -13,8 +13,8 @@ extension CurrentPlayerStateView {
     final class Layout {
         
         static let imageSize: CGFloat = 50
-        static let togglePlayButtonSize: CGFloat = 20
-        static let contentViewPadding = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 15)
+        static let togglePlayButtonSize: CGFloat = 40
+        static let contentViewPadding = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 5)
         
         static func apply(
             view contentView: UIView,
@@ -61,7 +61,7 @@ extension CurrentPlayerStateView {
             
             NSLayoutConstraint.activate([
                 
-                togglePlayButton.leftAnchor.constraint(equalTo: textGroup.rightAnchor, constant: 10),
+                togglePlayButton.leftAnchor.constraint(equalTo: textGroup.rightAnchor),
                 togglePlayButton.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -contentViewPadding.right),
                 
                 togglePlayButton.centerYAnchor.constraint(equalTo: imageView.centerYAnchor),

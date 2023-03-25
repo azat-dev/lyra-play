@@ -56,6 +56,11 @@ extension CurrentPlayerStateView {
             
             button.tintColor = .white
             button.contentMode = .scaleAspectFit
+            button.contentVerticalAlignment = .fill
+            button.contentHorizontalAlignment = .fill
+            button.imageView?.contentMode = .scaleAspectFit
+            
+            button.imageEdgeInsets = .init(top: 10, left: 10, bottom: 10, right: 10)
             button.setTitle(nil, for: .normal)
         }
         

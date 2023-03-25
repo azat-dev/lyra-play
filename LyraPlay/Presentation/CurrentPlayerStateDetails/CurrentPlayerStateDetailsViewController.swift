@@ -27,9 +27,9 @@ public final class CurrentPlayerStateDetailsViewController: UIViewController, Cu
     private let controlsGroup = UIView()
     private let sliderView = UISlider()
     
-    private let togglePlayButton = UIImageView()
-    private let goForwardButton = UIImageView()
-    private let goBackwardButton = UIImageView()
+    private let togglePlayButton = UIButton()
+    private let goForwardButton = UIButton()
+    private let goBackwardButton = UIButton()
     
     private let subtitlesPresenterView = SubtitlesPresenterView()
     
