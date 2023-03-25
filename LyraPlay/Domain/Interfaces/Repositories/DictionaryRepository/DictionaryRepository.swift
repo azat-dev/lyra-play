@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 public enum DictionaryRepositoryError: Error {
     
@@ -32,6 +33,18 @@ public protocol DictionaryRepositoryOutputList {
     func listItems() async -> Result<[DictionaryItem], DictionaryRepositoryError>
 }
 
+public enum DictionaryRepositoryChange {
+    
+    case didAddItem(DictionaryItem)
+    case didChangeItem(from: DictionaryItem, to: DictionaryItem)
+    case didDeleteItem(DictionaryItem)
+}
+
+public protocol DictionaryRepositoryOutputListenForChanges {
+    
+    var changes: PassthroughSubject<DictionaryRepositoryChange, Never> { get }
+}
+
 public protocol DictionaryRepositoryOutputGet {
     
     func getItem(id: UUID) async -> Result<DictionaryItem, DictionaryRepositoryError>
@@ -42,7 +55,7 @@ public protocol DictionaryRepositoryOutputSearch {
     func searchItems(with: [DictionaryItemFilter]) async -> Result<[DictionaryItem], DictionaryRepositoryError>
 }
 
-public protocol DictionaryRepositoryOutput: DictionaryRepositoryOutputList, DictionaryRepositoryOutputGet, DictionaryRepositoryOutputSearch {}
+public protocol DictionaryRepositoryOutput: DictionaryRepositoryOutputList, DictionaryRepositoryOutputGet, DictionaryRepositoryOutputSearch, DictionaryRepositoryOutputListenForChanges {}
 
 public protocol DictionaryRepository: DictionaryRepositoryOutput, DictionaryRepositoryInput {
     
