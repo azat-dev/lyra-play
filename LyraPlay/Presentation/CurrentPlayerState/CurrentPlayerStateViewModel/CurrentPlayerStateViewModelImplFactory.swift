@@ -12,12 +12,20 @@ public final class CurrentPlayerStateViewModelImplFactory: CurrentPlayerStateVie
     // MARK: - Properties
     
     private let playMediaUseCaseFactory: PlayMediaWithInfoUseCaseFactory
+    private let getLastPlayedMediaUseCaseFactory: GetLastPlayedMediaUseCaseFactory
+    private let showMediaInfoUseCaseFactory: ShowMediaInfoUseCaseFactory
     
     // MARK: - Initializers
     
-    public init(playMediaUseCaseFactory: PlayMediaWithInfoUseCaseFactory) {
+    public init(
+        playMediaUseCaseFactory: PlayMediaWithInfoUseCaseFactory,
+        getLastPlayedMediaUseCaseFactory: GetLastPlayedMediaUseCaseFactory,
+        showMediaInfoUseCaseFactory: ShowMediaInfoUseCaseFactory
+    ) {
         
         self.playMediaUseCaseFactory = playMediaUseCaseFactory
+        self.getLastPlayedMediaUseCaseFactory = getLastPlayedMediaUseCaseFactory
+        self.showMediaInfoUseCaseFactory = showMediaInfoUseCaseFactory
     }
     
     // MARK: - Methods
@@ -28,7 +36,9 @@ public final class CurrentPlayerStateViewModelImplFactory: CurrentPlayerStateVie
         
         return CurrentPlayerStateViewModelImpl(
             delegate: delegate,
-            playMediaUseCase: playMediaUseCase
+            playMediaUseCase: playMediaUseCase,
+            getLastPlayedMediaUseCaseFactory: getLastPlayedMediaUseCaseFactory,
+            showMediaInfoUseCaseFactory: showMediaInfoUseCaseFactory
         )
     }
 }
