@@ -20,7 +20,7 @@ public final class CurrentPlayerStateView: UIView {
     private let titleLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let imageView = UIImageView()
-    private let togglePlayButton = UIImageView()
+    private let togglePlayButton = UIButton()
     private let separatorView = UIView()
     
     private var observers = Set<AnyCancellable>()
