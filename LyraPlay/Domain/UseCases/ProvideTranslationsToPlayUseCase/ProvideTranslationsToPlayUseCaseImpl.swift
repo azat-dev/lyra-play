@@ -20,6 +20,10 @@ public final class ProvideTranslationsToPlayUseCaseImpl: ProvideTranslationsToPl
     private var subtitlesTimeSlots: [SentenceIndex: [SubtitlesTimeSlot]]!
     
     private var items = [SubtitlesPosition: TranslationsToPlay]()
+    
+    private var currentSession: AdvancedPlayerSession?
+    
+    private var currentPreparingTask: Task<Void, Never>?
 
     // MARK: - Initializers
 
@@ -27,7 +31,6 @@ public final class ProvideTranslationsToPlayUseCaseImpl: ProvideTranslationsToPl
 
         self.provideTranslationsForSubtitlesUseCase = provideTranslationsForSubtitlesUseCase
     }
-
 }
 
 // MARK: - Input Methods
@@ -130,11 +133,9 @@ extension ProvideTranslationsToPlayUseCaseImpl {
         return items
     }
     
-    public func prepare(params: AdvancedPlayerSession) async -> Void {
+    private func prepareSounds(params: AdvancedPlayerSession) async -> Void {
         
         subtitles = params.subtitles
-        
-        await provideTranslationsForSubtitlesUseCase.prepare(options: params)
         
         // FIXME: Make timeSlots dependency
         let parser = SubtitlesTimeSlotsParser()
@@ -154,6 +155,35 @@ extension ProvideTranslationsToPlayUseCaseImpl {
             translations.forEach { translation in
                 items[translation.position] = translation
             }
+        }
+    }
+    
+    public func prepare(params: AdvancedPlayerSession) async -> Void {
+        
+        self.currentSession = params
+        
+        await provideTranslationsForSubtitlesUseCase.prepare(options: params)
+        
+        await prepareSounds(params: params)
+        provideTranslationsForSubtitlesUseCase.delegate = self
+    }
+}
+
+// MARK: - ProvideTranslations
+
+extension ProvideTranslationsToPlayUseCaseImpl: ProvideTranslationsForSubtitlesUseCaseDelegate {
+    
+    public func provideTranslationsForSubtitlesUseCaseDidUpdate() {
+        
+        guard let currentSession = currentSession else {
+            return
+        }
+        
+        currentPreparingTask?.cancel()
+        
+        currentPreparingTask = Task {
+            
+            await prepareSounds(params: currentSession)
         }
     }
 }
