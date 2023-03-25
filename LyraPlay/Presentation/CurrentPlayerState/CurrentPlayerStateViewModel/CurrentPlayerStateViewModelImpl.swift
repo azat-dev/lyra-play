@@ -158,6 +158,25 @@ extension CurrentPlayerStateViewModelImpl {
     
     public func open() {
         
+        if case .noActiveSession = playMediaUseCase.state.value {
+            
+            if
+                case .active(let mediaInfo, _) = state.value,
+                let mediaId = UUID(uuidString: mediaInfo.id)
+            {
+                
+                Task {
+                    let _ = await playMediaUseCase.prepare(
+                        session: .init(
+                            mediaId: mediaId,
+                            learningLanguage: "English",
+                            nativeLanguage: "FIXME"
+                        )
+                    )                    
+                }
+            }
+        }
+        
         delegate?.currentPlayerStateViewModelDidOpen()
     }
     
@@ -183,7 +202,6 @@ extension CurrentPlayerStateViewModelImpl {
                 }
                 return
             }
-            
         }
         
         let _ = playMediaUseCase.togglePlay()
