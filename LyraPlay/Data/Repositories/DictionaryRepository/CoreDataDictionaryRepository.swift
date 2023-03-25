@@ -7,11 +7,15 @@
 
 import Foundation
 import CoreData
+import Combine
 
 public final class CoreDataDictionaryRepository: DictionaryRepository {
+    
 
     // MARK: - Properties
 
+    public let changes = PassthroughSubject<DictionaryRepositoryChange, Never>()
+    
     private let coreDataStore: CoreDataStore
 
     // MARK: - Initializers
@@ -71,6 +75,13 @@ extension CoreDataDictionaryRepository {
         do {
             
             let updatedItem = try coreDataStore.performSync(action)
+            
+            if let existingItem = existingItem {
+                changes.send(.didChangeItem(from: existingItem.toDomain(), to: updatedItem.toDomain()))
+            } else {
+                changes.send(.didAddItem(updatedItem.toDomain()))
+            }
+            
             return .success(updatedItem.toDomain())
 
         } catch {
@@ -111,11 +122,13 @@ extension CoreDataDictionaryRepository {
                 try context.save()
             }
             
+            changes.send(.didDeleteItem(item.toDomain()))
+            return .success(())
+            
         } catch {
             return .failure(.internalError(error))
         }
         
-        return .success(())
     }
 }
 
