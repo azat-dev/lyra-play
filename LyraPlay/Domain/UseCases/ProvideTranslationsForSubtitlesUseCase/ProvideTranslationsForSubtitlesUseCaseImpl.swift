@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 public final class ProvideTranslationsForSubtitlesUseCaseImpl: ProvideTranslationsForSubtitlesUseCase {
 
@@ -18,6 +19,12 @@ public final class ProvideTranslationsForSubtitlesUseCaseImpl: ProvideTranslatio
     private let lemmatizer: Lemmatizer
     
     private var items = [SentenceIndex: [SubtitlesTranslation]]()
+    
+    private var currentSession: AdvancedPlayerSession?
+    
+    private var observers = Set<AnyCancellable>()
+    
+    public weak var delegate: ProvideTranslationsForSubtitlesUseCaseDelegate?
 
     // MARK: - Initializers
 
@@ -30,6 +37,10 @@ public final class ProvideTranslationsForSubtitlesUseCaseImpl: ProvideTranslatio
         self.dictionaryRepository = dictionaryRepository
         self.textSplitter = textSplitter
         self.lemmatizer = lemmatizer
+    }
+    
+    deinit {
+        observers.removeAll()
     }
 
 }
@@ -222,7 +233,34 @@ extension ProvideTranslationsForSubtitlesUseCaseImpl {
         }
     }
     
+    private func startListeningForChanges() {
+        
+        dictionaryRepository.changes
+            .sink { [weak self] change in
+                
+                guard let self = self else {
+                    return
+                }
+                
+                guard let currentSession = self.currentSession else {
+                    return
+                }
+                
+                Task {
+                    await self.prepare(options: currentSession)
+                }
+                
+            }.store(in: &observers)
+    }
+    
     public func prepare(options: AdvancedPlayerSession) async -> Void {
+        
+        let isNewSession = options != currentSession
+        self.currentSession = options
+        
+        observers.removeAll()
+        startListeningForChanges()
+        
         
         let subtitles = options.subtitles
         let sentencesWithLemmas = lemmatizeSubtitles(options.subtitles)
@@ -310,6 +348,10 @@ extension ProvideTranslationsForSubtitlesUseCaseImpl {
         )
         
         sortItemsByTextRange()
+        
+        if !isNewSession {
+            delegate?.provideTranslationsForSubtitlesUseCaseDidUpdate()
+        }
     }
 }
 

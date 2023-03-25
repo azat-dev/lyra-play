@@ -7,14 +7,21 @@
 
 import Foundation
 
-public protocol ProvideTranslationsForSubtitlesUseCaseInput {
+public protocol ProvideTranslationsForSubtitlesUseCaseInput: AnyObject {
 
     func prepare(options: AdvancedPlayerSession) async -> Void
 }
 
-public protocol ProvideTranslationsForSubtitlesUseCaseOutput {
+public protocol ProvideTranslationsForSubtitlesUseCaseOutput: AnyObject {
 
     func getTranslations(sentenceIndex: Int) async -> [SubtitlesTranslation]
+    
+    var delegate: ProvideTranslationsForSubtitlesUseCaseDelegate? { get set }
+}
+
+public protocol ProvideTranslationsForSubtitlesUseCaseDelegate: AnyObject {
+    
+    func provideTranslationsForSubtitlesUseCaseDidUpdate()
 }
 
 public protocol ProvideTranslationsForSubtitlesUseCase: ProvideTranslationsForSubtitlesUseCaseOutput, ProvideTranslationsForSubtitlesUseCaseInput {
