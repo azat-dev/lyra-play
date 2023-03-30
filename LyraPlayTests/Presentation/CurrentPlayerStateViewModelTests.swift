@@ -39,11 +39,14 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         
         given(playMediaUseCase.state)
             .willReturn(state)
-
+        
+        let getLastPlayedMediaUseCaseFactory = mock(GetLastPlayedMediaUseCaseFactory.self)
         
         let viewModel = CurrentPlayerStateViewModelImpl(
             delegate: delegate,
-            playMediaUseCase: playMediaUseCase
+            playMediaUseCase: playMediaUseCase,
+            getLastPlayedMediaUseCaseFactory: getLastPlayedMediaUseCaseFactory,
+            showMediaInfoUseCaseFactory: showMediaInfoUseCaseFactory
         )
 
         detectMemoryLeak(instance: viewModel)

@@ -7,6 +7,7 @@
 
 import XCTest
 import LyraPlay
+import Mockingbird
 
 class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
     
@@ -17,7 +18,7 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
     
     func createSUT() -> SUT {
         
-        let provideTranslationsForSubtitlesUseCase = ProvideTranslationsForSubtitlesUseCaseMock()
+        let provideTranslationsForSubtitlesUseCase = mock(ProvideTranslationsForSubtitlesUseCase.self)
         
         let useCase = ProvideTranslationsToPlayUseCaseImpl(
             provideTranslationsForSubtitlesUseCase: provideTranslationsForSubtitlesUseCase
@@ -133,8 +134,11 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
         
         let sut = createSUT()
         
-        sut.provideTranslationsForSubtitlesUseCase.willReturnItems = translations
-        
+        given(await sut.provideTranslationsForSubtitlesUseCase.getTranslations(sentenceIndex: any()))
+            .will { sentenceIndex in
+                
+                return translations[sentenceIndex]!
+            }
         let testSession = anyPlayerSession(
             mediaId: anyMediaId(),
             subtitles: subtitles
@@ -489,23 +493,5 @@ class ProvideTranslationsToPlayUseCaseTests: XCTestCase {
                 )
             ]
         )
-    }
-}
-
-// MARK: - Mocks
-
-class ProvideTranslationsForSubtitlesUseCaseMock: ProvideTranslationsForSubtitlesUseCase {
-    
-    var willReturnItems = [Int: [SubtitlesTranslation]]()
-    
-    init() {}
-    
-    func getTranslations(sentenceIndex: Int) async -> [SubtitlesTranslation] {
-        
-        return willReturnItems[sentenceIndex, default: []]
-    }
-    
-    func prepare(options: AdvancedPlayerSession) async {
-        
     }
 }
