@@ -56,7 +56,7 @@ extension ShowMediaInfoUseCaseImpl {
         }
         
         let mediaInfo = MediaInfo(
-            id: libraryItemData.id.uuidString,
+            id: libraryItemData.id,
             coverImage: coverImage,
             title: libraryItemData.title,
             artist: libraryItemData.subtitle ?? "Unknown",
