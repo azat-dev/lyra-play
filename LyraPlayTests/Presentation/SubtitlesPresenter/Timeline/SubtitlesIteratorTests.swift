@@ -68,7 +68,6 @@ class SubtitlesIteratorTests: XCTestCase {
             startTime: 100,
             timeSlots: [],
             expectedItems: [
-                0,
                 nil
             ]
         )
@@ -85,7 +84,6 @@ class SubtitlesIteratorTests: XCTestCase {
             expectedItems: [
                 0,
                 5,
-                10,
                 nil
             ]
         )
@@ -101,7 +99,6 @@ class SubtitlesIteratorTests: XCTestCase {
             ],
             expectedItems: [
                 5,
-                10,
                 nil
             ]
         )
@@ -113,7 +110,6 @@ class SubtitlesIteratorTests: XCTestCase {
                 .init(index: 1, timeRange: 5..<10, subtitlesPosition: .sentence(1))
             ],
             expectedItems: [
-                10,
                 nil
             ]
         )

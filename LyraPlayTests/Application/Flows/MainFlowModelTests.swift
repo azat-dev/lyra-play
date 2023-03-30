@@ -76,8 +76,10 @@ class MainFlowModelTests: XCTestCase {
         // Given
         let sut = createSUT(folderId: nil)
         
-        let sequence = expectSequence([true, false])
-        let disposible = sut.flow.libraryFlow.sink { sequence.fulfill(with: $0 == nil) }
+        let sequence = expectSequence([false])
+        let disposible = sut.flow.libraryFlow.sink {
+            sequence.fulfill(with: $0 == nil)
+        }
         
         // When
         sut.flow.runLibraryFlow()

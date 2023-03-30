@@ -40,6 +40,7 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         detectMemoryLeak(instance: useCase, file: file, line: line)
         
         releaseMocks(
+            schedulerFactory,
             subtitlesIterator,
             scheduler,
             delegate
@@ -154,39 +155,41 @@ class PlaySubtitlesUseCaseTests: XCTestCase {
         // Given
         let sut = createSUT(subtitles: emptySubtitles())
         
-        let statesPromise = watch(sut.useCase.state)
-
         // When
         sut.useCase.play(atTime: 0)
 
         // Then
-//        verify(sut.scheduler.execute(from: 0))
-//            .wasCalled(1)
+        verify(sut.scheduler.execute(from: 0))
+            .wasCalled(1)
 
-//        verify(sut.delegate.playSubtitlesUseCaseWillChange(fromPosition: any(), toPosition: any(), stop: any()))
-//            .wasNeverCalled()
+        verify(sut.delegate.playSubtitlesUseCaseWillChange(from: any(), to: any(), interrupt: any()))
+            .wasNeverCalled()
 
     }
     
-//    func test_play__empty_subtitles__with_offset() async throws {
-//
-//        // Given
-//        let sut = createSUT(subtitles: emptySubtitles())
-//
-//        let statesPromise = watch(sut.useCase.state)
-//        let changesPromise = watch(sut.useCase.willChangePosition)
-//
-//        // When
-//        sut.useCase.play(atTime: 100)
-//
-//        // Then
-//        statesPromise.expect([
-//            .initial,
-//            .finished
-//        ])
-//
-//        changesPromise.expect([])
-//    }
+    func test_play__empty_subtitles__with_offset() async throws {
+
+        // Given
+        let sut = createSUT(subtitles: emptySubtitles())
+
+        let statesPromise = watch(sut.useCase.state)
+        
+        // When
+        sut.useCase.play(atTime: 100)
+
+        // Then
+        statesPromise.expect([
+            .initial,
+            .finished
+        ])
+        
+        verify(sut.delegate.playSubtitlesUseCaseWillChange(from: any(), to: any(), interrupt: any()))
+            .wasNeverCalled()
+        
+        verify(sut.scheduler.execute(from: any()))
+            .wasCalled(1)
+        
+    }
 //
 //    func test_play__not_empty_subtitles__from_zero() async throws {
 //
