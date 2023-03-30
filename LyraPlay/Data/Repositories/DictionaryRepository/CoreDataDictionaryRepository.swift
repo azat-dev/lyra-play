@@ -116,13 +116,15 @@ extension CoreDataDictionaryRepository {
                 return .failure(.itemNotFound)
             }
             
+            let domainItem = item.toDomain()
+            
             try coreDataStore.performSync { context in
                 
                 context.delete(item)
                 try context.save()
             }
             
-            changes.send(.didDeleteItem(item.toDomain()))
+            changes.send(.didDeleteItem(domainItem))
             return .success(())
             
         } catch {
