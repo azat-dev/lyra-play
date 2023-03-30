@@ -57,6 +57,13 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
         )
 
         detectMemoryLeak(instance: viewModel)
+        
+        releaseMocks(
+            subtitlesPresenterViewModelFactory,
+            subtitlesPresenterViewModel,
+            delegate,
+            playMediaUseCase
+        )
 
         return (
             viewModel,
