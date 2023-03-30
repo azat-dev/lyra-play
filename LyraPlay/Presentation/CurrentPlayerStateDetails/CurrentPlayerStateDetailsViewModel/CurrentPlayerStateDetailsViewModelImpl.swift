@@ -125,6 +125,7 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
         
         state.value = .active(
             data: .init(
+                mediaId: mediaInfo.id,
                 title: mediaInfo.title,
                 subtitle: mediaInfo.artist ?? "",
                 coverImage: mediaInfo.coverImage,
@@ -262,9 +263,48 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
 
 extension CurrentPlayerStateDetailsViewModelImpl {
     
+    private func startNewSession(mediaId: UUID) async {
+
+        let prepareResult = await playMediaUseCase.prepare(
+            session: .init(
+                mediaId: mediaId,
+                learningLanguage: "English",
+                nativeLanguage: "English"
+            )
+        )
+        
+        guard case .success = prepareResult else {
+            return
+        }
+        
+        let _ = playMediaUseCase.resume()
+    }
+    
     public func togglePlay() {
         
-        let _ = playMediaUseCase.togglePlay()
+        guard
+            case .active(let data) = state.value
+        else {
+            return
+        }
+        
+        let mediaId = data.mediaId
+        
+        guard
+            case .activeSession(let session, _) = playMediaUseCase.state.value,
+            session.mediaId == mediaId
+        else {
+            
+            Task(priority: .userInitiated) {
+                await startNewSession(mediaId: mediaId)
+            }
+            
+            return
+        }
+        
+        Task(priority: .userInitiated) {
+            let _ = playMediaUseCase.togglePlay()
+        }
     }
     
     public func dispose() {

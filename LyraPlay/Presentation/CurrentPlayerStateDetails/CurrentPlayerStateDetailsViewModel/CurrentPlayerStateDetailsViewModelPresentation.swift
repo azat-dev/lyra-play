@@ -11,6 +11,7 @@ public struct CurrentPlayerStateDetailsViewModelPresentation {
 
     // MARK: - Properties
 
+    public let mediaId: UUID
     public var title: String
     public var subtitle: String
     public var coverImage: Data?
@@ -20,6 +21,7 @@ public struct CurrentPlayerStateDetailsViewModelPresentation {
     // MARK: - Initializers
 
     public init(
+        mediaId: UUID,
         title: String,
         subtitle: String,
         coverImage: Data?,
@@ -27,6 +29,7 @@ public struct CurrentPlayerStateDetailsViewModelPresentation {
         subtitlesPresenterViewModel: SubtitlesPresenterViewModel?
     ) {
 
+        self.mediaId = mediaId
         self.title = title
         self.subtitle = subtitle
         self.coverImage = coverImage

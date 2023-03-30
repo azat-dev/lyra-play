@@ -11,16 +11,16 @@ public struct MediaInfo: Equatable {
 
     // MARK: - Properties
 
-    public var id: String
-    public var coverImage: Data
-    public var title: String
-    public var artist: String?
-    public var duration: Double
+    public let id: UUID
+    public let coverImage: Data
+    public let title: String
+    public let artist: String?
+    public let duration: Double
 
     // MARK: - Initializers
 
     public init(
-        id: String,
+        id: UUID,
         coverImage: Data,
         title: String,
         artist: String?,

@@ -168,10 +168,9 @@ extension CurrentPlayerStateViewModelImpl {
         
         if case .noActiveSession = playMediaUseCase.state.value {
             
-            if
-                case .active(let mediaInfo, _) = state.value,
-                let mediaId = UUID(uuidString: mediaInfo.id)
-            {
+            if case .active(let mediaInfo, _) = state.value {
+                
+                let mediaId = mediaInfo.id
                 
                 Task {
                     let _ = await playMediaUseCase.prepare(
@@ -188,32 +187,46 @@ extension CurrentPlayerStateViewModelImpl {
         delegate?.currentPlayerStateViewModelDidOpen()
     }
     
-    public func togglePlay() {
+    private func startNewSession(mediaId: UUID) async {
+
+        let prepareResult = await playMediaUseCase.prepare(
+            session: .init(
+                mediaId: mediaId,
+                learningLanguage: "English",
+                nativeLanguage: "English"
+            )
+        )
         
-        if case .noActiveSession = playMediaUseCase.state.value {
-            
-            if
-                case .active(let mediaInfo, _) = state.value,
-                let mediaId = UUID(uuidString: mediaInfo.id)
-            {
-                
-                Task {
-                    
-                    let _ = await playMediaUseCase.prepare(
-                        session: .init(
-                            mediaId: mediaId,
-                            learningLanguage: "English",
-                            nativeLanguage: "FIXME"
-                        )
-                    )
-                    
-                    let _ = playMediaUseCase.resume()
-                }
-                return
-            }
+        guard case .success = prepareResult else {
+            return
         }
         
-        let _ = playMediaUseCase.togglePlay()
+        let _ = playMediaUseCase.resume()
+    }
+    
+    public func togglePlay() {
+        
+        guard case .active(let mediaInfo, _) = state.value else {
+            return
+        }
+        
+        let mediaId = mediaInfo.id
+        
+        guard
+            case .activeSession(let session, _) = playMediaUseCase.state.value,
+            session.mediaId == mediaId
+        else {
+            
+            Task(priority: .userInitiated) {
+                await startNewSession(mediaId: mediaId)
+            }
+            
+            return
+        }
+        
+        Task(priority: .userInitiated) {
+            let _ = playMediaUseCase.togglePlay()
+        }
     }
 }
 
