@@ -99,12 +99,18 @@ extension RowCell {
                     
                     var colorRanges = [NSRange: UIColor]()
                     
+                    colorRanges[
+                        NSRange((sentenceData.text.startIndex..<sentenceData.text.endIndex), in: sentenceData.text)
+                    ] = .red
+                    
                     for range in ranges ?? [] {
                         
                         let nsRange = NSRange(range, in: sentenceData.text)
                         colorRanges[nsRange] = UIColor.purple
                     }
-                    self.highlights.value = colorRanges
+                    
+                    self.textLayoutManager.highlights?.value = colorRanges
+                    
                 }.store(in: &observers)
         }
         
@@ -206,20 +212,21 @@ extension RowCell {
             target: self,
             action: #selector(didTap(gesture:))
         )
-        
-        let textStorage = NSTextStorage()
-        let textContainer = NSTextContainer(size: .zero)
-        
-        textLayoutManager.highlights = highlights
-        textStorage.addLayoutManager(self.textLayoutManager)
 
+        let textStorage = NSTextStorage()
+        let textContainer = NSTextContainer(size: contentView.bounds.size)
+        
         textLayoutManager.addTextContainer(textContainer)
+        textStorage.addLayoutManager(textLayoutManager)
+
+        textLayoutManager.highlights = highlights
         textLayoutManager.delegate = self
         
-        textView = UITextView()
-        textView.addGestureRecognizer(tapGestureRecognizer)
-        
+        textView = UITextView(frame: .zero, textContainer: textContainer)
+        textView.attributedText = textStorage
         contentView.addSubview(textView)
+        
+        textView.addGestureRecognizer(tapGestureRecognizer)
     }
 }
 
