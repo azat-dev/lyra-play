@@ -68,6 +68,8 @@ public protocol PlayMediaWithInfoUseCaseInput: AnyObject {
 
 public protocol PlayMediaWithInfoUseCaseOutput: AnyObject {
     
+    // MARK: - Properties
+    
     var state: CurrentValueSubject<PlayMediaWithInfoUseCaseState, Never> { get }
     
     var subtitlesState: CurrentValueSubject<SubtitlesState?, Never> { get }
@@ -78,6 +80,10 @@ public protocol PlayMediaWithInfoUseCaseOutput: AnyObject {
 
     var duration: TimeInterval { get }
     
+    var dictionarWords: CurrentValueSubject<[Int: [NSRange]]?, Never> { get }
+    
+    // MARK: - Methods
+
     func getPosition(for: TimeInterval) -> SubtitlesTimeSlot?
 }
 

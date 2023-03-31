@@ -86,12 +86,20 @@ public final class LoadingPlayMediaWithTranslationsUseCaseStateController: PlayM
         return nil
     }
     
+    private func loadTranslations() async {
+        
+        provideTranslationsToPlayUseCaseFactory.make()
+    }
+    
     public func load() async -> Result<Void, PlayMediaWithTranslationsUseCaseError> {
         
         let playMediaWithSubtitlesUseCase = playMediaUseCaseFactory.make()
         
         let result = await playMediaWithSubtitlesUseCase.prepare(
-            params: .init(mediaId: session.mediaId, subtitlesLanguage: session.learningLanguage)
+            params: .init(
+                mediaId: session.mediaId,
+                subtitlesLanguage: session.learningLanguage
+            )
         )
         
         guard case .success = result else {
@@ -109,14 +117,15 @@ public final class LoadingPlayMediaWithTranslationsUseCaseStateController: PlayM
         
         let provideTranslationsToPlayUseCase = provideTranslationsToPlayUseCaseFactory.make()
         
-        if let subtitles = playMediaWithSubtitlesUseCase.subtitlesState.value?.subtitles {
+        if let subtitlesState = playMediaWithSubtitlesUseCase.subtitlesState.value {
             
             await provideTranslationsToPlayUseCase.prepare(
                 params: .init(
                     mediaId: session.mediaId,
                     nativeLanguage: session.nativeLanguage,
                     learningLanguage: session.learningLanguage,
-                    subtitles: subtitles
+                    subtitles: subtitlesState.subtitles,
+                    timeSlots: subtitlesState.timeSlots
                 )
             )
         }

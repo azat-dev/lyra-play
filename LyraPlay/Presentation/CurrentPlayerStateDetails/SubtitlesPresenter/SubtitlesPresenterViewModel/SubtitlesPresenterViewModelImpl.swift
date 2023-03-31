@@ -67,7 +67,8 @@ public final class SubtitlesPresenterViewModelImpl: SubtitlesPresenterViewModel 
                 )
             }
             
-            let sentence = subtitles.sentences[position.sentenceIndex]
+            let sentenceIndex = position.sentenceIndex
+            let sentence = subtitles.sentences[sentenceIndex]
             
             return SubtitlesPresenterRowViewModelImpl(
                 id: timeSlot.index,
@@ -76,7 +77,7 @@ public final class SubtitlesPresenterViewModelImpl: SubtitlesPresenterViewModel 
                     SubtitlesPresenterRowViewModelSentenceDataImpl(
                         text: sentence.text,
                         toggleWord: toggleWord,
-                        dictionaryWords: dictionaryWords[timeSlot.index]
+                        dictionaryWords: dictionaryWords[sentenceIndex]
                     )
                 )
             )

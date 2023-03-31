@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 public enum TranslationsToPlayData: Equatable {
 
@@ -22,6 +23,8 @@ public protocol ProvideTranslationsToPlayUseCaseInput: AnyObject {
 public protocol ProvideTranslationsToPlayUseCaseOutput: AnyObject {
 
     func getTranslationsToPlay(for position: SubtitlesPosition) -> TranslationsToPlayData?
+    
+    var dictionaryWords: CurrentValueSubject<[Int: [NSRange]]?, Never> { get }
 }
 
 public protocol ProvideTranslationsToPlayUseCase: ProvideTranslationsToPlayUseCaseOutput, ProvideTranslationsToPlayUseCaseInput {}

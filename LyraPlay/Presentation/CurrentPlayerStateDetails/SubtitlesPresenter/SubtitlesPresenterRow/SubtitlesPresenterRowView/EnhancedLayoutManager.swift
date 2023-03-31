@@ -107,7 +107,7 @@ extension EnhancedLayoutManager {
                 )
                 
                 let rectWithInsets = rect.offsetBy(dx: origin.x, dy: origin.y)
-                    .inset(by: .init(top: 0, left: -2, bottom: 0, right: -2))
+                    .inset(by: .init(top: 0, left: -3, bottom: 0, right: -3))
                 
                 self.drawRect(color: color, rect: rectWithInsets)
             }

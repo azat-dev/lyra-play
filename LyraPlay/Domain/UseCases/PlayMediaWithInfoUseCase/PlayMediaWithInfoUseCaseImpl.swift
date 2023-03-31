@@ -22,7 +22,6 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
     private var currentMediaInfo: MediaInfo?
     private var currentSession: PlayMediaWithInfoSession?
     
-    
     private let playerState = CurrentValueSubject<PlayMediaWithInfoUseCasePlayerState, Never>(.initial)
     private let loadState = CurrentValueSubject<PlayMediaWithInfoUseCaseLoadState, Never>(.loading)
     
@@ -37,6 +36,8 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
         return playMediaWithTranslationsUseCase.duration
     }
     
+    public let dictionarWords: CurrentValueSubject<[Int : [NSRange]]?, Never>
+    
     // MARK: - Initializers
     
     public init(
@@ -47,6 +48,9 @@ public final class PlayMediaWithInfoUseCaseImpl: PlayMediaWithInfoUseCase {
         self.showMediaInfoUseCaseFactory = showMediaInfoUseCaseFactory
         
         self.subtitlesState = playMediaWithTranslationsUseCase.subtitlesState
+        
+        self.dictionarWords = playMediaWithTranslationsUseCase.dictionaryWords
+        
         self.pronounceTranslationsState = playMediaWithTranslationsUseCase.pronounceTranslationsState
     }
     

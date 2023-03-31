@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 public final class ProvideTranslationsToPlayUseCaseImpl: ProvideTranslationsToPlayUseCase {
 
@@ -17,13 +18,15 @@ public final class ProvideTranslationsToPlayUseCaseImpl: ProvideTranslationsToPl
     
     private var subtitles: Subtitles!
     
-    private var subtitlesTimeSlots: [SentenceIndex: [SubtitlesTimeSlot]]!
+    private var subtitlesTimeSlots: [SentenceIndex: [SubtitlesTimeSlot]]?
     
     private var items = [SubtitlesPosition: TranslationsToPlay]()
     
     private var currentSession: AdvancedPlayerSession?
     
     private var currentPreparingTask: Task<Void, Never>?
+    
+    public let dictionaryWords = CurrentValueSubject<[Int : [NSRange]]?, Never>(nil)
 
     // MARK: - Initializers
 
@@ -59,6 +62,10 @@ extension ProvideTranslationsToPlayUseCaseImpl {
         
         var items = [TranslationsToPlay]()
         
+        guard let subtitlesTimeSlots = subtitlesTimeSlots else {
+            return []
+        }
+        
         guard sentenceIndex < subtitles.sentences.count else {
             return items
         }
@@ -70,6 +77,7 @@ extension ProvideTranslationsToPlayUseCaseImpl {
         var groupedTranslations = [SubtitlesTranslationItem]()
         
         let sentence = subtitles.sentences[sentenceIndex]
+        
         let timeMarks = sentence.timeMarks ?? []
         
         for translation in translations {
@@ -133,13 +141,12 @@ extension ProvideTranslationsToPlayUseCaseImpl {
         return items
     }
     
-    private func prepareSounds(params: AdvancedPlayerSession) async -> Void {
+    private func prepareSounds(params: AdvancedPlayerSession) async {
         
         subtitles = params.subtitles
         
-        // FIXME: Make timeSlots dependency
-        let parser = SubtitlesTimeSlotsParser()
-        let timeSlots = parser.parse(from: params.subtitles)
+        let timeSlots = params.timeSlots
+        
         subtitlesTimeSlots = Self.groupTimeSlotsBySentences(timeSlots: timeSlots)
         
         let numberOfSentences = params.subtitles.sentences.count
@@ -158,13 +165,56 @@ extension ProvideTranslationsToPlayUseCaseImpl {
         }
     }
     
+    private func prepareDictionaryItems(params: AdvancedPlayerSession) async {
+        
+        subtitles = params.subtitles
+        
+        dictionaryWords.value = nil
+        
+        var newDictionaryWords = [Int: [NSRange]]()
+        
+        let sentences = params.subtitles.sentences
+        let numberOfSentences = sentences.count
+        
+        for sentenceIndex in 0..<numberOfSentences {
+            
+            let translations = await provideTranslationsForSubtitlesUseCase.getTranslations(sentenceIndex: sentenceIndex)
+        
+            if Task.isCancelled {
+                return
+            }
+            
+            if translations.isEmpty {
+                continue
+            }
+            
+            var ranges = [NSRange]()
+            ranges.reserveCapacity(translations.count)
+            
+            translations.forEach { translation in
+
+                let text = sentences[sentenceIndex].text
+                let range = NSRange(translation.textRange, in: text)
+                ranges.append(range)
+            }
+            
+            newDictionaryWords[sentenceIndex] = ranges
+        }
+        
+        dictionaryWords.value = newDictionaryWords
+    }
+    
     public func prepare(params: AdvancedPlayerSession) async -> Void {
         
         self.currentSession = params
         
         await provideTranslationsForSubtitlesUseCase.prepare(options: params)
         
-        await prepareSounds(params: params)
+        let _ = await [
+            prepareDictionaryItems(params: params),
+            prepareSounds(params: params)
+        ]
+        
         provideTranslationsForSubtitlesUseCase.delegate = self
     }
 }

@@ -32,7 +32,9 @@ public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslatio
     } ()
     
     private let playMediaUseCaseFactory: PlayMediaWithSubtitlesUseCaseFactory
+    
     private let provideTranslationsToPlayUseCaseFactory: ProvideTranslationsToPlayUseCaseFactory
+    
     private let pronounceTranslationsUseCaseFactory: PronounceTranslationsUseCaseFactory
     
     private let playerState = CurrentValueSubject<PlayMediaWithTranslationsUseCasePlayerState, Never>(.initial)
@@ -40,6 +42,10 @@ public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslatio
     private var observers = Set<AnyCancellable>()
     
     private let audioSession: AudioSession
+    
+    public var dictionaryWords = CurrentValueSubject<[Int: [NSRange]]?, Never>(nil)
+    
+    private var dictionaryWordsObserver: AnyCancellable?
 
     // MARK: - Initializers
 
@@ -59,6 +65,7 @@ public final class PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslatio
     
     deinit {
         observers.removeAll()
+        dictionaryWordsObserver = nil
     }
 }
 
@@ -147,6 +154,9 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
         
         currentController = newController
         playerState.value = .loaded
+        
+        dictionaryWordsObserver = session.provideTranslationsToPlayUseCase.dictionaryWords
+            .subscribe(dictionaryWords)
     }
     
     public func didFailLoad(session: PlayMediaWithTranslationsSession) {
@@ -251,6 +261,7 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
         
         currentController = newController
         state.value = .noActiveSession
+        
         return .success(())
     }
     
@@ -259,6 +270,9 @@ extension PlayMediaWithTranslationsUseCaseImpl: PlayMediaWithTranslationsUseCase
         audioSession.deactivate()
         currentController = InitialPlayMediaWithTranslationsUseCaseStateController(delegate: self)
         state.value = .noActiveSession
+
+        dictionaryWordsObserver = nil
+        dictionaryWords.value = nil
     }
     
     public func didPronounce(session: PlayMediaWithTranslationsUseCaseStateControllerActiveSession) {
