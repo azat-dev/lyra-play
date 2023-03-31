@@ -28,6 +28,8 @@ public protocol SubtitlesPresenterViewModelOutput {
 public protocol SubtitlesPresenterViewModelInput {
     
     func update(position: SubtitlesTimeSlot?)
+    
+    func update(dictionaryWords: [Int: [NSRange]])
 }
 
 public protocol SubtitlesPresenterViewModel: SubtitlesPresenterViewModelOutput, SubtitlesPresenterViewModelInput {

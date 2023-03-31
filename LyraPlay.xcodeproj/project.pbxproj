@@ -257,7 +257,7 @@
 		AA0F69B6287EF74500BD13DB /* TimelineScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69B5287EF74500BD13DB /* TimelineScheduler.swift */; };
 		AA0F69BC287F4F0D00BD13DB /* SubtitlesPresenterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69BB287F4F0D00BD13DB /* SubtitlesPresenterView.swift */; };
 		AA0F69BF287F58A600BD13DB /* RowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69BE287F58A600BD13DB /* RowCell.swift */; };
-		AA0F69C1287F5CD900BD13DB /* SentenceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69C0287F5CD900BD13DB /* SentenceViewModel.swift */; };
+		AA0F69C1287F5CD900BD13DB /* SubtitlesPresenterRowViewModelSentenceDataImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69C0287F5CD900BD13DB /* SubtitlesPresenterRowViewModelSentenceDataImpl.swift */; };
 		AA0F69C3287F5E8600BD13DB /* RowCell+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69C2287F5E8600BD13DB /* RowCell+Styles.swift */; };
 		AA0F69C5287F608B00BD13DB /* UIView+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0F69C4287F608B00BD13DB /* UIView+Layout.swift */; };
 		AA10BBE729769126003EC769 /* DictionaryExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10BBE629769126003EC769 /* DictionaryExporter.swift */; };
@@ -577,6 +577,9 @@
 		AAE202EC28F4A392009A9C8E /* SubtitlesPresenterViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE202EB28F4A392009A9C8E /* SubtitlesPresenterViewModelFactory.swift */; };
 		AAE202EE28F4A3FD009A9C8E /* SubtitlesPresenterViewModelImplFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE202ED28F4A3FD009A9C8E /* SubtitlesPresenterViewModelImplFactory.swift */; };
 		AAEB9C7B29A5604500396F79 /* PlayMediaWithTranslationsUseCaseStateControllerActiveSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEB9C7A29A5604500396F79 /* PlayMediaWithTranslationsUseCaseStateControllerActiveSession.swift */; };
+		AAED9A4D29D6C169007736F5 /* SubtitlesPresenterRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED9A4C29D6C169007736F5 /* SubtitlesPresenterRowViewModel.swift */; };
+		AAED9A4F29D6C198007736F5 /* SubtitlesPresenterRowSentenceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED9A4E29D6C198007736F5 /* SubtitlesPresenterRowSentenceViewModel.swift */; };
+		AAED9A5129D6C26B007736F5 /* SubtitlesPresenterRowViewModelImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED9A5029D6C26B007736F5 /* SubtitlesPresenterRowViewModelImpl.swift */; };
 		AAEE5AC82994C74300E85A39 /* PlayMediaUseCaseStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE5AC72994C74300E85A39 /* PlayMediaUseCaseStateController.swift */; };
 		AAEE8A142889B6C7007E41F3 /* TextSplitterMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE8A132889B6C7007E41F3 /* TextSplitterMock.swift */; };
 		AAEE8A162889C2C6007E41F3 /* ProvideTranslationsForSubtitlesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE8A152889C2C6007E41F3 /* ProvideTranslationsForSubtitlesUseCaseTests.swift */; };
@@ -989,7 +992,7 @@
 		AA0F69B5287EF74500BD13DB /* TimelineScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineScheduler.swift; sourceTree = "<group>"; };
 		AA0F69BB287F4F0D00BD13DB /* SubtitlesPresenterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterView.swift; sourceTree = "<group>"; };
 		AA0F69BE287F58A600BD13DB /* RowCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowCell.swift; sourceTree = "<group>"; };
-		AA0F69C0287F5CD900BD13DB /* SentenceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentenceViewModel.swift; sourceTree = "<group>"; };
+		AA0F69C0287F5CD900BD13DB /* SubtitlesPresenterRowViewModelSentenceDataImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterRowViewModelSentenceDataImpl.swift; sourceTree = "<group>"; };
 		AA0F69C2287F5E8600BD13DB /* RowCell+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RowCell+Styles.swift"; sourceTree = "<group>"; };
 		AA0F69C4287F608B00BD13DB /* UIView+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Layout.swift"; sourceTree = "<group>"; };
 		AA10BBE629769126003EC769 /* DictionaryExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryExporter.swift; sourceTree = "<group>"; };
@@ -1310,6 +1313,9 @@
 		AAE202EB28F4A392009A9C8E /* SubtitlesPresenterViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterViewModelFactory.swift; sourceTree = "<group>"; };
 		AAE202ED28F4A3FD009A9C8E /* SubtitlesPresenterViewModelImplFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterViewModelImplFactory.swift; sourceTree = "<group>"; };
 		AAEB9C7A29A5604500396F79 /* PlayMediaWithTranslationsUseCaseStateControllerActiveSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithTranslationsUseCaseStateControllerActiveSession.swift; sourceTree = "<group>"; };
+		AAED9A4C29D6C169007736F5 /* SubtitlesPresenterRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterRowViewModel.swift; sourceTree = "<group>"; };
+		AAED9A4E29D6C198007736F5 /* SubtitlesPresenterRowSentenceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterRowSentenceViewModel.swift; sourceTree = "<group>"; };
+		AAED9A5029D6C26B007736F5 /* SubtitlesPresenterRowViewModelImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesPresenterRowViewModelImpl.swift; sourceTree = "<group>"; };
 		AAEE5AC72994C74300E85A39 /* PlayMediaUseCaseStateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaUseCaseStateController.swift; sourceTree = "<group>"; };
 		AAEE8A132889B6C7007E41F3 /* TextSplitterMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextSplitterMock.swift; sourceTree = "<group>"; };
 		AAEE8A152889C2C6007E41F3 /* ProvideTranslationsForSubtitlesUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvideTranslationsForSubtitlesUseCaseTests.swift; sourceTree = "<group>"; };
@@ -2341,14 +2347,14 @@
 			path = DeepLinksRouter;
 			sourceTree = "<group>";
 		};
-		AA0F69BD287F587F00BD13DB /* RowCell */ = {
+		AA0F69BD287F587F00BD13DB /* SubtitlesPresenterRowView */ = {
 			isa = PBXGroup;
 			children = (
 				AA0F69BE287F58A600BD13DB /* RowCell.swift */,
 				AA0F69C2287F5E8600BD13DB /* RowCell+Styles.swift */,
 				AA3785982885EFD300FF3B66 /* EnhancedLayoutManager.swift */,
 			);
-			path = RowCell;
+			path = SubtitlesPresenterRowView;
 			sourceTree = "<group>";
 		};
 		AA10BBEE2976A2C7003EC769 /* ExportDictionaryUseCase */ = {
@@ -2376,8 +2382,7 @@
 		AA190E70287AC694000514AB /* SubtitlesPresenter */ = {
 			isa = PBXGroup;
 			children = (
-				AA0F69BD287F587F00BD13DB /* RowCell */,
-				AA0F69C0287F5CD900BD13DB /* SentenceViewModel.swift */,
+				AAED9A5229D6C270007736F5 /* SubtitlesPresenterRow */,
 				AA0F69BB287F4F0D00BD13DB /* SubtitlesPresenterView.swift */,
 				AA040E0228835247000CFC26 /* SubtitlesPresenterView+Layout.swift */,
 				AA040E0028834F04000CFC26 /* SubtitlesPresenterView+Styles.swift */,
@@ -3376,6 +3381,26 @@
 			path = UpdatePlayedTimeUseCase;
 			sourceTree = "<group>";
 		};
+		AAED9A5229D6C270007736F5 /* SubtitlesPresenterRow */ = {
+			isa = PBXGroup;
+			children = (
+				AAED9A5329D6C28D007736F5 /* SubtitlesPresenterRowViewModel */,
+				AA0F69BD287F587F00BD13DB /* SubtitlesPresenterRowView */,
+			);
+			path = SubtitlesPresenterRow;
+			sourceTree = "<group>";
+		};
+		AAED9A5329D6C28D007736F5 /* SubtitlesPresenterRowViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				AAED9A4E29D6C198007736F5 /* SubtitlesPresenterRowSentenceViewModel.swift */,
+				AAED9A4C29D6C169007736F5 /* SubtitlesPresenterRowViewModel.swift */,
+				AAED9A5029D6C26B007736F5 /* SubtitlesPresenterRowViewModelImpl.swift */,
+				AA0F69C0287F5CD900BD13DB /* SubtitlesPresenterRowViewModelSentenceDataImpl.swift */,
+			);
+			path = SubtitlesPresenterRowViewModel;
+			sourceTree = "<group>";
+		};
 		AAEE5AC52994C70000E85A39 /* States */ = {
 			isa = PBXGroup;
 			children = (
@@ -4103,6 +4128,7 @@
 				AA3C532228BE54CF00CBE3C6 /* BrowseMediaLibraryUseCaseFactory.swift in Sources */,
 				AA3C534628BE61C600CBE3C6 /* LoadSubtitlesUseCase.swift in Sources */,
 				AA0D3F8328762698006717B9 /* SubtitlesRepository.swift in Sources */,
+				AAED9A4D29D6C169007736F5 /* SubtitlesPresenterRowViewModel.swift in Sources */,
 				AA0F69BC287F4F0D00BD13DB /* SubtitlesPresenterView.swift in Sources */,
 				AA180D4428E6F0AA00023C7A /* PlayMediaWithInfoUseCaseImplSingleInstanceFactory.swift in Sources */,
 				AA08838428B960D3006315B9 /* TabBarPresentationContainer.swift in Sources */,
@@ -4167,7 +4193,7 @@
 				AA7B0D542871A70F0067DDB5 /* LibraryItemViewController+Styles.swift in Sources */,
 				AA3C533428BE5C5D00CBE3C6 /* ImportAudioFileUseCase.swift in Sources */,
 				AADE098229B3E83300F7A8D7 /* GetPlayedTimeUseCaseFactory.swift in Sources */,
-				AA0F69C1287F5CD900BD13DB /* SentenceViewModel.swift in Sources */,
+				AA0F69C1287F5CD900BD13DB /* SubtitlesPresenterRowViewModelSentenceDataImpl.swift in Sources */,
 				AA35E582286AA3D90086DB28 /* FilesRepository.swift in Sources */,
 				AA369EA72884646200FDAD27 /* TextSplitter.swift in Sources */,
 				AA3C533628BE5C6600CBE3C6 /* ImportAudioFileUseCaseFactory.swift in Sources */,
@@ -4202,6 +4228,7 @@
 				AACCE801288814F8002EA7C5 /* TranslationItem.swift in Sources */,
 				AA1D7E812876E71F0095E490 /* ManagedSubtitles+CoreDataProperties.swift in Sources */,
 				AABFF9FB29A557F800FCFD09 /* PlayMediaWithTranslationsUseCaseStateController.swift in Sources */,
+				AAED9A4F29D6C198007736F5 /* SubtitlesPresenterRowSentenceViewModel.swift in Sources */,
 				AA641E0B28C3A44200641B0C /* MainTabBarViewController.swift in Sources */,
 				AA2BE88D2866EF35005C1AAD /* CoreDataStore.swift in Sources */,
 				AA3C535128BE630E00CBE3C6 /* LoadTrackUseCaseFactory.swift in Sources */,
@@ -4327,6 +4354,7 @@
 				25D3F5CEECB594EC167CF853 /* SubtitlesParser.swift in Sources */,
 				45CD0ABD075AFB052D87276E /* SubtitlesParserFactory.swift in Sources */,
 				03D7A848327D5DC33D346496 /* VttParser.swift in Sources */,
+				AAED9A5129D6C26B007736F5 /* SubtitlesPresenterRowViewModelImpl.swift in Sources */,
 				AA41490128DBAF2A002FFDD4 /* ManagedLibraryItem+CoreDataProperties.swift in Sources */,
 				AADE098629B3E90A00F7A8D7 /* UpdatePlayedTimeUseCaseFactory.swift in Sources */,
 				807C5BDFD4B22706FAC4D9CB /* VttParserFactory.swift in Sources */,
