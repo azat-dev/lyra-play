@@ -39,6 +39,8 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
     
     private var timerObserver: AnyCancellable?
     
+    private var dictionaryWordsObserver: AnyCancellable?
+    
     // MARK: - Initializers
     
     public init(
@@ -112,12 +114,22 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
             subtitlesPresenterViewModel = subtitlesPresenterViewModelFactory.make(
                 subtitles: subtitlesState.subtitles,
                 timeSlots: subtitlesState.timeSlots,
-                dictionaryWords: [:],
+                dictionaryWords: playMediaUseCase.dictionarWords.value ?? [:],
                 delegate: self
             )
+
             currentSubtitles = subtitlesState.subtitles
             
             subtitlesPresenterViewModel?.update(position: subtitlesState.timeSlot)
+            
+            dictionaryWordsObserver = playMediaUseCase.dictionarWords
+                .dropFirst()
+                .sink { dictionaryWords in
+                    subtitlesPresenterViewModel?.update(dictionaryWords: dictionaryWords ?? [:])
+                }
+            
+        } else {
+            dictionaryWordsObserver = nil
         }
         
         let isPlaying = playerState.isPlaying
@@ -176,6 +188,7 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
         
         loadStateObserver = nil
         playerStateObserver = nil
+        dictionaryWordsObserver = nil
         
         switch newState {
             

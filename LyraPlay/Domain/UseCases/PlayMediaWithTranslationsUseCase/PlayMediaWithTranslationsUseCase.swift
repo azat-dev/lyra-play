@@ -71,6 +71,8 @@ public protocol PlayMediaWithTranslationsUseCaseOutput {
     
     var duration: TimeInterval { get }
     
+    var dictionaryWords: CurrentValueSubject<[Int: [NSRange]]?, Never> { get }
+
     func getPosition(for time: TimeInterval) -> SubtitlesTimeSlot?
 }
 
