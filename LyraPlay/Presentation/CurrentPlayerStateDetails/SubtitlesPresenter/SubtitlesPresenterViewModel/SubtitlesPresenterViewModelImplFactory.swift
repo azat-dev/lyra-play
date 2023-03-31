@@ -13,12 +13,14 @@ public final class SubtitlesPresenterViewModelImplFactory: SubtitlesPresenterVie
     public func make(
         subtitles: Subtitles,
         timeSlots: [SubtitlesTimeSlot],
+        dictionaryWords: [Int: [NSRange]],
         delegate: SubtitlesPresenterViewModelDelegate
     ) -> SubtitlesPresenterViewModel {
         
         return SubtitlesPresenterViewModelImpl(
             subtitles: subtitles,
             timeSlots: timeSlots,
+            dictionaryWords: dictionaryWords,
             delegate: delegate
         )
     }

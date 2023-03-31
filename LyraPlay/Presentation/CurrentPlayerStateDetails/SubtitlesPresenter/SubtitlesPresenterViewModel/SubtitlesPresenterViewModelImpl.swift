@@ -19,11 +19,14 @@ public final class SubtitlesPresenterViewModelImpl: SubtitlesPresenterViewModel 
     
     public var numberOfRows: Int
     
+    private var currentDictionaryWords: [Int: [NSRange]]?
+    
     // MARK: - Initializers
     
     public init(
         subtitles: Subtitles,
         timeSlots: [SubtitlesTimeSlot],
+        dictionaryWords: [Int: [NSRange]],
         delegate: SubtitlesPresenterViewModelDelegate
     ) {
         
@@ -60,8 +63,7 @@ public final class SubtitlesPresenterViewModelImpl: SubtitlesPresenterViewModel 
                 return SubtitlesPresenterRowViewModelImpl(
                     id: timeSlot.index,
                     isActive: false,
-                    data: .empty,
-                    delegateChanges: nil
+                    data: .empty
                 )
             }
             
@@ -73,10 +75,10 @@ public final class SubtitlesPresenterViewModelImpl: SubtitlesPresenterViewModel 
                 data: .sentence(
                     SubtitlesPresenterRowViewModelSentenceDataImpl(
                         text: sentence.text,
-                        toggleWord: toggleWord
+                        toggleWord: toggleWord,
+                        dictionaryWords: dictionaryWords[timeSlot.index]
                     )
-                ),
-                delegateChanges: nil
+                )
             )
         }
         
@@ -102,6 +104,60 @@ extension SubtitlesPresenterViewModelImpl {
         DispatchQueue.main.async { [weak self] in
             self?.updatePosition(position)
         }
+    }
+    
+    private func update(newDictionaryWords: [Int: [NSRange]]) {
+        
+        for (index, ranges) in newDictionaryWords {
+            
+            let rowViewModel = getRowViewModel(at: index)
+            
+            guard
+                let rowViewModel = rowViewModel,
+                case .sentence(let sentence) = rowViewModel.data
+            else {
+                continue
+            }
+            
+            sentence.dictionaryWords.value = ranges
+        }
+    }
+    
+    private func hidePreviousDictionaryWords(prevDictionaryWords: [Int: [NSRange]]) {
+        
+        for (index, _) in prevDictionaryWords {
+            
+            guard currentDictionaryWords?[index] == nil else {
+                continue
+            }
+            
+            let rowViewModel = getRowViewModel(at: index)
+            
+            guard
+                let rowViewModel = rowViewModel,
+                case .sentence(let sentence) = rowViewModel.data
+            else {
+                continue
+            }
+            
+            sentence.dictionaryWords.value = nil
+        }
+    }
+    
+    public func update(dictionaryWords: [Int: [NSRange]]) {
+        
+        if dictionaryWords == currentDictionaryWords {
+            return
+        }
+        
+        let prevDictionaryWords = self.currentDictionaryWords
+        self.currentDictionaryWords = dictionaryWords
+        
+        if let prevDictionaryWords = prevDictionaryWords {
+            hidePreviousDictionaryWords(prevDictionaryWords: prevDictionaryWords)
+        }
+        
+        update(newDictionaryWords: dictionaryWords)
     }
 }
 

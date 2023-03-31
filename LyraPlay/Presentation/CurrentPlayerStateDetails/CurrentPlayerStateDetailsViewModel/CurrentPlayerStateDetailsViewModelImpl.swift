@@ -112,6 +112,7 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
             subtitlesPresenterViewModel = subtitlesPresenterViewModelFactory.make(
                 subtitles: subtitlesState.subtitles,
                 timeSlots: subtitlesState.timeSlots,
+                dictionaryWords: [:],
                 delegate: self
             )
             currentSubtitles = subtitlesState.subtitles

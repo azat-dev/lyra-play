@@ -199,8 +199,6 @@ extension SubtitlesPresenterView: UICollectionViewDataSource {
         }
         
         cell.viewModel = viewModel?.getRowViewModel(at: indexPath.item)
-        cell.viewModel?.delegateChanges = cell
-        
         return cell
     }
     

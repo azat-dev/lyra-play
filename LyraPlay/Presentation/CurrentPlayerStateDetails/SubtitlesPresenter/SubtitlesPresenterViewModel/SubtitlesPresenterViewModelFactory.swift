@@ -13,6 +13,7 @@ public protocol SubtitlesPresenterViewModelFactory {
     func make(
         subtitles: Subtitles,
         timeSlots: [SubtitlesTimeSlot],
+        dictionaryWords: [Int : [NSRange]],
         delegate: SubtitlesPresenterViewModelDelegate
     ) -> SubtitlesPresenterViewModel
 }
