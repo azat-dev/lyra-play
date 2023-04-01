@@ -6,6 +6,13 @@
   <br>
 </h1>
 
+<p align="center">
+  <a href="#about">About</a> •
+  <a href="#architecture">Architecture</a> •
+  <a href="#license">License</a>
+</p>
+
+## About
 The "LyraPlay" is the perfect tool for those who love to learn on the go. With this app, you can easily learn new information, concepts, or skills simply by listening to your favorite music, audiobooks, or podcasts.
 
 With the "LyraPlay", you can turn your idle time into valuable learning opportunities. Start listening today and expand your knowledge, all while enjoying your favorite music, audiobooks, or podcasts.
