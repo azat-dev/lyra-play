@@ -27,16 +27,16 @@ public class DeepLinkRouterImpl: DeepLinksRouter {
     
     // MARK: - Methods
     
-    public func route(deepLink: DeepLink) {
+    public func route(deepLinks: [DeepLink]) {
         
         for route in routes {
             
-            guard route.matcher.match(deepLink: deepLink) else {
+            guard route.matcher.match(deepLinks: deepLinks) else {
                 continue
             }
             
             route.handler.handle(
-                deepLink: deepLink,
+                deepLinks: deepLinks,
                 applicationFlowModel: applicationFlowModel
             )
             return

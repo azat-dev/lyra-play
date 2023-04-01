@@ -27,8 +27,11 @@ public struct ExtensionDeepLinkRouteMatcher: DeepLinkRouteMatcher {
     
     // MARK: - Methods
     
-    public func match(deepLink: DeepLink) -> Bool {
+    public func match(deepLinks: [DeepLink]) -> Bool {
         
-        return linkExtensions.contains(deepLink.pathExtension.lowercased())
+        return deepLinks.allSatisfy { deepLink in
+            
+            return linkExtensions.contains(deepLink.pathExtension.lowercased())
+        }
     }
 }

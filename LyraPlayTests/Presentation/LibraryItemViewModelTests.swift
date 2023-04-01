@@ -62,7 +62,7 @@ class LibraryItemViewModelTests: XCTestCase {
     private func givenExistingMedia(sut: SUT, mediaId: UUID) async {
         
         let info = MediaInfo(
-            id: mediaId.uuidString,
+            id: mediaId,
             coverImage: "".data(using: .utf8)!,
             title: "",
             artist: nil,
@@ -90,7 +90,7 @@ class LibraryItemViewModelTests: XCTestCase {
         isPlayingPromise.expect([false])
     }
     
-    private func anyMediaInfo(id: String) -> MediaInfo {
+    private func anyMediaInfo(id: UUID) -> MediaInfo {
         return .init(
             id: id,
             coverImage: "".data(using: .utf8)!,
@@ -102,7 +102,7 @@ class LibraryItemViewModelTests: XCTestCase {
     
     private func givenUseCasePlayingMedia(sut: SUT, id: UUID) {
         
-        let mediaInfo = anyMediaInfo(id: id.uuidString)
+        let mediaInfo = anyMediaInfo(id: id)
         
         sut.playerState.value = .activeSession(
             .init(

@@ -32,13 +32,13 @@ public final class AddMediaLibraryItemFlowModelImplFactory: AddMediaLibraryItemF
 
     public func make(
         targetFolderId: UUID?,
-        fileUrl: URL?,
+        filesUrls: [URL]?,
         delegate: AddMediaLibraryItemFlowModelDelegate
     ) -> AddMediaLibraryItemFlowModel {
 
         return AddMediaLibraryItemFlowModelImpl(
             targetFolderId: targetFolderId,
-            fileUrl: fileUrl,
+            filesUrls: filesUrls,
             delegate: delegate,
             chooseDialogViewModelFactory: chooseDialogViewModelFactory,
             importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory,

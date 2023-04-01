@@ -53,11 +53,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, openURLContexts urlContexts: Set<UIOpenURLContext>) {
         
-        guard let url = urlContexts.first?.url else {
+        let urls = urlContexts.compactMap({ $0.url })
+        
+        guard !urls.isEmpty  else {
             return
         }
         
-        application.openDeepLink(url: url)
+        application.openDeepLinks(urls: urls)
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

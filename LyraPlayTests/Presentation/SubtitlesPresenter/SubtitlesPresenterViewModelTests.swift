@@ -23,6 +23,7 @@ class SubtitlesPresenterViewModelTests: XCTestCase {
         let viewModel = SubtitlesPresenterViewModelImpl(
             subtitles: subtitles,
             timeSlots: [],
+            dictionaryWords: [:],
             delegate: delegate
         )
         detectMemoryLeak(instance: viewModel)

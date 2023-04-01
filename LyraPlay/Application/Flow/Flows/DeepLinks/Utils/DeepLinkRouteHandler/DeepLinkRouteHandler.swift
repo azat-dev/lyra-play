@@ -10,7 +10,7 @@ import Foundation
 public protocol DeepLinkRouteHandler {
     
     func handle(
-        deepLink: DeepLink,
+        deepLinks: [DeepLink],
         applicationFlowModel: ApplicationFlowModel
     )
 }

@@ -49,7 +49,8 @@ class ProvideTranslationsForSubtitlesUseCaseTests: XCTestCase {
             mediaId: mediaId,
             nativeLanguage: "",
             learningLanguage: "",
-            subtitles: subtitles
+            subtitles: subtitles,
+            timeSlots: []
         )
     }
     

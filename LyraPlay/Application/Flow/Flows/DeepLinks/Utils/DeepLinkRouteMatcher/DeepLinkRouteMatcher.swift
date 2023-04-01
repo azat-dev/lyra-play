@@ -9,5 +9,5 @@ import Foundation
 
 public protocol DeepLinkRouteMatcher {
     
-    func match(deepLink: DeepLink) -> Bool
+    func match(deepLinks: [DeepLink]) -> Bool
 }

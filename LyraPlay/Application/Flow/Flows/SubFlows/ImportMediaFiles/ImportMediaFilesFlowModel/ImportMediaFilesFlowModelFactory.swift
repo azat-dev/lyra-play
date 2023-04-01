@@ -11,7 +11,7 @@ public protocol ImportMediaFilesFlowModelFactory {
 
     func make(
         targetFolderId: UUID?,
-        fileUrl: URL?,
+        filesUrls: [URL]?,
         delegate: ImportMediaFilesFlowModelDelegate
     ) -> ImportMediaFilesFlowModel
 }

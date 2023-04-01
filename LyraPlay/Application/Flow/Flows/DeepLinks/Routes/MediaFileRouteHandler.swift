@@ -19,7 +19,7 @@ public final class MediaFileRouteHandler: DeepLinkRouteHandler {
     // MARK: - Methods
     
     public func handle(
-        deepLink: DeepLink,
+        deepLinks: [DeepLink],
         applicationFlowModel: ApplicationFlowModel
     ) {
         
@@ -39,8 +39,7 @@ public final class MediaFileRouteHandler: DeepLinkRouteHandler {
                     continue
                 }
                 
-                
-                libraryFlow.runAddMediaLibratyItemFlow(targetFolderId: nil, fileUrl: deepLink)
+                libraryFlow.runAddMediaLibratyItemsFlow(targetFolderId: nil as UUID?, filesUrls: deepLinks)
             }
         }
     }

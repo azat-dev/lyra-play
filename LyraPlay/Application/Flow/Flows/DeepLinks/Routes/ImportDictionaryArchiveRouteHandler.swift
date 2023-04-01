@@ -17,9 +17,13 @@ public final class ImportDictionaryArchiveRouteHandler: DeepLinkRouteHandler {
     // MARK: - Methods
     
     public func handle(
-        deepLink: DeepLink,
+        deepLinks: [DeepLink],
         applicationFlowModel: ApplicationFlowModel
     ) {
+        
+        guard let deepLink = deepLinks.first else {
+            return
+        }
         
         applicationFlowModel.runImportDictionaryArchiveFlow(url: deepLink)
     }

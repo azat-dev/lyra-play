@@ -33,7 +33,7 @@ public final class AddMediaLibraryItemFlowModelImpl: AddMediaLibraryItemFlowMode
 
     public init(
         targetFolderId: UUID?,
-        fileUrl: URL?,
+        filesUrls: [URL]?,
         delegate: AddMediaLibraryItemFlowModelDelegate,
         chooseDialogViewModelFactory: ChooseDialogViewModelFactory,
         importMediaFilesFlowModelFactory: ImportMediaFilesFlowModelFactory,
@@ -46,12 +46,12 @@ public final class AddMediaLibraryItemFlowModelImpl: AddMediaLibraryItemFlowMode
         self.importMediaFilesFlowModelFactory = importMediaFilesFlowModelFactory
         self.addMediaLibraryFolderFlowModelFactory = addMediaLibraryFolderFlowModelFactory
         
-        guard let fileUrl = fileUrl else {
+        guard let filesUrls = filesUrls else {
             showChooseTypeDialog()
             return
         }
         
-        runImportMediaFilesFlow(fileUrl: fileUrl)
+        runImportMediaFilesFlow(filesUrls: filesUrls)
     }
     
     private func showChooseTypeDialog() {
@@ -120,7 +120,7 @@ extension AddMediaLibraryItemFlowModelImpl: ChooseDialogViewModelDelegate {
         self.addMediaLibraryFolderFlow.value = addMediaLibraryFolderFlow
     }
     
-    private func runImportMediaFilesFlow(fileUrl: URL?) {
+    private func runImportMediaFilesFlow(filesUrls: [URL]?) {
     
         guard self.importMediaFilesFlow.value == nil else {
             return
@@ -128,7 +128,7 @@ extension AddMediaLibraryItemFlowModelImpl: ChooseDialogViewModelDelegate {
         
         let importMediaFilesFlow = importMediaFilesFlowModelFactory.make(
             targetFolderId: targetFolderId,
-            fileUrl: fileUrl,
+            filesUrls: filesUrls,
             delegate: self
         )
         
@@ -145,7 +145,7 @@ extension AddMediaLibraryItemFlowModelImpl: ChooseDialogViewModelDelegate {
             runAddMediaLibraryFolderFlow()
             
         case .importMediaFiles:
-            runImportMediaFilesFlow(fileUrl: nil)
+            runImportMediaFilesFlow(filesUrls: nil)
             
         default:
             fatalError("Not implemented")

@@ -102,6 +102,7 @@ extension CurrentPlayerStateDetailsViewController {
     
     private func updateActiveState(_ data: CurrentPlayerStateDetailsViewModelPresentation) {
         
+        // FIXME: Calls multiple times
         titleLabel.text = data.title
         subtitleLabel.text = data.subtitle
         

@@ -65,7 +65,7 @@ class ShowMediaInfoUseCaseTests: XCTestCase {
         let mediaInfo = try AssertResultSucceded(resultMediaInfo)
 
         XCTAssertNotNil(mediaInfo)
-        XCTAssertEqual(mediaInfo.id, file.id.uuidString)
+        XCTAssertEqual(mediaInfo.id, file.id)
         XCTAssertEqual(mediaInfo.coverImage, testImageData)
         XCTAssertEqual(mediaInfo.title, file.title)
         XCTAssertEqual(mediaInfo.artist, file.subtitle)

@@ -41,7 +41,7 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
         let subtitlesPresenterViewModelFactory = mock(SubtitlesPresenterViewModelFactory.self)
         let subtitlesPresenterViewModel = mock(SubtitlesPresenterViewModel.self)
         
-        given(subtitlesPresenterViewModelFactory.make(subtitles: any(), timeSlots: any(), delegate: any()))
+        given(subtitlesPresenterViewModelFactory.make(subtitles: any(), timeSlots: any(), dictionaryWords: any(), delegate: any()))
             .willReturn(subtitlesPresenterViewModel)
         
         given(playMediaUseCase.subtitlesState)
@@ -78,7 +78,7 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
     private func anyMediaInfo() -> MediaInfo {
         
         return .init(
-            id: UUID().uuidString,
+            id: UUID(),
             coverImage: "".data(using: .utf8)!,
             title: "title",
             artist: "artist",
@@ -95,7 +95,7 @@ class CurrentPlayerStateDetailsViewModelTests: XCTestCase {
         let mediaInfo = anyMediaInfo()
         
         let session = PlayMediaWithInfoSession(
-            mediaId: UUID(uuidString: mediaInfo.id)!,
+            mediaId: mediaInfo.id,
             learningLanguage: "",
             nativeLanguage: ""
         )
