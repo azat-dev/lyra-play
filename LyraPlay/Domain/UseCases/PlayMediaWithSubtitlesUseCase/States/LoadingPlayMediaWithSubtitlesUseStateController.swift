@@ -86,6 +86,8 @@ public final class LoadingPlayMediaWithSubtitlesUseStateController: InitialPlayM
             delegate: playSubtitlesUseCaseDelegate
         )
         
+        playSubtitlesUseCase.setTime(playMediaUseCase.currentTime)
+        
         delegate?.didLoad(
             session: .init(
                 params: params,

@@ -9,5 +9,5 @@ import Foundation
 
 public protocol DeepLinksRouter {
     
-    func route(deepLink: DeepLink)
+    func route(deepLinks: [DeepLink])
 }

@@ -9,7 +9,7 @@ import Foundation
 
 public protocol DeepLinksHandlerFlowModelInput: AnyObject {
 
-    func handle(url: URL)
+    func handle(urls: [URL])
 }
 
 public protocol DeepLinksHandlerFlowModelOutput: AnyObject {

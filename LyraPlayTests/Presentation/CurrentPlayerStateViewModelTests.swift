@@ -68,7 +68,7 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
         )
     }
     
-    func anyMediaInfo(id: String) -> MediaInfo {
+    func anyMediaInfo(id: UUID) -> MediaInfo {
         
         return .init(
             id: id,
@@ -85,7 +85,7 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
 
         // Given
         let mediaId = UUID()
-        let mediaInfo = anyMediaInfo(id: mediaId.uuidString)
+        let mediaInfo = anyMediaInfo(id: mediaId)
         
         given(await sut.showMediaInfoUseCase.fetchInfo(trackId: mediaId))
             .willReturn(.success(mediaInfo))
@@ -122,7 +122,7 @@ class CurrentPlayerStateViewModelTests: XCTestCase {
 
         // Given
         let mediaId = UUID()
-        let mediaInfo = anyMediaInfo(id: mediaId.uuidString)
+        let mediaInfo = anyMediaInfo(id: mediaId)
         
         given(await sut.showMediaInfoUseCase.fetchInfo(trackId: mediaId))
             .willReturn(.success(mediaInfo))

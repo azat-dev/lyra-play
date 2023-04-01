@@ -30,8 +30,8 @@ public final class DeepLinksHandlerFlowModelImpl: DeepLinksHandlerFlowModel {
 
 extension DeepLinksHandlerFlowModelImpl {
 
-    public func handle(url: URL) {
+    public func handle(urls: [URL]) {
 
-        router.route(deepLink: url)
+        router.route(deepLinks: urls)
     }
 }

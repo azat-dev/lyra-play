@@ -50,8 +50,8 @@ public class Application {
         presenter.present(at: container)
     }
     
-    public func openDeepLink(url: URL) {
+    public func openDeepLinks(urls: [URL]) {
 
-        deepLinksFlowModel?.handle(url: url)
+        deepLinksFlowModel?.handle(urls: urls)
     }
 }

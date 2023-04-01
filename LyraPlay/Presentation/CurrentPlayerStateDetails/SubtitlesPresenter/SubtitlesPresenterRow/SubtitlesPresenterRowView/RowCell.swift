@@ -70,6 +70,7 @@ extension RowCell {
     
     func setupEmpty() {
         
+        textLayoutManager.highlights?.value = nil
         textView.text = "..."
     }
     

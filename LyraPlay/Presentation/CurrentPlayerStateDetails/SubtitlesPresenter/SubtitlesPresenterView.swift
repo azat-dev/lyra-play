@@ -13,10 +13,12 @@ public final class SubtitlesPresenterView: UIView, UICollectionViewDelegate {
     
     private var viewModelObserver: AnyCancellable?
     private var collectionView: UICollectionView!
+    private var currentPosition: SubtitlesTimeSlot?
     
     public var viewModel: SubtitlesPresenterViewModel? {
         
         didSet {
+            
             bind(to: viewModel)
         }
     }
@@ -47,9 +49,12 @@ public final class SubtitlesPresenterView: UIView, UICollectionViewDelegate {
 
 extension SubtitlesPresenterView {
     
-    private func update(position: SubtitlesTimeSlot?, animate: Bool) {
+    private func update(position newPosition: SubtitlesTimeSlot?, animate: Bool) {
         
-        guard let newPosition = position else {
+        guard
+            let newPosition = newPosition,
+            currentPosition == newPosition
+        else {
             return
         }
         
@@ -87,7 +92,6 @@ extension SubtitlesPresenterView {
     private func bind(to viewModel: SubtitlesPresenterViewModel?) {
         
         collectionView.alpha = 0
-        
         collectionView.reloadData()
         
         guard let viewModel = viewModel else {
@@ -100,10 +104,11 @@ extension SubtitlesPresenterView {
         
         viewModelObserver = viewModel.position
             .dropFirst()
+            .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newPosition in
                 
-                self?.update(position: newPosition, animate: false)
+                self?.update(position: newPosition, animate: true)
             }
     }
 }

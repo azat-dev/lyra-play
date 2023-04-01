@@ -30,7 +30,7 @@ public protocol LibraryFolderFlowModelOutput: AnyObject {
     
     func runOpenLibraryItemFlow(itemId: UUID)
     
-    func runAddMediaLibratyItemFlow(targetFolderId: UUID?, fileUrl: URL?)
+    func runAddMediaLibratyItemsFlow(targetFolderId: UUID?, filesUrls: [URL]?)
 }
 
 public protocol LibraryFolderFlowModel: LibraryFolderFlowModelOutput, LibraryFolderFlowModelInput {}
