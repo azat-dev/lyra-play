@@ -157,14 +157,18 @@ class LibraryItemViewModelTests: XCTestCase {
         let mediaId = UUID()
         let sut = await createSUT(mediaId: mediaId)
         
+        given(sut.playMediaUseCase.resume())
+            .willReturn(.success(()))
+        
         await givenExistingMedia(sut: sut, mediaId: mediaId)
+        
         await sut.viewModel.load()
         
         // When
         let _ = await sut.viewModel.togglePlay()
         
         // Then
-        verify(sut.playMediaUseCase.togglePlay())
+        verify(sut.playMediaUseCase.resume())
             .wasCalled(1)
     }
     
@@ -209,7 +213,7 @@ class LibraryItemViewModelTests: XCTestCase {
         // Then
         verify(await sut.playMediaUseCase.prepare(session: any()))
             .wasCalled(1)
-        verify(sut.playMediaUseCase.togglePlay())
+        verify(sut.playMediaUseCase.resume())
             .wasCalled(1)
     }
 }

@@ -35,14 +35,14 @@ class AddMediaLibraryItemFlowModelTests: XCTestCase {
         
         let importMediaFilesFlowModelFactory = mock(ImportMediaFilesFlowModelFactory.self)
         
-        given(importMediaFilesFlowModelFactory.make(targetFolderId: any(), fileUrl: any(), delegate: any()))
+        given(importMediaFilesFlowModelFactory.make(targetFolderId: any(), filesUrls: any(), delegate: any()))
             .willReturn(importMediaFilesFlowModel)
         
         let addMediaLibraryFolderFlowModelFactory = mock(AddMediaLibraryFolderFlowModelFactory.self)
 
         let flowModel = AddMediaLibraryItemFlowModelImpl(
             targetFolderId: targetFolderId,
-            fileUrl: nil,
+            filesUrls: nil,
             delegate: delegate,
             chooseDialogViewModelFactory: chooseDialogViewModelFactory,
             importMediaFilesFlowModelFactory: importMediaFilesFlowModelFactory,
