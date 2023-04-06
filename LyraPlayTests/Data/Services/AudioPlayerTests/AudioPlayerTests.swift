@@ -58,14 +58,21 @@ class AudioPlayerTests: XCTestCase {
         
         sleep(1)
         
+        // When
         let prepareResult2 = audioPlayer.prepare(fileId: fileId2, data: shortData)
+        
+        // Then
         try AssertResultSucceded(prepareResult2)
         
+        // When
         let result2 = audioPlayer.play(atTime: 0)
+        
+        // Then
         try AssertResultSucceded(result2)
         
         sleep(1)
         
+        // Then
         stateObserver.expect([
         
             AudioPlayerState.initial,

@@ -512,6 +512,7 @@
 		AA9EDBA1299D740200AAF9FB /* FailedLoadPlayMediaUseCaseStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDBA0299D740200AAF9FB /* FailedLoadPlayMediaUseCaseStateController.swift */; };
 		AA9EDBA4299D785D00AAF9FB /* FinishedPlayMediaUseCaseStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDBA3299D785D00AAF9FB /* FinishedPlayMediaUseCaseStateController.swift */; };
 		AA9EDBAC299D853800AAF9FB /* PlayMediaWithSubtitlesUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9EDBAB299D853800AAF9FB /* PlayMediaWithSubtitlesUseCaseImpl.swift */; };
+		AAA3829529DE757E00CD3550 /* InitialAudioPlayerStateControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA3829429DE757E00CD3550 /* InitialAudioPlayerStateControllerTests.swift */; };
 		AAA87987289E643100E04CA9 /* TranslationItemPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA87986289E643100E04CA9 /* TranslationItemPosition.swift */; };
 		AAA87989289E947800E04CA9 /* Range+TextRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA87988289E947800E04CA9 /* Range+TextRange.swift */; };
 		AAA8798B289EB45500E04CA9 /* AdvancedPlayerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA8798A289EB45500E04CA9 /* AdvancedPlayerSession.swift */; };
@@ -1248,6 +1249,7 @@
 		AA9EDBA0299D740200AAF9FB /* FailedLoadPlayMediaUseCaseStateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailedLoadPlayMediaUseCaseStateController.swift; sourceTree = "<group>"; };
 		AA9EDBA3299D785D00AAF9FB /* FinishedPlayMediaUseCaseStateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedPlayMediaUseCaseStateController.swift; sourceTree = "<group>"; };
 		AA9EDBAB299D853800AAF9FB /* PlayMediaWithSubtitlesUseCaseImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaWithSubtitlesUseCaseImpl.swift; sourceTree = "<group>"; };
+		AAA3829429DE757E00CD3550 /* InitialAudioPlayerStateControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialAudioPlayerStateControllerTests.swift; sourceTree = "<group>"; };
 		AAA87986289E643100E04CA9 /* TranslationItemPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranslationItemPosition.swift; sourceTree = "<group>"; };
 		AAA87988289E947800E04CA9 /* Range+TextRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Range+TextRange.swift"; sourceTree = "<group>"; };
 		AAA8798A289EB45500E04CA9 /* AdvancedPlayerSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedPlayerSession.swift; sourceTree = "<group>"; };
@@ -2443,7 +2445,7 @@
 		AA252C982874750C001B7AEE /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				AA252C9928747520001B7AEE /* AudioPlayerTests.swift */,
+				AAA3829329DE753C00CD3550 /* AudioPlayerTests */,
 				AA273A1728ACD30700119088 /* AudioSessionTests.swift */,
 			);
 			path = Services;
@@ -3186,6 +3188,15 @@
 				AA35E57F286AA07F0086DB28 /* LocalFilesRepositoryTests.swift */,
 			);
 			path = Repositories;
+			sourceTree = "<group>";
+		};
+		AAA3829329DE753C00CD3550 /* AudioPlayerTests */ = {
+			isa = PBXGroup;
+			children = (
+				AA252C9928747520001B7AEE /* AudioPlayerTests.swift */,
+				AAA3829429DE757E00CD3550 /* InitialAudioPlayerStateControllerTests.swift */,
+			);
+			path = AudioPlayerTests;
 			sourceTree = "<group>";
 		};
 		AABB49EB28AFFB180088484B /* DictionaryListBrowser */ = {
@@ -4754,6 +4765,7 @@
 				AA8B0320299B59500019F7A8 /* InitialPlayMediaUseCaseStateControllerTests.swift in Sources */,
 				AACEA31228699F5500111565 /* BrowseMediaLibraryUseCaseTests.swift in Sources */,
 				AA3BAB25286C7EE2005EE01E /* UserDefaultsKeyValueStoreTests.swift in Sources */,
+				AAA3829529DE757E00CD3550 /* InitialAudioPlayerStateControllerTests.swift in Sources */,
 				AABB49EA28AFF50E0088484B /* Dictionary+Helpers.swift in Sources */,
 				EAAC71B4C29C82B44BE581A6 /* (null) in Sources */,
 				312FF05A74E46DB999FEDBAF /* EditDictionaryItemUseCaseTests.swift in Sources */,
