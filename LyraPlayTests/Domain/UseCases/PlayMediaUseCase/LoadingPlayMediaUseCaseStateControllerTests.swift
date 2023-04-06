@@ -54,6 +54,14 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
         )
         
         detectMemoryLeak(instance: controller)
+
+        releaseMocks(
+            loadTrackUseCaseFactory,
+            audioPlayerFactory,
+            getPlayedTimeUseCaseFactory,
+            getPlayedTimeUseCase,
+            delegate
+        )
         
         return (
             controller,
@@ -98,6 +106,8 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
         // Then
         verify(await sut.delegate.load(mediaId: mediaId2))
             .wasCalled(1)
+        
+        releaseMocks(loadTrackUseCase)
     }
     
     func test_load__success() async throws {
@@ -122,6 +132,15 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
             audioPlayer: audioPlayer
         )
         
+        given(sut.audioPlayer.currentTime)
+            .willReturn(30)
+        
+        given(sut.audioPlayer.duration)
+            .willReturn(100)
+        
+        given(sut.audioPlayer.prepare(fileId: any(), data: any()))
+            .willReturn(.success(()))
+        
         given(await sut.getPlayedTimeUseCase.getPlayedTime(for: mediaId))
             .willReturn(.success(expectedTime))
         
@@ -139,6 +158,11 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
         
         verify(sut.audioPlayer.setTime(expectedTime))
             .wasCalled(1)
+        
+        releaseMocks(
+            loadTrackUseCase,
+            audioPlayer
+        )
     }
     
     func test_load__failed_load() async throws {
@@ -170,5 +194,7 @@ class LoadingPlayMediaUseCaseStateControllerTests: XCTestCase {
         
         verify(sut.delegate.didFailLoad(mediaId: mediaId))
             .wasCalled(1)
+        
+        releaseMocks(loadTrackUseCase)
     }
 }

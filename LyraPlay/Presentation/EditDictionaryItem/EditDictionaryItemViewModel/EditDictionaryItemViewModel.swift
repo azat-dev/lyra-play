@@ -17,7 +17,7 @@ public protocol EditDictionaryItemViewModelDelegate: AnyObject {
     func editDictionaryItemViewModelDidFinish()
 }
 
-public enum EditDictionaryItemParams {
+public enum EditDictionaryItemParams: Equatable {
 
     case existingItem(itemId: UUID)
     case newItem(originalText: String)

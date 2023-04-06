@@ -102,6 +102,9 @@ class PlayMediaWithInfoUseCaseTests: XCTestCase {
         given(await sut.showMediaInfoUseCase.fetchInfo(trackId: mediaId))
             .willReturn(.success(mediaInfo))
         
+        given(sut.playMediaWithTranslationsUseCase.dictionaryWords)
+            .willReturn(.init(nil))
+        
         let session = PlayMediaWithInfoSession(
             mediaId: mediaId,
             learningLanguage: "",
