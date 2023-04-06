@@ -16,6 +16,7 @@ public final class AudioPlayerImpl: NSObject, AudioPlayer {
     // MARK: - Properties
     
     public var state: CurrentValueSubject<AudioPlayerState, Never> = .init(.initial)
+    private let systemPlayerFactory: SystemPlayerFactory
     
     public var currentTime: TimeInterval {
         return currentStateController.currentTime
@@ -32,8 +33,8 @@ public final class AudioPlayerImpl: NSObject, AudioPlayer {
     
     // MARK: - Initializers
 
-    public override init() {
-        super.init()
+    public init(systemPlayerFactory: SystemPlayerFactory) {
+        self.systemPlayerFactory = systemPlayerFactory
     }
 
     public func prepare(fileId: String, data: Data) -> Result<Void, AudioPlayerError> {
@@ -132,7 +133,8 @@ extension AudioPlayerImpl: AudioPlayerStateControllerDelegate {
         let controller = LoadingAudioPlayerStateController(
             fileId: fileId,
             data: data,
-            delegate: self
+            delegate: self,
+            systemPlayerFactory: systemPlayerFactory
         )
         
         return controller.runLoading()

@@ -14,6 +14,7 @@ public class LoadingAudioPlayerStateController: AudioPlayerStateController {
     
     private let fileId: String
     private let data: Data
+    private let systemPlayerFactory: SystemPlayerFactory
     
     private weak var delegate: AudioPlayerStateControllerDelegate?
     
@@ -25,12 +26,14 @@ public class LoadingAudioPlayerStateController: AudioPlayerStateController {
     public init(
         fileId: String,
         data: Data,
-        delegate: AudioPlayerStateControllerDelegate
+        delegate: AudioPlayerStateControllerDelegate,
+        systemPlayerFactory: SystemPlayerFactory
     ) {
         
         self.fileId = fileId
         self.data = data
         self.delegate = delegate
+        self.systemPlayerFactory = systemPlayerFactory
     }
     
     public func prepare(fileId: String, data trackData: Data) -> Result<Void, AudioPlayerError> {
@@ -74,7 +77,7 @@ public class LoadingAudioPlayerStateController: AudioPlayerStateController {
         
         do {
             
-            let systemPlayer = try AVAudioPlayer(data: data)
+            let systemPlayer = try systemPlayerFactory.make(data: data)
             systemPlayer.prepareToPlay()
             
             delegate?.didLoad(

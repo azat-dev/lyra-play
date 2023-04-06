@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import AVFAudio
 
-public class PlayingAudioPlayerStateController: NSObject, AVAudioPlayerDelegate, AudioPlayerStateController {
+public class PlayingAudioPlayerStateController: NSObject, SystemPlayerDelegate, AudioPlayerStateController {
     
 
     // MARK: - Properties
@@ -72,7 +71,7 @@ public class PlayingAudioPlayerStateController: NSObject, AVAudioPlayerDelegate,
         return pause()
     }
     
-    public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+    public func audioPlayerDidFinishPlaying(player: SystemPlayer, successfully flag: Bool) {
         
         delegate?.didFinishPlaying(session: session)
     }
@@ -109,7 +108,7 @@ public class PlayingAudioPlayerStateController: NSObject, AVAudioPlayerDelegate,
         session.systemPlayer.delegate = self
         
         guard
-            atTime == 0 ? session.systemPlayer.play() : session.systemPlayer.play(atTime: atTime)
+            session.systemPlayer.play(atTime: atTime)
         else {
             session.systemPlayer.delegate = nil
             return .failure(.internalError(nil))

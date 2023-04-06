@@ -13,11 +13,11 @@ public struct ActiveAudioPlayerStateControllerSession {
     // MARK: - Properties
     
     public let fileId: String
-    public let systemPlayer: AVAudioPlayer
+    public let systemPlayer: SystemPlayer
     
     // MARK: - Initializers
     
-    public init(fileId: String, systemPlayer: AVAudioPlayer) {
+    public init(fileId: String, systemPlayer: SystemPlayer) {
         self.fileId = fileId
         self.systemPlayer = systemPlayer
     }

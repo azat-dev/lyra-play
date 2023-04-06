@@ -16,7 +16,9 @@ class LoadingAudioPlayerStateControllerTests: XCTestCase {
         controller: LoadingAudioPlayerStateController,
         fileId: String,
         fileData: Data,
-        delegate: AudioPlayerStateControllerDelegateMock
+        delegate: AudioPlayerStateControllerDelegateMock,
+        systemPlayerFactory: SystemPlayerFactoryMock,
+        systemPlayer: SystemPlayerMock
     )
     
     func createSUT() -> SUT {
@@ -26,10 +28,17 @@ class LoadingAudioPlayerStateControllerTests: XCTestCase {
         let fileId = UUID().uuidString
         let fileData = try! getTestFile()
         
+        let systemPlayerFactory = mock(SystemPlayerFactory.self)
+        let systemPlayer = mock(SystemPlayer.self)
+        
+        given(systemPlayerFactory.make(data: any()))
+            .willReturn(systemPlayer)
+        
         let controller = LoadingAudioPlayerStateController(
             fileId: fileId,
             data: fileData,
-            delegate: delegate
+            delegate: delegate,
+            systemPlayerFactory: systemPlayerFactory
         )
         
         detectMemoryLeak(instance: controller)
@@ -42,7 +51,9 @@ class LoadingAudioPlayerStateControllerTests: XCTestCase {
             controller,
             fileId,
             fileData,
-            delegate
+            delegate,
+            systemPlayerFactory,
+            systemPlayer
         )
     }
     
@@ -85,9 +96,12 @@ class LoadingAudioPlayerStateControllerTests: XCTestCase {
         // Then
         try AssertResultSucceded(result)
         
+        verify(sut.systemPlayer.prepareToPlay())
+            .wasCalled(1)
+        
         verify(
             sut.delegate.didLoad(
-                session: any(ActiveAudioPlayerStateControllerSession.self, where: { $0.fileId == fileId && $0.systemPlayer.data == fileData })
+                session: any(ActiveAudioPlayerStateControllerSession.self, where: { $0.fileId == fileId })
             )
         ).wasCalled(1)
         

@@ -109,10 +109,11 @@ public final class ApplicationFlowModelImplFactory: ApplicationFlowModelFactory 
         let updatePlayedTimeUseCaseFactory = UpdatePlayedTimeUseCaseImplFactory(
             mediaLibraryRepository: mediaLibraryRepository
         )
-
-        let mainAudioPlayerFactory = AudioPlayerImplSingleInstanceFactory()
         
-        let secondaryAudioPlayerFactory = AudioPlayerImplSingleInstanceFactory()
+        let systemPlayerFactory = SystemPlayerFactoryImpl()
+
+        let mainAudioPlayerFactory = AudioPlayerImplSingleInstanceFactory(systemPlayerFactory: systemPlayerFactory)
+        let secondaryAudioPlayerFactory = AudioPlayerImplSingleInstanceFactory(systemPlayerFactory: systemPlayerFactory)
         
         let loadTrackUseCaseFactory = LoadTrackUseCaseImplFactory(
             mediaLibraryRepository: mediaLibraryRepository,

@@ -1,5 +1,5 @@
 //
-//  LoadedAudioPlayerStateControllerTests.swift
+//  PlayingAudioPlayerStateControllerTests.swift
 //  LyraPlayTests
 //
 //  Created by Azat Kaiumov on 06.04.23.
@@ -11,12 +11,13 @@ import Mockingbird
 import LyraPlay
 import AVFAudio
 
-class LoadedAudioPlayerStateControllerTests: XCTestCase {
+class PlayingAudioPlayerStateControllerTests: XCTestCase {
     
     typealias SUT = (
-        controller: AudioPlayerStateController,
+        controller: PlayingAudioPlayerStateController,
         session: ActiveAudioPlayerStateControllerSession,
-        delegate: AudioPlayerStateControllerDelegateMock
+        delegate: AudioPlayerStateControllerDelegateMock,
+        systemPlayer: SystemPlayerMock
     )
     
     func createSUT() -> SUT {
@@ -32,7 +33,7 @@ class LoadedAudioPlayerStateControllerTests: XCTestCase {
             systemPlayer: systemPlayer
         )
         
-        let controller = LoadedAudioPlayerStateController(
+        let controller = PlayingAudioPlayerStateController(
             session: session,
             delegate: delegate
         )
@@ -47,7 +48,8 @@ class LoadedAudioPlayerStateControllerTests: XCTestCase {
         return (
             controller,
             session,
-            delegate
+            delegate,
+            systemPlayer
         )
     }
     
@@ -68,9 +70,9 @@ class LoadedAudioPlayerStateControllerTests: XCTestCase {
             data: newFileData
         )
         
-        try AssertResultSucceded(result)
         
         // Then
+        try AssertResultSucceded(result)
         
         verify(sut.delegate.load(fileId: newFileId, data: newFileData))
             .wasCalled(1)
@@ -88,9 +90,9 @@ class LoadedAudioPlayerStateControllerTests: XCTestCase {
         // When
         let result = sut.controller.stop()
         
+        // Then
         try AssertResultSucceded(result)
         
-        // Then
         verify(
             sut.delegate.stop(
                 session: any(
@@ -107,18 +109,17 @@ class LoadedAudioPlayerStateControllerTests: XCTestCase {
         let sut = createSUT()
         let session = sut.session
         
-        given(sut.delegate.startPlaying(atTime: any(), session: any()))
+        given(sut.delegate.pause(session: any()))
             .willReturn(.success(()))
         
         // When
         let result = sut.controller.toggle()
         
+        // Then
         try AssertResultSucceded(result)
         
-        // Then
         verify(
-            sut.delegate.startPlaying(
-                atTime: 0,
+            sut.delegate.pause(
                 session: any(
                     ActiveAudioPlayerStateControllerSession.self,
                     where: { $0.fileId == session.fileId }
@@ -131,7 +132,6 @@ class LoadedAudioPlayerStateControllerTests: XCTestCase {
         
         // Given
         let sut = createSUT()
-        let session = sut.session
         
         given(sut.delegate.resumePlaying(session: any()))
             .willReturn(.success(()))
@@ -139,17 +139,11 @@ class LoadedAudioPlayerStateControllerTests: XCTestCase {
         // When
         let result = sut.controller.resume()
         
+        // Then
         try AssertResultSucceded(result)
         
-        // Then
-        verify(
-            sut.delegate.resumePlaying(
-                session: any(
-                    ActiveAudioPlayerStateControllerSession.self,
-                    where: { $0.fileId == session.fileId }
-                )
-            )
-        ).wasCalled(1)
+        verify(sut.delegate.resumePlaying(session: any()))
+            .wasNeverCalled()
     }
     
     func test_play() async throws {
@@ -157,8 +151,7 @@ class LoadedAudioPlayerStateControllerTests: XCTestCase {
         // Given
         let sut = createSUT()
         let session = sut.session
-        
-        let time: TimeInterval = 10
+        let time: TimeInterval = 30
         
         given(sut.delegate.startPlaying(atTime: any(), session: any()))
             .willReturn(.success(()))
@@ -166,9 +159,9 @@ class LoadedAudioPlayerStateControllerTests: XCTestCase {
         // When
         let result = sut.controller.play(atTime: time)
         
+        // Then
         try AssertResultSucceded(result)
         
-        // Then
         verify(
             sut.delegate.startPlaying(
                 atTime: time,
@@ -177,6 +170,79 @@ class LoadedAudioPlayerStateControllerTests: XCTestCase {
                     where: { $0.fileId == session.fileId }
                 )
             )
+        ).wasCalled(1)
+    }
+    
+    func test_pause() async throws {
+        
+        // Given
+        let sut = createSUT()
+        let session = sut.session
+        
+        given(sut.delegate.pause(session: any()))
+            .willReturn(.success(()))
+        
+        // When
+        let result = sut.controller.pause()
+        
+        // Then
+        try AssertResultSucceded(result)
+        
+        verify(
+            sut.delegate.pause(
+                session: any(
+                    ActiveAudioPlayerStateControllerSession.self,
+                    where: { $0.fileId == session.fileId }
+                )
+            )
+        ).wasCalled(1)
+    }
+    
+    func test_runPlaying__with_offset() async throws {
+        
+        // Given
+        let sut = createSUT()
+        let systemPlayer = sut.systemPlayer
+        
+        let time: TimeInterval = 10
+        
+        given(systemPlayer.play(atTime: any()))
+            .willReturn(true)
+        
+        // When
+        let result = sut.controller.runPlaying(atTime: time)
+        
+        // Then
+        try! AssertResultSucceded(result)
+        
+        verify(systemPlayer.play(atTime: time))
+            .wasCalled(1)
+        
+        verify(
+            sut.delegate.didStartPlaying(withController: any())
+        ).wasCalled(1)
+    }
+
+    func test_runResumePlaying() async throws {
+        
+        // Given
+        let sut = createSUT()
+        let systemPlayer = sut.systemPlayer
+        
+        given(systemPlayer.play())
+            .willReturn(true)
+        
+        // When
+        let result = sut.controller.runResumePlaying()
+        
+        // Then
+        try! AssertResultSucceded(result)
+        
+        verify(systemPlayer.play())
+            .wasCalled(1)
+        
+        verify(
+            sut.delegate.didResumePlaying(withController: any())
         ).wasCalled(1)
     }
 }

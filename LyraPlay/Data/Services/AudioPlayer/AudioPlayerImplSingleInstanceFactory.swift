@@ -14,9 +14,12 @@ public final class AudioPlayerImplSingleInstanceFactory: AudioPlayerFactory {
     private var semaphore = DispatchSemaphore(value: 1)
     private weak var instance: AudioPlayer?
     
+    private let systemPlayerFactory: SystemPlayerFactory
+    
     // MARK: - Initializers
     
-    public init() {
+    public init(systemPlayerFactory: SystemPlayerFactory) {
+        self.systemPlayerFactory = systemPlayerFactory
     }
     
     // MARK: - Methods
@@ -31,7 +34,7 @@ public final class AudioPlayerImplSingleInstanceFactory: AudioPlayerFactory {
             return instance
         }
         
-        let newInstance = AudioPlayerImpl()
+        let newInstance = AudioPlayerImpl(systemPlayerFactory: systemPlayerFactory)
         instance = newInstance
         
         return newInstance

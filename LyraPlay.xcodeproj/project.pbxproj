@@ -516,6 +516,11 @@
 		AAA3829729DE777400CD3550 /* LoadingAudioPlayerStateControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA3829629DE777400CD3550 /* LoadingAudioPlayerStateControllerTests.swift */; };
 		AAA3829929DE7E8100CD3550 /* LoadedAudioPlayerStateControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA3829829DE7E8100CD3550 /* LoadedAudioPlayerStateControllerTests.swift */; };
 		AAA3829B29DE823800CD3550 /* StoppedAudioPlayerStateControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA3829A29DE823800CD3550 /* StoppedAudioPlayerStateControllerTests.swift */; };
+		AAA3829D29DE837900CD3550 /* PlayingAudioPlayerStateControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA3829C29DE837900CD3550 /* PlayingAudioPlayerStateControllerTests.swift */; };
+		AAA382A029DE946B00CD3550 /* SystemPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA3829F29DE946B00CD3550 /* SystemPlayer.swift */; };
+		AAA382A229DE948200CD3550 /* SystemPlayerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA382A129DE948200CD3550 /* SystemPlayerFactory.swift */; };
+		AAA382A429DE94B200CD3550 /* SystemPlayerFactoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA382A329DE94B200CD3550 /* SystemPlayerFactoryImpl.swift */; };
+		AAA382A629DE975200CD3550 /* SystemPlayerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA382A529DE975200CD3550 /* SystemPlayerImpl.swift */; };
 		AAA87987289E643100E04CA9 /* TranslationItemPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA87986289E643100E04CA9 /* TranslationItemPosition.swift */; };
 		AAA87989289E947800E04CA9 /* Range+TextRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA87988289E947800E04CA9 /* Range+TextRange.swift */; };
 		AAA8798B289EB45500E04CA9 /* AdvancedPlayerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA8798A289EB45500E04CA9 /* AdvancedPlayerSession.swift */; };
@@ -1256,6 +1261,11 @@
 		AAA3829629DE777400CD3550 /* LoadingAudioPlayerStateControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingAudioPlayerStateControllerTests.swift; sourceTree = "<group>"; };
 		AAA3829829DE7E8100CD3550 /* LoadedAudioPlayerStateControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadedAudioPlayerStateControllerTests.swift; sourceTree = "<group>"; };
 		AAA3829A29DE823800CD3550 /* StoppedAudioPlayerStateControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoppedAudioPlayerStateControllerTests.swift; sourceTree = "<group>"; };
+		AAA3829C29DE837900CD3550 /* PlayingAudioPlayerStateControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayingAudioPlayerStateControllerTests.swift; sourceTree = "<group>"; };
+		AAA3829F29DE946B00CD3550 /* SystemPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPlayer.swift; sourceTree = "<group>"; };
+		AAA382A129DE948200CD3550 /* SystemPlayerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPlayerFactory.swift; sourceTree = "<group>"; };
+		AAA382A329DE94B200CD3550 /* SystemPlayerFactoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPlayerFactoryImpl.swift; sourceTree = "<group>"; };
+		AAA382A529DE975200CD3550 /* SystemPlayerImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPlayerImpl.swift; sourceTree = "<group>"; };
 		AAA87986289E643100E04CA9 /* TranslationItemPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranslationItemPosition.swift; sourceTree = "<group>"; };
 		AAA87988289E947800E04CA9 /* Range+TextRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Range+TextRange.swift"; sourceTree = "<group>"; };
 		AAA8798A289EB45500E04CA9 /* AdvancedPlayerSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedPlayerSession.swift; sourceTree = "<group>"; };
@@ -1548,6 +1558,7 @@
 		121FD4D63D3D8DB4007F2E23 /* AudioPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				AAA3829E29DE945C00CD3550 /* SystemPlayer */,
 				1B7FC2B4CDF8280D45B18C54 /* AudioPlayerImpl.swift */,
 				F1148C96B9BB66D367F3A27E /* AudioPlayerImplSingleInstanceFactory.swift */,
 				AA47D74C2988E4820073F169 /* AudioPlayerStateController.swift */,
@@ -3204,8 +3215,20 @@
 				AAA3829629DE777400CD3550 /* LoadingAudioPlayerStateControllerTests.swift */,
 				AAA3829829DE7E8100CD3550 /* LoadedAudioPlayerStateControllerTests.swift */,
 				AAA3829A29DE823800CD3550 /* StoppedAudioPlayerStateControllerTests.swift */,
+				AAA3829C29DE837900CD3550 /* PlayingAudioPlayerStateControllerTests.swift */,
 			);
 			path = AudioPlayerTests;
+			sourceTree = "<group>";
+		};
+		AAA3829E29DE945C00CD3550 /* SystemPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				AAA3829F29DE946B00CD3550 /* SystemPlayer.swift */,
+				AAA382A129DE948200CD3550 /* SystemPlayerFactory.swift */,
+				AAA382A329DE94B200CD3550 /* SystemPlayerFactoryImpl.swift */,
+				AAA382A529DE975200CD3550 /* SystemPlayerImpl.swift */,
+			);
+			path = SystemPlayer;
 			sourceTree = "<group>";
 		};
 		AABB49EB28AFFB180088484B /* DictionaryListBrowser */ = {
@@ -4296,6 +4319,7 @@
 				AADB434B28E4F32400C0A9A0 /* PlayMediaWithInfoSession.swift in Sources */,
 				E5ED85CF51774BB8F182FFB6 /* PlayMediaWithSubtitlesUseCaseImplFactory.swift in Sources */,
 				B8A4FE7C3F6FC60AB3D67A52 /* SubtitlesState.swift in Sources */,
+				AAA382A429DE94B200CD3550 /* SystemPlayerFactoryImpl.swift in Sources */,
 				AA51001C299E041F00720184 /* InitialPlayMediaWithSubtitlesUseStateController.swift in Sources */,
 				AAC728A928CCB1FA00834D72 /* AttachingSubtitlesProgressViewController.swift in Sources */,
 				98FCF9390E1700E26F33A719 /* PlayMediaWithSubtitlesSessionParams.swift in Sources */,
@@ -4368,6 +4392,7 @@
 				2CFEE3143BB5176AB2FFE4C5 /* AudioPlayerSession.swift in Sources */,
 				23FEB2351FF834A934E080DD /* AudioPlayerImplSingleInstanceFactory.swift in Sources */,
 				AAC728AD28CCBDC700834D72 /* AttachingSubtitlesProgressViewController+Styles.swift in Sources */,
+				AAA382A229DE948200CD3550 /* SystemPlayerFactory.swift in Sources */,
 				AA55226028CA4FAF007D5343 /* UIWindow+Utils.swift in Sources */,
 				0143A50905B394D78ECB8D35 /* AudioPlayerImpl.swift in Sources */,
 				AA729D0E297E229C000BED87 /* TextSplitterImplFactory.swift in Sources */,
@@ -4425,6 +4450,7 @@
 				AAADD8AF29772E6F001871F5 /* FileSharingViewController.swift in Sources */,
 				AA55227C28CA8B68007D5343 /* LibraryFileFlowModelImpl.swift in Sources */,
 				AAF0014429A5E77A0068132F /* TimelineSchedulerStateController.swift in Sources */,
+				AAA382A029DE946B00CD3550 /* SystemPlayer.swift in Sources */,
 				7C30E902EBEE5E8AD5956C48 /* DictionaryListBrowserViewControllerFactory.swift in Sources */,
 				DB59C881ADF58A2F89917D57 /* DictionaryListBrowserViewModelFactory.swift in Sources */,
 				4476EACDB5D2E6A892E878DD /* DictionaryListBrowserViewModel.swift in Sources */,
@@ -4482,6 +4508,7 @@
 				481A2DB361415D3E7FD3D170 /* AttachingSubtitlesProgressViewFactory.swift in Sources */,
 				0550ECA71DBBF8770C376700 /* AttachingSubtitlesProgressViewControllerFactory.swift in Sources */,
 				AEA60EE260E5166B64EF785C /* ImportMediaFilesFlowModel.swift in Sources */,
+				AAA382A629DE975200CD3550 /* SystemPlayerImpl.swift in Sources */,
 				736DC0A60935B16CA81150BA /* ImportMediaFilesFlowModelFactory.swift in Sources */,
 				63BDAE323D540918AB781642 /* ImportMediaFilesFlowModelImpl.swift in Sources */,
 				37BB135D973BB7A40D443A3D /* ImportMediaFilesFlowModelImplFactory.swift in Sources */,
@@ -4750,6 +4777,7 @@
 				AA0D3F812876244D006717B9 /* CoreDataSubtitlesRepositoryTests.swift in Sources */,
 				AA9BEAFE2865BFD30028DF8E /* ImportAudioFileUseCaseTests.swift in Sources */,
 				AA5802192879A53700655B4A /* XCTestCase+Sequence.swift in Sources */,
+				AAA3829D29DE837900CD3550 /* PlayingAudioPlayerStateControllerTests.swift in Sources */,
 				AA4ED78429A7F75B00B7FD05 /* PlayingTranslationsPlayMediaWithTranslationsUseCaseStateControllerTests.swift in Sources */,
 				AAF2EEBE287DF75700894F71 /* ActionTimerFactoryTests.swift in Sources */,
 				AA0DADFD28A1893A00B11B95 /* PronounceTranslationsUseCaseTests.swift in Sources */,
