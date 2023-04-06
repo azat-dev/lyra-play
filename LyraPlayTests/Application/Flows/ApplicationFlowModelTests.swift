@@ -12,7 +12,11 @@ import LyraPlay
 
 class ApplicationFlowModelTests: XCTestCase {
 
-    typealias SUT = ApplicationFlowModel
+    typealias SUT = (
+        flowModel: ApplicationFlowModel,
+        importDictionaryArchiveFlowModelFactory: ImportDictionaryArchiveFlowModelFactory,
+        importDictionaryArchiveFlowModel: ImportDictionaryArchiveFlowModel
+    )
 
     // MARK: - Methods
 
@@ -21,6 +25,16 @@ class ApplicationFlowModelTests: XCTestCase {
         let mainFlowModel = mock(MainFlowModel.self)
         
         let importDictionaryArchiveFlowModelFactory = mock(ImportDictionaryArchiveFlowModelFactory.self)
+        
+        let importDictionaryArchiveFlowModel = mock(ImportDictionaryArchiveFlowModel.self)
+            
+        given(
+            importDictionaryArchiveFlowModelFactory.make(
+                url: any(),
+                mainFlowModel: any(),
+                delegate: any()
+            )
+        ).willReturn(importDictionaryArchiveFlowModel)
 
         let flowModel = ApplicationFlowModelImpl(
             mainFlowModel: mainFlowModel,
@@ -28,7 +42,43 @@ class ApplicationFlowModelTests: XCTestCase {
         )
 
         detectMemoryLeak(instance: flowModel)
+        
+        releaseMocks(
+            importDictionaryArchiveFlowModelFactory,
+            importDictionaryArchiveFlowModel
+        )
 
-        return flowModel
+        return (
+            flowModel,
+            importDictionaryArchiveFlowModelFactory,
+            importDictionaryArchiveFlowModel
+        )
+    }
+    
+    func test_runImportDictionaryArchiveFlow() async {
+        
+        // Given
+        let sut = createSUT()
+        let dictionaryArchiveFileUrl = URL(string: "https://someurl.com")!
+        
+        given(sut.importDictionaryArchiveFlowModel.start())
+            .willReturn()
+        
+        // When
+        sut.flowModel.runImportDictionaryArchiveFlow(url: dictionaryArchiveFileUrl)
+        
+        // Then
+        XCTAssertNotNil(sut.flowModel.importDictionaryArchiveFlowModel.value)
+        
+        verify(
+            sut.importDictionaryArchiveFlowModelFactory.make(
+                url: dictionaryArchiveFileUrl,
+                mainFlowModel: secondArg(any()),
+                delegate: thirdArg(any())
+            )
+        ).wasCalled(1)
+        
+        verify(sut.importDictionaryArchiveFlowModel.start())
+            .wasCalled(1)
     }
 }
