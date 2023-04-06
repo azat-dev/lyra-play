@@ -9,7 +9,16 @@ import Foundation
 import AVFAudio
 
 public struct ActiveAudioPlayerStateControllerSession {
+
+    // MARK: - Properties
     
-    let fileId: String
-    let systemPlayer: AVAudioPlayer
+    public let fileId: String
+    public let systemPlayer: AVAudioPlayer
+    
+    // MARK: - Initializers
+    
+    public init(fileId: String, systemPlayer: AVAudioPlayer) {
+        self.fileId = fileId
+        self.systemPlayer = systemPlayer
+    }
 }

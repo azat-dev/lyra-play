@@ -37,7 +37,6 @@ class InitialAudioPlayerStateControllerTests: XCTestCase {
         )
     }
     
-    
     func test_prepare() async throws {
         
         // Given

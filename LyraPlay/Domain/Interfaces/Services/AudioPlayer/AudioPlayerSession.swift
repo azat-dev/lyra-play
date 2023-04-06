@@ -11,7 +11,7 @@ public struct AudioPlayerSession: Equatable {
 
     // MARK: - Properties
 
-    public var fileId: String
+    public let fileId: String
 
     // MARK: - Initializers
 

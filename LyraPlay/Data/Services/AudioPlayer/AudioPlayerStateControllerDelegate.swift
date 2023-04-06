@@ -8,17 +8,6 @@
 import Foundation
 import AVFoundation
 
-public struct AudioPlayerStateControllerSessionParams {
-    
-    let fileId: String
-}
-
-public struct AudioPlayerStateControllerActiveSession {
-    
-    let params: AudioPlayerStateControllerSessionParams
-    let systemPlayer: AVAudioPlayer
-}
-
 
 public protocol AudioPlayerStateControllerDelegate: AnyObject {
     
