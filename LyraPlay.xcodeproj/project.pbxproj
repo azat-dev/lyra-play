@@ -521,6 +521,7 @@
 		AAA382A229DE948200CD3550 /* SystemPlayerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA382A129DE948200CD3550 /* SystemPlayerFactory.swift */; };
 		AAA382A429DE94B200CD3550 /* SystemPlayerFactoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA382A329DE94B200CD3550 /* SystemPlayerFactoryImpl.swift */; };
 		AAA382A629DE975200CD3550 /* SystemPlayerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA382A529DE975200CD3550 /* SystemPlayerImpl.swift */; };
+		AAA382A829DEA0DB00CD3550 /* PausedAudioPlayerStateControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA382A729DEA0DB00CD3550 /* PausedAudioPlayerStateControllerTests.swift */; };
 		AAA87987289E643100E04CA9 /* TranslationItemPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA87986289E643100E04CA9 /* TranslationItemPosition.swift */; };
 		AAA87989289E947800E04CA9 /* Range+TextRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA87988289E947800E04CA9 /* Range+TextRange.swift */; };
 		AAA8798B289EB45500E04CA9 /* AdvancedPlayerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA8798A289EB45500E04CA9 /* AdvancedPlayerSession.swift */; };
@@ -1266,6 +1267,7 @@
 		AAA382A129DE948200CD3550 /* SystemPlayerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPlayerFactory.swift; sourceTree = "<group>"; };
 		AAA382A329DE94B200CD3550 /* SystemPlayerFactoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPlayerFactoryImpl.swift; sourceTree = "<group>"; };
 		AAA382A529DE975200CD3550 /* SystemPlayerImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPlayerImpl.swift; sourceTree = "<group>"; };
+		AAA382A729DEA0DB00CD3550 /* PausedAudioPlayerStateControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PausedAudioPlayerStateControllerTests.swift; sourceTree = "<group>"; };
 		AAA87986289E643100E04CA9 /* TranslationItemPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranslationItemPosition.swift; sourceTree = "<group>"; };
 		AAA87988289E947800E04CA9 /* Range+TextRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Range+TextRange.swift"; sourceTree = "<group>"; };
 		AAA8798A289EB45500E04CA9 /* AdvancedPlayerSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedPlayerSession.swift; sourceTree = "<group>"; };
@@ -3214,6 +3216,7 @@
 				AAA3829429DE757E00CD3550 /* InitialAudioPlayerStateControllerTests.swift */,
 				AAA3829629DE777400CD3550 /* LoadingAudioPlayerStateControllerTests.swift */,
 				AAA3829829DE7E8100CD3550 /* LoadedAudioPlayerStateControllerTests.swift */,
+				AAA382A729DEA0DB00CD3550 /* PausedAudioPlayerStateControllerTests.swift */,
 				AAA3829A29DE823800CD3550 /* StoppedAudioPlayerStateControllerTests.swift */,
 				AAA3829C29DE837900CD3550 /* PlayingAudioPlayerStateControllerTests.swift */,
 			);
@@ -4817,6 +4820,7 @@
 				B83269BA23C1AA36BFD799D7 /* ConfirmDialogViewModelTests.swift in Sources */,
 				AAA3829929DE7E8100CD3550 /* LoadedAudioPlayerStateControllerTests.swift in Sources */,
 				E4638194F8702684498B8918 /* CurrentPlayerStateViewModelTests.swift in Sources */,
+				AAA382A829DEA0DB00CD3550 /* PausedAudioPlayerStateControllerTests.swift in Sources */,
 				AAA3829729DE777400CD3550 /* LoadingAudioPlayerStateControllerTests.swift in Sources */,
 				AA4291D529A1FDCD00DE3EBC /* InitialPlayMediaWithSubtitlesUseCaseControllerTests.swift in Sources */,
 				A1172485CD726E6170DE6BE3 /* ChooseDialogViewModelTests.swift in Sources */,
