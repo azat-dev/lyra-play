@@ -196,7 +196,6 @@ public final class CurrentPlayerStateDetailsViewModelImpl: CurrentPlayerStateDet
             state.value = .notActive
             
         case .activeSession(_, let sourceLoadState):
-            
             pipeLoadState(from: sourceLoadState)
         }
     }

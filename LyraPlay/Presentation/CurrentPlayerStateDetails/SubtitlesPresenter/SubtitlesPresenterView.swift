@@ -53,7 +53,7 @@ extension SubtitlesPresenterView {
         
         guard
             let newPosition = newPosition,
-            currentPosition == newPosition
+            currentPosition != newPosition
         else {
             return
         }

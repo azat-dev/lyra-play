@@ -9,8 +9,12 @@ import Foundation
 
 public final class LocalFilesRepository: FilesRepository {
 
+    // MARK: - Properties
+    
     private var baseDirectory: URL
     private let fileManager: FileManager
+    
+    // MARK: - Initializers
     
     public init(baseDirectory: URL, fileManager: FileManager = FileManager.default) throws {
         
@@ -24,6 +28,7 @@ public final class LocalFilesRepository: FilesRepository {
         }
     }
     
+    // MARK: - Methods
     
     public func getFileUrl(name: String) -> URL {
         return baseDirectory.appendingPathComponent(name, isDirectory: false)
