@@ -110,9 +110,9 @@ extension PlayMediaWithSubtitlesUseCaseImpl: PlaySubtitlesUseCaseDelegate {
             interrupt: &interrupt
         )
         
-        if interrupt {
-            let _ = pause()
-        }
+//        if interrupt {
+//            let _ = pause()
+//        }
     }
     
     public func playSubtitlesUseCaseDidChange(timeSlot: SubtitlesTimeSlot?) {

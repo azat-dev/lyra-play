@@ -106,7 +106,7 @@ extension PlayingPlayMediaWithTranslationsUseCaseStateController: PlayMediaWithS
     public func playMediaWithSubtitlesUseCaseWillChange(
         from fromPosition: SubtitlesTimeSlot?,
         to: SubtitlesTimeSlot?,
-        interrupt stopPlaying: inout Bool
+        interrupt pausePlaying: inout Bool
     ) {
         
         guard
@@ -116,7 +116,9 @@ extension PlayingPlayMediaWithTranslationsUseCaseStateController: PlayMediaWithS
             return
         }
         
-        stopPlaying = true
+        pausePlaying = true
+        
+        let _ = session.playMediaUseCase.pause()
         
         Task(priority: .userInitiated) {
             
